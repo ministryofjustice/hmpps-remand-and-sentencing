@@ -1252,6 +1252,15 @@ export default class OffenceService {
     return session.sentencesToMarkAsInactiveSentenceUuids || []
   }
 
+  setSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>, sentenceUuids: string[]) {
+    // eslint-disable-next-line no-param-reassign
+    session.sentenceUuidsWithActiveSentencesAfter = sentenceUuids
+  }
+
+  getSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>): string[] {
+    return session.sentenceUuidsWithActiveSentencesAfter || []
+  }
+
   setSentenceToConcurrent(
     session: Partial<SessionData>,
     nomsId: string,

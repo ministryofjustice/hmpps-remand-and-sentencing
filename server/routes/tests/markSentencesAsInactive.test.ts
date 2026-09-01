@@ -136,6 +136,10 @@ describe('POST /sentencing/select-sentences-to-mark-as-inactive', () => {
       ['3'],
       'user1',
     )
+    expect(defaultServices.offenceService.setSentenceUuidsWithActiveSentencesAfter).toHaveBeenCalledWith(
+      expect.anything(),
+      ['3'],
+    )
   })
 
   it('redirects to the provide a reason page when none of the selected sentences have an active sentence consecutive to them outside the selection', async () => {
@@ -207,24 +211,10 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
           offenceCode: 'AB6789',
           outcomeUuid: '123',
           sentence: {
-            sentenceUuid: '12',
-            countNumber: '3',
-            sentenceServeType: 'CONSECUTIVE',
-            sentenceTypeClassification: 'STANDARD',
-            consecutiveToSentenceUuid: '10',
-            status: 'INACTIVE',
-          },
-        },
-        {
-          chargeUuid: '7',
-          offenceCode: 'AB6789',
-          outcomeUuid: '123',
-          sentence: {
             sentenceUuid: '13',
             countNumber: '4',
-            sentenceServeType: 'CONSECUTIVE',
+            sentenceServeType: 'CONCURRENT',
             sentenceTypeClassification: 'STANDARD',
-            consecutiveToSentenceUuid: '99',
             status: 'ACTIVE',
           },
         },
@@ -234,7 +224,7 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
       CJ88001: 'Common assault',
       AB6789: 'Another offence description',
     })
-    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['10'])
+    defaultServices.offenceService.getSentenceUuidsWithActiveSentencesAfter.mockReturnValue(['10'])
   })
 
   it('renders the cannot mark sentences as inactive page', async () => {
@@ -248,7 +238,7 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
       })
   })
 
-  it('only shows active sentences that are consecutive to a selected sentence', async () => {
+  it('shows exactly the sentences returned by the API, using their own details', async () => {
     await request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
       .expect(200)
@@ -257,8 +247,34 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
         expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(1)
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('CJ88001')
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Common assault')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Count 1')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Forthwith')
+      })
+  })
+
+  it('shows a sentence with its own "Consecutive to" detail when that is the one returned by the API', async () => {
+    defaultServices.offenceService.getSentenceUuidsWithActiveSentencesAfter.mockReturnValue(['11'])
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(1)
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Count 2')
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Consecutive to Count 1')
+      })
+  })
+
+  it('shows one row per sentence when the API flags more than one', async () => {
+    defaultServices.offenceService.getSentenceUuidsWithActiveSentencesAfter.mockReturnValue(['10', '13'])
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(2)
       })
   })
 

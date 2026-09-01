@@ -74,7 +74,7 @@ context('Mark sentences as inactive', () => {
     Page.verifyOnPage(ProvideReasonForMarkingSentencesAsInactivePage)
   })
 
-  it('shows the cannot mark sentences as inactive page when the selected sentence has an active consecutive sentence', () => {
+  it('shows the sentence details the API flagged as blocked when it has no consecutiveTo of its own', () => {
     cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
       sentenceUuids: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
       sentenceUuidsWithActiveSentencesAfter: ['3a0a10d5-1ba0-403b-86d6-8cc75ee88454'],
@@ -88,11 +88,28 @@ context('Mark sentences as inactive', () => {
     const cannotMarkPage = Page.verifyOnPage(CannotMarkSentencesAsInactivePage)
     cannotMarkPage.activeConsecutiveOffences().should('have.length', 1)
     cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'PS90037')
-    cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'Count 2')
-    cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'Consecutive to Count 1')
+    cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'Count 1')
+    cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'Forthwith')
 
     cannotMarkPage.goBackToSelectSentencesLink().click()
     Page.verifyOnPage(SelectSentencesToMarkAsInactivePage)
+  })
+
+  it('shows the sentence\'s own "Consecutive to" detail when that is the one the API flagged', () => {
+    cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
+      sentenceUuids: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      sentenceUuidsWithActiveSentencesAfter: ['10a45197-642a-4b20-b9d8-1ae89edf77cc'],
+    })
+
+    courtCaseHearingDetailsPage.markSentencesAsInactiveLink().click()
+    const selectSentencesPage = Page.verifyOnPage(SelectSentencesToMarkAsInactivePage)
+    selectSentencesPage.checkboxLabelSelector('10a45197-642a-4b20-b9d8-1ae89edf77cc').click()
+    selectSentencesPage.continueButton().click()
+
+    const cannotMarkPage = Page.verifyOnPage(CannotMarkSentencesAsInactivePage)
+    cannotMarkPage.activeConsecutiveOffences().should('have.length', 1)
+    cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'Count 2')
+    cannotMarkPage.activeConsecutiveOffences().first().should('contain.text', 'Consecutive to Count 1')
   })
 
   it('cancel changes returns to the edit hearing page', () => {

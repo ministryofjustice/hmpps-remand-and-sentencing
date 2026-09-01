@@ -126,6 +126,7 @@
                       isSentenced: charge.sentence,
                       periodLengths: charge.sentence.periodLengths | periodLengthsToSentenceLengths,
                       sentenceServeType: charge.sentence.sentenceServeType,
+                      sentenceStatus: 'INACTIVE' if charge.sentence and charge.sentence.status === 'INACTIVE',
                       consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
                       sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
                       fineAmount: charge.sentence.fineAmount.fineAmount,

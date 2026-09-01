@@ -12,6 +12,7 @@ import {
   formatMergedFromCase,
   formatCountNumber,
   groupAndSortPeriodLengths,
+  sentenceStatusTagText,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -222,6 +223,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
   njkEnv.addFilter('formatMergedFromCase', formatMergedFromCase)
   njkEnv.addFilter('formatCountNumber', formatCountNumber)
+  njkEnv.addFilter('sentenceStatusTagText', sentenceStatusTagText)
   njkEnv.addFilter('groupAndSortPeriodLengths', groupAndSortPeriodLengths)
   njkEnv.addFilter(
     'formatOverallMergedFromCase',

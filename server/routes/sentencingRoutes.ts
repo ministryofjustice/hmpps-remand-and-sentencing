@@ -1040,19 +1040,13 @@ export default class SentencingRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
     )
     const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const selectedSentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
     const blockedSentenceUuids = this.offenceService.getSentenceUuidsWithActiveSentencesAfter(req.session)
-    const activeConsecutiveOffences = orderOffences(
-      hearing.offences.filter(
-        offence =>
-          offence.sentence?.status === 'ACTIVE' &&
-          blockedSentenceUuids.includes(offence.sentence.consecutiveToSentenceUuid) &&
-          !selectedSentenceUuids.includes(offence.sentence.sentenceUuid),
-      ),
+    const blockedOffences = orderOffences(
+      hearing.offences.filter(offence => blockedSentenceUuids.includes(offence.sentence?.sentenceUuid)),
     )
 
     const offenceMap = await this.manageOffencesService.getOffenceMap(
-      Array.from(new Set(activeConsecutiveOffences.map(offence => offence.offenceCode))),
+      Array.from(new Set(blockedOffences.map(offence => offence.offenceCode))),
       req.user.username,
       offencesToOffenceDescriptions(hearing.offences, []),
     )
@@ -1067,7 +1061,7 @@ export default class SentencingRoutes extends BaseRoutes {
       ...urlParameters,
       backLink,
       editHearingLink,
-      activeConsecutiveOffences,
+      blockedOffences,
       offenceMap,
       countNumberBySentenceUuid,
     })

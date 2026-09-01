@@ -1943,6 +1943,7 @@ export default {
                   description: 'SDS (Standard Determinate Sentence)',
                   classification: 'STANDARD',
                 },
+                status: 'INACTIVE',
               },
             },
             {
@@ -2895,6 +2896,7 @@ export default {
                       description: 'SDS (Standard Determinate Sentence)',
                       classification: 'STANDARD',
                     },
+                    status: 'INACTIVE',
                   },
                 },
                 {

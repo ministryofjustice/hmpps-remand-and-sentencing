@@ -136,6 +136,10 @@ describe('POST /sentencing/select-sentences-to-mark-as-inactive', () => {
       ['3'],
       'user1',
     )
+    expect(defaultServices.offenceService.setSentenceUuidsWithActiveSentencesAfter).toHaveBeenCalledWith(
+      expect.anything(),
+      ['3'],
+    )
   })
 
   it('redirects to the provide a reason page when none of the selected sentences have an active sentence consecutive to them outside the selection', async () => {
@@ -228,6 +232,43 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
             status: 'ACTIVE',
           },
         },
+        {
+          chargeUuid: '8',
+          offenceCode: 'AB6789',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '14',
+            countNumber: '5',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '15',
+            status: 'ACTIVE',
+          },
+        },
+        {
+          chargeUuid: '9',
+          offenceCode: 'AB6789',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '15',
+            countNumber: '6',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+          },
+        },
+        {
+          chargeUuid: '10',
+          offenceCode: 'AB6789',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '16',
+            countNumber: '7',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+          },
+        },
       ],
     })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
@@ -235,6 +276,7 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
       AB6789: 'Another offence description',
     })
     defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['10'])
+    defaultServices.offenceService.getSentenceUuidsWithActiveSentencesAfter.mockReturnValue(['10'])
   })
 
   it('renders the cannot mark sentences as inactive page', async () => {
@@ -257,6 +299,36 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
         expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(1)
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('CJ88001')
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Common assault')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Count 2')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Consecutive to Count 1')
+      })
+  })
+
+  it('does not show a sentence as a blocker when it is also part of the selected batch', async () => {
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['10', '11'])
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(0)
+      })
+  })
+
+  it('only shows the blocker for the sentence the API flagged, not for other selected sentences that happen to have their own active consecutive sentence', async () => {
+    // 4 sentences selected ('10', '13', '15', '16'), but the API only flagged '10' as blocked.
+    // '15' also has an active consecutive sentence ('14'), but since '15' wasn't flagged, its
+    // blocker must not appear.
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['10', '13', '15', '16'])
+    defaultServices.offenceService.getSentenceUuidsWithActiveSentencesAfter.mockReturnValue(['10'])
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(1)
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Count 2')
         expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Consecutive to Count 1')
       })

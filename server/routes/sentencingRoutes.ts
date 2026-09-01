@@ -1012,6 +1012,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
 
     if (sentenceUuidsWithActiveSentencesAfter.length > 0) {
+      this.offenceService.setSentenceUuidsWithActiveSentencesAfter(req.session, sentenceUuidsWithActiveSentencesAfter)
       return res.redirect(SentencingJourneyUrls.cannotMarkSentencesAsInactive(urlParameters))
     }
 
@@ -1040,11 +1041,13 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     const selectedSentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
+    const blockedSentenceUuids = this.offenceService.getSentenceUuidsWithActiveSentencesAfter(req.session)
     const activeConsecutiveOffences = orderOffences(
       hearing.offences.filter(
         offence =>
           offence.sentence?.status === 'ACTIVE' &&
-          selectedSentenceUuids.includes(offence.sentence.consecutiveToSentenceUuid),
+          blockedSentenceUuids.includes(offence.sentence.consecutiveToSentenceUuid) &&
+          !selectedSentenceUuids.includes(offence.sentence.sentenceUuid),
       ),
     )
 

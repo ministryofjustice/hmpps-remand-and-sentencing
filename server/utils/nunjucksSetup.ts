@@ -12,6 +12,7 @@ import {
   formatMergedFromCase,
   formatCountNumber,
   groupAndSortPeriodLengths,
+  sentenceStatusTagText,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -68,6 +69,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
   app.locals.breachWarrantTypes = BREACH_WARRANT_TYPES
   app.locals.isMultiTypeUploadEnabled = config.featureToggles.multipleTypeDocumentUpload
+  app.locals.showSentenceStatusTag = config.featureToggles.sentenceStatus
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'
@@ -222,6 +224,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
   njkEnv.addFilter('formatMergedFromCase', formatMergedFromCase)
   njkEnv.addFilter('formatCountNumber', formatCountNumber)
+  njkEnv.addFilter('sentenceStatusTagText', sentenceStatusTagText)
   njkEnv.addFilter('groupAndSortPeriodLengths', groupAndSortPeriodLengths)
   njkEnv.addFilter(
     'formatOverallMergedFromCase',
@@ -301,6 +304,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         isSentenced: offence.sentence,
         periodLengths: offence.sentence?.periodLengths,
         sentenceServeType: offence.sentence?.sentenceServeType,
+        sentenceStatus: config.featureToggles.sentenceStatus ? offence.sentence?.status : undefined,
         consecutiveTo: consecutiveToSentenceMap[offence.sentence?.consecutiveToSentenceUuid],
         sentenceType: sentenceTypeValueOrLegacy(
           sentenceTypeMap[offence.sentence?.sentenceTypeId],

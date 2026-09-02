@@ -263,6 +263,7 @@
                                                         isSentenced: offence.sentence,
                                                         periodLengths: offence.sentence.periodLengths if offence.sentence,
                                                         sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
+                                                        sentenceStatus: offence.sentence.status if showSentenceStatusTag and offence.sentence,
                                                         consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,
                                                         sentenceType: (courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData))  if offence.sentence,
                                                         fineAmount: offence.sentence.fineAmount  if offence.sentence,

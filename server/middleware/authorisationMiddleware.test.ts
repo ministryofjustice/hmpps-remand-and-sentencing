@@ -2,6 +2,11 @@ import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
 
 import authorisationMiddleware from './authorisationMiddleware'
+import { snapshotSessionForRecovery } from '../errorHandler'
+
+jest.mock('../errorHandler', () => ({
+  snapshotSessionForRecovery: jest.fn(),
+}))
 
 function createToken(authorities: string[]) {
   const payload = {
@@ -78,5 +83,22 @@ describe('authorisationMiddleware', () => {
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  describe('when there is no token on res.locals.user', () => {
+    it('should snapshot the session for recovery before redirecting to sign-in', async () => {
+      const request = {
+        originalUrl: '/person/A1234BC/court-cases',
+        session: {} as Request['session'],
+      } as unknown as Request
+      const response = { locals: {}, redirect: jest.fn() } as unknown as Response
+
+      await authorisationMiddleware()(request, response, next)
+
+      expect(snapshotSessionForRecovery).toHaveBeenCalledWith(response, request)
+      expect(request.session.returnTo).toBe('/person/A1234BC/court-cases')
+      expect(response.redirect).toHaveBeenCalledWith('/sign-in')
+      expect(next).not.toHaveBeenCalled()
+    })
   })
 })

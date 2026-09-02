@@ -14,14 +14,18 @@ function extractNomsIdFromUrl(originalUrl: string): string | undefined {
   return originalUrl.match(/^\/person\/([^/?]+)/)?.[1]
 }
 
+export async function snapshotSessionForRecovery(res: Response, req: Request) {
+  const username = res.locals.user?.username ?? req.user?.username
+  const nomsId = req.params?.nomsId ?? extractNomsIdFromUrl(req.originalUrl)
+  if (username && nomsId) {
+    await saveSession(username, nomsId, req.session)
+  }
+}
+
 export default function createErrorHandler(production: boolean) {
   return async (error: HTTPError | FullPageError, req: Request, res: Response, _next: NextFunction): Promise<void> => {
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
-    const username = res.locals.user?.username
-    const nomsId = req.params?.nomsId ?? extractNomsIdFromUrl(req.originalUrl)
-    if (username && nomsId) {
-      await saveSession(username, nomsId, req.session)
-    }
+    await snapshotSessionForRecovery(res, req)
 
     const status = extractStatus(error)
     if (status === 401 || status === 403) {

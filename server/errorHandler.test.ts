@@ -141,4 +141,25 @@ describe('auth error handling (401/403)', () => {
     expect(saveSession).toHaveBeenCalledWith('user1', 'A1234BC', req.session)
     expect(res.redirect).toHaveBeenCalledWith('/sign-out')
   })
+
+  it('should fall back to req.user when res.locals.user is not yet set', async () => {
+    const { req, res } = createReqRes({ nomsId: 'A1234BC' })
+    res.locals.user = undefined
+    req.user = { username: 'user1', token: 'tok', authSource: 'nomis' } as Express.User
+    const error = httpError('unauthorized', 401)
+
+    await createErrorHandler(false)(error, req, res, next)
+
+    expect(saveSession).toHaveBeenCalledWith('user1', 'A1234BC', req.session)
+  })
+
+  it('should prefer res.locals.user over req.user when both are present', async () => {
+    const { req, res } = createReqRes({ nomsId: 'A1234BC', username: 'locals-user' })
+    req.user = { username: 'req-user', token: 'tok', authSource: 'nomis' } as Express.User
+    const error = httpError('unauthorized', 401)
+
+    await createErrorHandler(false)(error, req, res, next)
+
+    expect(saveSession).toHaveBeenCalledWith('locals-user', 'A1234BC', req.session)
+  })
 })

@@ -304,6 +304,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         isSentenced: offence.sentence,
         periodLengths: offence.sentence?.periodLengths,
         sentenceServeType: offence.sentence?.sentenceServeType,
+        sentenceStatus: config.featureToggles.sentenceStatus ? offence.sentence?.status : undefined,
         consecutiveTo: consecutiveToSentenceMap[offence.sentence?.consecutiveToSentenceUuid],
         sentenceType: sentenceTypeValueOrLegacy(
           sentenceTypeMap[offence.sentence?.sentenceTypeId],

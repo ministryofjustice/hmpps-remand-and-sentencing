@@ -20,6 +20,7 @@
                       isSentenced: true,
                       periodLengths: periodLengths,
                       sentenceServeType: sentenceDetails.sentenceServeType,
+                      sentenceStatus: sentenceDetails.status if showSentenceStatusTag,
                       consecutiveTo: consecutiveToDetails,
                       sentenceType: sentenceDetails.sentenceType.description | sentenceTypeValueOrLegacy(sentenceDetails.legacyData),
                       fineAmount: sentenceDetails.fineAmount,

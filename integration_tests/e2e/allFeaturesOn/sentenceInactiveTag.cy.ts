@@ -1,14 +1,29 @@
+import StartPage from '../../pages/startPage'
 import CourtCaseDetailsPage from '../../pages/courtCaseDetailsPage'
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import Page from '../../pages/page'
 
-// Note: the "Court cases page" (start.njk) is not covered here. It sources sentence data from
-// /court-case/paged/search, whose PagedSentence schema has no status field, so the Inactive tag
-// cannot be shown there until that endpoint returns sentence status.
 context('Inactive sentence tag', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffencesByCodes', {})
+  })
+
+  it('shows an Inactive tag on the court cases page', () => {
+    cy.task('stubSearchCourtCases', {})
+    cy.task('stubGetCourtsByIds')
+    cy.task('stubGetServiceDefinitions')
+    cy.task('stubGetConsecutiveToDetails', {})
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+    const startPage = Page.verifyOnPage(StartPage)
+
+    startPage
+      .courtCaseDetailsComponent('261911e2-6346-42e0-b025-a806048f4d04')
+      .find('.offence-card-offence-details')
+      .first()
+      .find('strong.govuk-tag')
+      .should('contain.text', 'Inactive')
   })
 
   it('shows an Inactive tag on the view and edit all hearings page', () => {

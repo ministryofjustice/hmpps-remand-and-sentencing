@@ -220,6 +220,7 @@ export default {
                         },
                       ],
                       hasRecall: false,
+                      status: 'INACTIVE',
                     },
                   },
                   {

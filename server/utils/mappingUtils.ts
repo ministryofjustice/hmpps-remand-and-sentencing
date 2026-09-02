@@ -262,6 +262,7 @@ export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence 
     sentenceTypeClassification: pagedSentence.sentenceType?.classification,
     consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: pagedSentence.fineAmount,
+    status: pagedSentence.status,
     ...(pagedSentence.convictionDate && { convictionDate: dayjs(pagedSentence.convictionDate).toDate() }),
     ...(pagedSentence.legacyData && { legacyData: { ...pagedSentence.legacyData } }),
   } as Sentence

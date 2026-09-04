@@ -15,6 +15,7 @@ import OffenceService from './offenceService'
 import ManageOffencesService from './manageOffencesService'
 import RemandAndSentencingService from './remandAndSentencingService'
 import RefDataService from './refDataService'
+import CourtAppearanceService from './courtAppearanceService'
 
 dayjs.extend(isSameOrBefore)
 dayjs.extend(customParseFormat)
@@ -31,13 +32,20 @@ describe('offenceService', () => {
   let manageOffencesService: jest.Mocked<ManageOffencesService>
   let refDataService: jest.Mocked<RefDataService>
   let remandAndSentencingService: jest.Mocked<RemandAndSentencingService>
+  let courtAppearanceService: jest.Mocked<CourtAppearanceService>
   let service: OffenceService
 
   beforeEach(() => {
     manageOffencesService = new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>
     refDataService = new RefDataService(null) as jest.Mocked<RefDataService>
     remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
-    service = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
+    courtAppearanceService = new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>
+    service = new OffenceService(
+      manageOffencesService,
+      remandAndSentencingService,
+      refDataService,
+      courtAppearanceService,
+    )
   })
 
   it('must clear offence end date', () => {

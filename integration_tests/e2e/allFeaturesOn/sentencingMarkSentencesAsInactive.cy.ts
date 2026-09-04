@@ -60,7 +60,28 @@ context('Mark sentences as inactive', () => {
     courtCaseHearingDetailsPage.markSentencesAsInactiveLink().should('be.visible')
   })
 
-  it('proceeds to the provide a reason page when the selected sentence has no active consecutive sentence', () => {
+  it('shows the single sentence design when only one sentence is selected', () => {
+    cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
+      sentenceUuids: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      sentenceUuidsWithActiveSentencesAfter: [],
+    })
+
+    courtCaseHearingDetailsPage.markSentencesAsInactiveLink().click()
+    const selectSentencesPage = Page.verifyOnPage(SelectSentencesToMarkAsInactivePage)
+    selectSentencesPage.hearingDetails().should('not.exist')
+    selectSentencesPage.checkboxLabelSelector('10a45197-642a-4b20-b9d8-1ae89edf77cc').click()
+    selectSentencesPage.continueButton().click()
+
+    const provideReasonPage = Page.verifyOnPageTitle(
+      ProvideReasonForMarkingSentencesAsInactivePage,
+      'Provide a reason you want to mark this sentence as inactive',
+    )
+    provideReasonPage.singleSentenceOffenceSummary().should('contain.text', 'PS90037')
+    provideReasonPage.singleSentenceOffenceSummary().should('contain.text', 'committed on 14/12/2023')
+    provideReasonPage.hearingDetails().should('not.exist')
+  })
+
+  it('completes the whole journey: saves the reason on the sentence in session and returns to the edit hearing page', () => {
     cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
       sentenceUuids: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
       sentenceUuidsWithActiveSentencesAfter: [],
@@ -71,7 +92,40 @@ context('Mark sentences as inactive', () => {
     selectSentencesPage.checkboxLabelSelector('10a45197-642a-4b20-b9d8-1ae89edf77cc').click()
     selectSentencesPage.continueButton().click()
 
-    Page.verifyOnPage(ProvideReasonForMarkingSentencesAsInactivePage)
+    const provideReasonPage = Page.verifyOnPageTitle(
+      ProvideReasonForMarkingSentencesAsInactivePage,
+      'Provide a reason you want to mark this sentence as inactive',
+    )
+    provideReasonPage.reasonTextarea().type('Sentence quashed on appeal')
+    provideReasonPage.confirmAndSaveButton().click()
+
+    courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    cy.contains('.offence-card', 'Committed on 14/12/2023').should('contain.text', 'Inactive')
+  })
+
+  it('shows the multiple sentence design with an appearance details panel when more than one sentence is selected', () => {
+    cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
+      sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
+      sentenceUuidsWithActiveSentencesAfter: [],
+    })
+
+    courtCaseHearingDetailsPage.markSentencesAsInactiveLink().click()
+    const selectSentencesPage = Page.verifyOnPage(SelectSentencesToMarkAsInactivePage)
+    selectSentencesPage.checkboxLabelSelector('10a45197-642a-4b20-b9d8-1ae89edf77cc').click()
+    selectSentencesPage.checkboxLabelSelector('3a0a10d5-1ba0-403b-86d6-8cc75ee88454').click()
+    selectSentencesPage.continueButton().click()
+
+    const provideReasonPage = Page.verifyOnPageTitle(
+      ProvideReasonForMarkingSentencesAsInactivePage,
+      'Provide a reason you want to mark these sentences as inactive',
+    )
+    provideReasonPage.hearingDetails().should('contain.text', 'C894623')
+    provideReasonPage.hearingDetails().should('contain.text', 'Southampton Magistrate Court')
+    provideReasonPage.hearingDetailsOffences().should('have.length', 2)
+    provideReasonPage.hearingDetailsOffences().eq(0).should('contain.text', 'Count 1')
+    provideReasonPage.hearingDetailsOffences().eq(0).should('contain.text', 'Forthwith')
+    provideReasonPage.hearingDetailsOffences().eq(1).should('contain.text', 'Count 2')
+    provideReasonPage.hearingDetailsOffences().eq(1).should('contain.text', 'Consecutive to Count 1')
   })
 
   it('shows the sentence details the API flagged as blocked when it has no consecutiveTo of its own', () => {

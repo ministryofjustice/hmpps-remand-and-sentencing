@@ -3,6 +3,7 @@ import type {
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   IsOffenceDateSameForm,
+  MarkSentencesAsInactiveReasonForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -40,12 +41,14 @@ import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
 import { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
+import CourtAppearanceService from './courtAppearanceService'
 
 export default class OffenceService {
   constructor(
     private readonly manageOffencesService: ManageOffencesService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly refDataService: RefDataService,
+    private readonly courtAppearanceService: CourtAppearanceService,
   ) {}
 
   setOffenceDates(
@@ -1250,6 +1253,44 @@ export default class OffenceService {
 
   getSentencesToMarkAsInactiveSentenceUuids(session: Partial<SessionData>): string[] {
     return session.sentencesToMarkAsInactiveSentenceUuids || []
+  }
+
+  markSentencesAsInactive(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    sentenceUuids: string[],
+    markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm,
+  ) {
+    const errors = validate(
+      markSentencesAsInactiveReasonForm,
+      { reason: 'required|max:200' },
+      {
+        'required.reason': 'Enter a reason for marking as inactive',
+        'max.reason': 'Reason must be 200 characters or less',
+      },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId, appearanceUuid)
+    courtAppearance.offences.forEach(offence => {
+      if (offence.sentence && sentenceUuids.includes(offence.sentence.sentenceUuid)) {
+        // eslint-disable-next-line no-param-reassign
+        offence.sentence.status = 'INACTIVE'
+        // eslint-disable-next-line no-param-reassign
+        offence.sentence.reason = markSentencesAsInactiveReasonForm.reason
+      }
+    })
+    this.courtAppearanceService.setSessionCourtAppearance(session, nomsId, courtAppearance)
+    return errors
+  }
+
+  clearSentencesToMarkAsInactive(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentencesToMarkAsInactiveSentenceUuids
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentenceUuidsWithActiveSentencesAfter
   }
 
   setSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>, sentenceUuids: string[]) {

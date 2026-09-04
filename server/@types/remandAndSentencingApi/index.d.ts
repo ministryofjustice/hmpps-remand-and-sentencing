@@ -152,6 +152,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/sentence/{lifetimeUuid}/booking-id': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update a sentence booking id
+     * @description Synchronise an update of sentence booking id from NOMIS Offender sentences into remand and sentencing API.
+     */
+    put: operations['updateBookingId']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/period-length/{periodLengthUuid}': {
     parameters: {
       query?: never
@@ -2398,6 +2418,11 @@ export interface components {
       /** Format: int64 */
       bookingId?: number | null
     }
+    LegacyUpdateSentenceBookingId: {
+      /** Format: int64 */
+      bookingId: number
+      performedByUser?: string | null
+    }
     /** @description Used for creating or updating period length records (aka sentence-terms in NOMIS). */
     LegacyCreatePeriodLength: {
       /** Format: uuid */
@@ -2498,7 +2523,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2632,7 +2657,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -2681,6 +2706,9 @@ export interface components {
       convictionDate?: string | null
       fineAmount?: components['schemas']['CreateFineAmount'] | null
       prisonId?: string | null
+      /** @enum {string|null} */
+      status?: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MANY_CHARGES_DATA_FIX' | 'INACTIVE' | null
+      reason?: string | null
     }
     UploadedDocument: {
       /** Format: uuid */
@@ -3689,7 +3717,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3983,7 +4011,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4006,7 +4034,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4061,7 +4089,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4073,7 +4101,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4306,7 +4334,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:08:30.939819829 */
+      /** @example 08:57:11.780601942 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -4864,6 +4892,51 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  updateBookingId: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        lifetimeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LegacyUpdateSentenceBookingId']
+      }
+    }
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unprocessable , requires the sentence to be associated to a charge which has an association with an appearance */
+      422: {
         headers: {
           [name: string]: unknown
         }

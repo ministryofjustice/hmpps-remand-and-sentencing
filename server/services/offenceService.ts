@@ -3,6 +3,7 @@ import type {
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   IsOffenceDateSameForm,
+  MarkSentencesAsInactiveReasonForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -1252,9 +1253,9 @@ export default class OffenceService {
     return session.sentencesToMarkAsInactiveSentenceUuids || []
   }
 
-  validateMarkSentencesAsInactiveReason(reason: string) {
+  validateMarkSentencesAsInactiveReason(markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm) {
     return validate(
-      { reason },
+      markSentencesAsInactiveReasonForm,
       { reason: 'required|max:200' },
       {
         'required.reason': 'Enter a reason for marking as inactive',

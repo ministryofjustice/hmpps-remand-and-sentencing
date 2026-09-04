@@ -323,7 +323,7 @@ describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', ()
         '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
       )
 
-    expect(defaultServices.offenceService.validateMarkSentencesAsInactiveReason).toHaveBeenCalledWith('')
+    expect(defaultServices.offenceService.validateMarkSentencesAsInactiveReason).toHaveBeenCalledWith({ reason: '' })
     expect(defaultServices.courtAppearanceService.markSentencesAsInactive).not.toHaveBeenCalled()
     expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).not.toHaveBeenCalled()
   })

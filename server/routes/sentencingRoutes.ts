@@ -3,6 +3,7 @@ import type {
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
+  MarkSentencesAsInactiveReasonForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
 } from 'forms'
@@ -1049,16 +1050,22 @@ export default class SentencingRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { nomsId, courtCaseReference, addOrEditCourtCase, addOrEditCourtAppearance, appearanceReference } =
       urlParameters
-    const { reason } = trimForm<{ reason: string }>(req.body)
+    const markSentencesAsInactiveReasonForm = trimForm<MarkSentencesAsInactiveReasonForm>(req.body)
 
-    const errors = this.offenceService.validateMarkSentencesAsInactiveReason(reason)
+    const errors = this.offenceService.validateMarkSentencesAsInactiveReason(markSentencesAsInactiveReasonForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
     }
 
     const sentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
-    this.courtAppearanceService.markSentencesAsInactive(req.session, nomsId, appearanceReference, sentenceUuids, reason)
+    this.courtAppearanceService.markSentencesAsInactive(
+      req.session,
+      nomsId,
+      appearanceReference,
+      sentenceUuids,
+      markSentencesAsInactiveReasonForm.reason,
+    )
     this.offenceService.clearSentencesToMarkAsInactive(req.session)
 
     return res.redirect(

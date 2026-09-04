@@ -7,7 +7,7 @@ import type {
   SentenceIsSentenceConsecutiveToForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import type { CourtAppearance, UrlParameters } from 'models'
+import type { CourtAppearance, Offence, UrlParameters } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
@@ -975,14 +975,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.user.username,
       offencesToOffenceDescriptions(hearing.offences, []),
     )
-
-    // Sentences shown here can only be consecutive to another sentence on this same hearing, so a
-    // local lookup by sentenceUuid is enough — no need for the cross-appearance consecutive-to API call.
-    const countNumberBySentenceUuid = Object.fromEntries(
-      hearing.offences
-        .filter(offence => offence.sentence?.sentenceUuid)
-        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
-    )
+    const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
 
     return res.render('pages/sentencing/select-sentences-to-mark-as-inactive', {
       ...urlParameters,
@@ -1036,13 +1029,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offencesToOffenceDescriptions(hearing.offences, []),
     )
 
-    // Sentences shown here can only be consecutive to another sentence on this same hearing, so a
-    // local lookup by sentenceUuid is enough — no need for the cross-appearance consecutive-to API call.
-    const countNumberBySentenceUuid = Object.fromEntries(
-      hearing.offences
-        .filter(offence => offence.sentence?.sentenceUuid)
-        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
-    )
+    const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
 
     return res.render('pages/sentencing/provide-reason-for-marking-sentences-as-inactive', {
       ...urlParameters,
@@ -1108,11 +1095,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offencesToOffenceDescriptions(hearing.offences, []),
     )
 
-    const countNumberBySentenceUuid = Object.fromEntries(
-      hearing.offences
-        .filter(offence => offence.sentence?.sentenceUuid)
-        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
-    )
+    const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
 
     return res.render('pages/sentencing/cannot-mark-sentences-as-inactive', {
       ...urlParameters,
@@ -1494,6 +1477,14 @@ export default class SentencingRoutes extends BaseRoutes {
       periodLengths: sentenceDetails.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
       backLink: `/person/${nomsId}/view-sentences`,
     })
+  }
+
+  private countNumberBySentenceUuid(offences: Offence[]): { [sentenceUuid: string]: string } {
+    return Object.fromEntries(
+      offences
+        .filter(offence => offence.sentence?.sentenceUuid)
+        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
+    )
   }
 
   private consecutiveOrConcurrentDescription(

@@ -1252,6 +1252,24 @@ export default class OffenceService {
     return session.sentencesToMarkAsInactiveSentenceUuids || []
   }
 
+  validateMarkSentencesAsInactiveReason(reason: string) {
+    return validate(
+      { reason },
+      { reason: 'required|max:200' },
+      {
+        'required.reason': 'Enter a reason for marking as inactive',
+        'max.reason': 'Reason must be 200 characters or less',
+      },
+    )
+  }
+
+  clearSentencesToMarkAsInactive(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentencesToMarkAsInactiveSentenceUuids
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentenceUuidsWithActiveSentencesAfter
+  }
+
   setSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>, sentenceUuids: string[]) {
     // eslint-disable-next-line no-param-reassign
     session.sentenceUuidsWithActiveSentencesAfter = sentenceUuids

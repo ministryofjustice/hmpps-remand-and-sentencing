@@ -245,6 +245,11 @@ export default function routes(services: Services): Router {
     sentencingRoutes.getProvideReasonForMarkingSentencesAsInactive,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/provide-reason-for-marking-sentences-as-inactive',
+    sentencingRoutes.submitProvideReasonForMarkingSentencesAsInactive,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/cannot-mark-sentences-as-inactive',
     sentencingRoutes.getCannotMarkSentencesAsInactive,

@@ -1028,6 +1028,25 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
 
+  markSentencesAsInactive(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    sentenceUuids: string[],
+    reason: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    courtAppearance.offences.forEach(offence => {
+      if (offence.sentence && sentenceUuids.includes(offence.sentence.sentenceUuid)) {
+        // eslint-disable-next-line no-param-reassign
+        offence.sentence.status = 'INACTIVE'
+        // eslint-disable-next-line no-param-reassign
+        offence.sentence.reason = reason
+      }
+    })
+    this.setSessionCourtAppearance(session, nomsId, courtAppearance)
+  }
+
   getSentenceUuidsInChain(
     session: Partial<SessionData>,
     nomsId: string,

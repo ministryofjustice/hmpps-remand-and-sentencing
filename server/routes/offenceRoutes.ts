@@ -19,10 +19,7 @@ import type {
 } from 'forms'
 import type { Offence, UrlParameters } from 'models'
 import dayjs from 'dayjs'
-import {
-  ConsecutiveToDetails,
-  PERIOD_TYPE_PRIORITY,
-} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import { PERIOD_TYPE_PRIORITY } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm, { normaliseToArray } from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -55,7 +52,6 @@ import {
   SentenceConsecutiveToDetails,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID, { BREACH_WARRANT_TYPES } from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'

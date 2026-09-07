@@ -1052,12 +1052,14 @@ export default class SentencingRoutes extends BaseRoutes {
       urlParameters
     const markSentencesAsInactiveReasonForm = trimForm<MarkSentencesAsInactiveReasonForm>(req.body)
     const sentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const selectedOffences = hearing.offences.filter(offence => sentenceUuids.includes(offence.sentence?.sentenceUuid))
 
     const errors = this.offenceService.markSentencesAsInactive(
       req.session,
       nomsId,
-      appearanceReference,
-      sentenceUuids,
+      courtCaseReference,
+      selectedOffences,
       markSentencesAsInactiveReasonForm,
     )
     if (errors.length > 0) {
@@ -1065,6 +1067,7 @@ export default class SentencingRoutes extends BaseRoutes {
       return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
     }
 
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
     this.offenceService.clearSentencesToMarkAsInactive(req.session)
 
     return res.redirect(

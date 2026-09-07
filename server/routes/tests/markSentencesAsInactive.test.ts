@@ -307,11 +307,24 @@ describe('GET /sentencing/provide-reason-for-marking-sentences-as-inactive', () 
 })
 
 describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', () => {
+  const offence = {
+    chargeUuid: '2',
+    offenceCode: 'TP47017',
+    sentence: { sentenceUuid: '3', countNumber: '1', status: 'ACTIVE' as const },
+  }
+
+  beforeEach(() => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [offence],
+    })
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
+  })
+
   it('redirects back to the same page when the reason fails validation', async () => {
     defaultServices.offenceService.markSentencesAsInactive.mockReturnValue([
       { text: 'Enter a reason for marking as inactive', href: '#reason' },
     ])
-    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
 
     await request(app)
       .post(
@@ -328,15 +341,16 @@ describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', ()
       expect.anything(),
       'A1234AB',
       '0',
-      ['3'],
+      [offence],
       { reason: '' },
     )
+    expect(defaultServices.courtAppearanceService.addOffence).not.toHaveBeenCalled()
     expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).not.toHaveBeenCalled()
   })
 
   it('marks the sentences as inactive and redirects to the edit hearing page on success', async () => {
     defaultServices.offenceService.markSentencesAsInactive.mockReturnValue([])
-    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
+    defaultServices.offenceService.getAllOffences.mockReturnValue([offence])
 
     await request(app)
       .post(
@@ -350,9 +364,17 @@ describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', ()
       expect.anything(),
       'A1234AB',
       '0',
-      ['3'],
+      [offence],
       { reason: 'Sentence quashed on appeal' },
     )
+    expect(defaultServices.courtAppearanceService.addOffence).toHaveBeenCalledWith(
+      expect.anything(),
+      'A1234AB',
+      offence.chargeUuid,
+      offence,
+      '0',
+    )
+    expect(defaultServices.offenceService.clearAllOffences).toHaveBeenCalled()
     expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).toHaveBeenCalled()
   })
 })

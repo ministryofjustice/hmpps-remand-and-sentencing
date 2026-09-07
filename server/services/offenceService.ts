@@ -41,14 +41,12 @@ import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
 import { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
-import CourtAppearanceService from './courtAppearanceService'
 
 export default class OffenceService {
   constructor(
     private readonly manageOffencesService: ManageOffencesService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly refDataService: RefDataService,
-    private readonly courtAppearanceService: CourtAppearanceService,
   ) {}
 
   setOffenceDates(
@@ -1258,8 +1256,8 @@ export default class OffenceService {
   markSentencesAsInactive(
     session: Partial<SessionData>,
     nomsId: string,
-    appearanceUuid: string,
-    sentenceUuids: string[],
+    courtCaseReference: string,
+    offences: Offence[],
     markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm,
   ) {
     const errors = validate(
@@ -1273,16 +1271,16 @@ export default class OffenceService {
     if (errors.length > 0) {
       return errors
     }
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.offences.forEach(offence => {
-      if (offence.sentence && sentenceUuids.includes(offence.sentence.sentenceUuid)) {
-        // eslint-disable-next-line no-param-reassign
-        offence.sentence.status = 'INACTIVE'
-        // eslint-disable-next-line no-param-reassign
-        offence.sentence.reason = markSentencesAsInactiveReasonForm.reason
-      }
+    offences.forEach(offence => {
+      const sentence = this.getSentence(offence)
+      sentence.status = 'INACTIVE'
+      sentence.reason = markSentencesAsInactiveReasonForm.reason
+      // eslint-disable-next-line no-param-reassign
+      offence.sentence = sentence
+      const id = this.getOffenceId(nomsId, courtCaseReference, offence.chargeUuid)
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
     })
-    this.courtAppearanceService.setSessionCourtAppearance(session, nomsId, courtAppearance)
     return errors
   }
 

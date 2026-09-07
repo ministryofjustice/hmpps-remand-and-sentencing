@@ -1032,6 +1032,9 @@ export default class SentencingRoutes extends BaseRoutes {
 
     const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
 
+    const markSentencesAsInactiveReasonForm = (req.flash('markSentencesAsInactiveReasonForm')[0] ||
+      {}) as MarkSentencesAsInactiveReasonForm
+
     return res.render('pages/sentencing/provide-reason-for-marking-sentences-as-inactive', {
       ...urlParameters,
       backLink,
@@ -1041,7 +1044,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offences: selectedOffences,
       countNumberBySentenceUuid,
       showHearingDetails: selectedOffences.length > 1,
-      reason: selectedOffences[0]?.sentence?.reason,
+      reason: markSentencesAsInactiveReasonForm.reason ?? selectedOffences[0]?.sentence?.reason,
       errors: req.flash('errors') || [],
     })
   }
@@ -1064,6 +1067,7 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('markSentencesAsInactiveReasonForm', { ...markSentencesAsInactiveReasonForm })
       return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
     }
 

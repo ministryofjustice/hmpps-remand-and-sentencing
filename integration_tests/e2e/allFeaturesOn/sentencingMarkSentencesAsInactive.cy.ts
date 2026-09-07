@@ -128,6 +128,32 @@ context('Mark sentences as inactive', () => {
     cy.contains('.offence-card', 'Committed on 14/12/2023').should('contain.text', 'Inactive')
   })
 
+  it('preserves the entered reason when it fails validation for being too long', () => {
+    cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
+      sentenceUuids: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      sentenceUuidsWithActiveSentencesAfter: [],
+    })
+
+    courtCaseHearingDetailsPage.markSentencesAsInactiveLink().click()
+    const selectSentencesPage = Page.verifyOnPage(SelectSentencesToMarkAsInactivePage)
+    selectSentencesPage.checkboxLabelSelector('10a45197-642a-4b20-b9d8-1ae89edf77cc').click()
+    selectSentencesPage.continueButton().click()
+
+    let provideReasonPage = Page.verifyOnPageTitle(
+      ProvideReasonForMarkingSentencesAsInactivePage,
+      'Provide a reason you want to mark this sentence as inactive',
+    )
+    const tooLongReason = 'a'.repeat(201)
+    provideReasonPage.reasonTextarea().invoke('val', tooLongReason).trigger('input')
+    provideReasonPage.confirmAndSaveButton().click()
+
+    provideReasonPage = Page.verifyOnPageTitle(
+      ProvideReasonForMarkingSentencesAsInactivePage,
+      'Provide a reason you want to mark this sentence as inactive',
+    )
+    provideReasonPage.reasonTextarea().should('have.value', tooLongReason)
+  })
+
   it('shows the sentence details the API flagged as blocked when it has no consecutiveTo of its own', () => {
     cy.task('stubGetSentenceUuidsWithActiveSentencesAfter', {
       sentenceUuids: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',

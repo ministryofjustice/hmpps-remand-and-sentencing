@@ -703,21 +703,11 @@ export default class BreachRoutes extends BaseRoutes {
         },
         [[], []] as [typeof offences, typeof offences],
       )
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      hearing.offences,
       consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
-    )
-
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      urlParameters.nomsId,
-      offenceMap,
-      urlParameters.appearanceReference,
     )
 
     const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
@@ -747,10 +737,7 @@ export default class BreachRoutes extends BaseRoutes {
       appearanceTypeDescription,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:

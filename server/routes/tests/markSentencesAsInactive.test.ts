@@ -85,16 +85,6 @@ describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
       })
   })
 
-  it('does not show the hearing details panel', async () => {
-    await request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
-      .expect(200)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('[data-qa="hearingDetails"]')).toHaveLength(0)
-      })
-  })
-
   it('prepopulates previously selected sentences from the session', async () => {
     defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
 

@@ -233,6 +233,26 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/check-next-appearance-answers`
   }
 
+  static nextAppearanceCourtSelect = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/next-appearance-court-select`
+  }
+
+  static nextAppearanceCourtName = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/next-appearance-court-name`
+  }
+
   static uploadCourtDocuments = (
     nomsId: string,
     addOrEditCourtCase: string,

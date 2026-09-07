@@ -10,7 +10,6 @@ import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOut
 import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
-import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
@@ -18,6 +17,7 @@ import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOver
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
+import CourtCaseNextAppearanceCourtNamePage from '../../pages/courtCaseNextAppearanceCourtNamePage'
 
 context('New Remand Court Case from hmcts data journey with offence data', () => {
   const remandWarrantHearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
@@ -30,6 +30,10 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubOffencesForHmctsJourney')
     cy.task('stubGetCourtById', {})
+    cy.task('stubGetCourtById', {
+      courtId: 'STHHPM',
+      courtName: 'Southampton Magistrate Court',
+    })
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetAllChargeOutcomes')
     cy.task('stubGetServiceDefinitions')
@@ -235,9 +239,9 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
       .should('have.value', futureDate.year().toString())
     courtCaseNextAppearanceDatePage.continueButton().click()
 
-    const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
-    courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextAppearanceCourtSetPage.continueButton().click()
+    const courtCaseNextAppearanceCourtNamePage = Page.verifyOnPageTitle(CourtCaseNextAppearanceCourtNamePage)
+    courtCaseNextAppearanceCourtNamePage.autoCompleteInput().should('have.value', 'Southampton Magistrate Court')
+    courtCaseNextAppearanceCourtNamePage.continueButton().click()
 
     const courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
     courtCaseNextAppearanceAnswersPage
@@ -245,7 +249,7 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
       .getSummaryList()
       .should('deep.equal', {
         Date: `${futureDate.format('DD/MM/YYYY')} 10:00`,
-        Location: 'Accrington Youth Court',
+        Location: 'Southampton Magistrate Court',
         'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })

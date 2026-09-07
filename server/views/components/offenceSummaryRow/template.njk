@@ -3,4 +3,17 @@
         {{ offence.offenceCode + ' ' + offenceNameMap[offence.offenceCode] }}
     </dt>
     <dd class="offences-summary-card-value govuk-body-s">Committed on {{ offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '') }}</dd>
+    {% if countNumberBySentenceUuid %}
+        {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
+        <dd class="offences-summary-card-value govuk-body-s">
+            {% if countDescription %}{{ countDescription }}<br>{% endif %}
+            {% if offence.sentence.consecutiveToSentenceUuid %}
+                Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}
+            {% elif offence.sentence.sentenceServeType === 'FORTHWITH' %}
+                Forthwith
+            {% else %}
+                Concurrent
+            {% endif %}
+        </dd>
+    {% endif %}
 </div>

@@ -7,7 +7,7 @@
 {% set offenceDetailHtml %}
     <dl class="offences-summary-card-content">
         {% for offence in offences %}
-            {{ offenceSummaryRow(offence, offenceNameMap) }}
+            {{ offenceSummaryRow(offence, offenceNameMap, countNumberBySentenceUuid) }}
         {% endfor %}
     </dl>
 {% endset %}

@@ -198,6 +198,10 @@ declare module 'forms' {
     consecutiveToSentenceUuid?: string
   }
 
+  export interface MarkSentencesAsInactiveReasonForm {
+    reason?: string
+  }
+
   export interface UploadedDocumentForm {
     _csrf?: string
   }

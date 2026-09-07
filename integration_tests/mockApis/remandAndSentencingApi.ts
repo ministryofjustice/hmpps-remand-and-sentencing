@@ -2428,6 +2428,7 @@ export default {
               sentenceTypeId: '467e2fa8-fce1-41a4-8110-b378c727eed3',
               prisonId: 'MDI',
               sentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+              status: 'INACTIVE',
             },
           },
           {

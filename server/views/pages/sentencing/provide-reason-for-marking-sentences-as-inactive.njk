@@ -1,11 +1,52 @@
-{% extends "../../partials/backLinkLayout.njk" %}
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
-{% set pageTitle = applicationName + " - Provide a reason for marking sentences as inactive" %}
+{% set isMultiple = selectedOffences.length > 1 %}
+{% set pageHeading = "Provide a reason you want to mark these sentences as inactive" if isMultiple else "Provide a reason you want to mark this sentence as inactive" %}
+{% set pageTitle = applicationName + " - " + pageHeading %}
 
-{% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Provide a reason for marking sentences as inactive</h1>
+{% set singleOffenceSummaryHtml %}
+    {% if not isMultiple and selectedOffences.length %}
+        {% set offence = selectedOffences[0] %}
+        <p class="govuk-hint" data-qa="single-sentence-offence-summary">
+            {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+            {%- if offence.offenceStartDate %}
+                committed on {{ offence.offenceStartDate | formatDate }}
+                {{- ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
+            {%- endif %}
+        </p>
+    {% endif %}
+{% endset %}
+
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {{ govukCharacterCount({
+            name: "reason",
+            id: "reason",
+            maxlength: 200,
+            value: reason,
+            label: {
+                text: pageHeading,
+                isPageHeading: true,
+                classes: "govuk-label--l"
+            },
+            formGroup: {
+                beforeInput: { html: singleOffenceSummaryHtml } if not isMultiple
+            },
+            errorMessage: errors | findError('reason'),
+            attributes: { 'data-qa': 'reason-textarea' }
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Confirm and save",
+                attributes: { 'data-qa': 'confirm-and-save-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
         </div>
-    </div>
+    </form>
 {% endblock %}

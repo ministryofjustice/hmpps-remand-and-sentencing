@@ -75,6 +75,7 @@ declare module 'models' {
     consecutiveToSentenceUuid?: string
     returnUrlKey?: string
     status?: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MANY_CHARGES_DATA_FIX' | 'INACTIVE'
+    reason?: string
   }
 
   export interface SentenceLength {

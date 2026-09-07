@@ -160,7 +160,64 @@ describe('POST /sentencing/select-sentences-to-mark-as-inactive', () => {
 })
 
 describe('GET /sentencing/provide-reason-for-marking-sentences-as-inactive', () => {
-  it('renders the provide a reason stub page', async () => {
+  const periodLength = (months: string) => ({
+    periodLengthType: 'SENTENCE_LENGTH' as const,
+    years: '0',
+    months,
+    weeks: '0',
+    days: '0',
+    periodOrder: ['years', 'months', 'weeks', 'days'],
+    uuid: `pl-${months}`,
+    isAlternative: false,
+  })
+
+  beforeEach(() => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      caseReferenceNumber: 'T2025654321',
+      warrantType: 'SENTENCING',
+      warrantDate: new Date('2025-04-10'),
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'TP47017',
+          outcomeUuid: '123',
+          offenceStartDate: new Date('2024-01-09'),
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONCURRENT',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+            periodLengths: [periodLength('24')],
+          },
+        },
+        {
+          chargeUuid: '5',
+          offenceCode: 'CJ94017',
+          outcomeUuid: '123',
+          offenceStartDate: new Date('2024-01-09'),
+          sentence: {
+            sentenceUuid: '4',
+            countNumber: '2',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '3',
+            status: 'ACTIVE',
+            periodLengths: [periodLength('23')],
+          },
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      TP47017: 'Accidentally allow a chimney to be on fire',
+      CJ94017: 'Aggravated trespass - fail to leave land',
+    })
+  })
+
+  it('renders the single sentence design with the offence summary and no appearance details panel', async () => {
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
+
     await request(app)
       .get(
         '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
@@ -169,8 +226,126 @@ describe('GET /sentencing/provide-reason-for-marking-sentences-as-inactive', () 
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('h1').text().trim()).toEqual('Provide a reason for marking sentences as inactive')
+        expect($('h1').text().trim()).toEqual('Provide a reason you want to mark this sentence as inactive')
+        expect($('[data-qa="single-sentence-offence-summary"]').text()).toContain('TP47017')
+        expect($('[data-qa="single-sentence-offence-summary"]').text()).toContain(
+          'Accidentally allow a chimney to be on fire',
+        )
+        expect($('[data-qa="single-sentence-offence-summary"]').text()).toContain('committed on 09/01/2024')
+        expect($('[data-qa="hearingDetails"]')).toHaveLength(0)
       })
+  })
+
+  it('renders the multiple sentence design with a hearing details panel listing only the selected offences', async () => {
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3', '4'])
+
+    await request(app)
+      .get(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
+      )
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('h1').text().trim()).toEqual('Provide a reason you want to mark these sentences as inactive')
+        expect($('[data-qa="hearingDetails"]')).toHaveLength(1)
+        expect($('.offences-summary-card-row')).toHaveLength(2)
+        expect($('.offences-summary-card-row').eq(0).text()).toContain('TP47017')
+        expect($('.offences-summary-card-row').eq(0).text()).toContain('Count 1')
+        expect($('.offences-summary-card-row').eq(0).text()).toContain('Concurrent')
+        expect($('.offences-summary-card-row').eq(1).text()).toContain('CJ94017')
+        expect($('.offences-summary-card-row').eq(1).text()).toContain('Count 2')
+        expect($('.offences-summary-card-row').eq(1).text()).toContain('Consecutive to Count 1')
+      })
+  })
+
+  it('prepopulates the reason textarea from a reason already stored on the selected sentence', async () => {
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      caseReferenceNumber: 'T2025654321',
+      warrantType: 'SENTENCING',
+      warrantDate: new Date('2025-04-10'),
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'TP47017',
+          outcomeUuid: '123',
+          offenceStartDate: new Date('2024-01-09'),
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONCURRENT',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+            reason: 'Sentence quashed on appeal',
+            periodLengths: [periodLength('24')],
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
+      )
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="reason-textarea"]').text().trim()).toEqual('Sentence quashed on appeal')
+      })
+  })
+})
+
+describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', () => {
+  const offence = {
+    chargeUuid: '2',
+    offenceCode: 'TP47017',
+    sentence: { sentenceUuid: '3', countNumber: '1', status: 'ACTIVE' as const },
+  }
+
+  beforeEach(() => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [offence],
+    })
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
+  })
+
+  it('redirects back to the same page when the reason fails validation', async () => {
+    defaultServices.offenceService.markSentencesAsInactive.mockReturnValue([
+      { text: 'Enter a reason for marking as inactive', href: '#reason' },
+    ])
+
+    await request(app)
+      .post(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
+      )
+      .send({ reason: '' })
+      .expect(302)
+      .expect(
+        'Location',
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
+      )
+
+    expect(defaultServices.offenceService.markSentencesAsInactive).toHaveBeenCalledWith([offence], { reason: '' })
+    expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).not.toHaveBeenCalled()
+  })
+
+  it('marks the sentences as inactive and redirects to the edit hearing page on success', async () => {
+    defaultServices.offenceService.markSentencesAsInactive.mockReturnValue([])
+
+    await request(app)
+      .post(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
+      )
+      .send({ reason: 'Sentence quashed on appeal' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+
+    expect(defaultServices.offenceService.markSentencesAsInactive).toHaveBeenCalledWith([offence], {
+      reason: 'Sentence quashed on appeal',
+    })
+    expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).toHaveBeenCalled()
   })
 })
 

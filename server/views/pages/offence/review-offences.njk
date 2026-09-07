@@ -48,7 +48,7 @@
                                 html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/load-update-outcome?backTo=reviewOffences&bulkOffenceTobeUpdated=' + bulkOffenceTobeUpdated + '" data-qa="update-outcome-link-'+ offence.chargeUuid +'" class="govuk-link govuk-link--no-visited-state">Update outcome</a>'
                             }]
                         }
-                    })
+                    }))
                 }}
             {% endfor %}
 
@@ -60,7 +60,7 @@
                 {% endset %}
                 {% set offenceId = 'offences.' + offence.index %}
                 {{
-                    offenceCard(offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, {}, sentenceTypeMap, courtMap, errors, {
+                    offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, {}, sentenceTypeMap, courtMap, errors, {
                         outcomeUpdated: offence.updatedOutcome,
                         actions: {
                             items: [
@@ -77,7 +77,7 @@
                                 html: multipleCountLinkHtml
                             }]
                         }
-                    })
+                    }))
                 }}
             {% else %}
                 {{ govukInsetText({

@@ -26,7 +26,7 @@
                         }
                 }) %}
 
-                    {{  offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceDetailsMap, sentenceTypeMap, courtMap, errors)}}
+                    {{  offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceDetailsMap, sentenceTypeMap, courtMap, errors))}}
 
                     {% if isEditJourney and offence.sentence %}
                         {{ govukInsetText({

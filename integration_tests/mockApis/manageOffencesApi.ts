@@ -268,6 +268,95 @@ export default {
     })
   },
 
+  stubOffencesForHmctsJourney: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/manage-offences-api/offences/code/multiple',
+        queryParameters: {
+          offenceCodes: {
+            equalTo: 'FS13012,PS90037,BC90005',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            id: 49378,
+            code: 'BC90005',
+            description: 'Offer to supply a foreign satellite programme',
+            offenceType: 'CE',
+            revisionId: 402328,
+            startDate: '2015-03-12',
+            endDate: null,
+            homeOfficeStatsCode: '099/99',
+            homeOfficeDescription: 'Other triable either way (non motoring) offences',
+            changedDate: '2023-04-25T19:57:02',
+            loadDate: '2024-01-23T16:09:53.418364',
+            schedules: [],
+            isChild: false,
+            parentOffenceId: null,
+            childOffenceIds: [],
+            legislation: 'Contrary to section 178(2) and (4) of the Broadcasting Act 1990.',
+            maxPeriodIsLife: false,
+            maxPeriodOfIndictmentYears: 2,
+            maxPeriodOfIndictmentMonths: null,
+            maxPeriodOfIndictmentWeeks: null,
+            maxPeriodOfIndictmentDays: null,
+            custodialIndicator: 'Y',
+          },
+          {
+            id: 55571,
+            code: 'FS13012',
+            description: 'Keep cooked or reheated food at temperature below 63 Celsius',
+            offenceType: 'CE',
+            revisionId: 410290,
+            startDate: '2015-03-13',
+            endDate: null,
+            homeOfficeStatsCode: '091/84',
+            homeOfficeDescription: 'Triable either way offences under Food Safety and Hygiene Regulations 2013',
+            changedDate: '2023-04-25T19:57:02',
+            loadDate: '2024-01-23T15:44:09.140118',
+            schedules: [],
+            isChild: false,
+            parentOffenceId: null,
+            childOffenceIds: [],
+            legislation:
+              'Contrary to paragraph 6 of Schedule 4 to, and regulation 19(2) of, the Food Safety and Hygiene (England) Regulations 2013.',
+            maxPeriodIsLife: false,
+            maxPeriodOfIndictmentYears: 2,
+            maxPeriodOfIndictmentMonths: null,
+            maxPeriodOfIndictmentWeeks: null,
+            maxPeriodOfIndictmentDays: null,
+            custodialIndicator: 'Y',
+          },
+          {
+            id: 548265,
+            code: 'PS90037',
+            description: 'An offence description',
+            offenceType: 'CE',
+            revisionId: 338258,
+            startDate: '2007-06-30',
+            endDate: '2007-06-30',
+            homeOfficeStatsCode: '099/96',
+            homeOfficeDescription: 'home office offence description',
+            changedDate: '2009-07-17T16:06:30',
+            loadDate: '2023-06-05T10:01:42.867682',
+            schedules: [],
+            isChild: false,
+            parentOffenceId: null,
+            childOffenceIds: [],
+            legislation: '',
+            maxPeriodIsLife: false,
+            maxPeriodOfIndictmentYears: null,
+          },
+        ],
+      },
+    })
+  },
+
   stubManageOffencesPing: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {

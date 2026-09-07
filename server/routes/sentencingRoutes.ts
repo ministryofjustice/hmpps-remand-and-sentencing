@@ -1058,20 +1058,13 @@ export default class SentencingRoutes extends BaseRoutes {
     const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     const selectedOffences = hearing.offences.filter(offence => sentenceUuids.includes(offence.sentence?.sentenceUuid))
 
-    const errors = this.offenceService.markSentencesAsInactive(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      selectedOffences,
-      markSentencesAsInactiveReasonForm,
-    )
+    const errors = this.offenceService.markSentencesAsInactive(selectedOffences, markSentencesAsInactiveReasonForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('markSentencesAsInactiveReasonForm', { ...markSentencesAsInactiveReasonForm })
       return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
     }
 
-    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
     this.offenceService.clearSentencesToMarkAsInactive(req.session)
 
     return res.redirect(

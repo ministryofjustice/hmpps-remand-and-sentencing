@@ -1253,13 +1253,7 @@ export default class OffenceService {
     return session.sentencesToMarkAsInactiveSentenceUuids || []
   }
 
-  markSentencesAsInactive(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    offences: Offence[],
-    markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm,
-  ) {
+  markSentencesAsInactive(offences: Offence[], markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm) {
     const errors = validate(
       markSentencesAsInactiveReasonForm,
       { reason: 'required|max:200' },
@@ -1277,9 +1271,6 @@ export default class OffenceService {
       sentence.reason = markSentencesAsInactiveReasonForm.reason
       // eslint-disable-next-line no-param-reassign
       offence.sentence = sentence
-      const id = this.getOffenceId(nomsId, courtCaseReference, offence.chargeUuid)
-      // eslint-disable-next-line no-param-reassign
-      session.offences[id] = offence
     })
     return errors
   }

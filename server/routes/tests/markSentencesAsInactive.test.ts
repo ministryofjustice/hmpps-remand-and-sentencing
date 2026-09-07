@@ -327,20 +327,12 @@ describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', ()
         '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/provide-reason-for-marking-sentences-as-inactive',
       )
 
-    expect(defaultServices.offenceService.markSentencesAsInactive).toHaveBeenCalledWith(
-      expect.anything(),
-      'A1234AB',
-      '0',
-      [offence],
-      { reason: '' },
-    )
-    expect(defaultServices.courtAppearanceService.addOffence).not.toHaveBeenCalled()
+    expect(defaultServices.offenceService.markSentencesAsInactive).toHaveBeenCalledWith([offence], { reason: '' })
     expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).not.toHaveBeenCalled()
   })
 
   it('marks the sentences as inactive and redirects to the edit hearing page on success', async () => {
     defaultServices.offenceService.markSentencesAsInactive.mockReturnValue([])
-    defaultServices.offenceService.getAllOffences.mockReturnValue([offence])
 
     await request(app)
       .post(
@@ -350,21 +342,9 @@ describe('POST /sentencing/provide-reason-for-marking-sentences-as-inactive', ()
       .expect(302)
       .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
 
-    expect(defaultServices.offenceService.markSentencesAsInactive).toHaveBeenCalledWith(
-      expect.anything(),
-      'A1234AB',
-      '0',
-      [offence],
-      { reason: 'Sentence quashed on appeal' },
-    )
-    expect(defaultServices.courtAppearanceService.addOffence).toHaveBeenCalledWith(
-      expect.anything(),
-      'A1234AB',
-      offence.chargeUuid,
-      offence,
-      '0',
-    )
-    expect(defaultServices.offenceService.clearAllOffences).toHaveBeenCalled()
+    expect(defaultServices.offenceService.markSentencesAsInactive).toHaveBeenCalledWith([offence], {
+      reason: 'Sentence quashed on appeal',
+    })
     expect(defaultServices.offenceService.clearSentencesToMarkAsInactive).toHaveBeenCalled()
   })
 })

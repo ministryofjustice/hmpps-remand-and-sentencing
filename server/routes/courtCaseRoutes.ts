@@ -66,7 +66,7 @@ import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsMo
 import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
-import { BREACH_WARRANT_TYPES } from '../utils/constants'
+import { BREACH_WARRANT_TYPES, NIL_UUID } from '../utils/constants'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -2081,6 +2081,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let currentlySetTypeDescription
     if (
       nextAppearanceTypeUuid &&
+      nextAppearanceTypeUuid !== NIL_UUID &&
       !appearanceTypes.map(type => type.appearanceTypeUuid).includes(nextAppearanceTypeUuid)
     ) {
       const currentlySetType = await this.refDataService.getAppearanceTypeByUuid(

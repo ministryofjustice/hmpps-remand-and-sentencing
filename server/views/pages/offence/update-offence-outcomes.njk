@@ -52,25 +52,8 @@
         {% for offence in unchangedOffences %}
             {% set offenceId = 'offences.' + offence.index %}
             {{
-            offenceCard({
-                offenceCode: offence.offenceCode,
-                offenceName: offenceMap[offence.offenceCode],
-                offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                offenceEndDate: offence.offenceEndDate | formatDate,
-                countNumber: offence.sentence.countNumber,
-                lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                convictionDate: offence.sentence.convictionDate | formatDate,
-                aggravatingFactors: offence | getAggravatingFactors,
-                isSentenced: offence.sentence,
-                periodLengths: offence.sentence.periodLengths,
-                sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
-                sentenceStatus: offence.sentence.status if showSentenceStatusTag and offence.sentence,
-                consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-                fineAmount: offence.sentence.fineAmount,
-                mergedFromCase: offence.mergedFromCase,
-                courtDetails: courtMap,
-                actions: {
+                offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, {}, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+                    actions: {
                     items: [
                         {
                             href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
@@ -78,16 +61,14 @@
                             visuallyHiddenText: "edit offence"
                         }
                     ]
-                },
-                listItems: {
-                    classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
-                    items: [{
-                        html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome?backTo=updateOffenceOutcomes" data-qa="update-outcome-link-'+ offence.chargeUuid +'"class="govuk-link govuk-link--no-visited-state">Update outcome</a>'
-                    }]
-                },
-                id: offenceId,
-                errorMessage: errors | findErrorsBeginningWith(offenceId)
-            })
+                    },
+                    listItems: {
+                        classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                        items: [{
+                            html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome?backTo=updateOffenceOutcomes" data-qa="update-outcome-link-'+ offence.chargeUuid +'"class="govuk-link govuk-link--no-visited-state">Update outcome</a>'
+                        }]
+                    }
+                }))
         }}
         {% else %}
             {{ govukInsetText({
@@ -104,26 +85,8 @@
     {% for offence in custodialChangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
         {{
-                    offenceCard({
-                        offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                        offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+                    offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
                         outcomeUpdated: offence.updatedOutcome,
-                        countNumber: offence.sentence.countNumber,
-                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                        convictionDate: offence.sentence.convictionDate | formatDate,
-                        aggravatingFactors: offence | getAggravatingFactors,
-                        isSentenced: offence.sentence,
-                        periodLengths: offence.sentence.periodLengths,
-                        sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
-                        sentenceStatus: offence.sentence.status if showSentenceStatusTag and offence.sentence,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-                        fineAmount: offence.sentence.fineAmount,
-                        mergedFromCase: offence.mergedFromCase,
-                        courtDetails: courtMap,
                         consecutiveConcurrentLink: {
                             href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                             text: 'Select consecutive or concurrent',
@@ -137,9 +100,7 @@
                                     visuallyHiddenText: "edit offence"
                                 }
                             ]
-                        },
-                        id: offenceId,
-                        errorMessage: errors | findErrorsBeginningWith(offenceId)
+                        }
                     })
                 }}
     {% else %}
@@ -153,25 +114,8 @@
     {% for offence in nonCustodialChangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
         {{
-                    offenceCard({
-                        offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                        offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+                    offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
                         outcomeUpdated: offence.updatedOutcome,
-                        countNumber: offence.sentence.countNumber,
-                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                        convictionDate: offence.sentence.convictionDate | formatDate,
-                        isSentenced: offence.sentence,
-                        periodLengths: offence.sentence.periodLengths,
-                        sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
-                        sentenceStatus: offence.sentence.status if showSentenceStatusTag and offence.sentence,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-                        fineAmount: offence.sentence.fineAmount,
-                        mergedFromCase: offence.mergedFromCase,
-                        courtDetails: courtMap,
                         actions: {
                             items: [
                                 {
@@ -180,9 +124,7 @@
                                     visuallyHiddenText: "edit offence"
                                 }
                             ]
-                        },
-                        id: offenceId,
-                        errorMessage: errors | findErrorsBeginningWith(offenceId)
+                        }
                     })
                 }}
     {% else %}

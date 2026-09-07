@@ -2185,20 +2185,12 @@ export default class OffenceRoutes extends BaseRoutes {
       },
       [[], []],
     )
-    const allSentenceUuids = offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
-    )
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      nomsId,
-      offenceMap,
-      appearanceReference,
     )
     const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
       req.session,
@@ -2218,10 +2210,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offences,
       custodialOffences,
       nonCustodialOffences,
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       showAddMultipleCountsLink: courtAppearance.warrantType === 'NON_SENTENCING',
@@ -2359,7 +2348,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     const sentenceUuidsInSession = courtAppearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
     let consecutiveToSentenceDetails = { sentences: [] }
-    let sessionConsecutiveTo
+    let sessionConsecutiveTo: Offence | undefined
     if (offence.sentence?.consecutiveToSentenceUuid) {
       if (!sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid)) {
         consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
@@ -2390,36 +2379,27 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
       ),
     ])
-    let sentenceType
+    let sentenceTypeMap = {}
     if (offence.sentence?.sentenceTypeId) {
-      sentenceType = await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+      sentenceTypeMap = {
+        [offence.sentence?.sentenceTypeId]: (
+          await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+        ).description,
+      }
     }
-    let outcome
+    let outcomeMap = {}
     if (offence.outcomeUuid) {
-      outcome = (await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
+      outcomeMap = {
+        [offence.outcomeUuid]: (await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username))
+          .outcomeName,
+      }
     }
-    const allSentenceUuids = courtAppearance.offences
-      .map(appearanceOffence => appearanceOffence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+      [offence, sessionConsecutiveTo],
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
     )
-    let sessionConsecutiveToSentenceDetailsMap = {}
-    if (sessionConsecutiveTo) {
-      sessionConsecutiveToSentenceDetailsMap = {
-        [offence.sentence?.consecutiveToSentenceUuid]: {
-          countNumber: sessionConsecutiveTo.sentence.countNumber,
-          offenceCode: sessionConsecutiveTo.offenceCode,
-          offenceDescription: offenceMap[sessionConsecutiveTo.offenceCode],
-          offenceStartDate: dayjs(sessionConsecutiveTo.offenceStartDate).format(config.dateFormat),
-          offenceEndDate:
-            sessionConsecutiveTo.offenceEndDate && dayjs(sessionConsecutiveTo.offenceEndDate).format(config.dateFormat),
-        } as ConsecutiveToDetails,
-      }
-    }
     let cancelLink = JourneyUrls.checkOffenceAnswers(
       nomsId,
       addOrEditCourtCase,
@@ -2461,12 +2441,11 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
-      sentenceType,
+      sentenceTypeMap,
       consecutiveToSentenceDetailsMap,
-      sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      outcome,
+      outcomeMap,
       cancelLink,
     })
   }
@@ -2694,7 +2673,6 @@ export default class OffenceRoutes extends BaseRoutes {
           sentenceConsecutiveToDetails,
           offenceMap,
           courtMap,
-          false,
         )
       } else {
         consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
@@ -3055,21 +3033,11 @@ export default class OffenceRoutes extends BaseRoutes {
       },
       [[], [], []] as [Offence[], Offence[], Offence[]],
     )
-
-    const allSentenceUuids = offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
-    )
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      nomsId,
-      offenceMap,
-      appearanceReference,
     )
 
     const mergedFromText = this.getMergedFromText(
@@ -3096,8 +3064,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtAppearance,
       warrantType,
       backLink,
-      consecutiveToSentenceDetailsMap,
-      sessionConsecutiveToSentenceDetailsMap,
+      consecutiveToSentenceMap,
       mergedFromText,
       courtMap,
       errors: req.flash('errors') || [],

@@ -243,36 +243,6 @@ export default abstract class BaseRoutes {
       )
   }
 
-  protected getSessionConsecutiveToSentenceDetailsMap(
-    req,
-    nomsId: string,
-    offenceMap: { [key: string]: string },
-    appearanceReference: string,
-  ): {
-    [key: string]: ConsecutiveToDetails
-  } {
-    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const sentenceUuidsInSession = appearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
-    const { offences } = appearance
-    return Object.fromEntries(
-      offences
-        .filter(
-          offence =>
-            offence.sentence?.consecutiveToSentenceUuid &&
-            sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid),
-        )
-        .map(consecutiveOffence => {
-          const consecutiveToOffence = offences.find(
-            offence => offence.sentence?.sentenceUuid === consecutiveOffence.sentence.consecutiveToSentenceUuid,
-          )
-          return [
-            consecutiveOffence.sentence.consecutiveToSentenceUuid,
-            offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap),
-          ]
-        }),
-    )
-  }
-
   protected async updateCourtAppearance(
     req,
     res,

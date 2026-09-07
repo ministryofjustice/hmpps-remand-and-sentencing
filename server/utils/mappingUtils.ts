@@ -56,6 +56,8 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
       ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),
       ...(sentence.consecutiveToSentenceUuid && { consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid }),
+      ...(sentence.status && { status: sentence.status }),
+      ...(sentence.reason && { reason: sentence.reason }),
     } as CreateSentence
   }
   return createSentence

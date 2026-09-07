@@ -3,6 +3,7 @@ import type {
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   IsOffenceDateSameForm,
+  MarkSentencesAsInactiveReasonForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -1250,6 +1251,35 @@ export default class OffenceService {
 
   getSentencesToMarkAsInactiveSentenceUuids(session: Partial<SessionData>): string[] {
     return session.sentencesToMarkAsInactiveSentenceUuids || []
+  }
+
+  markSentencesAsInactive(offences: Offence[], markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm) {
+    const errors = validate(
+      markSentencesAsInactiveReasonForm,
+      { reason: 'required|max:200' },
+      {
+        'required.reason': 'Enter a reason for marking as inactive',
+        'max.reason': 'Reason must be 200 characters or less',
+      },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    offences.forEach(offence => {
+      const sentence = this.getSentence(offence)
+      sentence.status = 'INACTIVE'
+      sentence.reason = markSentencesAsInactiveReasonForm.reason
+      // eslint-disable-next-line no-param-reassign
+      offence.sentence = sentence
+    })
+    return errors
+  }
+
+  clearSentencesToMarkAsInactive(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentencesToMarkAsInactiveSentenceUuids
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentenceUuidsWithActiveSentencesAfter
   }
 
   setSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>, sentenceUuids: string[]) {

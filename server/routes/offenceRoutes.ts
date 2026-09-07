@@ -2175,7 +2175,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const [custodialOffences, nonCustodialOffences] = offences.reduce(
       ([custodialList, nonCustodialList], offence, index) => {
-        return outcomeMap[offence.outcomeUuid].outcomeType === 'SENTENCING'
+        return outcomeMap[offence.outcomeUuid]?.outcomeType === 'SENTENCING'
           ? [[...custodialList, { ...offence, index }], nonCustodialList]
           : [custodialList, [...nonCustodialList, { ...offence, index }]]
       },

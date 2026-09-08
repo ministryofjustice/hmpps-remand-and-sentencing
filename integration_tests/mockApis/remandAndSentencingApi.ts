@@ -1295,7 +1295,7 @@ export default {
             nextCourtAppearance: {
               appearanceDate: nextAppearanceDate,
               appearanceTime: '10:00:00.000000',
-              courtCode: 'ACCRYC',
+              courtCode: 'STHHPM',
               appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
               prisonId: 'MDI',
               courtAppearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
@@ -5516,7 +5516,7 @@ export default {
           nextCourtAppearance: {
             appearanceDate: nextAppearanceDate,
             appearanceTime: '10:00:00',
-            courtCode: 'STHLMC',
+            courtCode: 'STHHPM',
             appearanceType: {
               appearanceTypeUuid: '00000000-0000-0000-0000-000000000000',
               description: 'Unknown appearance type',

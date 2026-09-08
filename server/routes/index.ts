@@ -256,6 +256,21 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
+    sentencingRoutes.getConfirmMarkSentenceAsActive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-mark-sentence-as-active-inactive-case',
+    sentencingRoutes.getCannotMarkSentenceAsActiveInactiveCase,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-mark-sentence-as-active-consecutive-chain',
+    sentencingRoutes.getCannotMarkSentenceAsActiveConsecutiveChain,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
     sentencingRoutes.getCannotDeleteConsecutiveOffence,
   )

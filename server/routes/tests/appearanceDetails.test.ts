@@ -47,6 +47,7 @@ describe('GET /sentencing/hearing-details', () => {
           appearanceDate: '2023-05-01',
           offenceCode: 'AB1234',
           sentenceUuid: '999',
+          status: 'ACTIVE',
         },
       ],
     })

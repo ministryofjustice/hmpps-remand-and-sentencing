@@ -3506,6 +3506,8 @@ export interface components {
       sentenceUuid: string
       countNumber?: string | null
       chargeLegacyData?: components['schemas']['ChargeLegacyData'] | null
+      /** @enum {string} */
+      status: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MANY_CHARGES_DATA_FIX' | 'INACTIVE'
     }
     SentenceConsecutiveToDetailsResponse: {
       sentences: components['schemas']['SentenceConsecutiveToDetails'][]

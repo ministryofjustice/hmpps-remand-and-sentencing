@@ -21,6 +21,10 @@ export default class SentencingJourneyUrls {
     return `${this.basePath(urlParameters)}/cannot-mark-sentences-as-inactive`
   }
 
+  static confirmMarkSentenceAsActive = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/confirm-mark-sentence-as-active`
+  }
+
   private static basePath(urlParameters: UrlParameters): string {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/sentencing`
   }

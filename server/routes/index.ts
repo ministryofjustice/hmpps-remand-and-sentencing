@@ -256,6 +256,11 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
+    sentencingRoutes.getConfirmMarkSentenceAsActive,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
     sentencingRoutes.getCannotDeleteConsecutiveOffence,
   )

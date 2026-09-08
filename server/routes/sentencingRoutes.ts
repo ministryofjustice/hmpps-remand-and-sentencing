@@ -1100,6 +1100,33 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
+  public getConfirmMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, chargeUuid, appearanceReference } = urlParameters
+    const { username } = req.user
+    const backLink = JourneyUrls.sentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      username,
+      offence.legacyData?.offenceDescription,
+    )
+
+    return res.render('pages/sentencing/confirm-mark-sentence-as-active', {
+      ...urlParameters,
+      backLink,
+      offence,
+      offenceDetails,
+      errors: req.flash('errors') || [],
+    })
+  }
+
   public getCannotRemoveSentenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

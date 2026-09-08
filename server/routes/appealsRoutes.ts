@@ -451,20 +451,11 @@ export default class AppealsRoutes extends BaseRoutes {
       },
       [[], []],
     )
-    const allSentenceUuids = offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
-    )
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      urlParameters.nomsId,
-      offenceMap,
-      urlParameters.appearanceReference,
     )
     return res.render('pages/appeals/record-appeal', {
       ...urlParameters,
@@ -474,10 +465,7 @@ export default class AppealsRoutes extends BaseRoutes {
       otherOffences,
       appealedOffences,
       courtMap,
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       errors: req.flash('errors') || [],
     })
   }
@@ -768,21 +756,11 @@ export default class AppealsRoutes extends BaseRoutes {
         },
         [[], []] as [typeof offences, typeof offences],
       )
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      hearing.offences,
       consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
-    )
-
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      urlParameters.nomsId,
-      offenceMap,
-      urlParameters.appearanceReference,
     )
 
     const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
@@ -812,10 +790,7 @@ export default class AppealsRoutes extends BaseRoutes {
       appearanceTypeDescription,
       appealedOffences: orderOffences(appealedOffences),
       nonAppealedOffences: orderOffences(nonAppealedOffences),
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:

@@ -372,34 +372,54 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
   public getCheckAggravatingFactorsAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
 
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-
-    // Ensure always an array (avoids TS/runtime issues)
-    const allOffencesInAppearance = courtAppearance.offences || []
+    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
 
     // Filter using correct unified logic
-    const orderedOffences = orderOffences(allOffencesInAppearance.filter(o => (o.aggravatingFactors?.length ?? 0) > 0))
+    const orderedOffences = orderOffences(offences.filter(o => (o.aggravatingFactors?.length ?? 0) > 0))
 
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
 
+    const sentenceTypeIds = Array.from(
+      new Set(
+        offences.filter(offence => offence.sentence?.sentenceTypeId).map(offence => offence.sentence?.sentenceTypeId),
+      ),
+    )
     const offenceCodes = Array.from(
       new Set(
-        orderedOffences.map(o => o.offenceCode).concat(consecutiveToSentenceDetails.sentences.map(s => s.offenceCode)),
+        offences
+          .map(offence => offence.offenceCode)
+          .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
+      ),
+    )
+    const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
+    const courtIds = Array.from(
+      new Set(
+        consecutiveToSentenceDetails.sentences
+          .map(consecutiveToDetails => consecutiveToDetails.courtCode)
+          .concat(offences.map(offence => offence.mergedFromCase?.courtCode))
+          .filter(courtId => courtId !== undefined && courtId !== null),
       ),
     )
 
-    const offenceMap = await this.manageOffencesService.getOffenceMap(
-      offenceCodes,
-      req.user.username,
-      offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
+    const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions(offences, consecutiveToSentenceDetails.sentences),
+      ),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
+      this.courtRegisterService.getCourtMap(courtIds, req.user.username),
+    ])
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
     )
 
     // Use SAME logic to determine "unprocessed"
-    const unprocessedOffenceExists = allOffencesInAppearance.some(o => (o.aggravatingFactors?.length ?? 0) === 0)
+    const unprocessedOffenceExists = offences.some(o => (o.aggravatingFactors?.length ?? 0) === 0)
 
     const orderedOffencesCount = orderedOffences.length
 
@@ -421,6 +441,9 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       offences: orderedOffences,
       offenceMap,
+      sentenceTypeMap,
+      outcomeMap,
+      consecutiveToSentenceMap,
       unprocessedOffenceExists,
       aggravatedFactorsText,
       errors: req.flash('errors') || [],

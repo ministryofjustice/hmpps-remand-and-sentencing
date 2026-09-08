@@ -294,7 +294,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return {
         offenceCode: offence.offenceCode,
         offenceName: offenceMap[offence.offenceCode],
-        offenceStartDate: formatDate(offence.offenceStartDate),
+        offenceStartDate: formatDate(offence.offenceStartDate) ?? 'Not entered',
         offenceEndDate: formatDate(offence.offenceEndDate),
         outcome: outcomeValueOrLegacy(outcomeMap[offence.outcomeUuid]?.outcomeName, offence.legacyData),
         countNumber: offence.sentence?.countNumber,
@@ -311,6 +311,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
           offence.sentence?.legacyData,
         ),
         fineAmount: offence.sentence?.fineAmount,
+        mergedFromCase: offence.mergedFromCase,
         courtDetails: courtMap,
         id: offenceId,
         errorMessages: findErrorsBeginningWith(errors, offenceId),

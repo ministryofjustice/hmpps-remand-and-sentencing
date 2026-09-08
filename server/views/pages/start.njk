@@ -249,6 +249,7 @@
                                     <div class="govuk-grid-column-full govuk-!-margin-top-2">
                                         {% set offenceDetailsHtml %}
                                             {% for offence in courtCaseDetails.offences %}
+                                                {% set offenceId = 'offences.' + offence.index %}
                                                 {{
                                                     offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, offenceOutcomeMap, consecutiveToSentenceDetailsMap, courtCaseDetails.sentenceTypeMap, courtMap, [], {
                                                         consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,

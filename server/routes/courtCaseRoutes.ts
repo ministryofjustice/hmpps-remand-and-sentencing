@@ -217,7 +217,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .flatMap(courtCase =>
           courtCase.latestCourtAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
         )
-        .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
+        .map(outcome => [outcome.outcomeUuid, outcome]),
     )
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(JourneyUrls.courtCases(nomsId), config.domain)

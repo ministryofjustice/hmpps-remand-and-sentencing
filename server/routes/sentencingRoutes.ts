@@ -309,21 +309,11 @@ export default class SentencingRoutes extends BaseRoutes {
         [[], []] as [typeof offences, typeof offences],
       )
 
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      hearing.offences,
       consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
-    )
-
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      nomsId,
-      offenceMap,
-      appearanceReference,
     )
 
     const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
@@ -355,10 +345,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypeDescription,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:

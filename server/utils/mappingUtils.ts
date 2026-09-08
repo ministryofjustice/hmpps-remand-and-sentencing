@@ -500,9 +500,8 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
   sentenceConsecutiveToDetails: SentenceConsecutiveToDetails,
   offenceMap: { [key: string]: string },
   courtMap: { [key: string]: string },
-  isInSameAppearance: boolean,
 ): ConsecutiveToDetails {
-  let consecutiveToDetailsEntry = {
+  return {
     countNumber: sentenceConsecutiveToDetails.countNumber,
     offenceCode: sentenceConsecutiveToDetails.offenceCode,
     offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
@@ -514,16 +513,4 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
       sentenceConsecutiveToDetails.offenceEndDate &&
       dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
   } as ConsecutiveToDetails
-  if (isInSameAppearance) {
-    consecutiveToDetailsEntry = {
-      countNumber: sentenceConsecutiveToDetails.countNumber,
-      offenceCode: sentenceConsecutiveToDetails.offenceCode,
-      offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
-      offenceStartDate: dayjs(sentenceConsecutiveToDetails.offenceStartDate).format(config.dateFormat),
-      offenceEndDate:
-        sentenceConsecutiveToDetails.offenceEndDate &&
-        dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
-    }
-  }
-  return consecutiveToDetailsEntry
 }

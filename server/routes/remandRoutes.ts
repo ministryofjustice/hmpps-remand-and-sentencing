@@ -128,11 +128,8 @@ export default class RemandRoutes extends BaseRoutes {
       hasSentenceAfterOnOtherCourtAppearancePromise,
       appearanceSubtypePromise,
     ])
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+      hearing.offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,

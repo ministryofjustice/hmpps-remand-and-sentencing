@@ -1527,15 +1527,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let model
     switch (courtAppearance.warrantType) {
       case 'SENTENCING':
-        model = new SentencingTaskListModel(
-          nomsId,
-          addOrEditCourtCase,
-          addOrEditCourtAppearance,
-          courtCaseReference,
-          appearanceReference,
-          courtAppearance,
-          caseReferenceSet,
-        )
+        model = new SentencingTaskListModel(urlParameters, courtAppearance, caseReferenceSet)
         break
       default:
         model = new NonSentencingTaskListModel(

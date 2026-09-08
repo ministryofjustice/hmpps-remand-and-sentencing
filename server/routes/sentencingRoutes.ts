@@ -1127,6 +1127,40 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
+  public getCannotMarkSentenceAsActiveInactiveCase: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const editHearingLink = JourneyUrls.sentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+
+    return res.render('pages/sentencing/cannot-mark-sentence-as-active-inactive-case', {
+      ...urlParameters,
+      backLink: editHearingLink,
+      editHearingLink,
+    })
+  }
+
+  public getCannotMarkSentenceAsActiveConsecutiveChain: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const editHearingLink = JourneyUrls.sentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+
+    return res.render('pages/sentencing/cannot-mark-sentence-as-active-consecutive-chain', {
+      ...urlParameters,
+      backLink: editHearingLink,
+      editHearingLink,
+    })
+  }
+
   public getCannotRemoveSentenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

@@ -1100,6 +1100,18 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
+  public checkMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canMarkSentenceAsActive(
+      req,
+      res,
+      urlParameters,
+      SentencingJourneyUrls.cannotMarkSentenceAsActiveInactiveCase(urlParameters),
+      SentencingJourneyUrls.cannotMarkSentenceAsActiveConsecutiveChain(urlParameters),
+      SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters),
+    )
+  }
+
   public getConfirmMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { nomsId, chargeUuid, appearanceReference } = urlParameters
@@ -1125,6 +1137,43 @@ export default class SentencingRoutes extends BaseRoutes {
       offenceDetails,
       errors: req.flash('errors') || [],
     })
+  }
+
+  public submitConfirmMarkSentenceAsActive: RequestHandler = async (req, res, next): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, chargeUuid, appearanceReference, addOrEditCourtCase, courtCaseReference } = urlParameters
+    const { confirmMarkAsActive } = req.body
+    const editHearingLink = JourneyUrls.sentencingHearing(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      appearanceReference,
+    )
+
+    if (confirmMarkAsActive !== 'true' && confirmMarkAsActive !== 'false') {
+      req.flash('errors', [
+        { text: 'Select yes if you want to mark this sentence as active', href: '#confirmMarkAsActive' },
+      ])
+      return res.redirect(SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters))
+    }
+
+    if (confirmMarkAsActive === 'false') {
+      return res.redirect(editHearingLink)
+    }
+
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    this.offenceService.markSentenceAsActive(offence)
+
+    return this.updateCourtAppearance(
+      req,
+      res,
+      next,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      appearanceReference,
+    )
   }
 
   public getCannotMarkSentenceAsActiveInactiveCase: RequestHandler = async (req, res): Promise<void> => {

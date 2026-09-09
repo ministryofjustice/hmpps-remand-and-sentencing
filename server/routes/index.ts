@@ -267,8 +267,18 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/check-mark-sentence-as-active',
+    sentencingRoutes.checkMarkSentenceAsActive,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
     sentencingRoutes.getConfirmMarkSentenceAsActive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
+    sentencingRoutes.submitConfirmMarkSentenceAsActive,
   )
 
   router.get(

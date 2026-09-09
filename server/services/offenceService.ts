@@ -1275,6 +1275,13 @@ export default class OffenceService {
     return errors
   }
 
+  markSentenceAsActive(offence: Offence) {
+    const sentence = this.getSentence(offence)
+    sentence.status = 'ACTIVE'
+    // eslint-disable-next-line no-param-reassign
+    offence.sentence = sentence
+  }
+
   clearSentencesToMarkAsInactive(session: Partial<SessionData>) {
     // eslint-disable-next-line no-param-reassign
     delete session.sentencesToMarkAsInactiveSentenceUuids

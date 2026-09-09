@@ -556,6 +556,55 @@ export default abstract class BaseRoutes {
     return res.redirect(canDeletePath)
   }
 
+  protected async canMarkSentenceAsActive(
+    req,
+    res,
+    urlParameters: UrlParameters,
+    cannotMarkSentenceAsActiveInactiveCasePath: string,
+    cannotMarkSentenceAsActiveConsecutiveChainPath: string,
+    confirmMarkSentenceAsActivePath: string,
+  ): Promise<void> {
+    const { username } = req.user
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(
+      urlParameters.courtCaseReference,
+      username,
+    )
+    if (courtCaseDetails.status === 'INACTIVE') {
+      return res.redirect(cannotMarkSentenceAsActiveInactiveCasePath)
+    }
+
+    const offence = this.courtAppearanceService.getOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.chargeUuid,
+      urlParameters.appearanceReference,
+    )
+    const consecutiveToSentenceUuid = offence?.sentence?.consecutiveToSentenceUuid
+    if (consecutiveToSentenceUuid) {
+      const consecutiveToOffence = this.courtAppearanceService.getSessionOffenceBySentenceUuid(
+        req.session,
+        urlParameters.nomsId,
+        consecutiveToSentenceUuid,
+        urlParameters.appearanceReference,
+      )
+      let consecutiveToStatus = consecutiveToOffence?.sentence?.status
+      if (!consecutiveToStatus) {
+        const consecutiveToDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+          [consecutiveToSentenceUuid],
+          username,
+        )
+        consecutiveToStatus = consecutiveToDetails.sentences.find(
+          sentence => sentence.sentenceUuid === consecutiveToSentenceUuid,
+        )?.status
+      }
+      if (consecutiveToStatus === 'INACTIVE') {
+        return res.redirect(cannotMarkSentenceAsActiveConsecutiveChainPath)
+      }
+    }
+
+    return res.redirect(confirmMarkSentenceAsActivePath)
+  }
+
   protected async getCannotDeleteConsecutiveOffenceData(
     req,
     res,

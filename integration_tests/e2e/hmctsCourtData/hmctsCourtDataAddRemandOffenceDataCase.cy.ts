@@ -239,7 +239,7 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
       .should('have.value', futureDate.year().toString())
     courtCaseNextAppearanceDatePage.continueButton().click()
 
-    const courtCaseNextAppearanceCourtNamePage = Page.verifyOnPageTitle(CourtCaseNextAppearanceCourtNamePage)
+    const courtCaseNextAppearanceCourtNamePage = Page.verifyOnPage(CourtCaseNextAppearanceCourtNamePage)
     courtCaseNextAppearanceCourtNamePage.autoCompleteInput().should('have.value', 'Southampton Magistrate Court')
     courtCaseNextAppearanceCourtNamePage.continueButton().click()
 

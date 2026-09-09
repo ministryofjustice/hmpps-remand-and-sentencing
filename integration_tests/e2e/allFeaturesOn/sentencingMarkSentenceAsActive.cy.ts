@@ -8,7 +8,8 @@ context('Mark sentence as active', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
 
   // From stubGetSentenceAppearanceDetailsWithInactiveSentences:
-  //  - charge 1 (11111111...): INACTIVE, FORTHWITH, no consecutiveTo -> happy path
+  //  - charge 1 (11111111...): INACTIVE, FORTHWITH, no consecutiveTo -> happy path, and also reused for the
+  //    inactive-court-case unhappy path (that block comes from stubGetCourtCaseDetails, not from this charge)
   //  - charge 2 (22222222...): INACTIVE, CONSECUTIVE to charge 3's sentence (INACTIVE) -> blocked by consecutive chain
   //  - charge 3 (33333333...): INACTIVE, FORTHWITH -> the blocking target for charge 2
   const happyPathChargeUuid = '11111111-1111-4111-8111-111111111111'
@@ -68,10 +69,8 @@ context('Mark sentence as active', () => {
     courtCaseHearingDetailsPage.markAsActiveLink(happyPathChargeUuid).should('be.visible')
   })
 
-  it('happy path: routes to the confirm page and activates the sentence on confirmation', () => {
+  it('happy path: confirming "Yes" navigates back to the Edit hearing page and marks the sentence as active', () => {
     cy.task('stubUpdateCourtAppearanceForMarkAsActive')
-    cy.task('stubGetLatestCourtAppearance', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
-    cy.task('stubGetCourtById', {})
 
     courtCaseHearingDetailsPage.markAsActiveLink(happyPathChargeUuid).click()
 
@@ -81,8 +80,23 @@ context('Mark sentence as active', () => {
     confirmPage.radioLabelSelector('true').click()
     confirmPage.confirmButton().click()
 
-    cy.url().should('include', '/appearance-updated-confirmation')
-    cy.contains('Hearing details have been updated').should('exist')
+    // Lands back on the Edit hearing page (AC3: "Then navigate to the Edit page")
+    Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+
+    // AC3: "And mark the sentence as active" - verify the API was actually called to activate it.
+    // (WireMock is a static mock, so a re-fetch of the appearance won't reflect the change; asserting
+    // on the outgoing PUT body is the reliable way to prove the activation itself happened.)
+    cy.request('GET', 'http://localhost:9091/__admin/requests').then(({ body }) => {
+      const putRequest = body.requests.find(
+        r =>
+          r.request.method === 'PUT' &&
+          r.request.url === '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      )
+      expect(putRequest, 'PUT court-appearance request').to.exist
+      const sentBody = JSON.parse(putRequest.request.body)
+      const updatedCharge = sentBody.charges.find(c => c.chargeUuid === happyPathChargeUuid)
+      expect(updatedCharge.sentence.status).to.equal('ACTIVE')
+    })
   })
 
   it('choosing "No, cancel changes" on the confirm page returns to edit hearing without activating', () => {

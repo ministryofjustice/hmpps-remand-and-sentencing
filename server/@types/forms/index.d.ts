@@ -202,6 +202,10 @@ declare module 'forms' {
     reason?: string
   }
 
+  export interface ConfirmMarkSentenceAsActiveForm {
+    confirmMarkAsActive?: string
+  }
+
   export interface UploadedDocumentForm {
     _csrf?: string
   }

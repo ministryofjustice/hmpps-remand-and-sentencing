@@ -1,4 +1,5 @@
 import type {
+  ConfirmMarkSentenceAsActiveForm,
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
@@ -1275,11 +1276,22 @@ export default class OffenceService {
     return errors
   }
 
-  markSentenceAsActive(offence: Offence) {
-    const sentence = this.getSentence(offence)
-    sentence.status = 'ACTIVE'
-    // eslint-disable-next-line no-param-reassign
-    offence.sentence = sentence
+  markSentenceAsActive(offence: Offence, confirmMarkSentenceAsActiveForm: ConfirmMarkSentenceAsActiveForm) {
+    const errors = validate(
+      confirmMarkSentenceAsActiveForm,
+      { confirmMarkAsActive: 'required' },
+      { 'required.confirmMarkAsActive': 'Select yes if you want to mark this sentence as active' },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    if (confirmMarkSentenceAsActiveForm.confirmMarkAsActive === 'true') {
+      const sentence = this.getSentence(offence)
+      sentence.status = 'ACTIVE'
+      // eslint-disable-next-line no-param-reassign
+      offence.sentence = sentence
+    }
+    return errors
   }
 
   clearSentencesToMarkAsInactive(session: Partial<SessionData>) {

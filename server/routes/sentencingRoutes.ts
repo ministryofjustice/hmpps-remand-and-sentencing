@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  ConfirmMarkSentenceAsActiveForm,
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
@@ -1142,7 +1143,7 @@ export default class SentencingRoutes extends BaseRoutes {
   public submitConfirmMarkSentenceAsActive: RequestHandler = async (req, res, next): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { nomsId, chargeUuid, appearanceReference, addOrEditCourtCase, courtCaseReference } = urlParameters
-    const { confirmMarkAsActive } = req.body
+    const confirmMarkSentenceAsActiveForm = trimForm<ConfirmMarkSentenceAsActiveForm>(req.body)
     const editHearingLink = JourneyUrls.sentencingHearing(
       nomsId,
       addOrEditCourtCase,
@@ -1151,19 +1152,16 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    if (confirmMarkAsActive !== 'true' && confirmMarkAsActive !== 'false') {
-      req.flash('errors', [
-        { text: 'Select yes if you want to mark this sentence as active', href: '#confirmMarkAsActive' },
-      ])
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const errors = this.offenceService.markSentenceAsActive(offence, confirmMarkSentenceAsActiveForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
       return res.redirect(SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters))
     }
 
-    if (confirmMarkAsActive === 'false') {
+    if (confirmMarkSentenceAsActiveForm.confirmMarkAsActive === 'false') {
       return res.redirect(editHearingLink)
     }
-
-    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
-    this.offenceService.markSentenceAsActive(offence)
 
     return this.updateCourtAppearance(
       req,
@@ -1173,6 +1171,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       courtCaseReference,
       appearanceReference,
+      editHearingLink,
     )
   }
 

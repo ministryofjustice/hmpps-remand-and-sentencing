@@ -2,6 +2,7 @@ import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
 
 import { randomUUID } from 'crypto'
+import { isArray } from 'util'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -28,7 +29,6 @@ import RefDataService from '../../services/refDataService'
 import CourtDataIngestionService from '../../services/courtDataIngestionService'
 
 jest.mock('../../services/auditService')
-jest.mock('../../services/courtAppearanceService')
 jest.mock('../../services/prisonerService')
 jest.mock('../../services/userService')
 jest.mock('../../services/offenceService')
@@ -52,6 +52,9 @@ const testAppInfo: ApplicationInfo = {
   productId: 'P1',
 }
 
+const remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
+const refDataService = new RefDataService(null) as jest.Mocked<RefDataService>
+
 export const defaultServices = {
   applicationInfo: testAppInfo,
   userService: new UserService(null) as jest.Mocked<UserService>,
@@ -60,7 +63,7 @@ export const defaultServices = {
   manageOffencesService: new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>,
   feComponentsService: new FeComponentsService(null) as jest.Mocked<FeComponentsService>,
   remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
-  courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
+  courtAppearanceService: new CourtAppearanceService(remandAndSentencingService, refDataService),
   documentManagementService: new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>,
   prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   auditService: new AuditService(null) as jest.Mocked<AuditService>,
@@ -108,6 +111,30 @@ const defaultPrisoner: PrisonerSearchApiPrisoner = {
   imprisonmentStatusDescription: 'Sentenced with a sentence c',
 } as PrisonerSearchApiPrisoner
 
+const flashMap = {}
+
+const flashProvider = (
+  type?: string,
+  value?: unknown,
+  ..._args: unknown[]
+): Record<string, string[]> | { [key: string]: string[] } | unknown[] | number => {
+  if (type && value) {
+    if (Array.isArray(value)) {
+      // eslint-disable-next-line no-return-assign
+      value.forEach(val => (flashMap[type] = flashMap[type] || []).push(val))
+    } else {
+      ;(flashMap[type] = flashMap[type] || []).push(value)
+    }
+    return flashMap[type].length
+  }
+  if (type) {
+    const array = flashMap[type]
+    delete flashMap[type]
+    return (array || []) as unknown[]
+  }
+  return flashMap as Record<string, string[]>
+}
+
 function appSetup(
   services: Services,
   production: boolean,
@@ -115,8 +142,7 @@ function appSetup(
   prisoner: PrisonerSearchApiPrisoner,
 ): Express {
   const app = express()
-  const flashProvider = jest.fn()
-  flashProvider.mockReturnValue([])
+
   app.set('view engine', 'njk')
 
   nunjucksSetup(app, services.applicationInfo)
@@ -124,7 +150,7 @@ function appSetup(
   app.use(setUpJourneySession())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
-    req.flash = flashProvider
+    req.flash = flashProvider as typeof req.flash
     res.locals = {
       user: { ...req.user } as HmppsUser,
       prisoner,

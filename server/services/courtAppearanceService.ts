@@ -42,7 +42,6 @@ import RemandAndSentencingService from './remandAndSentencingService'
 import { convertToTitleCase, sortByDateDesc, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
-import DocumentManagementService from './documentManagementService'
 import RefDataService from './refDataService'
 import { BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE, DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
 import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -50,7 +49,6 @@ import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remand
 export default class CourtAppearanceService {
   constructor(
     private readonly remandAndSentencingService: RemandAndSentencingService,
-    private readonly documentManagementService: DocumentManagementService,
     private readonly refDataService: RefDataService,
   ) {}
 

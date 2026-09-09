@@ -217,7 +217,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .flatMap(courtCase =>
           courtCase.latestCourtAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
         )
-        .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
+        .map(outcome => [outcome.outcomeUuid, outcome]),
     )
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(JourneyUrls.courtCases(nomsId), config.domain)
@@ -1527,15 +1527,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let model
     switch (courtAppearance.warrantType) {
       case 'SENTENCING':
-        model = new SentencingTaskListModel(
-          nomsId,
-          addOrEditCourtCase,
-          addOrEditCourtAppearance,
-          courtCaseReference,
-          appearanceReference,
-          courtAppearance,
-          caseReferenceSet,
-        )
+        model = new SentencingTaskListModel(urlParameters, courtAppearance, caseReferenceSet)
         break
       default:
         model = new NonSentencingTaskListModel(

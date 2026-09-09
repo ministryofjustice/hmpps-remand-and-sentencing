@@ -20,6 +20,7 @@ import AppealsRoutes from './appealsRoutes'
 import CourtDataIngestionRoutes from './courtDataIngestionRoutes'
 import BreachRoutes from './breachRoutes'
 import datafixAdminRoutes from './datafixAdminRoutes'
+import JudicialFindingsRoutes from './judicialFindingsRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -163,6 +164,16 @@ export default function routes(services: Services): Router {
     services.refDataService,
   )
 
+  const judicialFindingsRoutes = new JudicialFindingsRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
   router.get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
 
@@ -253,6 +264,21 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/cannot-mark-sentences-as-inactive',
     sentencingRoutes.getCannotMarkSentencesAsInactive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
+    sentencingRoutes.getConfirmMarkSentenceAsActive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-mark-sentence-as-active-inactive-case',
+    sentencingRoutes.getCannotMarkSentenceAsActiveInactiveCase,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-mark-sentence-as-active-consecutive-chain',
+    sentencingRoutes.getCannotMarkSentenceAsActiveConsecutiveChain,
   )
 
   router.get(
@@ -1374,6 +1400,11 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-period-length-offence',
     breachRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/select-offence-with-judicial-findings',
+    judicialFindingsRoutes.selectOffenceWithJudicialFindings,
   )
 
   return router

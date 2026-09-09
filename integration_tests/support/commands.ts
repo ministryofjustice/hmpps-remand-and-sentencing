@@ -126,10 +126,16 @@ const getTaskList = subject => {
   const taskListElement = subject.get()[0]
 
   return [...taskListElement.querySelectorAll('.govuk-task-list__item')].map(item => {
-    const name = item
-      .querySelector('.govuk-task-list__name-and-hint')
+    const nameAndHint = item.querySelector('.govuk-task-list__name-and-hint')
+
+    const name = nameAndHint
+      .querySelector('.govuk-link--no-visited-state')
       .textContent.trim()
       .replace(/\s{2,}/g, ' ')
+    const hint = nameAndHint
+      .querySelector('.govuk-task-list__hint')
+      ?.textContent?.trim()
+      ?.replace(/\s{2,}/g, ' ')
     const status = item
       .querySelector('.govuk-task-list__status')
       .textContent.trim()
@@ -137,6 +143,7 @@ const getTaskList = subject => {
     return {
       name,
       status,
+      ...(hint && { hint }),
     }
   })
 }

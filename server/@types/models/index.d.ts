@@ -39,6 +39,7 @@ declare module 'models' {
     criminalAppealOfficeReference?: string
     isCommonPlatformJourney?: boolean
     periodLengths?: SentenceLength[]
+    judicialFindingsAccepted?: boolean
   }
 
   export interface Offence {
@@ -58,6 +59,7 @@ declare module 'models' {
     replicatedFromUuid?: string
     offenceDateIsSame?: string
     isGeneratedBreachOffence?: string
+    findingOfDomesticAbuse?: boolean
   }
 
   export interface Sentence {
@@ -101,6 +103,7 @@ declare module 'models' {
 
   export interface TaskListItem {
     title: { text: string; classes?: string }
+    hint?: { text: string; classes?: string }
     href: string
     status: TaskListItemStatus
   }

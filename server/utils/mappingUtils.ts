@@ -101,6 +101,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
     ...(sentence && { sentence }),
     ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
     ...{ replacingChargeUuid: offence.replacesOffenceUuid },
+    ...(offence.findingOfDomesticAbuse && { findingOfDomesticAbuse: offence.findingOfDomesticAbuse }),
   } as CreateCharge
 }
 
@@ -235,6 +236,7 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
     ...(charge.mergedFromCase && { mergedFromCase: charge.mergedFromCase }),
+    ...(charge.findingOfDomesticAbuse && { findingOfDomesticAbuse: charge.findingOfDomesticAbuse }),
   } as Offence
 }
 
@@ -249,6 +251,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, createChargeOrder
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
     ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence) }),
     ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
+    ...(pagedCharge.findingOfDomesticAbuse && { findingOfDomesticAbuse: pagedCharge.findingOfDomesticAbuse }),
   } as Offence
 }
 

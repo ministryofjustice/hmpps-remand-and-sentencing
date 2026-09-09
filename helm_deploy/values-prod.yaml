@@ -28,6 +28,7 @@ generic-service:
     FEATURES_BREACH_IMPRISONABLE_OFFENCE_ENABLED: 'true'
     FEATURES_SENTENCE_STATUS_ENABLED: 'false'
     FEATURES_MULTIPLE_TYPE_DOCUMENT_UPLOAD: 'true'
+    FEATURES_JUDICIAL_FINDINGS: 'false'
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

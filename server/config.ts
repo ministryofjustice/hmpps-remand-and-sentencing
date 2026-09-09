@@ -191,5 +191,6 @@ export default {
       get('FEATURES_BREACH_IMPRISONABLE_OFFENCE_ENABLED', false, requiredInProduction) === 'true',
     sentenceStatus: get('FEATURES_SENTENCE_STATUS_ENABLED', false, requiredInProduction) === 'true',
     multipleTypeDocumentUpload: get('FEATURES_MULTIPLE_TYPE_DOCUMENT_UPLOAD', false, requiredInProduction) === 'true',
+    judicialFindings: get('FEATURES_JUDICIAL_FINDINGS', false, requiredInProduction) === 'true',
   },
 }

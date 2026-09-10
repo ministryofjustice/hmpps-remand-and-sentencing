@@ -294,8 +294,7 @@ export default abstract class BaseRoutes {
     })
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(
-      redirectPath ??
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`,
+      redirectPath ?? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`,
     )
   }
 

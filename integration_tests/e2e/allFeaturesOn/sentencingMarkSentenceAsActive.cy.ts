@@ -92,7 +92,7 @@ context('Mark sentence as active', () => {
           r.request.method === 'PUT' &&
           r.request.url === '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
       )
-      expect(putRequest, 'PUT court-appearance request').to.exist
+      cy.wrap(putRequest, { log: false }).should('exist')
       const sentBody = JSON.parse(putRequest.request.body)
       const updatedCharge = sentBody.charges.find(c => c.chargeUuid === happyPathChargeUuid)
       expect(updatedCharge.sentence.status).to.equal('ACTIVE')

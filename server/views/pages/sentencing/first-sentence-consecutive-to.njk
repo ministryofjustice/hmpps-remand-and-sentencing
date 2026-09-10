@@ -48,7 +48,7 @@
                                             {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
                                             {% if sentence.offenceStartDate %}
                                                 <br><span class="govuk-hint">
-                                                    Committed on {{ sentence.offenceStartDate | formatDate }}{{' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
+                                                    {{sentence | offenceDatesText }}
                                                 </span>
                                             {% endif %}
                                         </label>

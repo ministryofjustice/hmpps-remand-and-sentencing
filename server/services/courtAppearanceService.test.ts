@@ -19,21 +19,18 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Europe/London')
 
-jest.mock('./documentManagementService')
 jest.mock('./remandAndSentencingService')
 jest.mock('./refDataService')
 
 describe('courtAppearanceService', () => {
   let remandAndSentencingService: jest.Mocked<RemandAndSentencingService>
-  let documentManagementService: jest.Mocked<DocumentManagementService>
   let refDataService: jest.Mocked<RefDataService>
   let service: CourtAppearanceService
 
   beforeEach(() => {
     remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
-    documentManagementService = new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>
     refDataService = new RefDataService(null) as jest.Mocked<RefDataService>
-    service = new CourtAppearanceService(remandAndSentencingService, documentManagementService, refDataService)
+    service = new CourtAppearanceService(remandAndSentencingService, refDataService)
   })
 
   it('must reset chain when multiple sentences are consecutive to same sentence', () => {

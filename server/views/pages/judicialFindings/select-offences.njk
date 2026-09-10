@@ -1,0 +1,63 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set offenceItems = [] %}
+{% for offence in selectableOffences %}
+    {% set labelHtml %}
+        {% if offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
+            <div data-qa="countNumber">Count {{ offence.sentence.countNumber }}</div>
+        {% endif %}
+            <div data-qa="offence">{{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}</div>
+    {% endset %}
+    {% set hintText = offence | offenceDatesText %}
+    {% set offenceItems = offenceItems.concat({
+        value: offence.chargeUuid,
+        html: labelHtml,
+        hint: {
+            text: hintText,
+            attributes: {
+                "data-qa": "offenceDateHint"
+            }
+        } if offence.offenceStartDate,
+        checked: selectedOffenceUuids and offence.chargeUuid in selectedOffenceUuids,
+        attributes: {
+            "data-qa": "checkbox-" + loop.index0
+        }
+    })%}
+
+{% endfor %}
+
+{% block pageContent %}
+    <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {% include "../../partials/judicialFindingsCaption.njk" %}
+
+        {{ govukCheckboxes({
+            name: "chargeUuids",
+            fieldset: {
+                legend: {
+                    text: "Select the offences with judicial findings",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+                text: "Select all that apply"
+            },
+            errorMessage: errors | findError('chargeUuids'),
+            items: offenceItems,
+            attributes: { 'data-qa': 'options' }
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

@@ -10,7 +10,7 @@
     text: "Committed on"
   },
   value: {
-    text: offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+    text: offence | offenceDatesText
   },
   actions: {
     items: [{

@@ -1103,14 +1103,7 @@ export default class SentencingRoutes extends BaseRoutes {
 
   public checkMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
-    return this.canMarkSentenceAsActive(
-      req,
-      res,
-      urlParameters,
-      SentencingJourneyUrls.cannotMarkSentenceAsActiveInactiveCase(urlParameters),
-      SentencingJourneyUrls.cannotMarkSentenceAsActiveConsecutiveChain(urlParameters),
-      SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters),
-    )
+    return this.canMarkSentenceAsActive(req, res, urlParameters)
   }
 
   public getConfirmMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {

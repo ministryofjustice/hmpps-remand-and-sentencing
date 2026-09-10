@@ -33,6 +33,7 @@ import logger from '../../logger'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import CourtRegisterService from '../services/courtRegisterService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -559,21 +560,14 @@ export default abstract class BaseRoutes {
     return res.redirect(canDeletePath)
   }
 
-  protected async canMarkSentenceAsActive(
-    req,
-    res,
-    urlParameters: UrlParameters,
-    cannotMarkSentenceAsActiveInactiveCasePath: string,
-    cannotMarkSentenceAsActiveConsecutiveChainPath: string,
-    confirmMarkSentenceAsActivePath: string,
-  ): Promise<void> {
+  protected async canMarkSentenceAsActive(req, res, urlParameters: UrlParameters): Promise<void> {
     const { username } = req.user
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(
       urlParameters.courtCaseReference,
       username,
     )
     if (courtCaseDetails.status === 'INACTIVE') {
-      return res.redirect(cannotMarkSentenceAsActiveInactiveCasePath)
+      return res.redirect(SentencingJourneyUrls.cannotMarkSentenceAsActiveInactiveCase(urlParameters))
     }
 
     const offence = this.courtAppearanceService.getOffence(
@@ -601,11 +595,11 @@ export default abstract class BaseRoutes {
         )?.status
       }
       if (consecutiveToStatus === 'INACTIVE') {
-        return res.redirect(cannotMarkSentenceAsActiveConsecutiveChainPath)
+        return res.redirect(SentencingJourneyUrls.cannotMarkSentenceAsActiveConsecutiveChain(urlParameters))
       }
     }
 
-    return res.redirect(confirmMarkSentenceAsActivePath)
+    return res.redirect(SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters))
   }
 
   protected async getCannotDeleteConsecutiveOffenceData(

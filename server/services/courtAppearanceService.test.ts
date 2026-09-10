@@ -8,7 +8,6 @@ import timezone from 'dayjs/plugin/timezone'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import RemandAndSentencingService from './remandAndSentencingService'
-import DocumentManagementService from './documentManagementService'
 import CourtAppearanceService from './courtAppearanceService'
 import RefDataService from './refDataService'
 

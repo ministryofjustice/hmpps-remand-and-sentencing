@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import type { UrlParameters } from 'models'
 import type { JudicialFindingOffenceForm } from 'forms'
-import { error } from 'console'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'

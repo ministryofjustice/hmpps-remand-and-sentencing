@@ -70,8 +70,6 @@ context('Mark sentence as active', () => {
   })
 
   it('happy path: confirming "Yes" navigates back to the Edit hearing page and marks the sentence as active', () => {
-    cy.task('stubUpdateCourtAppearanceForMarkAsActive')
-
     courtCaseHearingDetailsPage.markAsActiveLink(happyPathChargeUuid).click()
 
     const confirmPage = Page.verifyOnPage(ConfirmMarkSentenceAsActivePage)
@@ -80,23 +78,12 @@ context('Mark sentence as active', () => {
     confirmPage.radioLabelSelector('true').click()
     confirmPage.confirmButton().click()
 
-    // Lands back on the Edit hearing page (AC3: "Then navigate to the Edit page")
-    Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
-
-    // AC3: "And mark the sentence as active" - verify the API was actually called to activate it.
-    // (WireMock is a static mock, so a re-fetch of the appearance won't reflect the change; asserting
-    // on the outgoing PUT body is the reliable way to prove the activation itself happened.)
-    cy.request('GET', 'http://localhost:9091/__admin/requests').then(({ body }) => {
-      const putRequest = body.requests.find(
-        r =>
-          r.request.method === 'PUT' &&
-          r.request.url === '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      )
-      cy.wrap(putRequest, { log: false }).should('exist')
-      const sentBody = JSON.parse(putRequest.request.body)
-      const updatedCharge = sentBody.charges.find(c => c.chargeUuid === happyPathChargeUuid)
-      expect(updatedCharge.sentence.status).to.equal('ACTIVE')
-    })
+    // AC3: "Then navigate to the Edit page And mark the sentence as active (The inactive label should be removed)"
+    // Persistence to the API is deferred to the main "Confirm changes" journey, same as marking a sentence
+    // inactive does - so the change is only staged in session here, and the removed label comes from that
+    // mutated session data being rendered immediately, not from a fresh API fetch.
+    courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    courtCaseHearingDetailsPage.markAsActiveLink(happyPathChargeUuid).should('not.exist')
   })
 
   it('choosing "No, cancel changes" on the confirm page returns to edit hearing without activating', () => {

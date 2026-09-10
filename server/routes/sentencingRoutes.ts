@@ -1133,17 +1133,10 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
-  public submitConfirmMarkSentenceAsActive: RequestHandler = async (req, res, next): Promise<void> => {
+  public submitConfirmMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { nomsId, chargeUuid, appearanceReference, addOrEditCourtCase, courtCaseReference } = urlParameters
     const confirmMarkSentenceAsActiveForm = trimForm<ConfirmMarkSentenceAsActiveForm>(req.body)
-    const editHearingLink = JourneyUrls.sentencingHearing(
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      urlParameters.addOrEditCourtAppearance,
-      appearanceReference,
-    )
 
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     const errors = this.offenceService.markSentenceAsActive(offence, confirmMarkSentenceAsActiveForm)
@@ -1152,19 +1145,14 @@ export default class SentencingRoutes extends BaseRoutes {
       return res.redirect(SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters))
     }
 
-    if (confirmMarkSentenceAsActiveForm.confirmMarkAsActive === 'false') {
-      return res.redirect(editHearingLink)
-    }
-
-    return this.updateCourtAppearance(
-      req,
-      res,
-      next,
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      appearanceReference,
-      editHearingLink,
+    return res.redirect(
+      JourneyUrls.sentencingHearing(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 

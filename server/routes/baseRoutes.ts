@@ -252,7 +252,6 @@ export default abstract class BaseRoutes {
     addOrEditCourtCase: string,
     courtCaseReference: string,
     appearanceReference: string,
-    redirectPath?: string,
   ) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
@@ -294,9 +293,7 @@ export default abstract class BaseRoutes {
       details: auditDetails,
     })
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(
-      redirectPath ?? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`,
-    )
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
   }
 
   protected queryParametersToString(submitToEditOffence, invalidatedFrom): string {

@@ -4437,22 +4437,6 @@ export default {
     })
   },
 
-  stubUpdateCourtAppearanceForMarkAsActive: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'PUT',
-        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa',
-        },
-      },
-    })
-  },
-
   stubSentencesAfterOnOtherCourtAppearanceDetails: ({
     sentenceUuids = 'b0f83d31-efbe-462c-970d-5293975acb17',
   }: {

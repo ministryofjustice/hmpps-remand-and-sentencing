@@ -122,10 +122,27 @@
 
       <h2 class="govuk-heading-m">Offences ({{ hearing.offences | length }})</h2>
 
+      {% if hasActiveSentence %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Mark sentences as inactive",
+            classes: "govuk-button--secondary",
+            href: selectSentencesToMarkAsInactiveLink,
+            attributes: { "data-qa": "markSentencesAsInactive" }
+          }) }}
+        </div>
+      {% endif %}
+
       <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
       <span data-qa="custodialOffences">
         {% for offence in custodialOffences %}
           {% set offenceId = 'offences.' + offence.index %}
+          {% set markAsActiveListItems = {
+                classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                items: [{
+                  html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/sentencing/offences/' + offence.chargeUuid + '/check-mark-sentence-as-active" data-qa="mark-as-active-link-' + offence.chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Mark as active</a>'
+                }]
+              } if (showSentenceStatusTag and offence.sentence and offence.sentence.status === 'INACTIVE') %}
           {% set extraParams = undefined %}
           {% if offence.isGeneratedBreachOffence === 'true' %}
             {% set extraParams = {
@@ -141,8 +158,11 @@
                       visuallyHiddenText: "delete offence",
                       classes: "govuk-link--no-visited-state"
                     }]
-                }
+                },
+                listItems: markAsActiveListItems
               }%}
+          {% elif markAsActiveListItems %}
+            {% set extraParams = { listItems: markAsActiveListItems } %}
           {% endif %}
 
           {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, extraParams)) }}
@@ -155,7 +175,15 @@
         <h3 class="govuk-heading-s govuk-!-margin-top-8" data-qa="nonCustodialHeading">Offences with non-custodial outcomes</h3>
         {% for offence in nonCustodialOffences %}
           {% set offenceId = 'offences.' + offence.index %}
-          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors)) }}
+          {% set nonCustodialExtraParams = {
+                listItems: {
+                  classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                  items: [{
+                    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/sentencing/offences/' + offence.chargeUuid + '/check-mark-sentence-as-active" data-qa="mark-as-active-link-' + offence.chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Mark as active</a>'
+                  }]
+                }
+              } if (showSentenceStatusTag and offence.sentence and offence.sentence.status === 'INACTIVE') %}
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, nonCustodialExtraParams)) }}
         {% endfor %}
       {% endif %}
 

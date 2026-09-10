@@ -180,7 +180,13 @@
                     classes: "govuk-link--no-visited-state"
                   }
                 ]
-              }
+              },
+              listItems: {
+                classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                items: [{
+                  html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/sentencing/offences/' + offence.chargeUuid + '/check-mark-sentence-as-active" data-qa="mark-as-active-link-' + offence.chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Mark as active</a>'
+                }]
+              } if (showSentenceStatusTag and offence.sentence and offence.sentence.status === 'INACTIVE')
             }))
           }}
         {% else %}
@@ -213,7 +219,13 @@
                   classes: "govuk-link--no-visited-state"
                 }
               ]
-            }
+            },
+            listItems: {
+              classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+              items: [{
+                html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/sentencing/offences/' + offence.chargeUuid + '/check-mark-sentence-as-active" data-qa="mark-as-active-link-' + offence.chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Mark as active</a>'
+              }]
+            } if (showSentenceStatusTag and offence.sentence and offence.sentence.status === 'INACTIVE')
           }))
         }}
       {% else %}

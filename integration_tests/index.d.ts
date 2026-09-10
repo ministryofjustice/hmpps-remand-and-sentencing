@@ -14,6 +14,7 @@ declare namespace Cypress {
     getAppearances()
     getHearingCardDetails()
     getRadioOptions()
+    getOffenceCheckboxOptions()
     getListItems()
     createCourtCase(personId: string, courtCaseNumber: string, appearanceReference: string): Chainable<AUTWindow>
     setupComponentsStubs(): Chainable<AUTWindow>

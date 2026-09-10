@@ -310,4 +310,8 @@ declare module 'forms' {
     'offenceEndDate-month'?: string
     'offenceEndDate-year'?: string
   }
+
+  export interface JudicialFindingOffenceForm {
+    chargeUuids?: string[]
+  }
 }

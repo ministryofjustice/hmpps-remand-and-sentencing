@@ -319,4 +319,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       }
     },
   )
+  njkEnv.addFilter('offenceDatesText', (offence: Offence, prependCommittedOn: boolean = true) => {
+    if (offence.offenceStartDate) {
+      return `${prependCommittedOn ? 'Committed on ' : ''}${formatDate(offence.offenceStartDate)}${offence.offenceEndDate ? ` to ${formatDate(offence.offenceEndDate)}` : ''}`
+    }
+    return undefined
+  })
 }

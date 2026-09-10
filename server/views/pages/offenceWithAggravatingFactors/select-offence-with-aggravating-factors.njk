@@ -29,10 +29,7 @@
             {% endset %}
 
             {% set hintHtml %}
-                {% if offence.offenceStartDate %}
-                    Committed on {{ offence.offenceStartDate | formatDate }}
-                    {{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
-                {% endif %}
+                {{offence | offenceDatesText }}
             {% endset %}
 
             {% set offenceItems = (offenceItems.push({

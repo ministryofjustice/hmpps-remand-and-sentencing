@@ -14,10 +14,7 @@
                 {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
                 <p class="govuk-body" data-qa="activeConsecutiveOffence-{{ loop.index0 }}">
                     <strong>{{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}</strong><br>
-                    {% if offence.offenceStartDate %}
-                        Committed on {{ offence.offenceStartDate | formatDate }}
-                        {{- ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}<br>
-                    {% endif %}
+                    {{offence | offenceDatesText }}
                     {% if countDescription %}
                         {{ countDescription }}<br>
                     {% endif %}

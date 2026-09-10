@@ -33,7 +33,9 @@ import logger from '../../logger'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import CourtRegisterService from '../services/courtRegisterService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import BreachJourneyUrls from './data/BreachJourneyUrls'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
+import { BREACH_WARRANT_TYPES } from '../utils/constants'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -597,6 +599,31 @@ export default abstract class BaseRoutes {
     }
 
     return res.redirect(SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters))
+  }
+
+  protected getHearingDetailsLink(urlParameters: UrlParameters, warrantType: string): string {
+    if (warrantType === 'APPEAL') {
+      return AppealsJourneyUrls.hearingDetails(urlParameters)
+    }
+    if (BREACH_WARRANT_TYPES.includes(warrantType)) {
+      return BreachJourneyUrls.hearingDetails(urlParameters)
+    }
+    if (warrantType === 'SENTENCING') {
+      return JourneyUrls.sentencingHearing(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+      )
+    }
+    return JourneyUrls.nonSentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
   }
 
   protected async getCannotDeleteConsecutiveOffenceData(

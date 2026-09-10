@@ -164,6 +164,17 @@
         attributes: { "data-qa": "documentsSummaryList" }
       }) }}
 
+      {% if hasActiveSentence %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Mark sentences as inactive",
+            classes: "govuk-button--secondary",
+            href: selectSentencesToMarkAsInactiveLink,
+            attributes: { "data-qa": "markSentencesAsInactive" }
+          }) }}
+        </div>
+      {% endif %}
+
       <h2 class="govuk-heading-s govuk-!-margin-top-8">Offences with an appeal recorded ({{appealedOffences | length }})</h3>
       <span data-qa="appealedOffences">
         {% for offence in appealedOffences %}
@@ -184,6 +195,15 @@
                     visuallyHiddenText: "edit offence",
                     classes: "govuk-link--no-visited-state"
                   }].concat(actionItems) %}
+            {% if showSentenceStatusTag and offence.sentence.status === 'INACTIVE' %}
+              {% set markAsActiveHtml %}
+                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offence.chargeUuid }}/check-mark-sentence-as-active" data-qa="mark-as-active-link-{{ offence.chargeUuid }}" class="govuk-link govuk-link--no-visited-state">Mark as active</a>
+              {% endset %}
+              {% set listItems = {
+                    classes: 'govuk-!-margin-top-4',
+                    items: [{ html: markAsActiveHtml }]
+                } %}
+            {% endif %}
           {% else %}
             {% set updateOutcomeHtml %}
               <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
@@ -233,6 +253,15 @@
                   visuallyHiddenText: "edit offence",
                   classes: "govuk-link--no-visited-state"
                 }].concat(actionItems) %}
+          {% if showSentenceStatusTag and offence.sentence.status === 'INACTIVE' %}
+            {% set markAsActiveHtml %}
+              <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offence.chargeUuid }}/check-mark-sentence-as-active" data-qa="mark-as-active-link-{{ offence.chargeUuid }}" class="govuk-link govuk-link--no-visited-state">Mark as active</a>
+            {% endset %}
+            {% set listItems = {
+                  classes: 'govuk-!-margin-top-4',
+                  items: [{ html: markAsActiveHtml }]
+              } %}
+          {% endif %}
         {% else %}
           {% set updateOutcomeHtml %}
             <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>

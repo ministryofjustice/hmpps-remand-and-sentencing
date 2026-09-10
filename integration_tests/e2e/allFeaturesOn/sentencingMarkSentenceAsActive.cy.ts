@@ -77,11 +77,6 @@ context('Mark sentence as active', () => {
     confirmPage.offenceSummary().should('contain.text', 'committed on 15/12/2023')
     confirmPage.radioLabelSelector('true').click()
     confirmPage.confirmButton().click()
-
-    // AC3: "Then navigate to the Edit page And mark the sentence as active (The inactive label should be removed)"
-    // Persistence to the API is deferred to the main "Confirm changes" journey, same as marking a sentence
-    // inactive does - so the change is only staged in session here, and the removed label comes from that
-    // mutated session data being rendered immediately, not from a fresh API fetch.
     courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     courtCaseHearingDetailsPage.markAsActiveLink(happyPathChargeUuid).should('not.exist')
   })

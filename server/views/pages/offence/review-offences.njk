@@ -32,24 +32,7 @@
             {% for offence in unchangedOffences %}
                 {% set offenceId = 'offences.' + offence.index %}
                 {{
-                    offenceCard({
-                        offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                        offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-                        outcomeUpdated: offence.updatedOutcome,
-                        countNumber: offence.sentence.countNumber,
-                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                        convictionDate: offence.sentence.convictionDate | formatDate,
-                        aggravatingFactors: offence | getAggravatingFactors,
-                        isSentenced: offence.sentence,
-                        periodLengths: offence.sentence.periodLengths,
-                        sentenceStatus: offence.sentence.status if showSentenceStatusTag and offence.sentence,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        fineAmount: offence.sentence.fineAmount,
-                        mergedFromCase: offence.mergedFromCase,
-                        courtDetails: courtMap,
+                    offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, {}, sentenceTypeMap, courtMap, errors, {
                         actions: {
                             items: [
                                 {
@@ -64,10 +47,8 @@
                             items: [{
                                 html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/load-update-outcome?backTo=reviewOffences&bulkOffenceTobeUpdated=' + bulkOffenceTobeUpdated + '" data-qa="update-outcome-link-'+ offence.chargeUuid +'" class="govuk-link govuk-link--no-visited-state">Update outcome</a>'
                             }]
-                        },
-                        id: offenceId,
-                        errorMessage: errors | findErrorsBeginningWith(offenceId)
-                    })
+                        }
+                    }))
                 }}
             {% endfor %}
 
@@ -77,25 +58,10 @@
                 {% set multipleCountLinkHtml %}
                     <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence" data-qa="add-multiple-count-link-{{offence.chargeUuid}}">Add multiple counts</a>
                 {% endset %}
+                {% set offenceId = 'offences.' + offence.index %}
                 {{
-                    offenceCard({
-                        offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                        offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+                    offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, {}, sentenceTypeMap, courtMap, errors, {
                         outcomeUpdated: offence.updatedOutcome,
-                        countNumber: offence.sentence.countNumber,
-                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                        convictionDate: offence.sentence.convictionDate | formatDate,
-                        aggravatingFactors: offence | getAggravatingFactors,
-                        isSentenced: offence.sentence,
-                        periodLengths: offence.sentence.periodLengths,
-                        sentenceStatus: offence.sentence.status if showSentenceStatusTag and offence.sentence,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        fineAmount: offence.sentence.fineAmount,
-                        mergedFromCase: offence.mergedFromCase,
-                        courtDetails: courtMap,
                         actions: {
                             items: [
                                 {
@@ -111,7 +77,7 @@
                                 html: multipleCountLinkHtml
                             }]
                         }
-                    })
+                    }))
                 }}
             {% else %}
                 {{ govukInsetText({

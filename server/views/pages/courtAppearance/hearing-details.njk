@@ -210,36 +210,29 @@
 
       <h2 class="govuk-heading-m">Offences ({{ hearing.offences | length }})</h2>
 
-      {{ govukButton({
-        text: "Add an offence",
-        classes: "govuk-button--link",
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
-        attributes: { "data-qa": "addAnotherOffence" }
-      }) }}
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Add an offence",
+          classes: "govuk-button--link",
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
+          attributes: { "data-qa": "addAnotherOffence" }
+        }) }}
+
+        {% if hasActiveSentence %}
+          {{ govukButton({
+            text: "Mark sentences as inactive",
+            classes: "govuk-button--secondary",
+            href: selectSentencesToMarkAsInactiveLink,
+            attributes: { "data-qa": "markSentencesAsInactive" }
+          }) }}
+        {% endif %}
+      </div>
 
       <span data-qa="allOffences">
         {% for offence in hearing.offences %}
           {% set offenceId = 'offences.' + loop.index0 %}
           {{
-            offenceCard({
-              offenceCode: offence.offenceCode,
-              offenceName: offenceMap[offence.offenceCode],
-              offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-              offenceEndDate: offence.offenceEndDate | formatDate,
-              outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-              countNumber: offence.sentence.countNumber,
-              lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-              convictionDate: offence.sentence.convictionDate | formatDate,
-              aggravatingFactors: offence | getAggravatingFactors,
-              isSentenced: offence.sentence,
-              periodLengths: offence.sentence.periodLengths,
-              sentenceServeType: offence.sentence.sentenceServeType,
-              sentenceStatus: offence.sentence.status if showSentenceStatusTag,
-              consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-              sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
-              fineAmount: offence.sentence.fineAmount,
-              mergedFromCase: offence.mergedFromCase,
-              courtDetails: courtMap,
+            offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceDetailsMap, sentenceTypeMap, courtMap, errors, {
               consecutiveConcurrentLink: {
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or concurrent',
@@ -261,9 +254,13 @@
                   }
                 ]
               },
-              id: offenceId,
-              errorMessage: errors | findErrorsBeginningWith(offenceId)
-            })
+              listItems: {
+                classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                items: [{
+                  html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/sentencing/offences/' + offence.chargeUuid + '/check-mark-sentence-as-active" data-qa="mark-as-active-link-' + offence.chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Mark as active</a>'
+                }]
+              } if (showSentenceStatusTag and offence.sentence and offence.sentence.status === 'INACTIVE')
+            }))
           }}
         {% endfor %}
       </span>

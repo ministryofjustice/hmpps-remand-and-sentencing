@@ -1,26 +1,31 @@
-import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
+import type { CourtAppearance, TaskListItem, TaskListItemStatus, UrlParameters } from 'models'
 import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
 import AggravatingFactorsJourneyUrls from './AggravatingFactorsJourneyUrls'
+import JudicialFindingsJourneyUrls from './JudicialFindingsJourneyUrls'
+import config from '../../config'
 
 export default class SentencingTaskListModel extends TaskListModel {
-  constructor(
-    nomsId: string,
-    addOrEditCourtCase: string,
-    addOrEditCourtAppearance: string,
-    courtCaseReference: string,
-    appearanceReference: string,
-    courtAppearance: CourtAppearance,
-    caseReferenceSet: boolean,
-  ) {
-    super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
+  urlParameters: UrlParameters
+
+  constructor(urlParameters: UrlParameters, courtAppearance: CourtAppearance, caseReferenceSet: boolean) {
+    super(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+    )
+    this.urlParameters = urlParameters
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getWarrantInformationItem(courtAppearance),
       this.getOffenceSentencesItem(courtAppearance),
+      this.getAggravatingFactorsItem(courtAppearance),
     ]
-
-    this.items.push(this.getAggravatingFactorsItem(courtAppearance))
+    if (config.featureToggles.judicialFindings) {
+      this.items.push(this.getJudicialFindingsItem(courtAppearance))
+    }
     this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
@@ -266,6 +271,65 @@ export default class SentencingTaskListModel extends TaskListModel {
         classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
+    return {
+      tag: {
+        text: 'Optional',
+        classes: 'govuk-tag--grey',
+      },
+    }
+  }
+
+  getJudicialFindingsItem(courtAppearance: CourtAppearance): TaskListItem {
+    return {
+      title: {
+        text: 'Add domestic abuse judicial findings',
+        classes: 'govuk-link--no-visited-state',
+      },
+      hint: {
+        text: 'This can be found on the PCR',
+      },
+      href: this.getJudicialFindingsHref(courtAppearance),
+      status: this.getJudicialFindingsStatus(courtAppearance),
+    }
+  }
+
+  private getJudicialFindingsHref(courtAppearance: CourtAppearance): string {
+    let href
+    if (courtAppearance.offenceSentenceAccepted) {
+      href = JudicialFindingsJourneyUrls.selectOffenceWithJudicialFindings(this.urlParameters)
+    }
+    if (
+      courtAppearance.judicialFindingsAccepted ||
+      courtAppearance.offences.some(offence => offence.findingOfDomesticAbuse)
+    ) {
+      href = JudicialFindingsJourneyUrls.checkAnswers(this.urlParameters)
+    }
+    return href
+  }
+
+  private getJudicialFindingsStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    if (courtAppearance.offenceSentenceAccepted !== true) {
+      return {
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
+      }
+    }
+
+    if (courtAppearance.judicialFindingsAccepted) {
+      return {
+        text: 'Completed',
+      }
+    }
+
+    if (courtAppearance.offences.some(offence => offence.findingOfDomesticAbuse)) {
+      return {
+        tag: {
+          text: 'Incomplete',
+          classes: 'govuk-tag--blue',
+        },
+      }
+    }
+
     return {
       tag: {
         text: 'Optional',

@@ -20,8 +20,7 @@
 
             {% set hintHtml %}
                 {% if offence.offenceStartDate %}
-                    Committed on {{ offence.offenceStartDate | formatDate }}
-                    {{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
+                    {{offence | offenceDatesText }}
                     <br>
                 {% endif %}
                 {% if countDescription %}

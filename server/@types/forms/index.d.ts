@@ -202,6 +202,10 @@ declare module 'forms' {
     reason?: string
   }
 
+  export interface ConfirmMarkSentenceAsActiveForm {
+    confirmMarkAsActive?: string
+  }
+
   export interface UploadedDocumentForm {
     _csrf?: string
   }
@@ -309,5 +313,9 @@ declare module 'forms' {
     'offenceEndDate-day'?: string
     'offenceEndDate-month'?: string
     'offenceEndDate-year'?: string
+  }
+
+  export interface JudicialFindingOffenceForm {
+    chargeUuids?: string[]
   }
 }

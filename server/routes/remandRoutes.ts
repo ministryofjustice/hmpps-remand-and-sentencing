@@ -15,6 +15,8 @@ import AuditService from '../services/auditService'
 import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import DocumentManagementService from '../services/documentManagementService'
 import NonSentencingJourneyUrls from './data/NonSentencingJourneyUrls'
+import SentencingJourneyUrls from './data/SetencingJourneyUrls'
+import config from '../config'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -128,11 +130,8 @@ export default class RemandRoutes extends BaseRoutes {
       hasSentenceAfterOnOtherCourtAppearancePromise,
       appearanceSubtypePromise,
     ])
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+      hearing.offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
@@ -171,6 +170,11 @@ export default class RemandRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      hasActiveSentence:
+        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(
+        req.params as unknown as UrlParameters,
+      ),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })

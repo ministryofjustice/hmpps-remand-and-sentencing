@@ -7,6 +7,7 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
+  defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('SENTENCING')
 })
 
 afterEach(() => {

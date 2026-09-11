@@ -101,6 +101,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
     ...(sentence && { sentence }),
     ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
     ...{ replacingChargeUuid: offence.replacesOffenceUuid },
+    ...(offence.findingOfDomesticAbuse && { findingOfDomesticAbuse: offence.findingOfDomesticAbuse }),
   } as CreateCharge
 }
 
@@ -235,6 +236,7 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
     ...(charge.mergedFromCase && { mergedFromCase: charge.mergedFromCase }),
+    ...(charge.findingOfDomesticAbuse && { findingOfDomesticAbuse: charge.findingOfDomesticAbuse }),
   } as Offence
 }
 
@@ -249,6 +251,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, createChargeOrder
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
     ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence) }),
     ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
+    ...(pagedCharge.findingOfDomesticAbuse && { findingOfDomesticAbuse: pagedCharge.findingOfDomesticAbuse }),
   } as Offence
 }
 
@@ -500,9 +503,8 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
   sentenceConsecutiveToDetails: SentenceConsecutiveToDetails,
   offenceMap: { [key: string]: string },
   courtMap: { [key: string]: string },
-  isInSameAppearance: boolean,
 ): ConsecutiveToDetails {
-  let consecutiveToDetailsEntry = {
+  return {
     countNumber: sentenceConsecutiveToDetails.countNumber,
     offenceCode: sentenceConsecutiveToDetails.offenceCode,
     offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
@@ -514,16 +516,4 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
       sentenceConsecutiveToDetails.offenceEndDate &&
       dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
   } as ConsecutiveToDetails
-  if (isInSameAppearance) {
-    consecutiveToDetailsEntry = {
-      countNumber: sentenceConsecutiveToDetails.countNumber,
-      offenceCode: sentenceConsecutiveToDetails.offenceCode,
-      offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
-      offenceStartDate: dayjs(sentenceConsecutiveToDetails.offenceStartDate).format(config.dateFormat),
-      offenceEndDate:
-        sentenceConsecutiveToDetails.offenceEndDate &&
-        dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
-    }
-  }
-  return consecutiveToDetailsEntry
 }

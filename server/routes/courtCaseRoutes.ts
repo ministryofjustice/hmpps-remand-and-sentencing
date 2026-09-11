@@ -217,7 +217,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .flatMap(courtCase =>
           courtCase.latestCourtAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
         )
-        .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
+        .map(outcome => [outcome.outcomeUuid, outcome]),
     )
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(JourneyUrls.courtCases(nomsId), config.domain)
@@ -1527,15 +1527,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let model
     switch (courtAppearance.warrantType) {
       case 'SENTENCING':
-        model = new SentencingTaskListModel(
-          nomsId,
-          addOrEditCourtCase,
-          addOrEditCourtAppearance,
-          courtCaseReference,
-          appearanceReference,
-          courtAppearance,
-          caseReferenceSet,
-        )
+        model = new SentencingTaskListModel(urlParameters, courtAppearance, caseReferenceSet)
         break
       default:
         model = new NonSentencingTaskListModel(
@@ -2421,11 +2413,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitNextAppearanceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const { warrantType } = appearance
     const nextAppearanceDateForm = trimForm<CourtCaseNextAppearanceDateForm>(req.body)
     const errors = this.courtAppearanceService.setNextAppearanceDate(
       req.session,
@@ -2478,8 +2467,26 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
+
+    if (appearance.nextAppearanceCourtCode) {
+      return res.redirect(
+        JourneyUrls.nextAppearanceCourtName(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-select`,
+      JourneyUrls.nextAppearanceCourtSelect(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 

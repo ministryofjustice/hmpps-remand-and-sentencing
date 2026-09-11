@@ -26,6 +26,7 @@ import type {
   CriminalOfficeReferenceForm,
   DeleteDocumentForm,
   FinishedRecordingAppealsForm,
+  JudicialFindingOffenceForm,
   OffenceFinishedAddingForm,
   ReceivedCustodialSentenceForm,
   SentenceLengthForm,
@@ -42,7 +43,6 @@ import RemandAndSentencingService from './remandAndSentencingService'
 import { convertToTitleCase, sortByDateDesc, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
-import DocumentManagementService from './documentManagementService'
 import RefDataService from './refDataService'
 import { BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE, DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
 import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -50,7 +50,6 @@ import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remand
 export default class CourtAppearanceService {
   constructor(
     private readonly remandAndSentencingService: RemandAndSentencingService,
-    private readonly documentManagementService: DocumentManagementService,
     private readonly refDataService: RefDataService,
   ) {}
 
@@ -2164,6 +2163,38 @@ export default class CourtAppearanceService {
       })
       .map((charge, index) => chargeToOffence(charge, index))
       .forEach(offence => this.addOffence(session, nomsId, offence.chargeUuid, offence, courtAppearanceUuid))
+  }
+
+  setFindingsOfDomesticAbuse(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    judicialFindingOffenceForm: JudicialFindingOffenceForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      judicialFindingOffenceForm,
+      {
+        chargeUuids: 'required',
+      },
+      {
+        'required.chargeUuids': 'Select at least one offence to apply judicial findings to',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
+      courtAppearance.offences
+        .filter(offence => judicialFindingOffenceForm.chargeUuids.includes(offence.chargeUuid))
+        .forEach(offence => {
+          // eslint-disable-next-line no-param-reassign
+          offence.findingOfDomesticAbuse = true
+        })
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameters.nomsId] = courtAppearance
+    }
+    return errors
   }
 
   private generateBreachOfImprisonableOffenceOffence(chargeUuid: string): Offence {

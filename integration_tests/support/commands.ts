@@ -126,10 +126,16 @@ const getTaskList = subject => {
   const taskListElement = subject.get()[0]
 
   return [...taskListElement.querySelectorAll('.govuk-task-list__item')].map(item => {
-    const name = item
-      .querySelector('.govuk-task-list__name-and-hint')
+    const nameAndHint = item.querySelector('.govuk-task-list__name-and-hint')
+
+    const name = nameAndHint
+      .querySelector('.govuk-link--no-visited-state')
       .textContent.trim()
       .replace(/\s{2,}/g, ' ')
+    const hint = nameAndHint
+      .querySelector('.govuk-task-list__hint')
+      ?.textContent?.trim()
+      ?.replace(/\s{2,}/g, ' ')
     const status = item
       .querySelector('.govuk-task-list__status')
       .textContent.trim()
@@ -137,6 +143,7 @@ const getTaskList = subject => {
     return {
       name,
       status,
+      ...(hint && { hint }),
     }
   })
 }
@@ -219,6 +226,33 @@ const getListItems = subject => {
   )
 }
 
+const getOffenceCheckboxOptions = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const checkboxElement = subject.get()[0]
+  return [...checkboxElement.querySelectorAll('.govuk-checkboxes__item')].map(checkboxItemElement => {
+    const countNumber = checkboxItemElement
+      .querySelector('[data-qa="countNumber"]')
+      ?.textContent?.trim()
+      ?.replace(/\s{2,}/g, ' ')
+    const offence = checkboxItemElement
+      .querySelector('[data-qa="offence"]')
+      .textContent.trim()
+      .replace(/\s{2,}/g, ' ')
+    const offenceDate = checkboxItemElement
+      .querySelector('[data-qa="offenceDateHint"]')
+      ?.textContent?.trim()
+      ?.replace(/\s{2,}/g, ' ')
+    return {
+      offence,
+      ...(countNumber && { countNumber }),
+      ...(offenceDate && { offenceDate }),
+    }
+  })
+}
+
 Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('getActions', { prevSubject: true }, getActions)
@@ -227,6 +261,7 @@ Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
 Cypress.Commands.add('getHearingCardDetails', { prevSubject: true }, getHearingCardDetails)
 Cypress.Commands.add('getRadioOptions', { prevSubject: true }, getRadioOptions)
+Cypress.Commands.add('getOffenceCheckboxOptions', { prevSubject: true }, getOffenceCheckboxOptions)
 Cypress.Commands.add('getListItems', { prevSubject: true }, getListItems)
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(

@@ -51,6 +51,19 @@ describe('sessionRecoveryStore', () => {
       })
     })
 
+    it('only save recoverable fields', async () => {
+      const session = {
+        courtAppearances: { A1234BC: { appearanceUuid: '123' } },
+        doNotStoreThisField: 'do not store',
+      } as unknown as Session & Partial<SessionData>
+
+      await saveSession('user1', 'A1234BC', session)
+      const expectedSession = { courtAppearances: session.courtAppearances }
+      expect(mockClient.set).toHaveBeenCalledWith(expectedKey('user1', 'A1234BC'), JSON.stringify(expectedSession), {
+        EX: 1800,
+      })
+    })
+
     it('does not store username/nomsId in human-readable form in the key', async () => {
       await saveSession('user1', 'A1234BC', {} as unknown as Session & Partial<SessionData>)
 

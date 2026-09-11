@@ -21,6 +21,18 @@ export default class SentencingJourneyUrls {
     return `${this.basePath(urlParameters)}/cannot-mark-sentences-as-inactive`
   }
 
+  static confirmMarkSentenceAsActive = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/confirm-mark-sentence-as-active`
+  }
+
+  static cannotMarkSentenceAsActiveInactiveCase = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-mark-sentence-as-active-inactive-case`
+  }
+
+  static cannotMarkSentenceAsActiveConsecutiveChain = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-mark-sentence-as-active-consecutive-chain`
+  }
+
   private static basePath(urlParameters: UrlParameters): string {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/sentencing`
   }

@@ -37,6 +37,7 @@ import {
 } from '../utils/mappingUtils'
 import RefDataService from '../services/refDataService'
 import config from '../config'
+import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -703,21 +704,11 @@ export default class BreachRoutes extends BaseRoutes {
         },
         [[], []] as [typeof offences, typeof offences],
       )
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      hearing.offences,
       consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
-    )
-
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      urlParameters.nomsId,
-      offenceMap,
-      urlParameters.appearanceReference,
     )
 
     const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
@@ -747,14 +738,14 @@ export default class BreachRoutes extends BaseRoutes {
       appearanceTypeDescription,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      hasActiveSentence:
+        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
       breachTerm,

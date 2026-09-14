@@ -318,4 +318,8 @@ declare module 'forms' {
   export interface JudicialFindingOffenceForm {
     chargeUuids?: string[]
   }
+
+  export interface JudicialFindingCheckAnswersForm {
+    finishedAddingJudicialFindings?: string
+  }
 }

@@ -7,6 +7,7 @@ declare namespace Cypress {
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
     getTable()
     getSummaryList()
+    getSummaryCardLists()
     getActions()
     getTaskList()
     getOffenceCards()

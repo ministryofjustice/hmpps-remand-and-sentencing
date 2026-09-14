@@ -7,8 +7,8 @@ export default class JudicialFindingsJourneyUrls {
     return `${this.basePath(urlParameters)}/select-offence-with-judicial-findings${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
-  static checkAnswers = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/check-answers`
+  static checkAnswers = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `${this.basePath(urlParameters)}/check-answers${this.getQueryParameters(hasErrors)}`
   }
 
   private static basePath(urlParameters: UrlParameters): string {

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import type { UrlParameters } from 'models'
-import type { JudicialFindingOffenceForm } from 'forms'
+import type { JudicialFindingCheckAnswersForm, JudicialFindingOffenceForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -91,6 +91,69 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
   }
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/judicialFindings/check-answers')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const [judicialFindingsOffences, offencesWithNoJudicialFindings] = offences
+      .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
+      .reduce(
+        ([judicialFindingsList, offencesWithNoJudicialFindingsList], offence) => {
+          if (offence.findingOfDomesticAbuse) {
+            return [[...judicialFindingsList, offence], offencesWithNoJudicialFindingsList]
+          }
+          if (offence.sentence) {
+            return [judicialFindingsList, [...offencesWithNoJudicialFindingsList, offence]]
+          }
+          return [judicialFindingsList, offencesWithNoJudicialFindingsList]
+        },
+        [[], []] as [typeof offences, typeof offences],
+      )
+
+    const offenceCodes = judicialFindingsOffences.map(offence => offence.offenceCode)
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      offenceCodes,
+      req.user.username,
+      offencesToOffenceDescriptions(judicialFindingsOffences, []),
+    )
+
+    return res.render('pages/judicialFindings/check-answers', {
+      ...urlParameters,
+      offenceMap,
+      judicialFindingsOffences,
+      canSelectAnother: offencesWithNoJudicialFindings.length,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const judicialFindingCheckAnswersForm = trimForm<JudicialFindingCheckAnswersForm>(req.body)
+    const errors = this.courtAppearanceService.setJudicialFindingsAccepted(
+      req.session,
+      urlParameters,
+      judicialFindingCheckAnswersForm,
+    )
+    if (errors.length) {
+      req.flash('errors', errors)
+      req.flash('judicialFindingCheckAnswersForm', { ...judicialFindingCheckAnswersForm })
+      return res.redirect(JudicialFindingsJourneyUrls.checkAnswers(urlParameters, 'true'))
+    }
+    return res.redirect(
+      JourneyUrls.taskList(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+      ),
+    )
+  }
+
+  public getOffenceDeleteJudicialFindings: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/judicialFindings/offence-delete-findings')
   }
 }

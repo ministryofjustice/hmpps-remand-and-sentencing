@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class CannotMarkSentencesAsInactivePage extends Page {
   constructor() {
-    super('You cannot mark a sentence inactive with active consecutive sentences')
+    super('You cannot mark a sentence as inactive with active consecutive sentences')
   }
 
   activeConsecutiveOffences = (): PageElement => cy.get('[data-qa^="activeConsecutiveOffence-"]')

@@ -56,11 +56,24 @@ describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
             status: 'INACTIVE',
           },
         },
+        {
+          chargeUuid: '8',
+          offenceCode: 'PU86003',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '9',
+            countNumber: '4',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+          },
+        },
       ],
     })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
       CC12345: 'Some offence description',
       AB6789: 'Another offence description',
+      PU86003: 'Affray',
     })
     defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue([])
   })
@@ -82,7 +95,19 @@ describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa="markAsInactiveOptions"] input[type="checkbox"]')).toHaveLength(2)
+        expect($('[data-qa="markAsInactiveOptions"] input[type="checkbox"]')).toHaveLength(3)
+      })
+  })
+
+  it('shows the correct consecutive/concurrent/forthwith hint for each sentence', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-checkboxes__item').eq(0).text()).toContain('Consecutive to Count 2')
+        expect($('.govuk-checkboxes__item').eq(1).text()).toContain('Concurrent')
+        expect($('.govuk-checkboxes__item').eq(2).text()).toContain('Forthwith')
       })
   })
 
@@ -259,7 +284,7 @@ describe('GET /sentencing/provide-reason-for-marking-sentences-as-inactive', () 
       })
   })
 
-  it('prepopulates the reason textarea from a reason already stored on the selected sentence', async () => {
+  it('does not prepopulate the reason textarea from a reason previously stored on the selected sentence', async () => {
     defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['3'])
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: 'appearance-uuid',
@@ -292,7 +317,7 @@ describe('GET /sentencing/provide-reason-for-marking-sentences-as-inactive', () 
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa="reason-textarea"]').text().trim()).toEqual('Sentence quashed on appeal')
+        expect($('[data-qa="reason-textarea"]').text().trim()).toEqual('')
       })
   })
 })
@@ -410,7 +435,9 @@ describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('h1').text().trim()).toEqual('You cannot mark a sentence inactive with active consecutive sentences')
+        expect($('h1').text().trim()).toEqual(
+          'You cannot mark a sentence as inactive with active consecutive sentences',
+        )
       })
   })
 

@@ -28,6 +28,8 @@
                 {% endif %}
                 {% if offence.sentence.consecutiveToSentenceUuid %}
                     Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}
+                {% elif offence.sentence.sentenceServeType === 'FORTHWITH' %}
+                    Forthwith
                 {% else %}
                     Concurrent
                 {% endif %}

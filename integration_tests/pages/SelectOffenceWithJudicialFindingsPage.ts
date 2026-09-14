@@ -6,4 +6,6 @@ export default class SelectOffenceWithJudicialFindingsPage extends Page {
   }
 
   checkboxes = (): PageElement => cy.get('.govuk-checkboxes')
+
+  checkbox = (index: number): PageElement => cy.get(`[data-qa=checkbox-${index}]`)
 }

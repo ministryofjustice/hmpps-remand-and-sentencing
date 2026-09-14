@@ -26,6 +26,7 @@ import type {
   CriminalOfficeReferenceForm,
   DeleteDocumentForm,
   FinishedRecordingAppealsForm,
+  JudicialFindingCheckAnswersForm,
   JudicialFindingOffenceForm,
   OffenceFinishedAddingForm,
   ReceivedCustodialSentenceForm,
@@ -2191,6 +2192,35 @@ export default class CourtAppearanceService {
           // eslint-disable-next-line no-param-reassign
           offence.findingOfDomesticAbuse = true
         })
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameters.nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setJudicialFindingsAccepted(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    judicialFindingCheckAnswersForm: JudicialFindingCheckAnswersForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      judicialFindingCheckAnswersForm,
+      {
+        finishedAddingJudicialFindings: 'required',
+      },
+      {
+        'required.finishedAddingJudicialFindings': 'You must select whether you have finished adding judicial findings',
+      },
+    )
+
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
+      courtAppearance.judicialFindingsAccepted =
+        judicialFindingCheckAnswersForm.finishedAddingJudicialFindings === 'true'
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameters.nomsId] = courtAppearance
     }

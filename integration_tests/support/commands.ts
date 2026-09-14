@@ -99,6 +99,23 @@ const getActions = card => {
     .replace(/\s{2,}/g, ' ')
 }
 
+const getSummaryCardLists = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const element = subject.get()[0]
+
+  return [...element.querySelectorAll('.govuk-summary-card')].map(summaryCard => {
+    const summaryListRows = summaryListElementToObject(summaryCard)
+    const cardTitle = summaryCard
+      .querySelector('.govuk-summary-card__title')
+      .textContent.trim()
+      .replace(/\s{2,}/g, ' ')
+    return { cardTitle, ...summaryListRows }
+  })
+}
+
 const summaryListElementToObject = summaryListElement => {
   const rows = [...summaryListElement.querySelectorAll('.govuk-summary-list__row')].map(row => {
     const key = row
@@ -255,6 +272,7 @@ const getOffenceCheckboxOptions = subject => {
 
 Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
+Cypress.Commands.add('getSummaryCardLists', { prevSubject: true }, getSummaryCardLists)
 Cypress.Commands.add('getActions', { prevSubject: true }, getActions)
 Cypress.Commands.add('getTaskList', { prevSubject: true }, getTaskList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)

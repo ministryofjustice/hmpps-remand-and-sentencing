@@ -1288,6 +1288,7 @@ export default class OffenceService {
     if (confirmMarkSentenceAsActiveForm.confirmMarkAsActive === 'true') {
       const sentence = this.getSentence(offence)
       sentence.status = 'ACTIVE'
+      sentence.reason = undefined
       // eslint-disable-next-line no-param-reassign
       offence.sentence = sentence
     }

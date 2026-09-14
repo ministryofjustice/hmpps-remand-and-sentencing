@@ -3,6 +3,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 
 
 {% set pageTitle = applicationName + " - Judicial findings check answers" %}
@@ -10,7 +12,7 @@
 {% block pageContent %}
     {% include "../../partials/judicialFindingsCaption.njk" %}
     <h1 class="govuk-heading-l">Judicial findings have been applied</h1>
-    <p class="govuk-body">A judicial finding of domestic abuse has been applied to {{ judicialFindingsOffences.length }} offence{% if judicialFindingsOffences.length > 1%}s{% endif %}.
+    <p class="govuk-body">A judicial finding of domestic abuse has been applied to {{ judicialFindingsOffences.length }} offence{% if judicialFindingsOffences.length !== 1%}s{% endif %}.</p>
     <h2 class="govuk-heading-m">Offences with judicial findings ({{ judicialFindingsOffences.length }})</h2>
     {{ govukButton({
         text: "Select another offence" ,
@@ -58,16 +60,26 @@
                     },
                     actions: {
                         items: [{
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/judicial-findings/offences/" + offence.chargeUuid + "/delete-judicial-findings",
-                        text: "Delete",
-                        visuallyHiddenText: "delete",
-                        classes: "govuk-link--no-visited-state"
+                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/judicial-findings/offences/" + offence.chargeUuid + "/delete-judicial-findings",
+                            text: "Delete",
+                            visuallyHiddenText: "delete",
+                            classes: "govuk-link--no-visited-state",
+                            attributes: {
+                                "data-qa": "delete-offence-link-" + loop.index0
+                            }
                     }]
                     }
                 },
                 rows: summaryRows
             })
         }}
+    {% else %}
+        {{ govukInsetText({
+            text: 'No judicial findings have been added.',
+            attributes: {
+                "data-qa": "noJudicialFindingsInset"
+            }
+        }) }}
     {% endfor %}
 
     <form method="post">

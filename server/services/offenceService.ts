@@ -425,6 +425,7 @@ export default class OffenceService {
           return { errors, outcome, hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance }
         }
         delete offence.aggravatingFactors
+        delete offence.findingOfDomesticAbuse
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -461,6 +462,7 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        delete offence.findingOfDomesticAbuse
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome

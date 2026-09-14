@@ -2227,6 +2227,18 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  deleteOffenceJudicialFindings(session: Partial<SessionData>, urlParameters: UrlParameters) {
+    const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
+    const offenceIndex = courtAppearance.offences.findIndex(offence => offence.chargeUuid === urlParameters.chargeUuid)
+    if (offenceIndex !== -1) {
+      const offence = courtAppearance.offences[offenceIndex]
+      delete offence.findingOfDomesticAbuse
+      courtAppearance.offences[offenceIndex] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameters.nomsId] = courtAppearance
+    }
+  }
+
   private generateBreachOfImprisonableOffenceOffence(chargeUuid: string): Offence {
     return {
       offenceCode: BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE,

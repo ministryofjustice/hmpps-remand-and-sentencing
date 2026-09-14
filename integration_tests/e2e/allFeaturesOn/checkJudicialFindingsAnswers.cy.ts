@@ -3,6 +3,7 @@ import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseC
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
+import DeleteJudicialFindingsOffencePage from '../../pages/DeleteJudicialFindingsOffencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import Page from '../../pages/page'
 import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
@@ -86,5 +87,14 @@ context('Select offence with judicial findings Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem You must select whether you have finished adding judicial findings')
+  })
+
+  it('deleting only selected judicial findings offence results in empty state', () => {
+    checkJudicialFindingsAnswersPage.deleteOffenceLink(0).click()
+    const deleteJudicialFindingsOffencePage = Page.verifyOnPage(DeleteJudicialFindingsOffencePage)
+    deleteJudicialFindingsOffencePage.deleteButton().click()
+    checkJudicialFindingsAnswersPage
+      .noJudicialFindingsInset()
+      .should('contain.text', 'No judicial findings have been added.')
   })
 })

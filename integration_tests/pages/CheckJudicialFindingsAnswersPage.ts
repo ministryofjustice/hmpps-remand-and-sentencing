@@ -6,4 +6,8 @@ export default class CheckJudicialFindingsAnswersPage extends Page {
   }
 
   pageContent = (): PageElement => cy.get('[data-qa="page-content"]')
+
+  deleteOffenceLink = (index: number): PageElement => cy.get(`[data-qa="delete-offence-link-${index}"`)
+
+  noJudicialFindingsInset = (): PageElement => cy.get('[data-qa="noJudicialFindingsInset"]')
 }

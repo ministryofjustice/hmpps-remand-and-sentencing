@@ -154,6 +154,28 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
   }
 
   public getOffenceDeleteJudicialFindings: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/judicialFindings/offence-delete-findings')
+    const urlParameters = req.params as unknown as UrlParameters
+    const offence = this.courtAppearanceService.getOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.chargeUuid,
+      urlParameters.appearanceReference,
+    )
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
+    return res.render('pages/judicialFindings/offence-delete-findings', {
+      ...urlParameters,
+      offenceDetails,
+      offence,
+    })
+  }
+
+  public submitOffenceDeleteJudicialFindings: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.deleteOffenceJudicialFindings(req.session, urlParameters)
+    return res.redirect(JudicialFindingsJourneyUrls.checkAnswers(urlParameters))
   }
 }

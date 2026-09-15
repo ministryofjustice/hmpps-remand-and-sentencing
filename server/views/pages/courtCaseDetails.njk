@@ -26,6 +26,16 @@
   }) }}
 {% endif %}
 
+{% if courtCaseStatusChangeSuccessMessage %}
+  {{ govukNotificationBanner({
+    text: courtCaseStatusChangeSuccessMessage,
+    type: "success",
+    attributes: {
+        "data-qa": "court-case-status-change-success-banner"
+    }
+  }) }}
+{% endif %}
+
     {{ super() }}
     <div class="govuk-grid-row">
 

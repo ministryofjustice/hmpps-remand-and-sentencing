@@ -125,6 +125,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       offenceMap,
       judicialFindingsOffences,
       canSelectAnother: offencesWithNoJudicialFindings.length !== 0,
+      canAccept: judicialFindingsOffences.length !== 0,
       errors: req.flash('errors') || [],
     })
   }

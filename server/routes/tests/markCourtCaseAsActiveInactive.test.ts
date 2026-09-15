@@ -23,7 +23,7 @@ describe('GET /confirm-mark-court-case-as-inactive', () => {
     expect($('[data-qa="confirm-mark-court-case-status-heading"]').text().trim()).toEqual(
       'Are you sure you want to mark this court case as inactive?',
     )
-    expect($('[data-qa="cancel-and-go-back-button"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
+    expect($('[data-qa="back-link"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
   })
 })
 
@@ -59,6 +59,6 @@ describe('GET /cannot-mark-court-case-as-inactive-active-sentences', () => {
     expect($('[data-qa="cannot-mark-court-case-as-inactive-heading"]').text().trim()).toEqual(
       'You cannot mark a case with active sentences as inactive',
     )
-    expect($('[data-qa="cancel-and-go-back-button"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
+    expect($('[data-qa="back-link"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
   })
 })

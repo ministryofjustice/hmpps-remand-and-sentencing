@@ -1,5 +1,4 @@
 {% extends "../../partials/backLinkLayout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageHeading = "Are you sure you want to mark this court case as inactive?" if targetStatus == "INACTIVE" else "Are you sure you want to mark this court case as active?" %}
 {% set pageTitle = applicationName + " - " + pageHeading %}

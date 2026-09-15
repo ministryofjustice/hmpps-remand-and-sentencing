@@ -182,7 +182,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const addOrEditCourtCase = req.params.caseId ? 'edit-court-case' : 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'
 
-    if (appearance.outcome || appearance.warrantType === 'SENTENCING') {
+    if (appearance.warrantType === 'SENTENCING') {
       return res.redirect(
         JourneyUrls.taskList(nomsId, addOrEditCourtCase, caseId, addOrEditCourtAppearance, courtAppearanceUuid),
       )

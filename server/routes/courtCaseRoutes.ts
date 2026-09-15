@@ -1743,7 +1743,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
 
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !isHmctsJourneyWithChargeData) {
       return res.redirect(
         JourneyUrls.overallCaseOutcomeAppliedAll(
           nomsId,

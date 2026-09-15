@@ -13,7 +13,6 @@ import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearance
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
-import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
@@ -93,12 +92,10 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage
+      .radioSelector('6da892fa-d85e-44de-95d4-a7f06c3a2dcb|85ffc6bf-6a2c-4f2b-8db8-5b466b602537')
+      .should('be.checked')
     courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseAddHearingInformationPage = Page.verifyOnPage(CourtCaseOverallCaseOutcomeAppliedAllPage)
-    courtCaseAddHearingInformationPage.radioLabelContains('No').click()
-    courtCaseAddHearingInformationPage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

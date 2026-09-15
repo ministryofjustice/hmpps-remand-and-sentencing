@@ -81,43 +81,44 @@
             }
         }) }}
     {% endfor %}
-
-    <form method="post">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {{ govukRadios({
-            id: "finishedAddingJudicialFindings",
-            name: "finishedAddingJudicialFindings",
-            fieldset: {
-                legend: {
-                    text: "Have you finished adding judicial findings?",
-                    classes: "govuk-fieldset__legend--m"
-                }
-            },
-            errorMessage: errors | findError('finishedAddingJudicialFindings'),
-            items: [
-                {
-                    value: "true",
-                    text: "Yes, I've finished adding judicial findings",
-                    attributes: {
-                    "data-qa": "finishAddingRadio"
-                }
+    {% if canAccept %}
+        <form method="post">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukRadios({
+                id: "finishedAddingJudicialFindings",
+                name: "finishedAddingJudicialFindings",
+                fieldset: {
+                    legend: {
+                        text: "Have you finished adding judicial findings?",
+                        classes: "govuk-fieldset__legend--m"
+                    }
                 },
-                {
-                    value: "false",
-                    text: "No, I'll come back later",
-                    attributes: {
-                    "data-qa": "notFinishedRadio"
-                }
-                }
-            ]
-        }) }}
-
-        <div class="govuk-button-group">
-            {{ govukButton({
-                text: "Continue",
-                attributes: {  'data-qa': 'continue-button' }
+                errorMessage: errors | findError('finishedAddingJudicialFindings'),
+                items: [
+                    {
+                        value: "true",
+                        text: "Yes, I've finished adding judicial findings",
+                        attributes: {
+                        "data-qa": "finishAddingRadio"
+                    }
+                    },
+                    {
+                        value: "false",
+                        text: "No, I'll come back later",
+                        attributes: {
+                        "data-qa": "notFinishedRadio"
+                    }
+                    }
+                ]
             }) }}
-            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
-        </div>
-    </form>
+
+            <div class="govuk-button-group">
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+                {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

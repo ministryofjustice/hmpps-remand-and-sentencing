@@ -2234,6 +2234,7 @@ export default class CourtAppearanceService {
       const offence = courtAppearance.offences[offenceIndex]
       delete offence.findingOfDomesticAbuse
       courtAppearance.offences[offenceIndex] = offence
+      delete courtAppearance.judicialFindingsAccepted
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameters.nomsId] = courtAppearance
     }

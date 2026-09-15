@@ -51,6 +51,7 @@ describe('GET /confirm-mark-court-case-as-:targetStatus with an invalid status',
 
 describe('GET /cannot-mark-court-case-as-inactive-active-sentences', () => {
   it('renders the blocking page content', async () => {
+
     const res = await request(app)
       .get('/person/A1234AB/edit-court-case/1/cannot-mark-court-case-as-inactive-active-sentences')
       .expect('Content-Type', /html/)

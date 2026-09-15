@@ -1027,7 +1027,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offences: selectedOffences,
       countNumberBySentenceUuid,
       showHearingDetails: selectedOffences.length > 1,
-      reason: markSentencesAsInactiveReasonForm.reason ?? selectedOffences[0]?.sentence?.reason,
+      reason: markSentencesAsInactiveReasonForm.reason,
       errors: req.flash('errors') || [],
     })
   }

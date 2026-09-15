@@ -97,4 +97,12 @@ context('Select offence with judicial findings Page', () => {
       .noJudicialFindingsInset()
       .should('contain.text', 'No judicial findings have been added.')
   })
+
+  it('selecting all offences disabled the button', () => {
+    checkJudicialFindingsAnswersPage.selectAnotherOffenceButton().click()
+    const selectOffenceWithJudicialFindingsPage = Page.verifyOnPage(SelectOffenceWithJudicialFindingsPage)
+    selectOffenceWithJudicialFindingsPage.checkbox(0).click()
+    selectOffenceWithJudicialFindingsPage.continueButton().click()
+    checkJudicialFindingsAnswersPage.selectAnotherOffenceButton().should('have.attr', 'disabled')
+  })
 })

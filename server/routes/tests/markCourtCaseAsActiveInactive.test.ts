@@ -50,7 +50,7 @@ describe('GET /confirm-mark-court-case-as-:targetStatus with an invalid status',
 })
 
 describe('GET /cannot-mark-court-case-as-inactive-active-sentences', () => {
-  it('renders the blocking page', async () => {
+  it('renders the blocking page content', async () => {
     const res = await request(app)
       .get('/person/A1234AB/edit-court-case/1/cannot-mark-court-case-as-inactive-active-sentences')
       .expect('Content-Type', /html/)
@@ -59,6 +59,23 @@ describe('GET /cannot-mark-court-case-as-inactive-active-sentences', () => {
     expect($('[data-qa="cannot-mark-court-case-as-inactive-heading"]').text().trim()).toEqual(
       'You cannot mark a case with active sentences as inactive',
     )
+    const bodyText = $('.govuk-grid-column-two-thirds').text()
+    expect(bodyText).toContain('A case with active sentences cannot be marked as inactive.')
+    expect(bodyText).toContain(
+      'You need to inactivate all sentences in this case in order to mark the case as inactive.',
+    )
+    expect(bodyText).toContain('What to do next')
+    expect(bodyText).toContain(
+      'Edit the sentences on the latest court hearing to make them inactive. Then come back and try again.',
+    )
+  })
+
+  it('links the "Cancel and go back" button and the "Back" link to the page of entry', async () => {
+    const res = await request(app)
+      .get('/person/A1234AB/edit-court-case/1/cannot-mark-court-case-as-inactive-active-sentences')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    expect($('[data-qa="cancel-and-go-back-button"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
     expect($('[data-qa="back-link"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
   })
 })

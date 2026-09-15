@@ -5557,111 +5557,6 @@ export default {
     })
   },
 
-  stubHmctsRemandCourtOffenceData({ nextAppearanceDate = '2000-01-01' }: { nextAppearanceDate: string }) {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPath:
-          '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/prisoner/A1234AB/appearance',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
-          outcome: null,
-          courtCode: 'ACCRYC',
-          courtCaseReference: 'C894623',
-          criminalAppealOfficeReference: null,
-          appearanceDate: '2026-07-05',
-          warrantType: 'NON_SENTENCING',
-          nextCourtAppearance: {
-            appearanceDate: nextAppearanceDate,
-            appearanceTime: '10:00:00',
-            courtCode: 'STHLMC',
-            appearanceType: {
-              appearanceTypeUuid: '00000000-0000-0000-0000-000000000000',
-              description: 'Unknown appearance type',
-              displayOrder: 1,
-              hasSubtypes: false,
-            },
-            futureSkeletonAppearanceUuid: '00000000-0000-0000-0000-000000000000',
-            courtAppearanceSubType: null,
-          },
-          charges: [
-            {
-              chargeUuid: 'a2451348-37ec-4684-b063-95e529bbca0c',
-              offenceCode: 'FS13012',
-              offenceStartDate: '2026-06-06',
-              offenceEndDate: null,
-              outcome: {
-                outcomeUuid: '6d2eb21d-ec02-48fa-9fcd-02e73b8e45ca',
-                outcomeName: 'Withdrawn',
-                nomisCode: '2051',
-                outcomeType: 'NON_CUSTODIAL',
-                displayOrder: 150,
-                dispositionCode: 'FINAL',
-                status: 'ACTIVE',
-              },
-              aggravatingFactors: [],
-              sentence: null,
-              legacyData: null,
-              mergedFromCase: null,
-              createdAt: '2026-09-04T14:44:35.884615502+01:00',
-            },
-            {
-              chargeUuid: 'f47c6d18-3c56-402f-a18d-9bf5415a4c3e',
-              offenceCode: 'BC90005',
-              offenceStartDate: '2026-06-06',
-              offenceEndDate: null,
-              outcome: {
-                outcomeUuid: '315280e5-d53e-43b3-8ba6-44da25676ce2',
-                outcomeName: 'Remand in custody',
-                nomisCode: '4531',
-                outcomeType: 'REMAND',
-                displayOrder: 570,
-                dispositionCode: 'INTERIM',
-                status: 'ACTIVE',
-              },
-              aggravatingFactors: [],
-              sentence: null,
-              legacyData: null,
-              mergedFromCase: null,
-              createdAt: '2026-09-04T14:44:35.886682554+01:00',
-            },
-            {
-              chargeUuid: '3f0dd738-91e4-4557-bb33-0abd317b940f',
-              offenceCode: 'PS90037',
-              offenceStartDate: '2026-06-06',
-              offenceEndDate: null,
-              outcome: null,
-              aggravatingFactors: [],
-              sentence: null,
-              legacyData: null,
-              mergedFromCase: null,
-              createdAt: '2026-09-04T14:44:35.886682554+01:00',
-            },
-          ],
-          documents: [
-            {
-              documentUUID: 'doc-uuid-1',
-              fileName: 'court-document.pdf',
-              documentType: 'HMCTS_WARRANT',
-              uploadedAt: '2024-06-01T10:00:00Z',
-              uploadedBy: 'user1',
-              courtDataIngested: false,
-            },
-          ],
-          overallConvictionDate: null,
-          legacyData: null,
-          periodLengths: [],
-          source: 'DPS',
-          deleteStatus: 'SUPPORTED',
-        },
-      },
-    })
-  },
-
   stubHmctsRemandOffenceCourtData({ nextAppearanceDate = '2000-01-01' }: { nextAppearanceDate: string }) {
     return stubFor({
       request: {
@@ -5674,7 +5569,14 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
-          outcome: null,
+          outcome: {
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            outcomeName: 'Remanded in custody',
+            nomisCode: '3452',
+            outcomeType: 'REMAND',
+            displayOrder: 10,
+          },
           courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',
           criminalAppealOfficeReference: null,

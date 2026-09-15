@@ -139,21 +139,6 @@ describe('GET review new documents start', () => {
         expect(defaultServices.courtAppearanceService.setSessionCourtAppearance).toHaveBeenCalled()
       })
   })
-
-  it('redirects to the task list when the appearance already has an outcome', () => {
-    defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue({
-      ...appearance,
-      outcome: { outcomeUuid: 'outcome-1' },
-    } as never)
-
-    return request(app)
-      .get('/person/A1234AB/review-new-documents/hearing1/start')
-      .expect(302)
-      .expect(
-        'Location',
-        /^\/person\/A1234AB\/add-court-case\/[0-9a-f-]+\/add-court-appearance\/[0-9a-f-]+\/task-list$/,
-      )
-  })
 })
 
 it('back link returns to the review new documents page, not the start route', () => {

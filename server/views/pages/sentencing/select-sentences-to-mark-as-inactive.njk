@@ -14,17 +14,21 @@
             {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
             {% set labelHtml %}
                 <div data-qa="markAsInactiveOffence-{{ loop.index0 }}">
-                    {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                    {% if countDescription %}
+                        {{ countDescription }}
+                    {% else %}
+                        {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                    {% endif %}
                 </div>
             {% endset %}
 
             {% set hintHtml %}
+                {% if countDescription %}
+                    {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}<br>
+                {% endif %}
                 {% if offence.offenceStartDate %}
                     {{offence | offenceDatesText }}
                     <br>
-                {% endif %}
-                {% if countDescription %}
-                    {{ countDescription }}<br>
                 {% endif %}
                 {% if offence.sentence.consecutiveToSentenceUuid %}
                     Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}

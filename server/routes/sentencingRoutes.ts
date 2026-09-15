@@ -959,7 +959,13 @@ export default class SentencingRoutes extends BaseRoutes {
       req.user.username,
       offencesToOffenceDescriptions(hearing.offences, []),
     )
-    const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
+    const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
+    const countNumberBySentenceUuid = {
+      ...this.countNumberBySentenceUuid(hearing.offences),
+      ...Object.fromEntries(
+        consecutiveToSentenceDetailsFromApi.sentences.map(sentence => [sentence.sentenceUuid, sentence.countNumber]),
+      ),
+    }
 
     return res.render('pages/sentencing/select-sentences-to-mark-as-inactive', {
       ...urlParameters,

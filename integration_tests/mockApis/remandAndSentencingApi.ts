@@ -2178,9 +2178,11 @@ export default {
   stubGetCourtCaseDetails: ({
     courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa',
     status = 'ACTIVE',
+    appearances = [],
   }: {
     courtCaseUuid?: string
     status?: string
+    appearances?: object[]
   } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2194,8 +2196,26 @@ export default {
           prisonerId: 'A1234AB',
           courtCaseUuid,
           status,
-          appearances: [],
+          latestAppearance: appearances[0],
+          appearances,
         },
+      },
+    })
+  },
+
+  stubUpdateCourtCaseStatus: ({
+    courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa',
+  }: {
+    courtCaseUuid?: string
+  } = {}): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/status`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       },
     })
   },

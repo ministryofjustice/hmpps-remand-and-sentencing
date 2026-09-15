@@ -27,12 +27,16 @@
 {% endif %}
 
 {% if courtCaseStatusChangeSuccessMessage %}
+
+{% set courtCaseStatusChangeHtml %}
+  <h3 class="govuk-notification-banner__heading" data-qa="court-case-status-change-success-banner">
+    {{ courtCaseStatusChangeSuccessMessage }}
+  </h3>
+{% endset %}
+
   {{ govukNotificationBanner({
-    text: courtCaseStatusChangeSuccessMessage,
-    type: "success",
-    attributes: {
-        "data-qa": "court-case-status-change-success-banner"
-    }
+    html: courtCaseStatusChangeHtml,
+    type: "success"
   }) }}
 {% endif %}
 

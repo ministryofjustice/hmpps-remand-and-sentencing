@@ -589,7 +589,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
     }
     if (targetStatus === 'active') {
-      req.flash('courtCaseStatusChangeSuccess', 'This court case has been marked as active.')
+      req.flash('courtCaseStatusChangeSuccess', 'Court case successfully marked active')
       return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
     }
     return res.redirect(

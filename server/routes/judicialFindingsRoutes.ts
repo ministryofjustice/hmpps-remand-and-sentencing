@@ -171,6 +171,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       ...urlParameters,
       offenceDetails,
       offence,
+      cancelLink: JudicialFindingsJourneyUrls.checkAnswers(urlParameters),
     })
   }
 

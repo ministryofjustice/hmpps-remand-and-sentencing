@@ -206,6 +206,10 @@ declare module 'forms' {
     confirmMarkAsActive?: string
   }
 
+  export interface ConfirmMarkCourtCaseStatusForm {
+    confirmMarkCourtCaseStatus?: string
+  }
+
   export interface UploadedDocumentForm {
     _csrf?: string
   }

@@ -1,0 +1,12 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+
+{% set pageTitle = applicationName + " - Provide a reason you want to mark this case as inactive" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" data-qa="provide-reason-for-marking-court-case-as-inactive-heading">Provide a reason you want to mark this case as inactive</h1>
+        </div>
+    </div>
+{% endblock %}

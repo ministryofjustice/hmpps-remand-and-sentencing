@@ -44,6 +44,7 @@ import {
   SentenceTypeChargeOutcomes,
   SentenceTypeDetails,
   SentenceTypeIsValid,
+  UpdateCourtCaseStatus,
   UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
@@ -66,6 +67,20 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<CreateCourtCaseResponse>
+  }
+
+  async updateCourtCaseStatus(
+    courtCaseUuid: string,
+    updateCourtCaseStatus: UpdateCourtCaseStatus,
+    username: string,
+  ): Promise<void> {
+    return (await this.put(
+      {
+        data: updateCourtCaseStatus,
+        path: `/court-case/${courtCaseUuid}/status`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<void>
   }
 
   async searchCourtCases(

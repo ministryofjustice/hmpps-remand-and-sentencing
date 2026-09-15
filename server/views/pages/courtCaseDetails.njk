@@ -26,6 +26,20 @@
   }) }}
 {% endif %}
 
+{% if courtCaseStatusChangeSuccessMessage %}
+
+{% set courtCaseStatusChangeHtml %}
+  <h3 class="govuk-notification-banner__heading" data-qa="court-case-status-change-success-banner">
+    {{ courtCaseStatusChangeSuccessMessage }}
+  </h3>
+{% endset %}
+
+  {{ govukNotificationBanner({
+    html: courtCaseStatusChangeHtml,
+    type: "success"
+  }) }}
+{% endif %}
+
     {{ super() }}
     <div class="govuk-grid-row">
 

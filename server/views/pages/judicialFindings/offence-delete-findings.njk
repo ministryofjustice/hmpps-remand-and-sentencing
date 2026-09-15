@@ -1,7 +1,6 @@
 {% extends "../../partials/backLinkLayout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Delete judicial findings" %}
 
@@ -58,7 +57,7 @@
                 classes: "govuk-button--warning",
                 attributes: {  'data-qa': 'delete-button' }
             }) }}
-            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ cancelLink }}">Cancel and go back</a>
         </div>
             </form>
         </div>

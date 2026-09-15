@@ -18,7 +18,7 @@
         text: "Select another offence" ,
         classes: "govuk-button--link",
         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/judicial-findings/select-offence-with-judicial-findings?fromCheckAnswers=true" if canSelectAnother,
-        disabled: canSelectAnother,
+        disabled: not canSelectAnother,
         attributes: {
             "data-qa": "selectAnotherOffence"
         }

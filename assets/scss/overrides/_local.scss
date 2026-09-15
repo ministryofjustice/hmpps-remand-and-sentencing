@@ -49,6 +49,20 @@
   border-bottom: 0;
 }
 
+.court-case-card-title {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: govuk-spacing(2);
+}
+
+.court-case-status-tags {
+  display: flex;
+  gap: govuk-spacing(2);
+  margin-left: auto;
+}
+
 .govuk-button--link {
   background: #1d70b8
 }

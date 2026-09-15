@@ -45,10 +45,10 @@ context('Start Page', () => {
   })
 
   it('displays inactive tag on inactive case', () => {
-    startPage.courtCaseCard('84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b').within(() => {
-      cy.get('.court-case-status-tags .govuk-tag').should('contain.text', 'Inactive')
-      cy.get('.court-case-status-tags .govuk-tag').parents('a').should('not.exist')
-    })
+    startPage
+      .courtCaseCard('84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b')
+      .getActions()
+      .should('equal', 'Inactive Inactive (C894623 at Accrington Youth Court)')
   })
 
   it('does not show merged from inset on case with no merged from cases', () => {
@@ -172,7 +172,6 @@ context('Start Page', () => {
 
       cy.get('strong.govuk-tag').eq(0).should('contain.text', 'Inactive')
       cy.get('strong.govuk-tag').eq(1).should('contain.text', 'Recalled')
-      cy.get('.court-case-status-tags .govuk-tag').parents('a').should('not.exist')
     })
 
     startPage

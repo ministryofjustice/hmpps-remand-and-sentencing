@@ -68,14 +68,28 @@ describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
             status: 'ACTIVE',
           },
         },
+        {
+          chargeUuid: '10',
+          offenceCode: 'TH68037',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '11',
+            countNumber: '-1',
+            sentenceServeType: 'CONCURRENT',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+          },
+        },
       ],
     })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
       CC12345: 'Some offence description',
       AB6789: 'Another offence description',
       PU86003: 'Affray',
+      TH68037: 'Burglary other than dwelling - theft',
     })
     defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue([])
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
   })
 
   it('renders the select sentences to mark as inactive page', async () => {
@@ -95,7 +109,7 @@ describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa="markAsInactiveOptions"] input[type="checkbox"]')).toHaveLength(3)
+        expect($('[data-qa="markAsInactiveOptions"] input[type="checkbox"]')).toHaveLength(4)
       })
   })
 
@@ -105,9 +119,79 @@ describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.govuk-checkboxes__item').eq(0).text()).toContain('Consecutive to Count 2')
-        expect($('.govuk-checkboxes__item').eq(1).text()).toContain('Concurrent')
-        expect($('.govuk-checkboxes__item').eq(2).text()).toContain('Forthwith')
+        expect($('.govuk-checkboxes__item').eq(1).text()).toContain('Consecutive to Count 2')
+        expect($('.govuk-checkboxes__item').eq(2).text()).toContain('Concurrent')
+        expect($('.govuk-checkboxes__item').eq(3).text()).toContain('Forthwith')
+      })
+  })
+
+  it('resolves "Consecutive to" for a sentence on a different hearing, not just the current one', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '12',
+          offenceCode: 'AE07035',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '13',
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: 'other-hearing-sentence-uuid',
+            status: 'ACTIVE',
+          },
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      AE07035: 'Kill / trap a bird / animal take / destroy eggs within a Controlled Area of AWE Aldermaston',
+    })
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
+      sentences: [
+        {
+          sentenceUuid: 'other-hearing-sentence-uuid',
+          countNumber: '1',
+          courtCode: 'CAMBMC',
+          appearanceDate: '2012-12-12',
+          offenceCode: 'AE07035',
+          status: 'ACTIVE',
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-checkboxes__item').eq(0).text()).toContain('Consecutive to Count 1')
+      })
+  })
+
+  it('leads with the Count/NOMIS line number when one exists, putting the offence in the hint', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const label = $('.govuk-checkboxes__label').eq(1)
+        const hint = $('.govuk-checkboxes__hint').eq(1)
+        expect(label.text().trim()).toEqual('Count 1')
+        expect(hint.text()).toContain('CC12345 - Some offence description')
+      })
+  })
+
+  it('leads with the offence when there is no Count/NOMIS line number', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const label = $('.govuk-checkboxes__label').eq(0)
+        const hint = $('.govuk-checkboxes__hint').eq(0)
+        expect(label.text().trim()).toEqual('TH68037 - Burglary other than dwelling - theft')
+        expect(hint.text()).not.toContain('TH68037')
       })
   })
 

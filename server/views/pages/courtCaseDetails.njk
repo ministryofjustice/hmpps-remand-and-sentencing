@@ -42,6 +42,16 @@
             </div>
           </div>
 
+          {% if courtCaseDetails.markCourtCaseStatusAction %}
+              {% set markCourtCaseStatusHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/cannot-mark-court-case-as-inactive-active-sentences" if (courtCaseDetails.markCourtCaseStatusAction == "inactive" and courtCaseDetails.hasActiveSentence) else "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/confirm-mark-court-case-as-" + courtCaseDetails.markCourtCaseStatusAction %}
+              {{ govukButton({
+                  text: "Mark case as " + courtCaseDetails.markCourtCaseStatusAction,
+                  classes: "govuk-button--secondary",
+                  href: markCourtCaseStatusHref,
+                  attributes: { 'data-qa': 'mark-court-case-as-' + courtCaseDetails.markCourtCaseStatusAction + '-button' }
+              }) }}
+          {% endif %}
+
           {% if courtCaseDetails.mergedToInsetText %}
               {{ govukInsetText({
                   text: courtCaseDetails.mergedToInsetText,

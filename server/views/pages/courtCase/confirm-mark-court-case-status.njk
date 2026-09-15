@@ -1,0 +1,21 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageHeading = "Are you sure you want to mark this court case as inactive?" if targetStatus == "INACTIVE" else "Are you sure you want to mark this court case as active?" %}
+{% set pageTitle = applicationName + " - " + pageHeading %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" data-qa="confirm-mark-court-case-status-heading">{{ pageHeading }}</h1>
+
+            {{ govukButton({
+                text: "Cancel and go back",
+                classes: "govuk-button--secondary",
+                href: backLink,
+                attributes: { 'data-qa': 'cancel-and-go-back-button' }
+            }) }}
+        </div>
+    </div>
+{% endblock %}

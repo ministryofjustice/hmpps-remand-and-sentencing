@@ -460,6 +460,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/court-case/{courtCaseUuid}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update court case status
+     * @description This endpoint marks a court case as active or inactive
+     */
+    put: operations['updateCourtCaseStatus']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/{courtCaseUuid}/case-references/refresh': {
     parameters: {
       query?: never
@@ -2523,7 +2543,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2657,7 +2677,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -2729,6 +2749,11 @@ export interface components {
       courtCaseUuid: string
       appearances: components['schemas']['CreateCourtAppearanceResponse'][]
       charges: components['schemas']['CreateChargeResponse'][]
+    }
+    UpdateCourtCaseStatus: {
+      /** @enum {string} */
+      status: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MERGED' | 'INACTIVE'
+      reason?: string | null
     }
     UpdateCourtAppearanceSchedule: {
       courtCode: string
@@ -3720,7 +3745,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -4014,7 +4039,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4037,7 +4062,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4092,7 +4117,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4104,7 +4129,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4225,12 +4250,12 @@ export interface components {
     PageableObject: {
       /** Format: int64 */
       offset?: number
-      /** Format: int32 */
-      pageNumber?: number
-      paged?: boolean
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
       unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -4338,7 +4363,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 15:59:57.929277233 */
+      /** @example 11:13:38.412758675 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -5972,6 +5997,58 @@ export interface operations {
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
+      }
+    }
+  }
+  updateCourtCaseStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtCaseUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCourtCaseStatus']
+      }
+    }
+    responses: {
+      /** @description Status updated */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Bad request, e.g. status is not ACTIVE/INACTIVE or the court case is DELETED/MERGED */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Not found if no court case at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }

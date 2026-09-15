@@ -39,6 +39,10 @@ export default class CourtCaseDetailsModel {
 
   showEditLink: boolean
 
+  markCourtCaseStatusAction?: 'active' | 'inactive'
+
+  hasActiveSentence: boolean
+
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.latestCaseReference = pageCourtCaseContent.latestAppearance?.courtCaseReference
@@ -114,6 +118,16 @@ export default class CourtCaseDetailsModel {
       : undefined
     this.showBreachRow = config.featureToggles.breachSupervision
     this.showEditLink = pageCourtCaseContent.status !== 'MERGED'
+    if (config.featureToggles.sentenceStatus) {
+      if (pageCourtCaseContent.status === 'ACTIVE') {
+        this.markCourtCaseStatusAction = 'inactive'
+      } else if (pageCourtCaseContent.status === 'INACTIVE') {
+        this.markCourtCaseStatusAction = 'active'
+      }
+    }
+    this.hasActiveSentence = pageCourtCaseContent.appearances.some(appearance =>
+      appearance.charges.some(charge => charge.sentence?.status === 'ACTIVE'),
+    )
   }
 
   private static buildMergedToInsetText(merged: MergedToCaseDetails, courtMap: { [key: string]: string }): string {

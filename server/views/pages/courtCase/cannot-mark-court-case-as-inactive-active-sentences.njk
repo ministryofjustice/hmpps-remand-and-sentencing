@@ -1,0 +1,20 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - You cannot mark a case with active sentences as inactive" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" data-qa="cannot-mark-court-case-as-inactive-heading">You cannot mark a case with active sentences as inactive</h1>
+
+            {{ govukButton({
+                text: "Cancel and go back",
+                classes: "govuk-button--secondary",
+                href: backLink,
+                attributes: { 'data-qa': 'cancel-and-go-back-button' }
+            }) }}
+        </div>
+    </div>
+{% endblock %}

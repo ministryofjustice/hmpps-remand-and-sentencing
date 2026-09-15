@@ -96,6 +96,7 @@ context('Select offence with judicial findings Page', () => {
     checkJudicialFindingsAnswersPage
       .noJudicialFindingsInset()
       .should('contain.text', 'No judicial findings have been added.')
+    checkJudicialFindingsAnswersPage.continueButton().should('not.exist')
   })
 
   it('selecting all offences disabled the button', () => {

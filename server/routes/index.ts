@@ -197,6 +197,16 @@ export default function routes(services: Services): Router {
   router.get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/confirm-mark-court-case-as-:targetStatus',
+    courtCaseRoutes.getConfirmMarkCourtCaseStatus,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/cannot-mark-court-case-as-inactive-active-sentences',
+    courtCaseRoutes.getCannotMarkCourtCaseAsInactiveActiveSentences,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/confirm-delete',
     courtCaseRoutes.getDeleteAppearanceConfirmation,
   )

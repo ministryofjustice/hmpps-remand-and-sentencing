@@ -3,8 +3,10 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import { PageCourtCaseContent } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../../config'
 
 let app: Express
+const sentenceStatusFeatureToggleWasEnabled = config.featureToggles.sentenceStatus
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -12,6 +14,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  config.featureToggles.sentenceStatus = sentenceStatusFeatureToggleWasEnabled
 })
 
 const createCourtCase = (
@@ -74,6 +77,104 @@ describe('GET court case details', () => {
     expect(editLink.length).toEqual(1)
     const deleteLink = $('a[href*="confirm-delete"]')
     expect(deleteLink.length).toEqual(1)
+  })
+})
+
+const createCourtCaseWithSentence = (status: string, sentenceStatus?: string): PageCourtCaseContent => {
+  const appearance = {
+    appearanceUuid: '1',
+    appearanceDate: '2025-07-25',
+    courtCode: 'ACCRYC',
+    warrantType: 'SENTENCING',
+    courtCaseReference: 'A123',
+    outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
+    charges: [
+      {
+        chargeUuid: '1',
+        offenceCode: 'OFF123',
+        offenceStartDate: '2025-01-01',
+        outcome: { outcomeUuid: '1', outcomeName: 'Offence outcome' },
+        sentence: sentenceStatus ? { sentenceUuid: '1', status: sentenceStatus } : undefined,
+      },
+    ],
+    source: 'DPS',
+    deleteStatus: 'SUPPORTED',
+    periodLengths: [],
+  }
+  return {
+    courtCaseUuid: '1',
+    prisonerId: 'A1234AB',
+    status,
+    latestAppearance: appearance,
+    appearances: [appearance],
+  } as PageCourtCaseContent
+}
+
+describe('Mark case as active/inactive button', () => {
+  beforeEach(() => {
+    config.featureToggles.sentenceStatus = true
+  })
+
+  it('shows "Mark case as inactive" for an ACTIVE case with no active sentences, linking to the confirm page', async () => {
+    const courtCase = createCourtCaseWithSentence('ACTIVE', 'INACTIVE')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    setupDefaultMocks()
+
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details')
+    const $ = cheerio.load(res.text)
+    const button = $('[data-qa="mark-court-case-as-inactive-button"]')
+    expect(button.text().trim()).toEqual('Mark case as inactive')
+    expect(button.attr('href')).toEqual('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
+    expect($('[data-qa="mark-court-case-as-active-button"]')).toHaveLength(0)
+  })
+
+  it('shows "Mark case as inactive" for an ACTIVE case with an active sentence, linking to the blocking page', async () => {
+    const courtCase = createCourtCaseWithSentence('ACTIVE', 'ACTIVE')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    setupDefaultMocks()
+
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details')
+    const $ = cheerio.load(res.text)
+    const button = $('[data-qa="mark-court-case-as-inactive-button"]')
+    expect(button.attr('href')).toEqual(
+      '/person/A1234AB/edit-court-case/1/cannot-mark-court-case-as-inactive-active-sentences',
+    )
+  })
+
+  it('shows "Mark case as active" for an INACTIVE case, linking to the confirm page', async () => {
+    const courtCase = createCourtCaseWithSentence('INACTIVE', 'INACTIVE')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    setupDefaultMocks()
+
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details')
+    const $ = cheerio.load(res.text)
+    const button = $('[data-qa="mark-court-case-as-active-button"]')
+    expect(button.text().trim()).toEqual('Mark case as active')
+    expect(button.attr('href')).toEqual('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
+    expect($('[data-qa="mark-court-case-as-inactive-button"]')).toHaveLength(0)
+  })
+
+  it('hides the button entirely when the feature toggle is off', async () => {
+    config.featureToggles.sentenceStatus = false
+    const courtCase = createCourtCaseWithSentence('ACTIVE', 'INACTIVE')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    setupDefaultMocks()
+
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details')
+    const $ = cheerio.load(res.text)
+    expect($('[data-qa="mark-court-case-as-inactive-button"]')).toHaveLength(0)
+    expect($('[data-qa="mark-court-case-as-active-button"]')).toHaveLength(0)
+  })
+
+  it('hides the button for a MERGED case', async () => {
+    const courtCase = createCourtCaseWithSentence('MERGED', 'INACTIVE')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    setupDefaultMocks()
+
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details')
+    const $ = cheerio.load(res.text)
+    expect($('[data-qa="mark-court-case-as-inactive-button"]')).toHaveLength(0)
+    expect($('[data-qa="mark-court-case-as-active-button"]')).toHaveLength(0)
   })
 })
 

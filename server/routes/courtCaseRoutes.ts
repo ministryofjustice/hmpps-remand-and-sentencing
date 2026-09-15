@@ -540,6 +540,32 @@ export default class CourtCaseRoutes extends BaseRoutes {
     })
   }
 
+  public getConfirmMarkCourtCaseStatus: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase, targetStatus } = req.params
+    if (targetStatus !== 'active' && targetStatus !== 'inactive') {
+      return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    }
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    return res.render('pages/courtCase/confirm-mark-court-case-status', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      backLink,
+      targetStatus: targetStatus.toUpperCase(),
+    })
+  }
+
+  public getCannotMarkCourtCaseAsInactiveActiveSentences: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    return res.render('pages/courtCase/cannot-mark-court-case-as-inactive-active-sentences', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      backLink,
+    })
+  }
+
   private getCourtCaseAuditUuids(
     courtCase: PageCourtCaseContent,
     consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,

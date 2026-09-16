@@ -74,13 +74,13 @@ export default class RemandAndSentencingApiClient extends RestClient {
     updateCourtCaseStatus: UpdateCourtCaseStatus,
     username: string,
   ): Promise<void> {
-    return (await this.put(
+    return this.put(
       {
         data: updateCourtCaseStatus,
         path: `/court-case/${courtCaseUuid}/status`,
       },
       asSystem(username),
-    )) as unknown as Promise<void>
+    )
   }
 
   async searchCourtCases(

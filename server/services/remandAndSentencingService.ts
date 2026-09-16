@@ -200,13 +200,11 @@ export default class RemandAndSentencingService {
     return errors
   }
 
-  async confirmMarkCourtCaseAsInactive(confirmMarkCourtCaseStatusForm: ConfirmMarkCourtCaseStatusForm): Promise<
-    {
-      text?: string
-      html?: string
-      href: string
-    }[]
-  > {
+  confirmMarkCourtCaseAsInactive(confirmMarkCourtCaseStatusForm: ConfirmMarkCourtCaseStatusForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
     return validate(
       confirmMarkCourtCaseStatusForm,
       { confirmMarkCourtCaseStatus: 'required' },

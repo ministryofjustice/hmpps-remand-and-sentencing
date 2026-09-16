@@ -1,13 +1,12 @@
 import Page from '../../pages/page'
 import CourtCaseDetailsPage from '../../pages/courtCaseDetailsPage'
-import ConfirmMarkCourtCaseStatusPage from '../../pages/confirmMarkCourtCaseStatusPage'
+import ConfirmMarkCourtCaseAsActivePage from '../../pages/confirmMarkCourtCaseAsActivePage'
+import ConfirmMarkCourtCaseAsInactivePage from '../../pages/confirmMarkCourtCaseAsInactivePage'
 import CannotMarkCourtCaseAsInactiveActiveSentencesPage from '../../pages/cannotMarkCourtCaseAsInactiveActiveSentencesPage'
 
 context('Mark court case as active/inactive', () => {
   const courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa'
   const detailsUrl = `/person/A1234AB/edit-court-case/${courtCaseUuid}/details`
-  const confirmInactiveTitle = 'Are you sure you want to mark this court case as inactive?'
-  const confirmActiveTitle = 'Are you sure you want to mark this court case as active?'
 
   const appearance = (sentenceStatus: string) => ({
     appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
@@ -85,7 +84,7 @@ context('Mark court case as active/inactive', () => {
       courtCaseDetailsPage = Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
       courtCaseDetailsPage.markCourtCaseAsInactiveButton().click()
 
-      Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmInactiveTitle)
+      Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
     })
 
     it('navigates to the blocking page when a sentence in the case is active', () => {
@@ -117,12 +116,12 @@ context('Mark court case as active/inactive', () => {
     })
 
     it('shows the case reference and court name', () => {
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmInactiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
       confirmPage.subheading().should('contain.text', '1234567 at Southampton Magistrate Court')
     })
 
     it('navigates to the provide-a-reason page when Yes is chosen', () => {
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmInactiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
       confirmPage.radioLabelSelector('true').click()
       confirmPage.confirmAndContinueButton().click()
 
@@ -130,7 +129,7 @@ context('Mark court case as active/inactive', () => {
     })
 
     it('navigates back to the hearings page when No is chosen', () => {
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmInactiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
       confirmPage.radioLabelSelector('false').click()
       confirmPage.confirmAndContinueButton().click()
 
@@ -138,10 +137,10 @@ context('Mark court case as active/inactive', () => {
     })
 
     it('shows a validation error when no option is selected', () => {
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmInactiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
       confirmPage.confirmAndContinueButton().click()
 
-      Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmInactiveTitle)
+      Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
       cy.get('.govuk-error-summary').should('contain.text', 'There is a problem')
       cy.get('.govuk-error-summary').should(
         'contain.text',
@@ -172,14 +171,14 @@ context('Mark court case as active/inactive', () => {
       courtCaseDetailsPage.markCourtCaseAsActiveButton().should('be.visible')
       courtCaseDetailsPage.markCourtCaseAsActiveButton().click()
 
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmActiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsActivePage)
       confirmPage.subheading().should('contain.text', '1234567 at Southampton Magistrate Court')
     })
 
     it('happy path: choosing Yes marks the case active and shows the success banner', () => {
       courtCaseDetailsPage.markCourtCaseAsActiveButton().click()
 
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmActiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsActivePage)
       confirmPage.radioLabelSelector('true').click()
       confirmPage.confirmAndContinueButton().click()
 
@@ -193,7 +192,7 @@ context('Mark court case as active/inactive', () => {
     it('choosing No returns to the hearings page without calling the API or showing a banner', () => {
       courtCaseDetailsPage.markCourtCaseAsActiveButton().click()
 
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmActiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsActivePage)
       confirmPage.radioLabelSelector('false').click()
       confirmPage.confirmAndContinueButton().click()
 
@@ -204,10 +203,10 @@ context('Mark court case as active/inactive', () => {
     it('shows a validation error when no option is selected', () => {
       courtCaseDetailsPage.markCourtCaseAsActiveButton().click()
 
-      const confirmPage = Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmActiveTitle)
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsActivePage)
       confirmPage.confirmAndContinueButton().click()
 
-      Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmActiveTitle)
+      Page.verifyOnPage(ConfirmMarkCourtCaseAsActivePage)
       cy.get('.govuk-error-summary').should('contain.text', 'There is a problem')
       cy.get('.govuk-error-summary').should(
         'contain.text',
@@ -218,7 +217,7 @@ context('Mark court case as active/inactive', () => {
     it('back link returns to the hearings page', () => {
       courtCaseDetailsPage.markCourtCaseAsActiveButton().click()
 
-      Page.verifyOnPageTitle(ConfirmMarkCourtCaseStatusPage, confirmActiveTitle)
+      Page.verifyOnPage(ConfirmMarkCourtCaseAsActivePage)
       cy.get('[data-qa="back-link"]').click()
       Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
     })

@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
-export default class ConfirmMarkCourtCaseStatusPage extends Page {
-  constructor(title: string) {
-    super(title)
+export default class ConfirmMarkCourtCaseAsActivePage extends Page {
+  constructor() {
+    super('Are you sure you want to mark this court case as active?')
   }
 
   subheading = (): PageElement => cy.get('[data-qa="confirm-mark-court-case-status-subheading"]')

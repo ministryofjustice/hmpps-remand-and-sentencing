@@ -22,8 +22,9 @@ import type {
   SentenceIsSentenceConsecutiveToForm,
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
+  SelectJudicialFindingsForm,
 } from 'forms'
-import type { CourtAppearance, Offence, Sentence, SentenceLength } from 'models'
+import type { CourtAppearance, Offence, Sentence, SentenceLength, UrlParameters } from 'models'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
 import { groupAndSortPeriodLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
@@ -1510,5 +1511,21 @@ export default class OffenceService {
     offences.forEach(offence => {
       this.setSessionOffence(session, nomsId, courtCaseReference, offence)
     })
+  }
+
+  setJudicialFindings(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    selectJudicialFindingsForm: SelectJudicialFindingsForm,
+  ) {
+    const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
+    const offence = this.getOffence(session.offences, id)
+    if (selectJudicialFindingsForm.judicialFindings?.includes('FINDING_OF_DOMESTIC_ABUSE')) {
+      offence.findingOfDomesticAbuse = true
+    } else {
+      delete offence.findingOfDomesticAbuse
+    }
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 }

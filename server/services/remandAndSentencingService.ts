@@ -1,6 +1,11 @@
 import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
-import type { CancelCourtCaseForm, ConfirmMarkCourtCaseStatusForm, DeleteHearingForm } from 'forms'
+import type {
+  CancelCourtCaseForm,
+  ConfirmMarkCourtCaseStatusForm,
+  DeleteHearingForm,
+  MarkCourtCaseAsInactiveReasonForm,
+} from 'forms'
 import validate from '../validation/validation'
 import {
   ConsecutiveChainValidationRequest,
@@ -210,6 +215,36 @@ export default class RemandAndSentencingService {
       { confirmMarkCourtCaseStatus: 'required' },
       { 'required.confirmMarkCourtCaseStatus': "Select 'Yes' if you want to mark this court case as inactive" },
     )
+  }
+
+  async markCourtCaseAsInactive(
+    courtCaseUuid: string,
+    username: string,
+    markCourtCaseAsInactiveReasonForm: MarkCourtCaseAsInactiveReasonForm,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    const errors = validate(
+      markCourtCaseAsInactiveReasonForm,
+      { reason: 'required|max:200' },
+      {
+        'required.reason': 'Enter a reason for marking this case as inactive',
+        'max.reason': 'Reason must be 200 characters or less',
+      },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    await this.remandAndSentencingApiClient.updateCourtCaseStatus(
+      courtCaseUuid,
+      { status: 'INACTIVE', reason: markCourtCaseAsInactiveReasonForm.reason },
+      username,
+    )
+    return errors
   }
 
   async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {

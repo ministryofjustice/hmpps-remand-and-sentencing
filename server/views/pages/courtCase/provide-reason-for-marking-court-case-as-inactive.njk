@@ -1,12 +1,57 @@
 {% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
-{% set pageTitle = applicationName + " - Provide a reason you want to mark this case as inactive" %}
+{% set pageHeading = "Provide a reason you want to mark this case as inactive" %}
+{% set pageTitle = applicationName + " - " + pageHeading %}
+
+{% set subheadingHtml %}
+    {% if caseReference or courtName %}
+        <p class="govuk-hint" data-qa="provide-reason-for-marking-court-case-as-inactive-hint">
+            {{ caseReference + ' at ' if caseReference }}{{ courtName }}
+        </p>
+    {% endif %}
+{% endset %}
 
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l" data-qa="provide-reason-for-marking-court-case-as-inactive-heading">Provide a reason you want to mark this case as inactive</h1>
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                {{ govukCharacterCount({
+                    name: "reason",
+                    id: "reason",
+                    maxlength: 200,
+                    value: reason,
+                    label: {
+                        text: pageHeading,
+                        isPageHeading: true,
+                        classes: "govuk-label--l",
+                        attributes: { 'data-qa': 'provide-reason-for-marking-court-case-as-inactive-heading' }
+                    },
+                    formGroup: {
+                        beforeInput: { html: subheadingHtml }
+                    },
+                    errorMessage: errors | findError('reason'),
+                    attributes: { 'data-qa': 'reason-textarea' }
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Confirm and save",
+                        preventDoubleClick: true,
+                        attributes: { 'data-qa': 'confirm-and-save-button' }
+                    }) }}
+                    {{ govukButton({
+                        text: "Cancel",
+                        classes: "govuk-button--secondary",
+                        href: backLink,
+                        attributes: { 'data-qa': 'cancel-button' }
+                    }) }}
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}

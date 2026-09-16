@@ -301,6 +301,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         lineNumber: offence.sentence?.legacyData?.nomisLineReference,
         convictionDate: formatDate(offence.sentence?.convictionDate),
         aggravatingFactors: getAggravatingFactors(offence),
+        findingOfDomesticAbuse: offence.findingOfDomesticAbuse,
         isSentenced: offence.sentence,
         periodLengths: offence.sentence?.periodLengths,
         sentenceServeType: offence.sentence?.sentenceServeType,

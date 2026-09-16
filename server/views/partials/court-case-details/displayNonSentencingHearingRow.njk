@@ -130,7 +130,8 @@
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
                       courtDetails: courtMap,
-                      aggravatingFactors: charge | getAggravatingFactors
+                      aggravatingFactors: charge | getAggravatingFactors,
+                      findingOfDomesticAbuse: charge.findingOfDomesticAbuse
                   }) }}
               {% endfor %}
             {% endset %}

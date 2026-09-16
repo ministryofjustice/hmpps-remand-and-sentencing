@@ -118,6 +118,49 @@ context('Sentencing appearance details Page', () => {
         'Aggravating factors': 'Add aggravating factors',
         'Judicial findings': 'Finding of domestic abuse',
       })
+      offenceEditOffencePage.continueButton().click()
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
+        .custodialOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Consecutive or concurrent': 'Forthwith',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '14/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'A Nomis sentence type',
+            'Sentence length': '1 years 2 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Consecutive to count 3',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Judicial findings': 'Finding of domestic abuse',
+            'Custodial term': '1 years 0 months 0 weeks 0 days',
+            'Licence period': '2 years 0 months 0 weeks 0 days',
+            'Sentence type': 'EDS (Extended Determinate Sentence)',
+            'Consecutive or concurrent': 'Consecutive to count 1',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '10/12/2023',
+            'Conviction date': '12/09/2024',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'Imprisonment in Default of Fine',
+            'Fine amount': '£50',
+            'Term length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Concurrent',
+          },
+        ])
     })
   })
 })

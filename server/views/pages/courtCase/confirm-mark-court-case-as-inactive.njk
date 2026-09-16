@@ -2,14 +2,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageHeading = "Are you sure you want to mark this court case as inactive?" if targetStatus == "INACTIVE" else "Are you sure you want to mark this court case as active?" %}
-{% set pageTitle = applicationName + " - " + pageHeading %}
+{% set pageTitle = applicationName + " - Are you sure you want to mark this court case as inactive?" %}
 
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l" data-qa="confirm-mark-court-case-status-heading">{{ pageHeading }}</h1>
+            <h1 class="govuk-heading-l" data-qa="confirm-mark-court-case-status-heading">Are you sure you want to mark this court case as inactive?</h1>
 
             {% if caseReference or courtName %}
                 <p class="govuk-body govuk-!-margin-bottom-6" data-qa="confirm-mark-court-case-status-subheading">
@@ -26,7 +25,7 @@
                     items: [
                         {
                             value: "true",
-                            text: "Yes, mark as inactive" if targetStatus == "INACTIVE" else "Yes, mark as active",
+                            text: "Yes, mark as inactive",
                             attributes: { 'data-qa': 'confirm-mark-court-case-status-yes' }
                         },
                         {

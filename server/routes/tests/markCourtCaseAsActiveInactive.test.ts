@@ -72,18 +72,9 @@ describe('GET /confirm-mark-court-case-as-active', () => {
   })
 })
 
-describe('GET /confirm-mark-court-case-as-:targetStatus with an invalid status', () => {
-  it('redirects back to the court case details page', async () => {
-    await request(app)
-      .get('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-banana')
-      .expect(302)
-      .expect('Location', '/person/A1234AB/edit-court-case/1/details')
-  })
-})
-
 describe('POST /confirm-mark-court-case-as-inactive', () => {
   it('navigates to the provide-a-reason page when Yes is chosen', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus.mockResolvedValue([])
+    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsInactive.mockResolvedValue([])
 
     await request(app)
       .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
@@ -91,16 +82,13 @@ describe('POST /confirm-mark-court-case-as-inactive', () => {
       .expect(302)
       .expect('Location', '/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
 
-    expect(defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus).toHaveBeenCalledWith(
-      '1',
-      'user1',
-      'INACTIVE',
-      { confirmMarkCourtCaseStatus: 'true' },
-    )
+    expect(defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsInactive).toHaveBeenCalledWith({
+      confirmMarkCourtCaseStatus: 'true',
+    })
   })
 
   it('navigates to the hearings page when No is chosen', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus.mockResolvedValue([])
+    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsInactive.mockResolvedValue([])
 
     await request(app)
       .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
@@ -110,7 +98,7 @@ describe('POST /confirm-mark-court-case-as-inactive', () => {
   })
 
   it('redirects back to the same page with an error when no selection is made', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus.mockResolvedValue([
+    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsInactive.mockResolvedValue([
       { text: "Select 'Yes' if you want to mark this court case as inactive", href: '#confirmMarkCourtCaseStatus' },
     ])
 
@@ -123,8 +111,8 @@ describe('POST /confirm-mark-court-case-as-inactive', () => {
 })
 
 describe('POST /confirm-mark-court-case-as-active', () => {
-  it('calls confirmMarkCourtCaseStatus and navigates to the hearings page when Yes is chosen', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus.mockResolvedValue([])
+  it('calls confirmMarkCourtCaseAsActive and navigates to the hearings page when Yes is chosen', async () => {
+    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive.mockResolvedValue([])
 
     await request(app)
       .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
@@ -132,16 +120,13 @@ describe('POST /confirm-mark-court-case-as-active', () => {
       .expect(302)
       .expect('Location', '/person/A1234AB/edit-court-case/1/details')
 
-    expect(defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus).toHaveBeenCalledWith(
-      '1',
-      'user1',
-      'ACTIVE',
-      { confirmMarkCourtCaseStatus: 'true' },
-    )
+    expect(defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive).toHaveBeenCalledWith('1', 'user1', {
+      confirmMarkCourtCaseStatus: 'true',
+    })
   })
 
   it('navigates to the hearings page with no banner when No is chosen', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus.mockResolvedValue([])
+    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive.mockResolvedValue([])
 
     await request(app)
       .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
@@ -151,7 +136,7 @@ describe('POST /confirm-mark-court-case-as-active', () => {
   })
 
   it('redirects back to the same page with an error when no selection is made', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseStatus.mockResolvedValue([
+    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive.mockResolvedValue([
       { text: "Select 'Yes' if you want to mark this court case as active", href: '#confirmMarkCourtCaseStatus' },
     ])
 

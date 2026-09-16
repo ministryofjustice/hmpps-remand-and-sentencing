@@ -174,10 +174,9 @@ export default class RemandAndSentencingService {
     return this.remandAndSentencingApiClient.getCourtCaseByUuid(courtCaseUuid, username)
   }
 
-  async confirmMarkCourtCaseStatus(
+  async confirmMarkCourtCaseAsActive(
     courtCaseUuid: string,
     username: string,
-    targetStatus: 'ACTIVE' | 'INACTIVE',
     confirmMarkCourtCaseStatusForm: ConfirmMarkCourtCaseStatusForm,
   ): Promise<
     {
@@ -189,15 +188,9 @@ export default class RemandAndSentencingService {
     const errors = validate(
       confirmMarkCourtCaseStatusForm,
       { confirmMarkCourtCaseStatus: 'required' },
-      {
-        'required.confirmMarkCourtCaseStatus': `Select 'Yes' if you want to mark this court case as ${targetStatus.toLowerCase()}`,
-      },
+      { 'required.confirmMarkCourtCaseStatus': "Select 'Yes' if you want to mark this court case as active" },
     )
-    if (
-      errors.length === 0 &&
-      confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus === 'true' &&
-      targetStatus === 'ACTIVE'
-    ) {
+    if (errors.length === 0 && confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus === 'true') {
       await this.remandAndSentencingApiClient.updateCourtCaseStatus(
         courtCaseUuid,
         { status: 'ACTIVE', reason: null },
@@ -205,6 +198,20 @@ export default class RemandAndSentencingService {
       )
     }
     return errors
+  }
+
+  async confirmMarkCourtCaseAsInactive(confirmMarkCourtCaseStatusForm: ConfirmMarkCourtCaseStatusForm): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    return validate(
+      confirmMarkCourtCaseStatusForm,
+      { confirmMarkCourtCaseStatus: 'required' },
+      { 'required.confirmMarkCourtCaseStatus': "Select 'Yes' if you want to mark this court case as inactive" },
+    )
   }
 
   async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {

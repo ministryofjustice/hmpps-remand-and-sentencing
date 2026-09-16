@@ -636,6 +636,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
     const { username } = res.locals.user
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-inactive`
+    const cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
     const { caseReference, courtName } = await this.getCaseAndCourtDetails(courtCaseReference, username)
     const markCourtCaseAsInactiveReasonForm = (req.flash('markCourtCaseAsInactiveReasonForm')[0] ||
       {}) as MarkCourtCaseAsInactiveReasonForm
@@ -644,6 +645,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtCase,
       backLink,
+      cancelLink,
       caseReference,
       courtName,
       reason: markCourtCaseAsInactiveReasonForm.reason,

@@ -208,9 +208,7 @@ describe('GET /provide-reason-for-marking-court-case-as-inactive', () => {
     expect($('[data-qa="back-link"]').attr('href')).toEqual(
       '/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive',
     )
-    expect($('[data-qa="cancel-button"]').attr('href')).toEqual(
-      '/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive',
-    )
+    expect($('[data-qa="cancel-button"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
     expect($('.govuk-character-count').attr('data-maxlength')).toEqual('200')
     expect($('[data-qa="reason-textarea"]').text().trim()).toEqual('')
   })
@@ -256,5 +254,21 @@ describe('POST /provide-reason-for-marking-court-case-as-inactive', () => {
       .send({})
       .expect(302)
       .expect('Location', '/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
+  })
+
+  it('redirects back to the same page with an error when the reason is over 200 characters', async () => {
+    defaultServices.remandAndSentencingService.markCourtCaseAsInactive.mockResolvedValue([
+      { text: 'Reason must be 200 characters or less', href: '#reason' },
+    ])
+
+    await request(app)
+      .post('/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
+      .send({ reason: 'a'.repeat(201) })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
+
+    expect(defaultServices.remandAndSentencingService.markCourtCaseAsInactive).toHaveBeenCalledWith('1', 'user1', {
+      reason: 'a'.repeat(201),
+    })
   })
 })

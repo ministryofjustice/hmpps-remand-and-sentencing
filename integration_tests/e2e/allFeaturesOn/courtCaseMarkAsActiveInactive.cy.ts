@@ -152,6 +152,19 @@ context('Mark court case as active/inactive', () => {
         .should('equal', 'There is a problem Enter a reason for marking this case as inactive')
     })
 
+    it('shows a validation error and preserves the entered text when the reason is over 200 characters', () => {
+      const tooLongReason = 'a'.repeat(201)
+      provideReasonPage.reasonTextarea().invoke('val', tooLongReason).trigger('input')
+      provideReasonPage.confirmAndSaveButton().click()
+
+      Page.verifyOnPage(ProvideReasonForMarkingCourtCaseAsInactivePage)
+      provideReasonPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Reason must be 200 characters or less')
+      provideReasonPage.reasonTextarea().should('have.value', tooLongReason)
+    })
+
     it('happy path: entering a reason marks the case inactive and shows the success banner', () => {
       provideReasonPage.reasonTextarea().type('No longer required')
       provideReasonPage.confirmAndSaveButton().click()
@@ -168,9 +181,9 @@ context('Mark court case as active/inactive', () => {
       Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
     })
 
-    it('cancel button returns to the confirm page', () => {
+    it('cancel button returns to the hearings page where the journey started', () => {
       provideReasonPage.cancelButton().click()
-      Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
+      Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
     })
   })
 

@@ -1472,5 +1472,15 @@ export default function routes(services: Services): Router {
     judicialFindingsRoutes.submitOffenceDeleteJudicialFindings,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/select-judicial-findings',
+    judicialFindingsRoutes.getOffenceSelectJudicialFindings,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/select-judicial-findings',
+    judicialFindingsRoutes.submitOffenceSelectJudicialFindings,
+  )
+
   return router
 }

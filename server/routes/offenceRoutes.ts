@@ -61,6 +61,7 @@ import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 import DocumentManagementService from '../services/documentManagementService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
+import config from '../config'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -2700,6 +2701,7 @@ export default class OffenceRoutes extends BaseRoutes {
       showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
       isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
+      showJudicialFindingsRow: config.featureToggles.judicialFindings,
     })
   }
 

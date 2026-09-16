@@ -320,10 +320,39 @@ outcomeRow] %}
     } %}
   {% endif %}
 
+  {% if showJudicialFindingsRow %}
+    {% set selectJudicialFindingsLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/select-judicial-findings"%}
+    {% if offence.findingOfDomesticAbuse %}
+      {% set judicialFindingsRow= {
+          key: { text: "Judicial findings"},
+          value: { text: "Finding of domestic abuse" },
+          actions: {
+            items: [{
+              href: selectJudicialFindingsLink,
+              text: "Edit",
+              visuallyHiddenText: "judicial findings",
+              classes: "govuk-link--no-visited-state",
+              attributes: {
+                'data-qa': 'edit-judicial-findings-link'
+              }
+            }]
+          }
+        }%}
+    {% else %}
+      {% set judicialFindingsRow= {
+        key: { text: "Judicial findings"},
+        value: { html: '<a class="govuk-link govuk-link--no-visited-state" href="' + selectJudicialFindingsLink + '" data-qa="add-judicial-findings-cta">Add judicial finding of domestic abuse</a>'  }
+      }%}
+    {% endif %}
+  {% endif %}
+
   {% if isBreachGeneratedOffence %}
     {% set summaryRows = (summaryRows.concat([sentenceTypeRow], periodLengthRows, consecutiveOrConcurrentRows)) %}
   {% else %}
     {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow], periodLengthRows, [fineAmountRow], consecutiveOrConcurrentRows, [aggravatingFactorsRow])) %}
+    {% if judicialFindingsRow %}
+      {% set summaryRows = (summaryRows.concat(judicialFindingsRow)) %}
+    {% endif %}
   {% endif %}
 
 

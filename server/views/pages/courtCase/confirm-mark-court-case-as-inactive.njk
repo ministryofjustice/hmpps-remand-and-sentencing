@@ -1,0 +1,47 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Are you sure you want to mark this court case as inactive?" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" data-qa="confirm-mark-court-case-status-heading">Are you sure you want to mark this court case as inactive?</h1>
+
+            {% if caseReference or courtName %}
+                <p class="govuk-body govuk-!-margin-bottom-6" data-qa="confirm-mark-court-case-status-subheading">
+                    {{ caseReference }}{{ ' at ' + courtName if courtName }}
+                </p>
+            {% endif %}
+
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                {{ govukRadios({
+                    name: "confirmMarkCourtCaseStatus",
+                    errorMessage: errors | findError('confirmMarkCourtCaseStatus'),
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes, mark as inactive",
+                            attributes: { 'data-qa': 'confirm-mark-court-case-status-yes' }
+                        },
+                        {
+                            value: "false",
+                            text: "No, cancel changes",
+                            attributes: { 'data-qa': 'confirm-mark-court-case-status-no' }
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Confirm and continue",
+                    preventDoubleClick: true,
+                    attributes: { 'data-qa': 'confirm-and-continue-button' }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

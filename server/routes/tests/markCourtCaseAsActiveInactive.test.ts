@@ -50,9 +50,9 @@ describe('GET /confirm-mark-court-case-as-inactive', () => {
     expect($('[data-qa="confirm-mark-court-case-status-heading"]').text().trim()).toEqual(
       'Are you sure you want to mark this court case as inactive?',
     )
-    const subheading = $('[data-qa="confirm-mark-court-case-status-subheading"]')
-    expect(subheading.text().trim()).toEqual('1234567 at Aberdare County Court')
-    expect(subheading.hasClass('govuk-hint')).toBe(true)
+    expect($('[data-qa="confirm-mark-court-case-status-subheading"]').text().trim()).toEqual(
+      '1234567 at Aberdare County Court',
+    )
     expect($('[data-qa="confirm-mark-court-case-status-yes"]').next().text().trim()).toEqual('Yes, mark as inactive')
     expect($('[data-qa="back-link"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
   })

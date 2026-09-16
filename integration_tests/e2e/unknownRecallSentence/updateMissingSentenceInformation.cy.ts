@@ -37,7 +37,7 @@ context('Update missing sentence information page', () => {
           'Committed on': '15/11/2023',
           'Conviction date': '15/11/2023',
           'Sentence type': 'Missing',
-          'Sentencing warrant date': '15/11/2023',
+          'Sentence date': '15/11/2023',
           'Consecutive or concurrent': 'Concurrent',
         },
       ])

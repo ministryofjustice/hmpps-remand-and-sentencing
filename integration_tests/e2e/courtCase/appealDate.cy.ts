@@ -67,7 +67,7 @@ context('Appeal date page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem The appeal hearing date must be after the sentencing warrant date in the court case',
+        'There is a problem The appeal hearing date must be after the sentence date in the court case',
       )
   })
 })

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import type { UrlParameters } from 'models'
-import type { JudicialFindingCheckAnswersForm, JudicialFindingOffenceForm } from 'forms'
+import type { JudicialFindingCheckAnswersForm, JudicialFindingOffenceForm, SelectJudicialFindingsForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -179,5 +179,50 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     this.courtAppearanceService.deleteOffenceJudicialFindings(req.session, urlParameters)
     return res.redirect(JudicialFindingsJourneyUrls.checkAnswers(urlParameters))
+  }
+
+  public getOffenceSelectJudicialFindings: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const sessionOffence = this.offenceService.getSessionOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.courtCaseReference,
+      urlParameters.chargeUuid,
+    )
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      sessionOffence.offenceCode,
+      req.user.username,
+      sessionOffence.legacyData?.offenceDescription,
+    )
+    return res.render('pages/judicialFindings/select-judicial-findings', {
+      ...urlParameters,
+      sessionOffence,
+      offenceDetails,
+      errors: req.flash('errors') || [],
+      backLink: JourneyUrls.editOffence(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+        urlParameters.chargeUuid,
+      ),
+    })
+  }
+
+  public submitOffenceSelectJudicialFindings: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const selectJudicialFindingsForm = trimForm<SelectJudicialFindingsForm>(req.body)
+    this.offenceService.setJudicialFindings(req.session, urlParameters, selectJudicialFindingsForm)
+    return res.redirect(
+      JourneyUrls.editOffence(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+        urlParameters.chargeUuid,
+      ),
+    )
   }
 }

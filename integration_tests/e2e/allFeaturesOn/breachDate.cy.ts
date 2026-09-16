@@ -65,9 +65,6 @@ context('Breach date page', () => {
     breachDatePage
       .errorSummary()
       .trimTextContent()
-      .should(
-        'equal',
-        'There is a problem The breach hearing date must be after the sentence date in the court case',
-      )
+      .should('equal', 'There is a problem The breach hearing date must be after the sentence date in the court case')
   })
 })

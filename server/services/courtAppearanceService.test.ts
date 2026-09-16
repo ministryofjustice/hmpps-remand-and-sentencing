@@ -92,7 +92,7 @@ describe('courtAppearanceService', () => {
   })
 
   describe('validate warrant date', () => {
-    it('submitting a sentencing warrant date before an existing remand appearance returns error', async () => {
+    it('submitting a sentence date before an existing remand appearance returns error', async () => {
       const nomsId = 'P123'
       remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
         offenceDate: '2000-01-01',

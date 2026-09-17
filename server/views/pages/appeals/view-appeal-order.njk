@@ -15,11 +15,7 @@
       </p>
 
     {% set documentUrlPathPrefix = '/appeals/' %}
-    {% if isMultiTypeUploadEnabled %}
-        {% include "../../partials/documents/displayMultiTypeUpload.njk" %}
-      {% else %}
-        {% include "../../partials/documents/displaySingleTypeUpload.njk" %}
-      {% endif %}
+    {% include "../../partials/documents/displayMultiTypeUpload.njk" %}
     <div class="govuk-button-group govuk-!-margin-top-8">
         {{ govukButton({
             text: "Continue",

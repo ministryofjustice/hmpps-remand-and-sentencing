@@ -91,7 +91,7 @@
                       {% include "../partials/court-case-details/displayNonSentencingHearingRow.njk" %}
                     {% elif hearing.warrantType == 'APPEAL' %}
                       {% include "../partials/court-case-details/displayAppealHearingRow.njk" %}
-                    {% elif breachWarrantTypes.includes(hearing.warrantType) and courtCaseDetails.showBreachRow %}
+                    {% elif breachWarrantTypes.includes(hearing.warrantType) %}
                       {% include "../partials/court-case-details/displayBreachHearingRow.njk" %}
                     {% else %}
                       {% include "../partials/court-case-details/displaySentencingHearingRow.njk" %}

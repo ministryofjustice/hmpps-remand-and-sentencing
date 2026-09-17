@@ -105,7 +105,6 @@ export default class BreachRoutes extends BaseRoutes {
       breachTypeForm,
       backLink,
       errors: req.flash('errors') || [],
-      breachImprisonableOffenceEnabled: config.featureToggles.breachImprisonableOffence,
     })
   }
 

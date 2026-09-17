@@ -10,44 +10,32 @@
     {{ super() }}
         <form method="post" autocomplete="off">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-            {% if breachImprisonableOffenceEnabled %}
-                {{ govukRadios({
-                    name: "breachType",
-                    fieldset: {
-                        legend: {
-                            text: "What type of breach are you recording?",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
+            {{ govukRadios({
+                name: "breachType",
+                fieldset: {
+                    legend: {
+                        text: "What type of breach are you recording?",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                    }
+                },
+                items: [
+                    {
+                        value: "BREACH_OF_SUPERVISION_REQUIREMENTS",
+                        text: "A breach of supervision requirements",
+                        hint: {
+                            text: "Schedule 12, paragraph 2&3 of Sentencing Act 2020. Previously section 104."
                         }
                     },
-                    items: [
-                        {
-                            value: "BREACH_OF_SUPERVISION_REQUIREMENTS",
-                            text: "A breach of supervision requirements",
-                            hint: {
-                                text: "Schedule 12, paragraph 2&3 of Sentencing Act 2020. Previously section 104."
-                            }
-                        },
-                        {
-                            value: "BREACH_OF_IMPRISONABLE_OFFENCE",
-                            text: "A breach due to imprisonable offence",
-                            hint: {
-                                text: "Schedule 12 paragraph 7 of Sentencing Act 2020. Previously section 105."
-                            }
+                    {
+                        value: "BREACH_OF_IMPRISONABLE_OFFENCE",
+                        text: "A breach due to imprisonable offence",
+                        hint: {
+                            text: "Schedule 12 paragraph 7 of Sentencing Act 2020. Previously section 105."
                         }
-                    ]
-                }) }}
-            {% else %}
-                <h1 class="govuk-heading-l">
-                    Record a breach of supervision requirement
-                </h1>
-                <p class="govuk-body">DPS currently supports recording a <span class="govuk-!-font-weight-bold">breach of supervision requirements (Section 104)</span> only.</p>
-                <p class="govuk-body">If you need to record a <span class="govuk-!-font-weight-bold">new imprisonable offence committed during supervision (Section 105)</span> continue to use NOMIS.</p>
-                <p class="govuk-body">Do you want to continue?</p>
-
-                <input type="hidden" name="breachType" value="BREACH_OF_SUPERVISION_REQUIREMENTS">
-            {% endif %}
+                    }
+                ]
+            }) }}
 
             <div class="govuk-button-group">
                 {{ govukButton({

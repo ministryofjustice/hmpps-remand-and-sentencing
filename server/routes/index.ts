@@ -226,6 +226,11 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.getProvideReasonForMarkingCourtCaseAsInactive,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/provide-reason-for-marking-court-case-as-inactive',
+    courtCaseRoutes.submitProvideReasonForMarkingCourtCaseAsInactive,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/confirm-delete',
     courtCaseRoutes.getDeleteAppearanceConfirmation,

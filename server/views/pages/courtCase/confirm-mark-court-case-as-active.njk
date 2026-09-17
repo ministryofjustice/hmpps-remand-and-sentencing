@@ -11,8 +11,8 @@
             <h1 class="govuk-heading-l" data-qa="confirm-mark-court-case-status-heading">Are you sure you want to mark this court case as active?</h1>
 
             {% if caseReference or courtName %}
-                <p class="govuk-body govuk-!-margin-bottom-6" data-qa="confirm-mark-court-case-status-subheading">
-                    {{ caseReference }}{{ ' at ' + courtName if courtName }}
+                <p class="govuk-hint" data-qa="confirm-mark-court-case-status-subheading">
+                    {{ caseReference + ' at ' if caseReference }}{{ courtName }}
                 </p>
             {% endif %}
 

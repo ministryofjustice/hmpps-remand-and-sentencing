@@ -40,35 +40,23 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
+// The full navigation/validation/banner journeys for these pages are covered end-to-end by
+// integration_tests/e2e/allFeaturesOn/courtCaseMarkAsActiveInactive.cy.ts. The tests below are kept
+// where they verify something Cypress can't: exact service-call arguments, or edge-case data
+// fixtures (e.g. a missing case reference) that aren't exercised by the e2e fixtures.
+
 describe('GET /confirm-mark-court-case-as-inactive', () => {
-  it('renders the confirm page with the inactive wording and the case/court subheading', async () => {
+  it('falls back to just the court name when the case has no reference', async () => {
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue({
+      ...courtCaseDetails,
+      latestAppearance: { ...courtCaseDetails.latestAppearance, courtCaseReference: null },
+    } as unknown as PageCourtCaseContent)
+
     const res = await request(app)
       .get('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
-      .expect('Content-Type', /html/)
       .expect(200)
     const $ = cheerio.load(res.text)
-    expect($('[data-qa="confirm-mark-court-case-status-heading"]').text().trim()).toEqual(
-      'Are you sure you want to mark this court case as inactive?',
-    )
-    expect($('[data-qa="confirm-mark-court-case-status-subheading"]').text().trim()).toEqual(
-      '1234567 at Aberdare County Court',
-    )
-    expect($('[data-qa="confirm-mark-court-case-status-yes"]').next().text().trim()).toEqual('Yes, mark as inactive')
-    expect($('[data-qa="back-link"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
-  })
-})
-
-describe('GET /confirm-mark-court-case-as-active', () => {
-  it('renders the confirm page with the active wording', async () => {
-    const res = await request(app)
-      .get('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
-      .expect('Content-Type', /html/)
-      .expect(200)
-    const $ = cheerio.load(res.text)
-    expect($('[data-qa="confirm-mark-court-case-status-heading"]').text().trim()).toEqual(
-      'Are you sure you want to mark this court case as active?',
-    )
-    expect($('[data-qa="confirm-mark-court-case-status-yes"]').next().text().trim()).toEqual('Yes, mark as active')
+    expect($('[data-qa="confirm-mark-court-case-status-subheading"]').text().trim()).toEqual('Aberdare County Court')
   })
 })
 
@@ -86,28 +74,6 @@ describe('POST /confirm-mark-court-case-as-inactive', () => {
       confirmMarkCourtCaseStatus: 'true',
     })
   })
-
-  it('navigates to the hearings page when No is chosen', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsInactive.mockReturnValue([])
-
-    await request(app)
-      .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
-      .send({ confirmMarkCourtCaseStatus: 'false' })
-      .expect(302)
-      .expect('Location', '/person/A1234AB/edit-court-case/1/details')
-  })
-
-  it('redirects back to the same page with an error when no selection is made', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsInactive.mockReturnValue([
-      { text: "Select 'Yes' if you want to mark this court case as inactive", href: '#confirmMarkCourtCaseStatus' },
-    ])
-
-    await request(app)
-      .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
-      .send({})
-      .expect(302)
-      .expect('Location', '/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive')
-  })
 })
 
 describe('POST /confirm-mark-court-case-as-active', () => {
@@ -123,28 +89,6 @@ describe('POST /confirm-mark-court-case-as-active', () => {
     expect(defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive).toHaveBeenCalledWith('1', 'user1', {
       confirmMarkCourtCaseStatus: 'true',
     })
-  })
-
-  it('navigates to the hearings page with no banner when No is chosen', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive.mockResolvedValue([])
-
-    await request(app)
-      .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
-      .send({ confirmMarkCourtCaseStatus: 'false' })
-      .expect(302)
-      .expect('Location', '/person/A1234AB/edit-court-case/1/details')
-  })
-
-  it('redirects back to the same page with an error when no selection is made', async () => {
-    defaultServices.remandAndSentencingService.confirmMarkCourtCaseAsActive.mockResolvedValue([
-      { text: "Select 'Yes' if you want to mark this court case as active", href: '#confirmMarkCourtCaseStatus' },
-    ])
-
-    await request(app)
-      .post('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
-      .send({})
-      .expect(302)
-      .expect('Location', '/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
   })
 })
 
@@ -168,29 +112,53 @@ describe('GET /cannot-mark-court-case-as-inactive-active-sentences', () => {
       'Edit the sentences on the latest court hearing to make them inactive. Then come back and try again.',
     )
   })
-
-  it('links the "Cancel and go back" button and the "Back" link to the page of entry', async () => {
-    const res = await request(app)
-      .get('/person/A1234AB/edit-court-case/1/cannot-mark-court-case-as-inactive-active-sentences')
-      .expect(200)
-    const $ = cheerio.load(res.text)
-    expect($('[data-qa="cancel-and-go-back-button"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
-    expect($('[data-qa="back-link"]').attr('href')).toEqual('/person/A1234AB/edit-court-case/1/details')
-  })
 })
 
 describe('GET /provide-reason-for-marking-court-case-as-inactive', () => {
-  it('renders the stub page', async () => {
+  it('falls back to just the court name when the case has no reference', async () => {
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue({
+      ...courtCaseDetails,
+      latestAppearance: { ...courtCaseDetails.latestAppearance, courtCaseReference: null },
+    } as unknown as PageCourtCaseContent)
+
     const res = await request(app)
       .get('/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
-      .expect('Content-Type', /html/)
       .expect(200)
     const $ = cheerio.load(res.text)
-    expect($('[data-qa="provide-reason-for-marking-court-case-as-inactive-heading"]').text().trim()).toEqual(
-      'Provide a reason you want to mark this case as inactive',
+    expect($('[data-qa="provide-reason-for-marking-court-case-as-inactive-hint"]').text().trim()).toEqual(
+      'Aberdare County Court',
     )
-    expect($('[data-qa="back-link"]').attr('href')).toEqual(
-      '/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-inactive',
-    )
+  })
+})
+
+describe('POST /provide-reason-for-marking-court-case-as-inactive', () => {
+  it('marks the case as inactive, sets the success banner and redirects to the hearings page', async () => {
+    defaultServices.remandAndSentencingService.markCourtCaseAsInactive.mockResolvedValue([])
+
+    await request(app)
+      .post('/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
+      .send({ reason: 'No longer required' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/edit-court-case/1/details')
+
+    expect(defaultServices.remandAndSentencingService.markCourtCaseAsInactive).toHaveBeenCalledWith('1', 'user1', {
+      reason: 'No longer required',
+    })
+  })
+
+  it('redirects back to the same page with an error when the reason is over 200 characters', async () => {
+    defaultServices.remandAndSentencingService.markCourtCaseAsInactive.mockResolvedValue([
+      { text: 'Reason must be 200 characters or less', href: '#reason' },
+    ])
+
+    await request(app)
+      .post('/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
+      .send({ reason: 'a'.repeat(201) })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/edit-court-case/1/provide-reason-for-marking-court-case-as-inactive')
+
+    expect(defaultServices.remandAndSentencingService.markCourtCaseAsInactive).toHaveBeenCalledWith('1', 'user1', {
+      reason: 'a'.repeat(201),
+    })
   })
 })

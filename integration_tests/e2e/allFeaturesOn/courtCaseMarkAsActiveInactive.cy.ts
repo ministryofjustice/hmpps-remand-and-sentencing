@@ -3,6 +3,7 @@ import CourtCaseDetailsPage from '../../pages/courtCaseDetailsPage'
 import ConfirmMarkCourtCaseAsActivePage from '../../pages/confirmMarkCourtCaseAsActivePage'
 import ConfirmMarkCourtCaseAsInactivePage from '../../pages/confirmMarkCourtCaseAsInactivePage'
 import CannotMarkCourtCaseAsInactiveActiveSentencesPage from '../../pages/cannotMarkCourtCaseAsInactiveActiveSentencesPage'
+import ProvideReasonForMarkingCourtCaseAsInactivePage from '../../pages/provideReasonForMarkingCourtCaseAsInactivePage'
 
 context('Mark court case as active/inactive', () => {
   const courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa'
@@ -76,7 +77,7 @@ context('Mark court case as active/inactive', () => {
     })
   })
 
-  context('Confirm page — mark as inactive (navigation only, reason capture not yet built)', () => {
+  context('Confirm page — mark as inactive', () => {
     let confirmInactivePage: ConfirmMarkCourtCaseAsInactivePage
     beforeEach(() => {
       cy.task('stubGetCourtCaseDetails', {
@@ -120,6 +121,101 @@ context('Mark court case as active/inactive', () => {
     it('back link returns to the hearings page', () => {
       confirmInactivePage.backLink().click()
       Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
+    })
+  })
+
+  context('Provide a reason page — mark as inactive', () => {
+    let provideReasonPage: ProvideReasonForMarkingCourtCaseAsInactivePage
+    beforeEach(() => {
+      cy.task('stubGetCourtCaseDetails', {
+        courtCaseUuid,
+        status: 'ACTIVE',
+        appearances: [appearance('INACTIVE')],
+      })
+      cy.task('stubUpdateCourtCaseStatus', { courtCaseUuid })
+      cy.signIn()
+      cy.visit(`/person/A1234AB/edit-court-case/${courtCaseUuid}/provide-reason-for-marking-court-case-as-inactive`)
+      provideReasonPage = Page.verifyOnPage(ProvideReasonForMarkingCourtCaseAsInactivePage)
+    })
+
+    it('shows the case reference and court name as hint text', () => {
+      provideReasonPage.hint().should('contain.text', '1234567 at Southampton Magistrate Court')
+    })
+
+    it('shows a validation error when no reason is entered', () => {
+      provideReasonPage.confirmAndSaveButton().click()
+
+      Page.verifyOnPage(ProvideReasonForMarkingCourtCaseAsInactivePage)
+      provideReasonPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Enter a reason for marking this case as inactive')
+    })
+
+    it('shows a validation error and preserves the entered text when the reason is over 200 characters', () => {
+      const tooLongReason = 'a'.repeat(201)
+      provideReasonPage.reasonTextarea().invoke('val', tooLongReason).trigger('input')
+      provideReasonPage.confirmAndSaveButton().click()
+
+      Page.verifyOnPage(ProvideReasonForMarkingCourtCaseAsInactivePage)
+      provideReasonPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Reason must be 200 characters or less')
+      provideReasonPage.reasonTextarea().should('have.value', tooLongReason)
+    })
+
+    it('happy path: entering a reason marks the case inactive and shows the success banner', () => {
+      provideReasonPage.reasonTextarea().type('No longer required')
+      provideReasonPage.confirmAndSaveButton().click()
+
+      courtCaseDetailsPage = Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
+      cy.get('.govuk-notification-banner__title').should('contain.text', 'Success')
+      courtCaseDetailsPage
+        .courtCaseStatusChangeSuccessBanner()
+        .should('contain.text', 'Court case successfully marked inactive')
+    })
+
+    it('back link returns to the confirm page', () => {
+      provideReasonPage.backLink().click()
+      Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
+    })
+
+    it('cancel button returns to the hearings page where the journey started', () => {
+      provideReasonPage.cancelButton().click()
+      Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
+    })
+  })
+
+  context('Full journey — mark as inactive', () => {
+    beforeEach(() => {
+      cy.task('stubGetCourtCaseDetails', {
+        courtCaseUuid,
+        status: 'ACTIVE',
+        appearances: [appearance('INACTIVE')],
+      })
+      cy.task('stubUpdateCourtCaseStatus', { courtCaseUuid })
+      cy.signIn()
+      cy.visit(detailsUrl)
+      courtCaseDetailsPage = Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
+    })
+
+    it('happy path: choosing Yes, then providing a reason, marks the case inactive and shows the success banner', () => {
+      courtCaseDetailsPage.markCourtCaseAsInactiveButton().click()
+
+      const confirmPage = Page.verifyOnPage(ConfirmMarkCourtCaseAsInactivePage)
+      confirmPage.radioLabelSelector('true').click()
+      confirmPage.confirmAndContinueButton().click()
+
+      const provideReasonPage = Page.verifyOnPage(ProvideReasonForMarkingCourtCaseAsInactivePage)
+      provideReasonPage.reasonTextarea().type('No longer required')
+      provideReasonPage.confirmAndSaveButton().click()
+
+      courtCaseDetailsPage = Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at')
+      cy.get('.govuk-notification-banner__title').should('contain.text', 'Success')
+      courtCaseDetailsPage
+        .courtCaseStatusChangeSuccessBanner()
+        .should('contain.text', 'Court case successfully marked inactive')
     })
   })
 

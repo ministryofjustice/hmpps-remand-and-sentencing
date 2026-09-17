@@ -35,8 +35,6 @@ export default class CourtCaseDetailsModel {
 
   mergedToInsetText?: string
 
-  showBreachRow: boolean
-
   showEditLink: boolean
 
   markCourtCaseStatusAction?: 'active' | 'inactive'
@@ -116,7 +114,6 @@ export default class CourtCaseDetailsModel {
     this.mergedToInsetText = this.mergedToCaseDetails
       ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
       : undefined
-    this.showBreachRow = config.featureToggles.breachSupervision
     this.showEditLink = pageCourtCaseContent.status !== 'MERGED'
     if (config.featureToggles.sentenceStatus) {
       if (pageCourtCaseContent.status === 'ACTIVE') {

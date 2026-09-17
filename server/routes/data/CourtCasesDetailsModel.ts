@@ -134,8 +134,7 @@ export default class CourtCasesDetailsModel {
     this.newAppearanceUuid =
       pagedCourtCase.latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid ?? crypto.randomUUID()
     this.canAppeal = pagedCourtCase.canAppeal && this.overallCaseStatus !== 'MERGED'
-    this.canBreach =
-      pagedCourtCase.canBreach && config.featureToggles.breachSupervision && this.overallCaseStatus !== 'MERGED'
+    this.canBreach = pagedCourtCase.canBreach && this.overallCaseStatus !== 'MERGED'
     this.canAddHearing =
       !this.canAppeal && !this.canBreach && this.warrantType !== 'SENTENCING' && this.overallCaseStatus !== 'MERGED'
   }

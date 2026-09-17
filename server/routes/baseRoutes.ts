@@ -494,13 +494,8 @@ export default abstract class BaseRoutes {
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    const singleTypeDocumentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
     const uploadedDocumentRows = getSortedDocumentsWithUiDocumentType(uploadedDocuments, courtAppearance.warrantType)
     return {
-      singleTypeDocumentRows,
       uploadedDocumentRows,
       expectedDocumentTypes,
     }

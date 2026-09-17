@@ -26,6 +26,6 @@ context('Upload remand court document page', () => {
     documentUploadPage.continueButton().click()
     uploadRemandCourtDocumentsPage = Page.verifyOnPage(UploadRemandCourtDocumentsPage)
     cy.contains('testfile.doc')
-    uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('not.exist')
+    uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('exist')
   })
 })

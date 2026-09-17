@@ -25,7 +25,7 @@ export default class CourtCaseTaskListPage extends Page {
 
   reviewCourtDocumentsLink = (): PageElement => cy.get('a:contains("Review court documents")')
 
-  judicialFindingsLink = (): PageElement => cy.get('a:contains("Add domestic abuse judicial findings")')
+  judicialFindingsLink = (): PageElement => cy.get('a:contains("Add judicial finding of domestic abuse")')
 
   saveDraftParagraph = (): PageElement =>
     cy.get('p:contains("To save a draft of the court case, you must first complete the appearance information.")')

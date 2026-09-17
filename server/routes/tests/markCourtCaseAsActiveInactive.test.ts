@@ -105,7 +105,7 @@ describe('GET /cannot-mark-court-case-as-inactive-active-sentences', () => {
     const bodyText = $('.govuk-grid-column-two-thirds').text()
     expect(bodyText).toContain('A case with active sentences cannot be marked as inactive.')
     expect(bodyText).toContain(
-      'You need to inactivate all sentences in this case in order to mark the case as inactive.',
+      'You need to deactivate all sentences in this case in order to mark the case as inactive.',
     )
     expect(bodyText).toContain('What to do next')
     expect(bodyText).toContain(

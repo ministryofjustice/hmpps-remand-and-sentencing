@@ -21,9 +21,9 @@
                 "data-qa": "offenceDateHint"
             }
         } if offence.offenceStartDate,
-        checked: selectedOffenceUuids and offence.chargeUuid in selectedOffenceUuids,
         attributes: {
-            "data-qa": "checkbox-" + loop.index0
+            "data-qa": "checkbox-" + loop.index0,
+            "autocomplete": "off"
         }
     })%}
 

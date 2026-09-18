@@ -268,6 +268,7 @@ context('New Remand hearing from hmcts data journey', () => {
     cy.task('verifyCreateCourtAppearanceRequest', {
       nextAppearanceDate: futureDate.format('YYYY-MM-DD'),
       courtCaseUuid: '84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b',
+      hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
       appearanceDate: '2023-12-15',
       documents: [
         {

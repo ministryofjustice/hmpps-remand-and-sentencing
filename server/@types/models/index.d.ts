@@ -22,6 +22,7 @@ declare module 'models' {
     nextAppearanceDate?: Date
     nextAppearanceTimeSet?: boolean
     nextAppearanceSubTypeUuid?: string
+    nextHmctsCourtHearingId?: string
     offences?: Offence[]
     warrantType?: string
     referenceNumberSelect?: string
@@ -40,6 +41,7 @@ declare module 'models' {
     isCommonPlatformJourney?: boolean
     periodLengths?: SentenceLength[]
     judicialFindingsAccepted?: boolean
+    hmctsCourtHearingId?: string
   }
 
   export interface Offence {
@@ -60,6 +62,7 @@ declare module 'models' {
     offenceDateIsSame?: string
     isGeneratedBreachOffence?: string
     findingOfDomesticAbuse?: boolean
+    hmctsChargeId?: string
   }
 
   export interface Sentence {

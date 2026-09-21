@@ -167,7 +167,12 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
     courtCaseTaskListPage.offencesLink().click()
 
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
-
+    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    offenceCheckOffenceAnswersPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Update the offence outcome')
     offenceCheckOffenceAnswersPage.editOffenceLink('3f0dd738-91e4-4557-bb33-0abd317b940f').click()
 
     let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')

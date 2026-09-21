@@ -2220,12 +2220,17 @@ export default class OffenceRoutes extends BaseRoutes {
     const offenceFinishedAddingForm = trimForm<OffenceFinishedAddingForm>(req.body)
     let errors = this.courtAppearanceService.checkFinishingOffences(offenceFinishedAddingForm)
     if (offenceFinishedAddingForm.finishedAddingOffences === 'true') {
-      const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
+      const mandatoryFieldErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
         req.session,
         nomsId,
         appearanceReference,
       )
-      errors = errors.concat(offenceErrors)
+      const offenceOutcomeFields = this.courtAppearanceService.checkAllOffencesHaveUpdatedOutcomes(
+        req.session,
+        nomsId,
+        appearanceReference,
+      )
+      errors = errors.concat(mandatoryFieldErrors).concat(offenceOutcomeFields)
     }
     if (errors.length > 0) {
       req.flash('errors', errors)

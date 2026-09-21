@@ -68,7 +68,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
   app.locals.breachWarrantTypes = BREACH_WARRANT_TYPES
-  app.locals.isMultiTypeUploadEnabled = config.featureToggles.multipleTypeDocumentUpload
   app.locals.showSentenceStatusTag = config.featureToggles.sentenceStatus
 
   if (config.environmentName === 'LOCAL') {
@@ -301,6 +300,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         lineNumber: offence.sentence?.legacyData?.nomisLineReference,
         convictionDate: formatDate(offence.sentence?.convictionDate),
         aggravatingFactors: getAggravatingFactors(offence),
+        findingOfDomesticAbuse: offence.findingOfDomesticAbuse,
         isSentenced: offence.sentence,
         periodLengths: offence.sentence?.periodLengths,
         sentenceServeType: offence.sentence?.sentenceServeType,

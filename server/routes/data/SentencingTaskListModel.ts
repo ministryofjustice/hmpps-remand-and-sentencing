@@ -282,7 +282,7 @@ export default class SentencingTaskListModel extends TaskListModel {
   getJudicialFindingsItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {
-        text: 'Add domestic abuse judicial findings',
+        text: 'Add judicial finding of domestic abuse',
         classes: 'govuk-link--no-visited-state',
       },
       hint: {

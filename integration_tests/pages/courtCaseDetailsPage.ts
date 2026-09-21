@@ -24,4 +24,10 @@ export default class CourtCaseDetailsPage extends Page {
   notificationBannerHeading = (): PageElement => cy.get('[data-qa=notification-banner-heading]')
 
   notificationBannerContent = (): PageElement => cy.get('[data-qa=notification-banner-content]')
+
+  markCourtCaseAsInactiveButton = (): PageElement => cy.get('[data-qa=mark-court-case-as-inactive-button]')
+
+  markCourtCaseAsActiveButton = (): PageElement => cy.get('[data-qa=mark-court-case-as-active-button]')
+
+  courtCaseStatusChangeSuccessBanner = (): PageElement => cy.get('[data-qa=court-case-status-change-success-banner]')
 }

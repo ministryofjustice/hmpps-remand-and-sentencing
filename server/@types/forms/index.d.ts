@@ -202,8 +202,16 @@ declare module 'forms' {
     reason?: string
   }
 
+  export interface MarkCourtCaseAsInactiveReasonForm {
+    reason?: string
+  }
+
   export interface ConfirmMarkSentenceAsActiveForm {
     confirmMarkAsActive?: string
+  }
+
+  export interface ConfirmMarkCourtCaseStatusForm {
+    confirmMarkCourtCaseStatus?: string
   }
 
   export interface UploadedDocumentForm {

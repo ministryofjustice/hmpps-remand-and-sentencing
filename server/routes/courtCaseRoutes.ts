@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import type {
   CancelCourtCaseForm,
+  ConfirmMarkCourtCaseStatusForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextAppearanceCourtNameForm,
@@ -16,6 +17,7 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   DeleteHearingForm,
+  MarkCourtCaseAsInactiveReasonForm,
   ReceivedCustodialSentenceForm,
 } from 'forms'
 import type { CourtCase, UrlParameters } from 'models'
@@ -519,6 +521,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }),
     )
     const successMessage = req.flash('success')[0]
+    const courtCaseStatusChangeSuccessMessage = req.flash('courtCaseStatusChangeSuccess')[0]
     const auditDetails = this.getCourtCaseAuditUuids(courtCaseDetails, consecutiveToSentenceDetails)
     await this.auditService.logPageView(Page.COURT_CASE, {
       who: res.locals.user.username,
@@ -537,22 +540,85 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       backLink: JourneyUrls.courtCases(nomsId),
       successMessage,
+      courtCaseStatusChangeSuccessMessage,
     })
   }
 
-  public getConfirmMarkCourtCaseStatus: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, addOrEditCourtCase, targetStatus } = req.params
-    if (targetStatus !== 'active' && targetStatus !== 'inactive') {
-      return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+  public getConfirmMarkCourtCaseAsActive: RequestHandler = async (req, res): Promise<void> => {
+    return this.renderConfirmMarkCourtCaseStatus(req, res, 'pages/courtCase/confirm-mark-court-case-as-active')
+  }
+
+  public getConfirmMarkCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    return this.renderConfirmMarkCourtCaseStatus(req, res, 'pages/courtCase/confirm-mark-court-case-as-inactive')
+  }
+
+  private getCaseAndCourtDetails = async (
+    courtCaseReference: string,
+    username: string,
+  ): Promise<{ caseReference: string; courtName: string }> => {
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
+    const courtDetails = courtCaseDetails.latestAppearance?.courtCode
+      ? await this.courtRegisterService.findCourtById(courtCaseDetails.latestAppearance.courtCode, username)
+      : undefined
+    return {
+      caseReference: courtCaseDetails.latestAppearance?.courtCaseReference,
+      courtName: courtDetails?.courtName,
     }
+  }
+
+  private renderConfirmMarkCourtCaseStatus = async (req, res, view: string): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
-    return res.render('pages/courtCase/confirm-mark-court-case-status', {
+    const { caseReference, courtName } = await this.getCaseAndCourtDetails(courtCaseReference, username)
+    return res.render(view, {
       nomsId,
       courtCaseReference,
       addOrEditCourtCase,
       backLink,
-      targetStatus: targetStatus.toUpperCase(),
+      caseReference,
+      courtName,
+      errors: req.flash('errors') || [],
     })
+  }
+
+  public submitConfirmMarkCourtCaseAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const confirmMarkCourtCaseStatusForm = trimForm<ConfirmMarkCourtCaseStatusForm>(req.body)
+    const errors = await this.remandAndSentencingService.confirmMarkCourtCaseAsActive(
+      courtCaseReference,
+      username,
+      confirmMarkCourtCaseStatusForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-active`,
+      )
+    }
+    if (confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus === 'true') {
+      req.flash('courtCaseStatusChangeSuccess', 'Court case successfully marked active')
+    }
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+  }
+
+  public submitConfirmMarkCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const confirmMarkCourtCaseStatusForm = trimForm<ConfirmMarkCourtCaseStatusForm>(req.body)
+    const errors = await this.remandAndSentencingService.confirmMarkCourtCaseAsInactive(confirmMarkCourtCaseStatusForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-inactive`,
+      )
+    }
+    if (confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus !== 'true') {
+      return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/provide-reason-for-marking-court-case-as-inactive`,
+    )
   }
 
   public getCannotMarkCourtCaseAsInactiveActiveSentences: RequestHandler = async (req, res): Promise<void> => {
@@ -564,6 +630,47 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       backLink,
     })
+  }
+
+  public getProvideReasonForMarkingCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-inactive`
+    const cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    const { caseReference, courtName } = await this.getCaseAndCourtDetails(courtCaseReference, username)
+    const markCourtCaseAsInactiveReasonForm = (req.flash('markCourtCaseAsInactiveReasonForm')[0] ||
+      {}) as MarkCourtCaseAsInactiveReasonForm
+    return res.render('pages/courtCase/provide-reason-for-marking-court-case-as-inactive', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      backLink,
+      cancelLink,
+      caseReference,
+      courtName,
+      reason: markCourtCaseAsInactiveReasonForm.reason,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitProvideReasonForMarkingCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const markCourtCaseAsInactiveReasonForm = trimForm<MarkCourtCaseAsInactiveReasonForm>(req.body)
+    const errors = await this.remandAndSentencingService.markCourtCaseAsInactive(
+      courtCaseReference,
+      username,
+      markCourtCaseAsInactiveReasonForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('markCourtCaseAsInactiveReasonForm', { ...markCourtCaseAsInactiveReasonForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/provide-reason-for-marking-court-case-as-inactive`,
+      )
+    }
+    req.flash('courtCaseStatusChangeSuccess', 'Court case successfully marked inactive')
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
   }
 
   private getCourtCaseAuditUuids(

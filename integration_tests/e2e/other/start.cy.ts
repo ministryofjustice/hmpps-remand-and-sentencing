@@ -282,4 +282,22 @@ context('Start Page', () => {
     startPage.filterSortSummary().click() // Open
     startPage.filterSortSummaryPanel().should('have.attr', 'open')
   })
+
+  it('displays breach of supervision court case summary', () => {
+    startPage.courtCaseSummaryList('cb0469bd-aca1-4ae7-9a65-46366ea5d48e').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'DTO (Detention and Training Order)',
+      'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
+    })
+  })
+
+  it('displays breach of imprisonable court case summary', () => {
+    startPage.courtCaseSummaryList('db3e04ce-69f9-4480-ae3b-d17eb6ba15ef').getSummaryList().should('deep.equal', {
+      'Case references': 'HT32511',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'DTO (Detention and Training Order)',
+      'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',
+    })
+  })
 })

@@ -93,7 +93,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Add domestic abuse judicial findings',
+          name: 'Add judicial finding of domestic abuse',
           status: 'Cannot start yet',
           hint: 'This can be found on the PCR',
         },
@@ -150,7 +150,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Add domestic abuse judicial findings',
+          name: 'Add judicial finding of domestic abuse',
           status: 'Cannot start yet',
           hint: 'This can be found on the PCR',
         },
@@ -219,7 +219,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Add domestic abuse judicial findings',
+          name: 'Add judicial finding of domestic abuse',
           status: 'Cannot start yet',
           hint: 'This can be found on the PCR',
         },
@@ -293,7 +293,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add domestic abuse judicial findings',
+          name: 'Add judicial finding of domestic abuse',
           status: 'Optional',
           hint: 'This can be found on the PCR',
         },

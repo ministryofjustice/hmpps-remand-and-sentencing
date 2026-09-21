@@ -26,6 +26,20 @@
   }) }}
 {% endif %}
 
+{% if courtCaseStatusChangeSuccessMessage %}
+
+{% set courtCaseStatusChangeHtml %}
+  <h3 class="govuk-notification-banner__heading" data-qa="court-case-status-change-success-banner">
+    {{ courtCaseStatusChangeSuccessMessage }}
+  </h3>
+{% endset %}
+
+  {{ govukNotificationBanner({
+    html: courtCaseStatusChangeHtml,
+    type: "success"
+  }) }}
+{% endif %}
+
     {{ super() }}
     <div class="govuk-grid-row">
 
@@ -77,7 +91,7 @@
                       {% include "../partials/court-case-details/displayNonSentencingHearingRow.njk" %}
                     {% elif hearing.warrantType == 'APPEAL' %}
                       {% include "../partials/court-case-details/displayAppealHearingRow.njk" %}
-                    {% elif breachWarrantTypes.includes(hearing.warrantType) and courtCaseDetails.showBreachRow %}
+                    {% elif breachWarrantTypes.includes(hearing.warrantType) %}
                       {% include "../partials/court-case-details/displayBreachHearingRow.njk" %}
                     {% else %}
                       {% include "../partials/court-case-details/displaySentencingHearingRow.njk" %}

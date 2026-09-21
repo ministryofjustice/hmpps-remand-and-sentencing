@@ -1178,6 +1178,7 @@ export default {
             courtCaseUuid: '${json-unit.any-string}',
             // eslint-disable-next-line no-template-curly-in-string
             appearanceUuid: '${json-unit.any-string}',
+            hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
@@ -1238,6 +1239,7 @@ export default {
             courtCaseUuid: '${json-unit.any-string}',
             // eslint-disable-next-line no-template-curly-in-string
             appearanceUuid: '${json-unit.any-string}',
+            hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
@@ -1248,6 +1250,7 @@ export default {
                 chargeUuid: '${json-unit.any-string}',
                 // eslint-disable-next-line no-template-curly-in-string
                 appearanceUuid: '${json-unit.any-string}',
+                hmctsChargeId: 'd8d6a30e-d923-42fe-b661-0a7afa42291d',
                 offenceCode: 'FS13012',
                 outcomeUuid: '6d2eb21d-ec02-48fa-9fcd-02e73b8e45ca',
                 aggravatingFactors: [],
@@ -1260,6 +1263,7 @@ export default {
                 appearanceUuid: '${json-unit.any-string}',
                 offenceCode: 'PS90037',
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                hmctsChargeId: '58f3bc60-e9a3-4700-a272-4b34350ceccb',
                 prisonId: 'MDI',
                 createChargeOrder: 1,
                 aggravatingFactors: [],
@@ -1272,6 +1276,7 @@ export default {
                 appearanceUuid: '${json-unit.any-string}',
                 offenceCode: 'BC90005',
                 outcomeUuid: '315280e5-d53e-43b3-8ba6-44da25676ce2',
+                hmctsChargeId: 'f6807f7d-cd92-4e13-937e-2ce14cc156da',
                 prisonId: 'MDI',
                 createChargeOrder: 2,
                 aggravatingFactors: [],
@@ -1299,6 +1304,7 @@ export default {
               appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
               prisonId: 'MDI',
               courtAppearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
+              hmctsCourtHearingId: 'effc137e-7f66-441d-99ee-6bec9551eb0c',
             },
           },
         ],
@@ -1324,6 +1330,7 @@ export default {
             courtCaseUuid: '${json-unit.any-string}',
             // eslint-disable-next-line no-template-curly-in-string
             appearanceUuid: '${json-unit.any-string}',
+            hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
             outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
             courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
@@ -1415,11 +1422,13 @@ export default {
 
   verifyCreateCourtAppearanceRequest: ({
     courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    hmctsCourtHearingId = undefined,
     nextAppearanceDate = '',
     appearanceDate = '2023-05-13',
     documents = undefined,
   }: {
     courtCaseUuid: string
+    hmctsCourtHearingId?: string
     nextAppearanceDate: string
     appearanceDate: string
     documents?: unknown[]
@@ -1431,6 +1440,7 @@ export default {
         courtCaseUuid,
         appearanceUuid: '5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
         outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+        hmctsCourtHearingId,
         courtCode: 'ACCRYC',
         courtCaseReference: 'C894623',
         appearanceDate,
@@ -2178,9 +2188,11 @@ export default {
   stubGetCourtCaseDetails: ({
     courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa',
     status = 'ACTIVE',
+    appearances = [],
   }: {
     courtCaseUuid?: string
     status?: string
+    appearances?: object[]
   } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2194,8 +2206,26 @@ export default {
           prisonerId: 'A1234AB',
           courtCaseUuid,
           status,
-          appearances: [],
+          latestAppearance: appearances[0],
+          appearances,
         },
+      },
+    })
+  },
+
+  stubUpdateCourtCaseStatus: ({
+    courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa',
+  }: {
+    courtCaseUuid?: string
+  } = {}): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/status`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       },
     })
   },
@@ -5529,6 +5559,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
+          hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
           outcome: null,
           courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',
@@ -5569,6 +5600,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
+          hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
           outcome: {
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -5594,10 +5626,12 @@ export default {
             },
             futureSkeletonAppearanceUuid: '00000000-0000-0000-0000-000000000000',
             courtAppearanceSubType: null,
+            hmctsCourtHearingId: 'effc137e-7f66-441d-99ee-6bec9551eb0c',
           },
           charges: [
             {
               chargeUuid: 'a2451348-37ec-4684-b063-95e529bbca0c',
+              hmctsChargeId: 'd8d6a30e-d923-42fe-b661-0a7afa42291d',
               offenceCode: 'FS13012',
               offenceStartDate: '2026-06-06',
               offenceEndDate: null,
@@ -5618,6 +5652,7 @@ export default {
             },
             {
               chargeUuid: 'f47c6d18-3c56-402f-a18d-9bf5415a4c3e',
+              hmctsChargeId: 'f6807f7d-cd92-4e13-937e-2ce14cc156da',
               offenceCode: 'BC90005',
               offenceStartDate: '2026-06-06',
               offenceEndDate: null,
@@ -5638,6 +5673,7 @@ export default {
             },
             {
               chargeUuid: '3f0dd738-91e4-4557-bb33-0abd317b940f',
+              hmctsChargeId: '58f3bc60-e9a3-4700-a272-4b34350ceccb',
               offenceCode: 'PS90037',
               offenceStartDate: '2026-06-06',
               offenceEndDate: null,
@@ -5681,6 +5717,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
+          hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
           outcome: null,
           courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',

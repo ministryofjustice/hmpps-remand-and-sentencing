@@ -1614,7 +1614,7 @@ export default class CourtAppearanceService {
         latestSentencingAppearanceDate = dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
         if (appealDate.isBefore(latestSentencingAppearanceDate)) {
           errors.push({
-            text: 'The appeal hearing date must be after the sentencing warrant date in the court case',
+            text: 'The appeal hearing date must be after the sentence date in the court case',
             href: '#appealDate',
           })
         }
@@ -1844,7 +1844,7 @@ export default class CourtAppearanceService {
         latestSentencingAppearanceDate = dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
         if (breachDate.isBefore(latestSentencingAppearanceDate)) {
           errors.push({
-            text: 'The breach hearing date must be after the sentencing warrant date in the court case',
+            text: 'The breach hearing date must be after the sentence date in the court case',
             href: '#breachDate',
           })
         }

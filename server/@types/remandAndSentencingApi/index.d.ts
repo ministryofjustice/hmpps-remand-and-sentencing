@@ -2543,7 +2543,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2642,6 +2642,8 @@ export interface components {
       replacingChargeUuid?: string | null
       /** Format: int32 */
       createChargeOrder?: number | null
+      /** Format: uuid */
+      hmctsChargeId?: string | null
       aggravatingFactors?: components['schemas']['AggravatingFactor'][]
     }
     CreateCourtAppearance: {
@@ -2664,6 +2666,8 @@ export interface components {
       prisonId: string
       documents?: components['schemas']['UploadedDocument'][] | null
       periodLengths?: components['schemas']['CreatePeriodLength'][] | null
+      /** Format: uuid */
+      hmctsCourtHearingId?: string | null
     }
     CreateCourtCase: {
       prisonerId: string
@@ -2677,7 +2681,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -2685,6 +2689,8 @@ export interface components {
       prisonId: string
       /** Format: uuid */
       courtAppearanceSubtypeUuid?: string | null
+      /** Format: uuid */
+      hmctsCourtHearingId?: string | null
     }
     CreatePeriodLength: {
       /** Format: uuid */
@@ -3607,6 +3613,7 @@ export interface components {
       /** Format: uuid */
       consecutiveToSentenceUuid?: string | null
       aggravatingFactors: components['schemas']['AggravatingFactor'][]
+      findingOfDomesticAbuse?: boolean | null
     }
     PrisonerRecallsResponse: {
       recalls: components['schemas']['Recall'][]
@@ -3689,6 +3696,8 @@ export interface components {
       /** Format: date-time */
       createdAt: string
       findingOfDomesticAbuse?: boolean | null
+      /** Format: uuid */
+      hmctsChargeId?: string | null
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -3711,6 +3720,8 @@ export interface components {
       /** @enum {string} */
       deleteStatus: 'SUPPORTED' | 'NOT_SUPPORTED'
       periodLengths: components['schemas']['PeriodLength'][]
+      /** Format: uuid */
+      hmctsCourtHearingId?: string | null
     }
     CourtAppearanceSubtype: {
       /** Format: uuid */
@@ -3745,13 +3756,15 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
       /** Format: uuid */
       futureSkeletonAppearanceUuid: string
       courtAppearanceSubType?: components['schemas']['CourtAppearanceSubtype'] | null
+      /** Format: uuid */
+      hmctsCourtHearingId?: string | null
     }
     PrisonerSentenceEnvelope: {
       /** Format: date */
@@ -4039,7 +4052,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4062,7 +4075,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4117,7 +4130,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4129,7 +4142,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4215,6 +4228,7 @@ export interface components {
       /** Format: date-time */
       createdAt: string
       aggravatingFactors: components['schemas']['AggravatingFactor'][]
+      findingOfDomesticAbuse?: boolean | null
     }
     RecallableCourtCasesResponse: {
       cases: components['schemas']['RecallableCourtCase'][]
@@ -4250,12 +4264,12 @@ export interface components {
     PageableObject: {
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
+      /** Format: int32 */
+      pageSize?: number
+      sort?: components['schemas']['SortObject']
       unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -4363,7 +4377,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:13:38.412758675 */
+      /** @example 13:07:29.503816352 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string

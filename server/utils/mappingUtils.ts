@@ -74,6 +74,7 @@ const courtAppearanceToCreateNextCourtAppearance = (
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
       courtCode: courtAppearance.nextAppearanceCourtCode,
       appearanceTypeUuid: courtAppearance.nextAppearanceTypeUuid,
+      hmctsCourtHearingId: courtAppearance.nextHmctsCourtHearingId,
       prisonId,
       ...(courtAppearance.nextAppearanceTimeSet
         ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') }
@@ -90,6 +91,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
   const sentence = sentenceToCreateSentence(offence.sentence, prisonId)
   return {
     appearanceUuid,
+    hmctsChargeId: offence.hmctsChargeId,
     offenceCode: offence.offenceCode,
     outcomeUuid: offence.outcomeUuid,
     prisonId,
@@ -115,6 +117,7 @@ export const courtAppearanceToCreateCourtAppearance = (
   return {
     courtCaseUuid,
     appearanceUuid,
+    hmctsCourtHearingId: courtAppearance.hmctsCourtHearingId,
     outcomeUuid: courtAppearance.appearanceOutcomeUuid,
     courtCode: courtAppearance.courtCode,
     courtCaseReference: courtAppearance.caseReferenceNumber,
@@ -229,6 +232,7 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
+    hmctsChargeId: charge.hmctsChargeId,
     aggravatingFactors: charge.aggravatingFactors,
     createChargeOrder,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
@@ -438,6 +442,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
   }
   return {
     appearanceUuid: pageCourtCaseAppearance.appearanceUuid,
+    hmctsCourtHearingId: pageCourtCaseAppearance.hmctsCourtHearingId,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
     criminalAppealOfficeReference: pageCourtCaseAppearance.criminalAppealOfficeReference,
     noCaseReference: pageCourtCaseAppearance.courtCaseReference ? undefined : 'true',
@@ -483,6 +488,7 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextAppearanceDate,
     nextAppearanceSubTypeUuid,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
+    nextHmctsCourtHearingId: nextCourtAppearance?.hmctsCourtHearingId,
   } as CourtAppearance
 }
 

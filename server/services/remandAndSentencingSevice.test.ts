@@ -12,10 +12,42 @@ describe('RemandAndSentencingService', () => {
   beforeEach(() => {
     remandAndSentencingApiClient = {
       hasLoopInChain: jest.fn(),
+      updateCourtCaseStatus: jest.fn(),
     } as unknown as jest.Mocked<RemandAndSentencingApiClient>
     ;(RemandAndSentencingApiClient as jest.Mock).mockImplementation(() => remandAndSentencingApiClient)
 
     service = new RemandAndSentencingService(remandAndSentencingApiClient)
+  })
+
+  describe('markCourtCaseAsInactive', () => {
+    it('returns a validation error and does not update the court case when the reason is over 200 characters', async () => {
+      const reason = 'a'.repeat(201)
+
+      const errors = await service.markCourtCaseAsInactive('court-case-uuid', 'user1', { reason })
+
+      expect(errors).toEqual([{ text: 'Reason must be 200 characters or less', href: '#reason' }])
+      expect(remandAndSentencingApiClient.updateCourtCaseStatus).not.toHaveBeenCalled()
+    })
+
+    it('returns a validation error and does not update the court case when no reason is given', async () => {
+      const errors = await service.markCourtCaseAsInactive('court-case-uuid', 'user1', {})
+
+      expect(errors).toEqual([{ text: 'Enter a reason for marking this case as inactive', href: '#reason' }])
+      expect(remandAndSentencingApiClient.updateCourtCaseStatus).not.toHaveBeenCalled()
+    })
+
+    it('updates the court case status to INACTIVE when the reason is 200 characters or fewer', async () => {
+      const reason = 'a'.repeat(200)
+
+      const errors = await service.markCourtCaseAsInactive('court-case-uuid', 'user1', { reason })
+
+      expect(errors).toEqual([])
+      expect(remandAndSentencingApiClient.updateCourtCaseStatus).toHaveBeenCalledWith(
+        'court-case-uuid',
+        { status: 'INACTIVE', reason },
+        'user1',
+      )
+    })
   })
 
   describe('validateConsecutiveLoops', () => {

@@ -15,7 +15,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/manage-offences-api/offences/code/unique/${offenceCode}`,
+        urlPattern: `/manage-offences-api/offences/code/unique/(?i)${offenceCode}`,
       },
       response: {
         status: 200,

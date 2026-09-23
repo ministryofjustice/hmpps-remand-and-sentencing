@@ -4,7 +4,6 @@ import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentence
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
-import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
@@ -71,7 +70,7 @@ context('Add Offence Edit offence Page', () => {
         .first()
         .then($el => {
           const href = $el.attr('href')
-          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          const match = href?.match(/offences\/([a-f0-9-]+)\//)
           if (match) {
             // eslint-disable-next-line prefer-destructuring
             chargeUuid = match[1]
@@ -181,7 +180,7 @@ context('Add Offence Edit offence Page', () => {
         .first()
         .then($el => {
           const href = $el.attr('href')
-          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          const match = href?.match(/offences\/([a-f0-9-]+)\//)
           if (match) {
             // eslint-disable-next-line prefer-destructuring
             chargeUuid = match[1]

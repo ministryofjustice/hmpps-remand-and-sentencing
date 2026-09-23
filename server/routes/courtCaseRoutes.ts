@@ -3336,7 +3336,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
   ) {
     let { warrantOrHearing } = res.locals
 
-    if (warrantType === 'NON_SENTENCING') {
+    if (warrantType === 'NON_SENTENCING' && outcomeUuid) {
       const outcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, username)
       if (outcome.outcomeType === 'REMAND') {
         warrantOrHearing = 'warrant'

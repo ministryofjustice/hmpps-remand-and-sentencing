@@ -11,6 +11,7 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
 import ErrorPage from '../../pages/error'
+import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 
 context('Court Case Hearing details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -369,6 +370,24 @@ context('Court Case Hearing details Page', () => {
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
+    })
+
+    it('can edit the warrant date', () => {
+      cy.task('stubGetCourtCaseValidationDates', {
+        courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa',
+      })
+      courtCaseHearingDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'warrant-date',
+        )
+        .click()
+      const warrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      warrantDatePage.dayDateInput('warrantDate').should('have.value', '15').clear().type('16')
+      warrantDatePage.continueButton().click()
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
     it('can edit offence outcome and return back to details page', () => {

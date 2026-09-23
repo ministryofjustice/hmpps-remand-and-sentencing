@@ -1,5 +1,5 @@
 import type { CourtDataLandingForm, CourtDataSelectCaseForm } from 'forms'
-import { CourtHearing } from '../@types/courtDataIngestionApi/types'
+import { CourtDocumentView, CourtHearing } from '../@types/courtDataIngestionApi/types'
 import CourtDataIngestionApiClient from '../data/courtDataIngestionApiClient'
 import validate from '../validation/validation'
 
@@ -8,6 +8,14 @@ export default class CourtDataIngestionService {
 
   async getCourtHearing(courtHearingId: string, prisonerNumber: string, username: string): Promise<CourtHearing> {
     return this.courtDataIngestionApiClient.getCourtHearing(courtHearingId, prisonerNumber, username)
+  }
+
+  public async documentViewed(
+    documentId: string,
+    courtDocumentView: CourtDocumentView,
+    username: string,
+  ): Promise<void> {
+    this.courtDataIngestionApiClient.documentViewed(documentId, courtDocumentView, username)
   }
 
   validateLandingForm(courtDataLandingForm: CourtDataLandingForm) {

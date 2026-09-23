@@ -69,6 +69,7 @@ import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
 import { BREACH_WARRANT_TYPES, NIL_UUID } from '../utils/constants'
+import CourtDataIngestionService from '../services/courtDataIngestionService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -82,6 +83,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
     private readonly prisonerService: PrisonerService,
+    private readonly courtDataIngestionService: CourtDataIngestionService,
   ) {
     super(
       courtAppearanceService,
@@ -1754,6 +1756,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
         correlationId: req.id,
         details: auditDetails,
       })
+    }
+    if (courtAppearance.isCommonPlatformJourney) {
+      await Promise.all(
+        courtAppearance.uploadedDocuments
+          .filter(it => it.courtDataIngested)
+          .map(it =>
+            this.courtDataIngestionService.documentViewed(
+              it.documentUUID,
+              { username, type: 'DOCUMENT_PROCESSED' },
+              username,
+            ),
+          ),
+      )
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {

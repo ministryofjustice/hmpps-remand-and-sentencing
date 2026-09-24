@@ -2,7 +2,7 @@ import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
-import { CourtHearing } from '../@types/courtDataIngestionApi/types'
+import { CourtDocumentView, CourtHearing } from '../@types/courtDataIngestionApi/types'
 
 export default class CourtDataIngestionApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -14,5 +14,9 @@ export default class CourtDataIngestionApiClient extends RestClient {
       { path: `/court-hearings/prisoner/${prisonerNumber}/hearing/${courtHearingId}` },
       asSystem(username),
     )
+  }
+
+  async documentViewed(documentId: string, courtDocumentView: CourtDocumentView, username: string): Promise<void> {
+    return this.post({ path: `/court-document/${documentId}/view` }, asSystem(username))
   }
 }

@@ -86,6 +86,18 @@ export default {
       },
     })
   },
+
+  stubDocumentViewed: (): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'POST',
+        url: '/court-data-ingestion-api/court-document/doc-uuid-1/view',
+      },
+      response: {
+        status: 200,
+      },
+    }),
+
   stubCourtDataIngestionApiPing: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {

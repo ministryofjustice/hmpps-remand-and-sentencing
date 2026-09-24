@@ -44,6 +44,7 @@ context('New Remand hearing from hmcts data journey', () => {
     cy.task('stubUploadDocument')
     cy.task('stubGetCourtHearing')
     cy.task('stubCreateCourtAppearance')
+    cy.task('stubDocumentViewed')
     cy.signIn()
     cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing/existing-case`)
   })

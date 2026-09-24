@@ -16,6 +16,7 @@ context('Add charge outcome page', () => {
     addChargeOutcomePage.outcomeNameInput().type('Outcome name')
     addChargeOutcomePage.nomisCodeInput().type('1234')
     addChargeOutcomePage.displayOrderInput().type('50')
+    addChargeOutcomePage.hmctsCodeInput().type('CODE123')
     addChargeOutcomePage.continueButton().click()
     addChargeOutcomePage = Page.verifyOnPage(AddChargeOutcomePage)
     addChargeOutcomePage

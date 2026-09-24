@@ -1758,17 +1758,21 @@ export default class CourtCaseRoutes extends BaseRoutes {
       })
     }
     if (courtAppearance.isCommonPlatformJourney) {
-      await Promise.all(
-        courtAppearance.uploadedDocuments
-          .filter(it => it.courtDataIngested)
-          .map(it =>
-            this.courtDataIngestionService.documentViewed(
-              it.documentUUID,
-              { username, type: 'DOCUMENT_PROCESSED' },
-              username,
+      try {
+        await Promise.all(
+          courtAppearance.uploadedDocuments
+            .filter(it => it.courtDataIngested)
+            .map(it =>
+              this.courtDataIngestionService.documentViewed(
+                it.documentUUID,
+                { username, type: 'DOCUMENT_PROCESSED' },
+                username,
+              ),
             ),
-          ),
-      )
+        )
+      } catch (err) {
+        logger.error(`Failed to mark cdia documents as viewed`, err)
+      }
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {

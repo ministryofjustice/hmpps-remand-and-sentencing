@@ -262,7 +262,7 @@ export default class OffenceService {
     if (errors.length === 0 && offenceCodeForm.offenceCode) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
-      offence.offenceCode = offenceCodeForm.offenceCode
+      offence.offenceCode = apiOffence?.code ?? offenceCodeForm.offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
@@ -304,7 +304,7 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
-      offence.offenceCode = offenceCode
+      offence.offenceCode = apiOffence?.code ?? offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

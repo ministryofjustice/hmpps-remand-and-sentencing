@@ -1,4 +1,5 @@
 import express from 'express'
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 import createError from 'http-errors'
 import multer from 'multer' // Import multer
 
@@ -24,7 +25,6 @@ import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearanc
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 import setupCurrentOffence from './middleware/setupCurrentOffence'
 import { Role, Roles } from './@types/roles'
-import addUsernameAndCaseloadToTelemetry from './utils/appInsightsCustomTelemetry'
 
 const upload = multer({ dest: 'uploads/' })
 
@@ -58,6 +58,18 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services.userService))
   app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))
+  app.use(
+    telemetryMiddleware.addUserMetadataToTelemetry({
+      getAttributes: (_req, res) => {
+        const { username } = res?.locals?.user || {}
+        const caseloadId = res?.locals?.prisoner?.prisonId || null
+        return {
+          ...(username && { username }),
+          ...(caseloadId && { caseloadId }),
+        }
+      },
+    }),
+  )
   app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase())
   app.use(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference',
@@ -73,7 +85,7 @@ export default function createApp(services: Services): express.Application {
     setupCurrentOffence(services.offenceService),
   )
   app.get(/(.*)/, getFrontendComponents(services))
-  app.use(addUsernameAndCaseloadToTelemetry())
+
   // --- Main application routes ---
   app.use(routes(services))
 

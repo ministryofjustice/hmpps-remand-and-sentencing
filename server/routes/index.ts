@@ -498,6 +498,16 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/enter-offence',
+    offenceRoutes.getEnterOffence,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/enter-offence',
+    offenceRoutes.submitEnterOffence,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/conviction-date',
     offenceRoutes.getConvictionDate,
   )

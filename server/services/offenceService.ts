@@ -23,6 +23,7 @@ import type {
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
   SelectJudicialFindingsForm,
+  EnterOffenceForm,
 } from 'forms'
 import type { CourtAppearance, Offence, Sentence, SentenceLength, UrlParameters } from 'models'
 import dayjs from 'dayjs'
@@ -55,7 +56,7 @@ export default class OffenceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
-    offenceOffenceDateForm: OffenceOffenceDateForm,
+    offenceOffenceDateForm: OffenceOffenceDateForm | EnterOffenceForm,
     warrantDate: Date,
     overallConvictionDate: Date,
     chargeUuid: string,
@@ -274,7 +275,7 @@ export default class OffenceService {
     nomsId: string,
     courtCaseReference: string,
     username: string,
-    offenceNameForm: OffenceOffenceNameForm,
+    offenceNameForm: OffenceOffenceNameForm | EnterOffenceForm,
     chargeUuid: string,
   ): Promise<{
     errors: {
@@ -309,6 +310,62 @@ export default class OffenceService {
       session.offences[id] = offence
     }
     return { errors, offence: apiOffence }
+  }
+
+  async setEnterOffence(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    username: string,
+    enterOffenceForm: EnterOffenceForm,
+    warrantDate: Date,
+    overallConvictionDate: Date,
+    sentenceUuidsInChain: string[],
+  ): Promise<{
+    errors: {
+      text?: string
+      html?: string
+      href: string
+    }[]
+    offence: ApiOffence
+    outcome: OffenceOutcome
+    hasSentencesAfter: boolean
+  }> {
+    const { errors: offenceCodeErrors, offence } = await this.setOffenceCodeFromLookup(
+      session,
+      urlParameters.nomsId,
+      urlParameters.courtCaseReference,
+      username,
+      enterOffenceForm,
+      urlParameters.chargeUuid,
+    )
+    const offenceDateErrors = this.setOffenceDates(
+      session,
+      urlParameters.nomsId,
+      urlParameters.courtCaseReference,
+      enterOffenceForm,
+      warrantDate,
+      overallConvictionDate,
+      urlParameters.chargeUuid,
+    )
+    const {
+      errors: offenceOutcomeErrors,
+      outcome,
+      hasSentencesAfter,
+    } = await this.setOffenceOutcome(
+      session,
+      urlParameters.nomsId,
+      urlParameters.courtCaseReference,
+      enterOffenceForm,
+      sentenceUuidsInChain,
+      username,
+      urlParameters.chargeUuid,
+    )
+    return {
+      errors: offenceCodeErrors.concat(offenceDateErrors, offenceOutcomeErrors),
+      offence,
+      outcome,
+      hasSentencesAfter,
+    }
   }
 
   setOffenceCodeFromConfirm(
@@ -390,7 +447,7 @@ export default class OffenceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
-    offenceOutcomeForm: OffenceOffenceOutcomeForm,
+    offenceOutcomeForm: OffenceOffenceOutcomeForm | EnterOffenceForm,
     sentenceUuidsInChain: string[],
     username: string,
     chargeUuid: string,

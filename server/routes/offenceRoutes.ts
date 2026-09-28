@@ -16,6 +16,7 @@ import type {
   ReviewOffencesForm,
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
+  EnterOffenceForm,
 } from 'forms'
 import type { Offence, UrlParameters } from 'models'
 import dayjs from 'dayjs'
@@ -84,6 +85,168 @@ export default class OffenceRoutes extends BaseRoutes {
       documentManagementService,
       courtRegisterService,
     )
+  }
+
+  public getEnterOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToEditOffence } = req.query
+    let enterOffenceForm = (req.flash('enterOffenceForm')[0] || {}) as EnterOffenceForm
+    let offenceStartDateDay: number | string = enterOffenceForm['offenceStartDate-day']
+    let offenceStartDateMonth: number | string = enterOffenceForm['offenceStartDate-month']
+    let offenceStartDateYear: number | string = enterOffenceForm['offenceStartDate-year']
+    let offenceEndDateDay: number | string = enterOffenceForm['offenceEndDate-day']
+    let offenceEndDateMonth: number | string = enterOffenceForm['offenceEndDate-month']
+    let offenceEndDateYear: number | string = enterOffenceForm['offenceEndDate-year']
+    const sessionOffence = this.offenceService.getSessionOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.courtCaseReference,
+      urlParameters.chargeUuid,
+    )
+    if (Object.keys(enterOffenceForm).length === 0) {
+      let offence: APIOffence
+      if (sessionOffence.offenceCode) {
+        offence = await this.manageOffencesService.getOffenceByCode(
+          sessionOffence.offenceCode,
+          res.locals.user.username,
+          sessionOffence.legacyData?.offenceDescription,
+        )
+      }
+      enterOffenceForm = {
+        ...(offence && { offenceName: `${offence.code} ${offence.description}` }),
+        offenceOutcome: sessionOffence.outcomeUuid,
+      }
+
+      if (sessionOffence.offenceStartDate) {
+        const offenceStartDate = new Date(sessionOffence.offenceStartDate)
+        offenceStartDateDay = offenceStartDate.getDate()
+        offenceStartDateMonth = offenceStartDate.getMonth() + 1
+        offenceStartDateYear = offenceStartDate.getFullYear()
+      }
+      if (sessionOffence.offenceEndDate) {
+        const offenceEndDate = new Date(sessionOffence.offenceEndDate)
+        offenceEndDateDay = offenceEndDate.getDate()
+        offenceEndDateMonth = offenceEndDate.getMonth() + 1
+        offenceEndDateYear = offenceEndDate.getFullYear()
+      }
+    }
+    const { warrantType, offences, appearanceOutcomeUuid } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const isFirstOffence = offences.length === 0
+    const primaryNonCustodialOutcomes = await this.refDataService.getPrimaryNonCustodialChargeOutcomes(
+      appearanceOutcomeUuid,
+      warrantType,
+      req.user.username,
+    )
+    let backLink = JourneyUrls.checkOffenceAnswers(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    if (submitToEditOffence) {
+      backLink = JourneyUrls.editOffence(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+        urlParameters.chargeUuid,
+      )
+    } else if (this.isRepeatJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      if (warrantType === 'NON_SENTENCING') {
+        backLink = JourneyUrls.reviewOffences(
+          urlParameters.nomsId,
+          urlParameters.addOrEditCourtCase,
+          urlParameters.courtCaseReference,
+          urlParameters.addOrEditCourtAppearance,
+          urlParameters.appearanceReference,
+        )
+      } else {
+        backLink = JourneyUrls.updateOffenceOutcomes(
+          urlParameters.nomsId,
+          urlParameters.addOrEditCourtCase,
+          urlParameters.courtCaseReference,
+          urlParameters.addOrEditCourtAppearance,
+          urlParameters.appearanceReference,
+        )
+      }
+    } else if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      if (warrantType === 'NON_SENTENCING') {
+        backLink = JourneyUrls.nonSentencingHearing(
+          urlParameters.nomsId,
+          urlParameters.addOrEditCourtCase,
+          urlParameters.courtCaseReference,
+          urlParameters.addOrEditCourtAppearance,
+          urlParameters.appearanceReference,
+        )
+      } else {
+        backLink = JourneyUrls.sentencingHearing(
+          urlParameters.nomsId,
+          urlParameters.addOrEditCourtCase,
+          urlParameters.courtCaseReference,
+          urlParameters.addOrEditCourtAppearance,
+          urlParameters.appearanceReference,
+        )
+      }
+    } else if (isFirstOffence) {
+      backLink = JourneyUrls.taskList(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+      )
+    }
+
+    return res.render('pages/offence/enter-offence', {
+      ...urlParameters,
+      enterOffenceForm,
+      offenceStartDateDay,
+      offenceStartDateMonth,
+      offenceStartDateYear,
+      offenceEndDateDay,
+      offenceEndDateMonth,
+      offenceEndDateYear,
+      primaryOutcomes: primaryNonCustodialOutcomes.primaryOutcomes,
+      nonCustodialOutcomes: primaryNonCustodialOutcomes.nonCustodialOutcomes,
+      errors: req.flash('errors') || [],
+      backLink,
+    })
+  }
+
+  public submitEnterOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToEditOffence } = req.query
+    const enterOffenceForm = trimForm<EnterOffenceForm>(req.body)
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+      urlParameters.chargeUuid,
+    )
+    const { errors, offence, outcome, hasSentencesAfter } = await this.offenceService.setEnterOffence(
+      req.session,
+      urlParameters,
+      req.user.username,
+      enterOffenceForm,
+      this.courtAppearanceService.getWarrantDate(req.session, urlParameters.nomsId, urlParameters.appearanceReference),
+      this.courtAppearanceService.getOverallConvictionDate(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.appearanceReference,
+      ),
+      sentenceUuidsInChain,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('enterOffenceForm', { ...enterOffenceForm })
+      return res.redirect(OffenceJourneyUrls.enterOffence(urlParameters, 'true'))
+    }
   }
 
   public validateSentenceTypeAccess: RequestHandler = async (req, res): Promise<void> => {
@@ -2326,7 +2489,11 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
+    if (config.featureToggles.multiFieldOffence) {
+      return res.redirect(OffenceJourneyUrls.enterOffence(urlParameters))
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`,
     )

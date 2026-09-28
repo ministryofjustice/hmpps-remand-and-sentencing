@@ -78,6 +78,17 @@ declare module 'forms' {
     offenceName?: string
   }
 
+  export interface EnterOffenceForm {
+    offenceName?: string
+    'offenceStartDate-day'?: string
+    'offenceStartDate-month'?: string
+    'offenceStartDate-year'?: string
+    'offenceEndDate-day'?: string
+    'offenceEndDate-month'?: string
+    'offenceEndDate-year'?: string
+    offenceOutcome?: string
+  }
+
   export interface OffenceConfirmOffenceForm {
     offenceCode?: string
     offenceName?: string

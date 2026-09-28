@@ -229,6 +229,8 @@ context('New Court Case journey', () => {
         },
       ])
     courtCaseTaskListPage.offencesLink().click()
+    cy.screenshot()
+    cy.pause()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(
       OffenceOffenceDatePage,

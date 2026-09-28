@@ -1,0 +1,156 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+
+{% set pageTitle = applicationName + " - Enter the offence" %}
+
+{% set radiosData = {
+    name: "offenceOutcome",
+    fieldset: {
+        legend: {
+            text: "Select the outcome for this offence",
+            classes: "govuk-label--s govuk-!-font-weight-bold"
+        }
+    },
+    items: []
+} %}
+
+{% for caseOutcome in primaryOutcomes %}
+    {% set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === enterOffenceForm.offenceOutcome
+    } %}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% if primaryOutcomes.length and nonCustodialOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or" }) }}
+{% endif %}
+
+{% for caseOutcome in nonCustodialOutcomes %}
+    {% set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === enterOffenceForm.offenceOutcome
+    } %}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
+
+        {% call govukFieldset({
+            legend: {
+                text: "Enter offence",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+            }
+        }) %}
+
+            {{ govukSelect({
+                label: {
+                    text: "Look up an offence",
+                    for: "offence-name",
+                    classes: "govuk-label--s govuk-!-font-weight-bold",
+                    attributes: { id: "offence-name-label" }
+                },
+                hint: {
+                    text: "Start typing the name of the offence from the warrant."
+                },
+                id: "offence-name",
+                name: "offenceName",
+                classes: "govuk-visually-hidden",
+                errorMessage: errors | findError('offenceName'),
+                items: []
+            }) }}
+
+            {{ govukDateInput({
+                id: "offenceStartDate",
+                namePrefix: "offenceStartDate",
+                errorMessage: errors | findErrorsBeginningWith('offenceStartDate'),
+                fieldset: {
+                    legend: {
+                        text: "Offence start date",
+                        classes: "govuk-label--s govuk-!-font-weight-bold"
+                    }
+                },
+                items: [
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-day') else ''),
+                        name:"day",
+                        value: offenceStartDateDay
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-month') else ''),
+                        name:"month",
+                        value: offenceStartDateMonth
+                    },
+                    {
+                        classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceStartDate-year') else ''),
+                        name:"year",
+                        value: offenceStartDateYear
+                    }
+                ]
+            }) }}
+
+            {{ govukDateInput({
+                id: "offenceEndDate",
+                namePrefix: "offenceEndDate",
+                errorMessage: errors | findErrorsBeginningWith('offenceEndDate'),
+                fieldset: {
+                    legend: {
+                        text: "Offence end date (optional)",
+                        classes: "govuk-label--s govuk-!-font-weight-bold"
+                    }
+                },
+                hint: {
+                    text: "This only applies to offences that occur over multiple days"
+                },
+                items: [
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-day') else ''),
+                        name:"day",
+                        value: offenceEndDateDay
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-month') else ''),
+                        name:"month",
+                        value: offenceEndDateMonth
+                    },
+                    {
+                        classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceEndDate-year') else ''),
+                        name:"year",
+                        value: offenceEndDateYear
+                    }
+                ]
+            }) }}
+
+        {{ govukRadios(radiosData) }}
+
+
+        {% endcall %}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/accessible-autocomplete.min.js"></script>
+    <script id="autocomplete-script" src="/assets/js/autoCompleteOffenceName.js" data-offence="{{ enterOffenceForm.offenceName if enterOffenceForm.offenceName else ''}}"></script>
+{% endblock %}

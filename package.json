@@ -122,6 +122,18 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "js-yaml": "^4.3.2"
+    "js-yaml": "^4.3.2",
+    "moment": "^2.31.0",
+    "proxy-addr": "^2.0.8",
+    "bunyan": {
+      "mv": {
+        "rimraf": {
+          "glob": {
+            "minimatch": "^3.1.5",
+            "brace-expansion": "^1.1.21"
+          }
+        }
+      }
+    }
   }
 }

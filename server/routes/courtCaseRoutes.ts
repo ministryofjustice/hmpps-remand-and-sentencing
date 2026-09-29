@@ -1697,7 +1697,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     if (courtAppearance.isCommonPlatformJourney) {
-      await this.remandAndSentencingService.createUploadDocuments(courtAppearance.uploadedDocuments, username)
+      await this.remandAndSentencingService.createUploadDocuments(
+        courtAppearance.uploadedDocuments.filter(it => it.courtDataIngested),
+        username,
+      )
     }
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase

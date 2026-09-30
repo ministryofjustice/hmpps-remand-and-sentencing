@@ -220,9 +220,9 @@ export default abstract class BaseRoutes {
       .filter(offence => offence?.sentence?.consecutiveToSentenceUuid)
       .reduce(
         (consecutiveToMap, consecutiveOffence) => {
-          const consecutiveToSessionOffence = offences.find(
-            offence => offence.sentence?.sentenceUuid === consecutiveOffence.sentence.consecutiveToSentenceUuid,
-          )
+          const consecutiveToSessionOffence = offences
+            .filter(offence => offence?.sentence)
+            .find(offence => offence.sentence.sentenceUuid === consecutiveOffence.sentence.consecutiveToSentenceUuid)
           let consecutiveToDetails
           if (consecutiveToSessionOffence) {
             consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToSessionOffence, offenceMap)

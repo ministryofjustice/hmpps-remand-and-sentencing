@@ -154,4 +154,89 @@ describe('GET Delete offence', () => {
         )
       })
   })
+
+  it('can delete offence with consecutive to on a different case', () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          offenceStartDate: new Date(),
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            convictionDate: new Date(),
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            sentenceTypeId: '456',
+            hasCountNumber: 'true',
+            consecutiveToSentenceUuid: '5',
+            periodLengths: [
+              {
+                uuid: '4',
+                years: '1',
+                periodOrder: ['years', 'months', 'weeks', 'days'],
+                periodLengthType: 'SENTENCE_LENGTH',
+                isAlternative: false,
+              },
+            ],
+          },
+        },
+      ],
+    })
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
+      sentences: [
+        {
+          sentenceUuid: '5',
+          courtCaseReference: '123',
+          appearanceDate: '2026-01-01',
+          courtCode: 'CRT1',
+          offenceCode: 'CC12345',
+          status: 'ACTIVE',
+          offenceStartDate: '2025-12-31',
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      CC12345: 'An offence description',
+    })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+      CRT1: 'Court description',
+    })
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
+      sentenceTypeUuid: '456',
+      classification: 'STANDARD',
+      description: 'A sentence type description',
+      displayOrder: 10,
+    })
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
+      outcomeUuid: '123',
+      dispositionCode: 'F',
+      nomisCode: '10',
+      displayOrder: 10,
+      outcomeName: 'An offence outcome',
+      outcomeType: 'SENTENCING',
+      status: 'ACTIVE',
+    })
+    return request(app)
+      .get('/person/A1234AB/edit-court-case/0/edit-court-appearance/0/offences/2/delete-offence')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const prisonerBanner = $('.mini-profile').text()
+        expect(prisonerBanner).toContain('Meza, Cormac')
+        expect(prisonerBanner).toContain('A1234AB')
+        expect(prisonerBanner).toContain('EstablishmentHMP Bedford')
+        expect(prisonerBanner).toContain('Cell numberCELL-1')
+        const deleteButton = $('[data-qa=delete-button]').text()
+        expect(deleteButton).toContain('Yes, delete offence')
+        const deleteAdjustmentInset = $('[data-qa=delete-adjustments-inset]').text()
+        expect(deleteAdjustmentInset).toContain(
+          'Deleting this sentence will also delete Adjustments associated with it',
+        )
+      })
+  })
 })

@@ -197,4 +197,28 @@ describe('courtAppearanceService', () => {
       })
     })
   })
+
+  describe('validate case reference', () => {
+    it('can submit case reference without number when 10 characters long', () => {
+      const nomsId = 'P123'
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'NON_SENTENCING',
+        offences: [],
+      } as CourtAppearance
+
+      const session = {
+        courtAppearances: {
+          [nomsId]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+      const errors = service.setCaseReferenceNumber(
+        session,
+        nomsId,
+        { referenceNumber: 'COURTREFEN' },
+        courtAppearance.appearanceUuid,
+      )
+      expect(errors.length).toBe(0)
+    })
+  })
 })

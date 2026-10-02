@@ -1,3 +1,3 @@
 export default function validate(value, _): boolean {
-  return /\d/.test(value)
+  return /\d/.test(value) || value.length === 10
 }

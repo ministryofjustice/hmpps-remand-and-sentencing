@@ -17,7 +17,7 @@ import requireOneNonZeroSentenceLengthIf from './requireOneNonZeroSentenceLength
 import isAfterDate from './isAfterDate'
 import isFutureOrCurrentDate from './isFutureOrCurrentDate'
 import isUniqueTimePeriod from './isUniqueTimePeriod'
-import atLeastOneNumberInString from './atLeastOneNumberInString'
+import atLeastOneNumberInStringOr10Char from './atLeastOneNumberInStringOr10Char'
 import isNotTrue from './isNotTrue'
 import isWithinLast100Years from './isWithinLast100Years'
 import isWithinNextOneYear from './isWithinNextOneYear'
@@ -100,7 +100,11 @@ Validator.register(
   isUniqueTimePeriod,
   'More than one of the same period length unit is not allowed',
 )
-Validator.register('atLeastOneNumberInString', atLeastOneNumberInString, 'Must enter at least one number')
+Validator.register(
+  'atLeastOneNumberInStringOr10Char',
+  atLeastOneNumberInStringOr10Char,
+  'Must enter at least one number or 10 characters long',
+)
 Validator.register('isNotTrue', isNotTrue, 'Cannot be true')
 Validator.register(
   'isWithinLast100Years',

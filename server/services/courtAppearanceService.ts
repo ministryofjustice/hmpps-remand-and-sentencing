@@ -67,7 +67,7 @@ export default class CourtAppearanceService {
           'required_without:noCaseReference',
           `onlyOne:${courtCaseReferenceForm.noCaseReference ?? ''}`,
           'regex:/^[A-Za-z0-9\\/\\.\\- ]+$/',
-          'atLeastOneNumberInString',
+          'atLeastOneNumberInStringOr10Char',
           'max:13',
         ],
         noCaseReference: `onlyOne:${courtCaseReferenceForm.referenceNumber ?? ''}`,
@@ -77,7 +77,7 @@ export default class CourtAppearanceService {
         'onlyOne.referenceNumber': 'Either reference number or no reference number must be submitted',
         'onlyOne.noCaseReference': 'Either reference number or no reference number must be submitted',
         'regex.referenceNumber': `html:<span aria-hidden='true' class="govuk-error-message">You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Case reference</span><span class="govuk-visually-hidden">You can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a case reference.</span>`,
-        'atLeastOneNumberInString.referenceNumber': 'Case references should include at least one number',
+        'atLeastOneNumberInStringOr10Char.referenceNumber': 'Case references should include at least one number',
         'max.referenceNumber': 'Case references must not be longer than 13 characters',
       },
     )

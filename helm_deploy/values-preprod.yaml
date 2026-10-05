@@ -28,7 +28,7 @@ generic-service:
     BOOK_SECURE_MOVE_UI_URL: "https://hmpps-book-secure-move-frontend-preprod.apps.cloud-platform.service.justice.gov.uk"
     COURT_DATA_INGESTION_API_URL: "https://court-data-ingestion-api-preprod.hmpps.service.justice.gov.uk"
     FEATURES_SENTENCE_STATUS_ENABLED: 'true'
-    FEATURES_JUDICIAL_FINDINGS: 'false'
+    FEATURES_JUDICIAL_FINDINGS: 'true'
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30

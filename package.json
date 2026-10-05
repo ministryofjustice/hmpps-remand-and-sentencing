@@ -129,7 +129,7 @@
       "mv": {
         "rimraf": {
           "glob": {
-            "minimatch": "^3.1.5",
+            "minimatch": "^10.2.6",
             "brace-expansion": "^5.0.12"
           }
         }

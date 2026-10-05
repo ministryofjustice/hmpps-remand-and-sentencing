@@ -25,7 +25,7 @@ generic-service:
     BOOK_SECURE_MOVE_UI_URL: "https://bookasecuremove.service.justice.gov.uk"
     COURT_DATA_INGESTION_API_URL: "https://court-data-ingestion-api.hmpps.service.justice.gov.uk"
     FEATURES_SENTENCE_STATUS_ENABLED: 'true'
-    FEATURES_JUDICIAL_FINDINGS: 'false'
+    FEATURES_JUDICIAL_FINDINGS: 'true'
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

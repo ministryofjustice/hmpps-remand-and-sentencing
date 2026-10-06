@@ -42,7 +42,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1141.0",
+    "@aws-sdk/client-sqs": "^3.1142.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.4",
     "@microsoft/applicationinsights-web": "^3.4.4",
     "@ministryofjustice/frontend": "^11.1.0",
@@ -92,7 +92,7 @@
     "@types/http-errors": "^2.0.5",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^2.2.0",
+    "@types/multer": "^2.3.0",
     "@types/node": "^24.19.0",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",

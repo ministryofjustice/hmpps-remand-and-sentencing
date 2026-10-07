@@ -42,7 +42,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1142.0",
+    "@aws-sdk/client-sqs": "^3.1144.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.4",
     "@microsoft/applicationinsights-web": "^3.4.4",
     "@ministryofjustice/frontend": "^11.1.0",
@@ -73,14 +73,14 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "picomatch": "4.0.7",
-    "redis": "^6.2.1",
+    "redis": "^6.3.0",
     "superagent": "^10.4.1",
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^5.0.0",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/frontend-types": "2.0.2",
+    "@ministryofjustice/frontend-types": "2.0.3",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@ministryofjustice/hmpps-precommit-hooks": "^3.0.2",
     "@tsconfig/node24": "^24.0.5",

@@ -150,3 +150,5 @@ export type AggravatingFactor = components['schemas']['AggravatingFactor']
 export type DeleteSentenceStatusDetails = components['schemas']['DeleteSentenceStatusDetails']
 
 export type FixSingleSentenceMultipleChargesPeople = components['schemas']['FixSingleSentenceMultipleChargesPeople']
+
+export type CreateF986 = components['schemas']['CreateF986']

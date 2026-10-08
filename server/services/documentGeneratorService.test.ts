@@ -166,7 +166,7 @@ describe('DocumentGeneratorService', () => {
       it('should fall back to a null prison telephone number when the Business Address has no BUS phone', async () => {
         prisonerService.getAgencyDetails
           .mockResolvedValueOnce({
-            addresses: [{ addressType: 'Business Address', phones: [{ type: 'FAX', number: '000' }] }],
+            addresses: [{ addressType: 'Business Address', phones: [{ type: 'FAX', number: '00499 844732' }] }],
           } as never)
           .mockResolvedValueOnce(courtDetailsWithAddress)
         remandAndSentencingService.generateF986Document.mockResolvedValue({ body: Buffer.from('') } as never)
@@ -186,16 +186,16 @@ describe('DocumentGeneratorService', () => {
               {
                 addressType: 'Business Address',
                 phones: [
-                  { type: 'BUS', number: 'first-number' },
-                  { type: 'FAX', number: 'second-number' },
+                  { type: 'BUS', number: '00495 844732' },
+                  { type: 'FAX', number: '00499 844732' },
                 ],
               },
             ],
           } as never)
           .mockResolvedValueOnce({
             addresses: [
-              { addressType: 'Business Address', premise: 'First Premise' },
-              { addressType: 'Another Address', premise: 'Second Premise' },
+              { addressType: 'Business Address', premise: 'First' },
+              { addressType: 'Another Address', premise: 'Second' },
             ],
           } as never)
         remandAndSentencingService.generateF986Document.mockResolvedValue({ body: Buffer.from('') } as never)
@@ -203,7 +203,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
-          expect.objectContaining({ courtPremise: 'First Premise', prisonTelephoneNumber: 'first-number' }),
+          expect.objectContaining({ courtPremise: 'First', prisonTelephoneNumber: '00495 844732' }),
           'res-user',
         )
       })

@@ -13,6 +13,7 @@ describe('RemandAndSentencingService', () => {
     remandAndSentencingApiClient = {
       hasLoopInChain: jest.fn(),
       updateCourtCaseStatus: jest.fn(),
+      generateF986Document: jest.fn(),
     } as unknown as jest.Mocked<RemandAndSentencingApiClient>
     ;(RemandAndSentencingApiClient as jest.Mock).mockImplementation(() => remandAndSentencingApiClient)
 
@@ -212,6 +213,27 @@ describe('RemandAndSentencingService', () => {
         { sentenceUuid: 'uuid-1' },
         { sentenceUuid: 'uuid-2', consecutiveToSentenceUuid: 'uuid-1' },
       ])
+    })
+  })
+
+  describe('generateF986Document', () => {
+    it('should delegate to the remandAndSentencingApiClient with the request and username', async () => {
+      const f986Request = {
+        courtAppearanceUuid: '60B6BB03-549A-4A2C-8874-85ACCFA62880',
+        courtPremise: null,
+        courtStreet: null,
+        courtTown: null,
+        courtCounty: null,
+        courtPostalCode: null,
+        prisonTelephoneNumber: null,
+      }
+      const fileDownload = { body: Buffer.from('pdf-bytes'), header: { 'content-type': 'application/pdf' } }
+      remandAndSentencingApiClient.generateF986Document.mockResolvedValue(fileDownload as never)
+
+      const result = await service.generateF986Document(f986Request as never, 'user1')
+
+      expect(remandAndSentencingApiClient.generateF986Document).toHaveBeenCalledWith(f986Request, 'user1')
+      expect(result).toBe(fileDownload)
     })
   })
 })

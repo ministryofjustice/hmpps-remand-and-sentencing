@@ -1,7 +1,10 @@
 import type { Express } from 'express'
 import { Readable } from 'stream'
 import request from 'supertest'
+import logger from '../../logger'
 import { appWithAllRoutes, defaultServices } from './testutils/appSetup'
+
+jest.mock('../../logger')
 
 let app: Express
 
@@ -129,6 +132,111 @@ describe('GET document view', () => {
       .expect('Content-Disposition', 'inline; filename="doc.pdf"')
       .expect(res => {
         expect(defaultServices.documentManagementService.downloadDocument).toHaveBeenCalledWith('doc1', 'user1', true)
+      })
+  })
+})
+
+describe('GET generated document view', () => {
+  it('should stream a Readable body with the generated content type and disposition headers', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockResolvedValue({
+      body: Readable.from(['pdf byte array']),
+      header: { 'content-type': 'application/pdf', 'content-length': '14' },
+    } as never)
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/f986')
+      .expect(200)
+      .expect('Content-Type', 'application/pdf')
+      .expect(res => {
+        expect(defaultServices.documentGeneratorService.streamDocumentGeneratedDocument).toHaveBeenCalledWith(
+          expect.objectContaining({ params: expect.objectContaining({ documentType: 'f986' }) }),
+          expect.anything(),
+          'f986',
+        )
+        expect(res.body.toString()).toContain('pdf byte array')
+      })
+  })
+
+  it('should wrap a Buffer body in a stream before sending', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockResolvedValue({
+      body: Buffer.from('pdf byte array'),
+      header: { 'content-type': 'application/pdf', 'content-length': '14' },
+    } as never)
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/f986')
+      .expect(200)
+      .expect(res => {
+        expect(res.body.toString()).toContain('pdf byte array')
+      })
+  })
+
+  it('should default content-type to application/pdf when the generator does not supply one', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockResolvedValue({
+      body: Buffer.from('pdf byte array'),
+      header: { 'content-length': '14' },
+    } as never)
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/f986')
+      .expect(200)
+      .expect('Content-Type', 'application/pdf')
+  })
+
+  it('should return 500 when the generator resolves with no result', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockResolvedValue(null)
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/f986')
+      .expect(500)
+      .expect(res => {
+        expect(res.text).toContain('Failed to generate document')
+        expect(logger.error).toHaveBeenCalledWith(expect.any(Error), 'Failed to generate document f986')
+      })
+  })
+
+  it('should return 500 when the result body is neither a Readable nor a Buffer', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockResolvedValue({
+      body: 'sfdfsdfsd',
+      header: {},
+    } as never)
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/f986')
+      .expect(500)
+      .expect(res => {
+        expect(res.text).toContain('Failed to generate document')
+      })
+  })
+
+  it('should return 500 when the generator service rejects', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockRejectedValue(
+      new Error('upstream failure'),
+    )
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/f986')
+      .expect(500)
+      .expect(res => {
+        expect(res.text).toContain('Failed to generate document')
+        expect(logger.error).toHaveBeenCalledWith(expect.any(Error), 'Failed to generate document f986')
+      })
+  })
+
+  it('should pass a different documentType param straight through to the service', () => {
+    defaultServices.documentGeneratorService.streamDocumentGeneratedDocument.mockResolvedValue({
+      body: Buffer.from('bytes'),
+      header: { 'content-length': '5' },
+    } as never)
+
+    return request(app)
+      .get('/api/persons/A1234AB/court-appearances/60B6BB03-549A-4A2C-8874-85ACCFA62880/documents/anothertype')
+      .expect(res => {
+        expect(defaultServices.documentGeneratorService.streamDocumentGeneratedDocument).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          'anothertype',
+        )
       })
   })
 })

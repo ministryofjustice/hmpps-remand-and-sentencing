@@ -1,4 +1,4 @@
-import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
+import type { CourtAppearance, CourtCase, Offence, UploadedDocument, FileDownload } from 'models'
 import { Dayjs } from 'dayjs'
 import type {
   CancelCourtCaseForm,
@@ -37,6 +37,7 @@ import {
   SentenceUuidsWithActiveSentencesAfterResponse,
   SentencesToChainToResponse,
   SentenceTypeIsValid,
+  CreateF986,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import {
@@ -483,5 +484,9 @@ export default class RemandAndSentencingService {
       fixSingleSentenceMultipleChargesPeople,
       username,
     )
+  }
+
+  async generateF986Document(f986DocumentRequest: CreateF986, username: string): Promise<FileDownload> {
+    return this.remandAndSentencingApiClient.generateF986Document(f986DocumentRequest, username)
   }
 }

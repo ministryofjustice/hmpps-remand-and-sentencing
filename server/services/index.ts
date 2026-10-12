@@ -16,6 +16,7 @@ import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 import UnknownRecallSentenceService from './unknownRecallSentenceService'
 import AggravatingFactorsService from './aggravatingFactorsService'
 import CourtDataIngestionService from './courtDataIngestionService'
+import DocumentGeneratorService from './documentGeneratorService'
 
 export const services = () => {
   const data = dataAccess()
@@ -31,6 +32,7 @@ export const services = () => {
   const remandAndSentencingService = new RemandAndSentencingService(data.remandAndSentencingApiClient)
 
   const documentManagementService = new DocumentManagementService(data.documentManagementApiClient)
+  const documentGeneratorService = new DocumentGeneratorService(remandAndSentencingService, prisonerService)
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(data.calculateReleaseDatesApiClient)
 
@@ -55,6 +57,7 @@ export const services = () => {
     remandAndSentencingService,
     courtAppearanceService,
     documentManagementService,
+    documentGeneratorService,
     prisonerSearchService,
     auditService,
     courtRegisterService,

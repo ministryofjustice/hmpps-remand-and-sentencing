@@ -1,5 +1,6 @@
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import type { FileDownload } from 'models'
 import {
   AggravatingFactor,
   AllSentenceTypes,
@@ -46,6 +47,7 @@ import {
   SentenceTypeIsValid,
   UpdateCourtCaseStatus,
   UploadedDocument,
+  CreateF986,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import logger from '../../logger'
@@ -761,6 +763,18 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: '/person-admin/fix-many-charges-to-sentence',
         data: fixSingleSentenceMultipleChargesPeople,
+      },
+      asSystem(username),
+    )
+  }
+
+  async generateF986Document(generateF986DocumentRequest: CreateF986, username: string): Promise<FileDownload> {
+    return this.post(
+      {
+        path: '/document-generator/f986',
+        data: generateF986DocumentRequest,
+        responseType: 'blob',
+        raw: true,
       },
       asSystem(username),
     )

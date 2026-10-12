@@ -26,6 +26,7 @@ import CalculateReleaseDatesService from '../../services/calculateReleaseDatesSe
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 import RefDataService from '../../services/refDataService'
 import CourtDataIngestionService from '../../services/courtDataIngestionService'
+import DocumentGeneratorService from '../../services/documentGeneratorService'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtAppearanceService')
@@ -36,6 +37,7 @@ jest.mock('../../services/manageOffencesService')
 jest.mock('../../services/remandAndSentencingService')
 jest.mock('../../services/feComponentsService')
 jest.mock('../../services/documentManagementService')
+jest.mock('../../services/documentGeneratorService')
 jest.mock('../../services/prisonerSearchService')
 jest.mock('../../services/courtRegisterService')
 jest.mock('../../services/calculateReleaseDatesService')
@@ -62,6 +64,7 @@ export const defaultServices = {
   remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
   courtAppearanceService: new CourtAppearanceService(null, null) as jest.Mocked<CourtAppearanceService>,
   documentManagementService: new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>,
+  documentGeneratorService: new DocumentGeneratorService(null, null) as jest.Mocked<DocumentGeneratorService>,
   prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   auditService: new AuditService(null) as jest.Mocked<AuditService>,
   courtRegisterService: new CourtRegisterService(null) as jest.Mocked<CourtRegisterService>,

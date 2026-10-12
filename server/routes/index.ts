@@ -50,6 +50,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtRegisterService,
     services.documentManagementService,
+    services.documentGeneratorService,
   )
   const offenceRoutes = new OffenceRoutes(
     services.offenceService,
@@ -187,6 +188,11 @@ export default function routes(services: Services): Router {
 
   router.get('/api/document/:documentId/download', apiRoutes.downloadDocument)
   router.get('/api/document/:documentId/view-document/:documentName', apiRoutes.viewDocument)
+
+  router.get(
+    '/api/persons/:nomsId/court-appearances/:appearanceUuid/documents/:documentType',
+    apiRoutes.viewGeneratedDocument,
+  )
 
   router.get('/person/:nomsId/documents', courtCaseRoutes.documents)
 

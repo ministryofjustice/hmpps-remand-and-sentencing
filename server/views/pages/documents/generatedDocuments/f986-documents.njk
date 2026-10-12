@@ -1,0 +1,77 @@
+{% extends "../../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - View a F986 form" %}
+
+{% block content %}
+    <form method="post" autocomplete="off" id="f986-form">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {% if courtAppearancesWithFines | length == 0 %}
+                <p class="govuk-body govuk-error-summary" data-qa="no-f986-appearances">
+                  There is no eligible F986 form to view for this prisoner
+                </p>
+            {% else %}
+                <p class="govuk-body">
+                  View a F986 form
+                </p>
+
+                {% set items = [] %}
+                {% for appearance in courtAppearancesWithFines %}
+                    {% set _ = items.push({
+                        value: '/api/persons/' + nomsId + '/court-appearances/' + appearance.appearanceUuid + '/documents/f986',
+                        html: appearance.offenceDescriptions,
+                        checked: false
+                      }) %}
+                {% endfor %}
+
+                {{ govukRadios({
+                  idPrefix: "documentSelected",
+                  name: "documentSelected",
+                  errorMessage: errors | findError('documentSelected'),
+                  fieldset: {
+                    legend: {
+                      text: "Select which court cases apply",
+                      classes: "govuk-fieldset__legend--l",
+                      isPageHeading: true
+                    }
+                  },
+                  hint: offenceHint,
+                  items: items
+                }) }}
+
+              <div class="govuk-button-group">
+                {{ govukButton({
+                  text: "View",
+                  attributes: { 'data-qa': 'view-button', id: 'view-button' }
+                }) }}
+
+                {{ govukButton({
+                  text: "Cancel",
+                  classes: "govuk-button--secondary",
+                  attributes: {
+                    "data-qa": 'cancel-button'
+                  },
+                  href: '/person/' + nomsId | urlencode
+                }) }}
+              </div>
+
+              <script nonce="{{ cspNonce }}">
+                document.getElementById('f986-form').addEventListener('submit', function (e) {
+                  const selected = document.querySelector('input[name="documentSelected"]:checked')
+                  if (selected) {
+                    e.preventDefault()
+                    window.open(selected.value, '_blank', 'noopener')
+                  }
+                })
+                document.getElementById('f986-form').addEventListener('change', function (e) {
+                  document.querySelector('.govuk-error-summary')?.remove()
+                  document.querySelector('.govuk-form-group--error')?.classList.remove('govuk-form-group--error')
+                  document.querySelector('.govuk-error-message')?.remove()
+                })
+              </script>
+            {% endif %}
+    </form>
+{% endblock %}
+

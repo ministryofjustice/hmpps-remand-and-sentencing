@@ -1,0 +1,18 @@
+{# Relates to the generated documents shown in the Actions list #}
+{% set generatedDocuments = [
+  {
+    type: 'f986',
+    text: 'View a F986 Form',
+    eligible: isF986Eligible
+  }
+] %}
+
+{% for document in generatedDocuments %}
+  {% if document.eligible %}
+    <li>
+      <a href="/person/{{ nomsId }}/view-generated-documents/type/{{ document.type }}"
+         class="govuk-link govuk-link--no-visited-state"
+         data-qa="view-{{ document.type }}-form-link">{{ document.text }}</a>
+    </li>
+  {% endif %}
+{% endfor %}

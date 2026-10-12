@@ -240,6 +240,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
+    const isF986Eligible = courtCaseDetailModels.some(appearance => appearance.isF986Eligible)
 
     if (!courtCases.empty) {
       const auditDetails = this.getCourtCasesAuditUuids(courtCases, consecutiveToSentenceDetails)
@@ -276,6 +277,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       disableIncludeCasesFromPreviousPeriodsOfCustody,
       bookingCourtCasePreviousPeriodsCount,
       displayMaintenanceAlert: true,
+      isF986Eligible,
     })
   }
 

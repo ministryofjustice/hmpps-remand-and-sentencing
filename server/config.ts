@@ -188,5 +188,6 @@ export default {
   featureToggles: {
     sentenceStatus: get('FEATURES_SENTENCE_STATUS_ENABLED', false, requiredInProduction) === 'true',
     judicialFindings: get('FEATURES_JUDICIAL_FINDINGS', false, requiredInProduction) === 'true',
+    generatedDocuments: get('FEATURES_GENERATED_DOCUMENTS', false) === 'true',
   },
 }

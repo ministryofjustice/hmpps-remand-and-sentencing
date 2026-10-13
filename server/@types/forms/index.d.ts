@@ -334,4 +334,8 @@ declare module 'forms' {
   export interface SelectJudicialFindingsForm {
     judicialFindings?: string[]
   }
+
+  export interface ViewGeneratedDocumentForm {
+    documentSelected?: string
+  }
 }

@@ -21,6 +21,7 @@ import CourtDataIngestionRoutes from './courtDataIngestionRoutes'
 import BreachRoutes from './breachRoutes'
 import datafixAdminRoutes from './datafixAdminRoutes'
 import JudicialFindingsRoutes from './judicialFindingsRoutes'
+import DocumentGeneratorRoutes from './documentGeneratorRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -176,6 +177,16 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
   )
 
+  const documentGeneratorRoutes = new DocumentGeneratorRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
   router.get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
 
@@ -189,6 +200,15 @@ export default function routes(services: Services): Router {
   router.get('/api/document/:documentId/download', apiRoutes.downloadDocument)
   router.get('/api/document/:documentId/view-document/:documentName', apiRoutes.viewDocument)
 
+  // Generated Documents URIs
+  router.get(
+    '/person/:nomsId/view-generated-documents/type/:documentType',
+    documentGeneratorRoutes.viewGeneratedDocuments,
+  )
+  router.post(
+    '/person/:nomsId/view-generated-documents/type/:documentType',
+    documentGeneratorRoutes.submitViewGeneratedDocuments,
+  )
   router.get(
     '/api/persons/:nomsId/court-appearances/:appearanceUuid/documents/:documentType',
     apiRoutes.viewGeneratedDocument,

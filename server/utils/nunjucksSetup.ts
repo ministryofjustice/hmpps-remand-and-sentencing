@@ -69,6 +69,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
   app.locals.breachWarrantTypes = BREACH_WARRANT_TYPES
   app.locals.showSentenceStatusTag = config.featureToggles.sentenceStatus
+  app.locals.showGeneratedDocuments = config.featureToggles.generatedDocuments
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'

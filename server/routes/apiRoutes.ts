@@ -115,8 +115,10 @@ export default class ApiRoutes {
       }
 
       res.set('content-type', result.header['content-type'] ?? 'application/pdf')
-      res.set('content-disposition', `inline; filename="${documentType}'`)
-      res.set('content-length', result.header['content-length'])
+      res.set('content-disposition', `inline; filename="${documentType}.pdf"`)
+      if (result.header['content-length']) {
+        res.set('content-length', result.header['content-length']) // was set even when undefined
+      }
 
       fileStream.pipe(res)
     } catch (error) {

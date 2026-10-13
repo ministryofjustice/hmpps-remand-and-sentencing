@@ -28,6 +28,31 @@ export default {
     })
   },
 
+  stubGetPrisonerDetailsByNumber: (prisonerNumber: string): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisoner-search-api/prisoner/${prisonerNumber}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerNumber,
+          bookingId: '1234',
+          firstName: 'Another',
+          lastName: 'Prisoner',
+          dateOfBirth: '1970-01-01',
+          prisonId: 'MDI',
+          status: 'REMAND',
+          prisonName: 'HMP Bedford',
+          cellLocation: 'CELL-2',
+          pncNumber: '1231/XX/122',
+          imprisonmentStatusDescription: 'Remand',
+        },
+      },
+    }),
+
   stubNotFoundPrisonerDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {

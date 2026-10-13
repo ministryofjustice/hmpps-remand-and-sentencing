@@ -79,4 +79,28 @@ export default {
         jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
       },
     }),
+
+  stubGetAgencyDetails: (): SuperAgentRequest =>
+    stubFor({
+      request: { method: 'GET', urlPathPattern: '/prison-api/api/agencies/.*' },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          agencyId: 'ACCRYC',
+          description: 'Accrington Youth Court',
+          addresses: [
+            {
+              addressType: 'Business Address',
+              premise: '55',
+              street: 'High Street',
+              town: 'Accrington',
+              county: 'Lancashire',
+              postalCode: 'LA1 6JN',
+              phones: [{ type: 'BUS', number: '01234 567890' }],
+            },
+          ],
+        },
+      },
+    }),
 }

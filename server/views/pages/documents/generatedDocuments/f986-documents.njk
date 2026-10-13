@@ -6,6 +6,7 @@
 {% set pageTitle = applicationName + " - View a F986 form" %}
 
 {% block content %}
+    {{ super() }}
     <form method="post" autocomplete="off" id="f986-form">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
             {% if courtAppearancesWithFines | length == 0 %}

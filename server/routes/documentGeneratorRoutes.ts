@@ -2,8 +2,6 @@ import { RequestHandler } from 'express'
 import dayjs from 'dayjs'
 import type { ViewGeneratedDocumentForm } from 'forms'
 import BaseRoutes from './baseRoutes'
-import { F986_ELIGIBLE } from './data/CourtCasesDetailsModel'
-import { sortByDateDesc } from '../utils/utils'
 import config from '../config'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
@@ -62,52 +60,31 @@ export default class DocumentGeneratorRoutes extends BaseRoutes {
     const { nomsId } = req.params
     const { username } = res.locals.user
 
-    const courtCasesPage = await this.remandAndSentencingService.searchCourtCases(
-      nomsId,
-      username,
-      'STATUS_APPEARANCE_DATE_DESC',
-      undefined,
-      undefined,
-      '',
-      0,
-    )
-
-    const eligibleCases = (courtCasesPage.content ?? [])
-      .filter(courtCase => courtCase.latestCourtAppearance?.outcome === F986_ELIGIBLE)
-      .sort((a, b) => sortByDateDesc(a.latestCourtAppearance.warrantDate, b.latestCourtAppearance.warrantDate))
+    const appearances = await this.remandAndSentencingService.getF986EligibleAppearances(nomsId, username)
 
     const courtMap = await this.courtRegisterService.getCourtMap(
-      Array.from(new Set(eligibleCases.map(courtCase => courtCase.latestCourtAppearance.courtCode))),
+      Array.from(new Set(appearances.map(appearance => appearance.courtCode))),
       username,
     )
 
-    const offenceCodes = eligibleCases.flatMap(courtCase =>
-      courtCase.latestCourtAppearance.charges.map(charge => charge.offenceCode),
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(appearances.flatMap(appearance => appearance.offenceCodes))),
+      username,
+      [],
     )
 
-    const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(offenceCodes)), username, [])
-
-    function getOffenceDescriptions(courtCase) {
-      let titleValue = courtMap[courtCase.latestCourtAppearance?.courtCode]
-      if (courtCase.latestCourtAppearance?.caseReference) {
-        titleValue = `${courtCase.latestCourtAppearance.caseReference} at ${titleValue}`
+    const courtAppearancesWithFines = appearances.map(appearance => {
+      const courtName = courtMap[appearance.courtCode] ?? appearance.courtCode
+      const title = appearance.caseReference ? `${appearance.caseReference} at ${courtName}` : courtName
+      return {
+        appearanceUuid: appearance.appearanceUuid,
+        courtName,
+        appearanceDate: dayjs(appearance.warrantDate).format(config.dateFormat),
+        caseReference: appearance.caseReference,
+        offenceDescriptions:
+          title + appearance.offenceCodes.map(code => `<br/>${`${code} ${offenceMap[code] ?? ''}`.trim()}`).join(''),
       }
-
-      const charges = courtCase.latestCourtAppearance.charges
-        .map(charge => {
-          return `<br/>${offenceMap[charge.offenceCode]}`
-        })
-        .join('')
-      return titleValue + charges
-    }
-
-    const courtAppearancesWithFines = eligibleCases.map(courtCase => ({
-      appearanceUuid: courtCase.latestCourtAppearance.appearanceUuid,
-      courtName: courtMap[courtCase.latestCourtAppearance.courtCode] ?? courtCase.latestCourtAppearance.courtCode,
-      appearanceDate: dayjs(courtCase.latestCourtAppearance.warrantDate).format(config.dateFormat),
-      caseReference: courtCase.latestCourtAppearance.caseReference,
-      offenceDescriptions: getOffenceDescriptions(courtCase),
-    }))
+    })
 
     return res.render('pages/documents/generatedDocuments/f986-documents', {
       nomsId,

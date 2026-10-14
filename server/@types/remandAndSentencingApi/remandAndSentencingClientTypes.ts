@@ -153,4 +153,6 @@ export type FixSingleSentenceMultipleChargesPeople = components['schemas']['FixS
 
 export type CreateF986 = components['schemas']['CreateF986']
 
+export type F986EligibleCourtAppearance = components['schemas']['F986EligibleCourtAppearance']
+
 export type UnconfirmedCourtCases = components['schemas']['UnconfirmedCourtCases']

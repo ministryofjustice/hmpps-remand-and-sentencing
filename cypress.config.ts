@@ -71,6 +71,7 @@ export default defineConfig({
             }),
             prisonApi.stubGetBookingById(),
             remandAndSentencingApi.stubGetBookingCourtCaseCount(),
+            remandAndSentencingApi.stubHasF986EligibleAppearances({ prisonerId: 'A1234AB', exists: false }),
           ])
         },
 

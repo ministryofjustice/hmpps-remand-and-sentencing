@@ -48,6 +48,7 @@ import {
   UpdateCourtCaseStatus,
   UploadedDocument,
   CreateF986,
+  F986EligibleCourtAppearance,
   UnconfirmedCourtCases,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
@@ -109,6 +110,24 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )
+  }
+
+  async getF986EligibleAppearances(prisonerId: string, username: string): Promise<F986EligibleCourtAppearance[]> {
+    return (await this.get(
+      {
+        path: `/document-generator/f986/person/${prisonerId}/eligible-appearances`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<F986EligibleCourtAppearance[]>
+  }
+
+  async hasF986EligibleAppearances(prisonerId: string, username: string): Promise<boolean> {
+    return (await this.get(
+      {
+        path: `/document-generator/f986/person/${prisonerId}/eligible-appearances/exists`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<boolean>
   }
 
   async putCourtAppearance(
@@ -769,10 +788,14 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )
   }
 
-  async generateF986Document(generateF986DocumentRequest: CreateF986, username: string): Promise<FileDownload> {
+  async generateF986Document(
+    prisonerId: string,
+    generateF986DocumentRequest: CreateF986,
+    username: string,
+  ): Promise<FileDownload> {
     return this.post(
       {
-        path: '/document-generator/f986',
+        path: `/document-generator/f986/person/${prisonerId}`,
         data: generateF986DocumentRequest,
         responseType: 'blob',
         raw: true,

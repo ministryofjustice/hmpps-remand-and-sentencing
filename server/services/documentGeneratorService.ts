@@ -27,7 +27,7 @@ export default class DocumentGeneratorService {
   }
 
   private async generateF986(req, res): Promise<FileDownload> {
-    const { appearanceUuid } = req.params
+    const { appearanceUuid, nomsId } = req.params
 
     const courtAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
       appearanceUuid,
@@ -45,6 +45,7 @@ export default class DocumentGeneratorService {
       ?.phones?.filter(p => p.type === 'BUS')[0]?.number
 
     return this.remandAndSentencingService.generateF986Document(
+      nomsId,
       {
         courtAppearanceUuid: appearanceUuid,
         courtPremise: courtAddressDetails?.premise ?? null,

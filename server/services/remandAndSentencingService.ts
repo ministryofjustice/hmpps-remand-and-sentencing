@@ -38,6 +38,7 @@ import {
   SentencesToChainToResponse,
   SentenceTypeIsValid,
   CreateF986,
+  UnconfirmedCourtCases,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import {
@@ -488,5 +489,9 @@ export default class RemandAndSentencingService {
 
   async generateF986Document(f986DocumentRequest: CreateF986, username: string): Promise<FileDownload> {
     return this.remandAndSentencingApiClient.generateF986Document(f986DocumentRequest, username)
+  }
+
+  async getUnconfirmedSentenceFixCourtCases(prisonerId: string, username: string): Promise<UnconfirmedCourtCases> {
+    return this.remandAndSentencingApiClient.getUnconfirmedSentenceFixCourtCases(prisonerId, username)
   }
 }

@@ -2,29 +2,39 @@ import Page from '../../../pages/page'
 import StartPage from '../../../pages/startPage'
 import ViewF986DocumentsPage from '../../../pages/viewF986DocumentsPage'
 
-const courtHearingWithFine1 = {
-  courtCaseUuid: '6D6B09AC-AE3B-446E-B685-75319FA2E735',
-  appearanceUuid: '09E8CB82-BDB4-4CFD-9603-53A45EC748E1',
-  outcome: 'Imprisonment in default of a fine',
-  warrantDate: '2026-09-15',
-}
-const courtHearingWithFine2 = {
-  courtCaseUuid: '66C80A21-036B-44FF-8FFF-280F417D56ED',
-  appearanceUuid: '641931E3-FCD9-41A0-8D2D-BFFC6AE6DE18',
-  outcome: 'Imprisonment in default of a fine',
-  warrantDate: '2026-03-02',
-}
-const courtHearingWithoutFine = {
-  courtCaseUuid: 'CB01093B-0C14-47CE-B7E6-0386FB726ACD',
-  appearanceUuid: '9493040B-061A-4EDD-ADE3-A6C6882D2528',
-  outcome: 'Remanded in custody',
-  warrantDate: '2026-05-08',
+interface CourtHearingWithFine {
+  appearanceUuid: string
+  warrantDate: string
+  courtCode: string
+  caseReference: string
+  offenceCodes: string[]
 }
 
-const documentUrl = (appearanceUuid: string) =>
-  `/api/persons/A1234AB/court-appearances/${appearanceUuid}/documents/f986`
+const courtHearingWithFine1: CourtHearingWithFine = {
+  appearanceUuid: '09E8CB82-BDB4-4CFD-9603-53A45EC748E1',
+  warrantDate: '2026-09-15',
+  courtCode: 'ACCRYC',
+  caseReference: 'C894623',
+  offenceCodes: ['PS90037'],
+}
+const courtHearingWithFine2: CourtHearingWithFine = {
+  appearanceUuid: '641931E3-FCD9-41A0-8D2D-BFFC6AE6DE18',
+  warrantDate: '2026-03-02',
+  courtCode: 'ACCRYC',
+  caseReference: 'C894623',
+  offenceCodes: ['PS90037'],
+}
+
+const documentUrl = (prisonerId: string, appearanceUuid: string) =>
+  `/api/persons/${prisonerId}/court-appearances/${appearanceUuid}/documents/f986`
 const selectionUrl = '/person/A1234AB/view-generated-documents/type/f986'
 const notEligibleMessage = 'There is no eligible F986 form to view for this prisoner'
+
+const stubF986 = (appearances: CourtHearingWithFine[] = [], prisonerId = 'A1234AB') => {
+  cy.task('stubSearchCourtCases', { sortBy: 'STATUS_APPEARANCE_DATE_DESC' })
+  cy.task('stubGetF986EligibleAppearances', { prisonerId, appearances })
+  cy.task('stubHasF986EligibleAppearances', { prisonerId, exists: appearances.length > 0 })
+}
 
 context('View F986 generated document', () => {
   beforeEach(() => {
@@ -41,7 +51,7 @@ context('View F986 generated document', () => {
 
   context('Entry point and selection page', () => {
     beforeEach(() => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithFine1] })
+      stubF986([courtHearingWithFine1])
     })
 
     it('should show the "View a F986 form" link in the Actions list', () => {
@@ -61,7 +71,7 @@ context('View F986 generated document', () => {
       const page = Page.verifyOnPage(ViewF986DocumentsPage)
       cy.url().should('include', selectionUrl)
       page.radios().should('have.length', 1)
-      page.radioForDocument(documentUrl(courtHearingWithFine1.appearanceUuid)).should('exist')
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid)).should('exist')
       page.viewButton().should('contain.text', 'View')
       page.cancelButton().should('contain.text', 'Cancel')
     })
@@ -69,7 +79,7 @@ context('View F986 generated document', () => {
 
   context('No eligible outcome', () => {
     beforeEach(() => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithoutFine] })
+      stubF986([])
     })
 
     it('should not show the link', () => {
@@ -87,26 +97,23 @@ context('View F986 generated document', () => {
 
   context('Multiple eligible court appearances', () => {
     beforeEach(() => {
-      cy.task('stubSearchCourtCasesF986', {
-        cases: [courtHearingWithFine1, courtHearingWithFine2, courtHearingWithoutFine],
-      })
+      stubF986([courtHearingWithFine1, courtHearingWithFine2])
       cy.visit(selectionUrl)
     })
 
-    it('should list only the eligible cases as separate radio buttons', () => {
+    it('should list each eligible case as a separate radio button', () => {
       const page = Page.verifyOnPage(ViewF986DocumentsPage)
       page.radios().should('have.length', 2)
-      page.radioForDocument(documentUrl(courtHearingWithFine1.appearanceUuid)).should('exist')
-      page.radioForDocument(documentUrl(courtHearingWithFine2.appearanceUuid)).should('exist')
-      page.radioForDocument(documentUrl(courtHearingWithoutFine.appearanceUuid)).should('not.exist')
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid)).should('exist')
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine2.appearanceUuid)).should('exist')
     })
 
     it('should only allow one case to be selected at a time', () => {
       const page = Page.verifyOnPage(ViewF986DocumentsPage)
-      page.radioForDocument(documentUrl(courtHearingWithFine1.appearanceUuid)).check()
-      page.radioForDocument(documentUrl(courtHearingWithFine2.appearanceUuid)).check()
-      page.radioForDocument(documentUrl(courtHearingWithFine1.appearanceUuid)).should('not.be.checked')
-      page.radioForDocument(documentUrl(courtHearingWithFine2.appearanceUuid)).should('be.checked')
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid)).check()
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine2.appearanceUuid)).check()
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid)).should('not.be.checked')
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine2.appearanceUuid)).should('be.checked')
     })
 
     it('should open the selected case document in a new tab', () => {
@@ -114,12 +121,12 @@ context('View F986 generated document', () => {
       // We can't open a second tab so just assert the window.open was called
       cy.window().then(win => cy.stub(win, 'open').as('windowOpen'))
 
-      page.radioForDocument(documentUrl(courtHearingWithFine2.appearanceUuid)).check()
+      page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine2.appearanceUuid)).check()
       page.viewButton().click()
 
       cy.get('@windowOpen').should(
         'have.been.calledOnceWith',
-        documentUrl(courtHearingWithFine2.appearanceUuid),
+        documentUrl('A1234AB', courtHearingWithFine2.appearanceUuid),
         '_blank',
         'noopener',
       )
@@ -128,7 +135,7 @@ context('View F986 generated document', () => {
 
     it('should serve each selected document as an inline PDF', () => {
       ;[courtHearingWithFine1, courtHearingWithFine2].forEach(c => {
-        cy.request(documentUrl(c.appearanceUuid)).then(response => {
+        cy.request(documentUrl('A1234AB', c.appearanceUuid)).then(response => {
           expect(response.status).to.eq(200)
           expect(response.headers['content-type']).to.contain('application/pdf')
           expect(response.headers['content-disposition']).to.contain('inline')
@@ -139,7 +146,7 @@ context('View F986 generated document', () => {
 
   context('View or cancel', () => {
     beforeEach(() => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithFine1] })
+      stubF986([courtHearingWithFine1])
       cy.visit('/person/A1234AB')
       Page.verifyOnPage(StartPage).viewF986Link().click()
     })
@@ -163,8 +170,8 @@ context('View F986 generated document', () => {
 
   context('No eligible form for prisoner in URL', () => {
     beforeEach(() => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithFine1] })
-      cy.task('stubSearchCourtCasesF986', { prisonerId: 'A9999ZZ', cases: [] })
+      stubF986([courtHearingWithFine1])
+      stubF986([], 'A9999ZZ')
       cy.task('stubGetPrisonerDetailsByNumber', 'A9999ZZ')
     })
 
@@ -177,7 +184,7 @@ context('View F986 generated document', () => {
 
   context('Back button', () => {
     it('should return to the Court Cases page from the selection page and allows reselection', () => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithFine1] })
+      stubF986([courtHearingWithFine1])
       cy.visit('/person/A1234AB')
       Page.verifyOnPage(StartPage).viewF986Link().click()
       Page.verifyOnPage(ViewF986DocumentsPage).backLink().click()
@@ -187,7 +194,7 @@ context('View F986 generated document', () => {
     })
 
     it('should not generate a document when Back is clicked', () => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithFine1] })
+      stubF986([courtHearingWithFine1])
       cy.visit('/person/A1234AB')
       Page.verifyOnPage(StartPage).viewF986Link().click()
       cy.window().then(win => cy.stub(win, 'open').as('windowOpen'))
@@ -197,7 +204,7 @@ context('View F986 generated document', () => {
     })
 
     it('should return to the Court Cases page from the no eligible court appearances page', () => {
-      cy.task('stubSearchCourtCasesF986', { cases: [courtHearingWithoutFine] })
+      stubF986([])
       cy.visit(selectionUrl)
       cy.get('[data-qa=no-f986-appearances]').should('contain.text', notEligibleMessage)
       cy.get('[data-qa=back-link]').click()

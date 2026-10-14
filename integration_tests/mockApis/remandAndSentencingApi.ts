@@ -6426,81 +6426,55 @@ export default {
     })
   },
 
-  stubSearchCourtCasesF986: ({
+  stubGetF986EligibleAppearances: ({
     prisonerId = 'A1234AB',
-    cases = [
+    appearances = [
       {
-        courtCaseUuid: '6D6B09AC-AE3B-446E-B685-75319FA2E735',
         appearanceUuid: '09E8CB82-BDB4-4CFD-9603-53A45EC748E1',
-        outcome: 'Imprisonment in default of a fine',
         warrantDate: '2026-10-15',
+        courtCode: 'ACCRYC',
+        caseReference: 'C894623',
+        offenceCodes: ['PS90037'],
       },
     ],
   }: {
     prisonerId?: string
-    cases?: { courtCaseUuid: string; appearanceUuid: string; outcome: string; warrantDate: string }[]
+    appearances?: {
+      appearanceUuid: string
+      warrantDate: string
+      courtCode: string
+      caseReference?: string | null
+      offenceCodes: string[]
+    }[]
   }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/court-case/paged/search',
-        queryParameters: { prisonerId: { equalTo: prisonerId } },
+        urlPath: `/remand-and-sentencing-api/document-generator/f986/person/${prisonerId}/eligible-appearances`,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          totalPages: 1,
-          totalElements: cases.length,
-          size: 20,
-          content: cases.map(c => ({
-            prisonerId,
-            courtCaseUuid: c.courtCaseUuid,
-            courtCaseStatus: 'ACTIVE',
-            appearanceCount: 1,
-            caseReferences: ['C894623'],
-            firstDayInCustody: c.warrantDate,
-            firstDayInCustodyWarrantType: 'NON_SENTENCING',
-            latestCourtAppearance: {
-              appearanceUuid: c.appearanceUuid,
-              caseReference: 'C894623',
-              courtCode: 'ACCRYC',
-              warrantDate: c.warrantDate,
-              warrantType: 'NON_SENTENCING',
-              outcome: c.outcome,
-              charges: [
-                {
-                  offenceCode: 'PS90037',
-                  offenceStartDate: c.warrantDate,
-                  createdAt: '2026-10-10T14:30:00.000Z',
-                  outcome: {
-                    outcomeUuid: 'F47CE67F-03F9-46F3-B24E-066A9A47494C',
-                    outcomeName: c.outcome,
-                  },
-                },
-              ],
-              periodLengths: [],
-            },
-            mergedFromCases: [],
-            mergedToCase: null,
-            allAppearancesHaveRecall: false,
-            canAppeal: false,
-            canBreach: false,
-          })),
-          number: 0,
-          numberOfElements: cases.length,
-          pageable: {
-            offset: 0,
-            pageSize: 20,
-            pageNumber: 0,
-            paged: true,
-            unpaged: false,
-          },
-          empty: cases.length === 0,
-          last: true,
-          first: true,
-          prisonerCourtCaseTotal: cases.length,
-        },
+        jsonBody: appearances,
+      },
+    }),
+
+  stubHasF986EligibleAppearances: ({
+    prisonerId = 'A1234AB',
+    exists = true,
+  }: {
+    prisonerId?: string
+    exists?: boolean
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/document-generator/f986/person/${prisonerId}/eligible-appearances/exists`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: exists,
       },
     }),
 
@@ -6519,7 +6493,10 @@ export default {
 
   stubGenerateF986Document: (): SuperAgentRequest =>
     stubFor({
-      request: { method: 'POST', urlPath: '/remand-and-sentencing-api/document-generator/f986' },
+      request: {
+        method: 'POST',
+        urlPathPattern: '/remand-and-sentencing-api/document-generator/f986/person/[a-zA-Z0-9-]+',
+      },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/pdf', 'Content-Length': '8' },

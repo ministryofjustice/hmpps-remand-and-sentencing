@@ -218,6 +218,7 @@ describe('RemandAndSentencingService', () => {
 
   describe('generateF986Document', () => {
     it('should delegate to the remandAndSentencingApiClient with the request and username', async () => {
+      const prisonerId = 'AB123A'
       const f986Request = {
         courtAppearanceUuid: '60B6BB03-549A-4A2C-8874-85ACCFA62880',
         courtPremise: null,
@@ -230,9 +231,9 @@ describe('RemandAndSentencingService', () => {
       const fileDownload = { body: Buffer.from('pdf-bytes'), header: { 'content-type': 'application/pdf' } }
       remandAndSentencingApiClient.generateF986Document.mockResolvedValue(fileDownload as never)
 
-      const result = await service.generateF986Document(f986Request as never, 'user1')
+      const result = await service.generateF986Document(prisonerId, f986Request as never, 'user1')
 
-      expect(remandAndSentencingApiClient.generateF986Document).toHaveBeenCalledWith(f986Request, 'user1')
+      expect(remandAndSentencingApiClient.generateF986Document).toHaveBeenCalledWith(prisonerId, f986Request, 'user1')
       expect(result).toBe(fileDownload)
     })
   })

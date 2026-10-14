@@ -43,8 +43,12 @@
         }
       ]
     }
-  },
-  {
+  }
+
+] %}
+
+{% if not isHmctsJourneyWithChargeData %}
+  {% set summaryRows = summaryRows.concat([{
     key: {
       text: "Is the conviction date the same for all offences on the warrant?"
     },
@@ -61,8 +65,8 @@
         }
       ] if courtAppearance.warrantInformationAccepted !== true
     }
-  }
-] %}
+  }]) %}
+{% endif %}
 
 {% if courtAppearance.overallConvictionDate %}
   {% set summaryRows = summaryRows.concat([{
@@ -100,7 +104,7 @@
   }
 ]) %}
 
-{% if isAddJourney %}
+{% if isAddJourney and not isHmctsJourneyWithChargeData %}
   {% set summaryRows = summaryRows.concat([
     {
       key: { text: "Is the outcome the same for all offences on the warrant?" },

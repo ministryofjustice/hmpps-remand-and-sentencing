@@ -14,14 +14,17 @@ afterEach(() => {
 })
 
 const setupDefaultMocks = (eligible = true) => {
-  defaultServices.remandAndSentencingService.getF986EligibleAppearances.mockResolvedValue(eligible
-      ? ([{
-          appearanceUuid: '1',
-          warrantDate: '2025-07-25',
-          courtCode: 'ACCRYC',
-          caseReference: 'A123',
-          offenceCodes: ['OFF123'],
-        },] as never)
+  defaultServices.remandAndSentencingService.getF986EligibleAppearances.mockResolvedValue(
+    eligible
+      ? ([
+          {
+            appearanceUuid: '1',
+            warrantDate: '2025-07-25',
+            courtCode: 'ACCRYC',
+            caseReference: 'A123',
+            offenceCodes: ['OFF123'],
+          },
+        ] as never)
       : [],
   )
   defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })

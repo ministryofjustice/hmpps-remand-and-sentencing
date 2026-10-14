@@ -49,6 +49,7 @@ import {
   UploadedDocument,
   CreateF986,
   F986EligibleCourtAppearance,
+  UnconfirmedCourtCases,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import logger from '../../logger'
@@ -798,6 +799,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
         data: generateF986DocumentRequest,
         responseType: 'blob',
         raw: true,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getUnconfirmedSentenceFixCourtCases(prisonerId: string, username: string): Promise<UnconfirmedCourtCases> {
+    return this.get(
+      {
+        path: `/person/${prisonerId}/unconfirmed-sentence-fix-court-cases`,
       },
       asSystem(username),
     )

@@ -1554,6 +1554,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonerId}/unconfirmed-sentence-fix-court-cases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve unconfirmed sentence fix court cases for person
+     * @description This endpoint will retrieve unconfirmed sentence fix court cases for person
+     */
+    get: operations['unconfirmedSentenceFixCourtCases']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/person/{prisonerId}/sentences-to-chain-to': {
     parameters: {
       query?: never
@@ -2543,7 +2563,7 @@ export interface components {
       previousSentenceIds?: string[] | null
       originalSentenceId?: string | null
       isOnFutureAppearance?: boolean | null
-      isBreach: boolean | null
+      isBreach?: boolean | null
       courtAppearanceIds?: string[] | null
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
@@ -2583,7 +2603,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2721,7 +2741,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3727,6 +3747,24 @@ export interface components {
       pncNumber?: string | null
       status?: string | null
     }
+    UnconfirmedCourtCase: {
+      courtCaseUuid: string
+      caseReference?: string | null
+      courtCode: string
+      /** Format: date */
+      sentencingHearingDate: string
+      sentences: components['schemas']['UnconfirmedSentence'][]
+    }
+    UnconfirmedCourtCases: {
+      courtCases: components['schemas']['UnconfirmedCourtCase'][]
+    }
+    UnconfirmedSentence: {
+      /** Format: uuid */
+      sentenceUuid: string
+      offenceCode: string
+      chargeLegacyOffenceDescription?: string | null
+      sentenceServeType: string
+    }
     AppearanceToChainTo: {
       courtCode: string
       courtCaseReference?: string | null
@@ -3836,7 +3874,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -4132,7 +4170,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4155,7 +4193,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4210,7 +4248,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4222,7 +4260,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4457,7 +4495,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:58:48.195347764 */
+      /** @example 07:44:41.341233073 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -8554,6 +8592,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PersonDetails']
+        }
+      }
+    }
+  }
+  unconfirmedSentenceFixCourtCases: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns unconfirmed sentence fix court cases for person */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnconfirmedCourtCases']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnconfirmedCourtCases']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnconfirmedCourtCases']
         }
       }
     }

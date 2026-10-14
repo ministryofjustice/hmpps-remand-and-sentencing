@@ -168,6 +168,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       ...pageCourtCaseAppearanceToCourtAppearance(appearance),
       nextCourtAppearanceAccepted: undefined,
       isCommonPlatformJourney: true,
+      overallConvictionDateAppliedAll: 'false',
     } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
     if (req.params.caseId) {

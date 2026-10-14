@@ -1313,11 +1313,7 @@ export default {
     })
   },
 
-  verifySentenceCreateCourtCaseRequestFromHmctsData: ({
-    nextAppearanceDate = '',
-  }: {
-    nextAppearanceDate: string
-  }): Promise<number> => {
+  verifySentenceCreateCourtCaseRequestFromHmctsData: (): Promise<number> => {
     return verifyRequest({
       requestUrlPattern:
         '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
@@ -1343,22 +1339,21 @@ export default {
                 outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
                 prisonId: 'MDI',
                 createChargeOrder: 0,
-                offenceStartDate: '2023-05-10',
+                aggravatingFactors: [],
+                offenceStartDate: '2022-07-04',
                 // eslint-disable-next-line no-template-curly-in-string
                 chargeUuid: '${json-unit.any-string}',
                 sentence: {
-                  chargeNumber: '1',
+                  chargeNumber: null,
                   periodLengths: [
                     {
-                      days: 4,
-                      weeks: 3,
                       months: 2,
-                      years: 1,
                       periodOrder: 'years,months,weeks,days',
                       type: 'SENTENCE_LENGTH',
                       // eslint-disable-next-line no-template-curly-in-string
                       periodLengthUuid: '${json-unit.any-string}',
                       prisonId: 'MDI',
+                      legacyData: null,
                     },
                   ],
                   sentenceServeType: 'FORTHWITH',
@@ -1366,7 +1361,8 @@ export default {
                   prisonId: 'MDI',
                   // eslint-disable-next-line no-template-curly-in-string
                   sentenceUuid: '${json-unit.any-string}',
-                  convictionDate: '2023-05-12',
+                  convictionDate: '2023-12-15',
+                  status: 'ACTIVE',
                 },
               },
             ],
@@ -1384,18 +1380,16 @@ export default {
             prisonId: 'MDI',
             periodLengths: [
               {
-                days: 2,
-                weeks: 3,
-                months: 5,
-                years: 4,
+                months: 2,
                 periodOrder: 'years,months,weeks,days',
                 type: 'OVERALL_SENTENCE_LENGTH',
                 // eslint-disable-next-line no-template-curly-in-string
                 periodLengthUuid: '${json-unit.any-string}',
                 prisonId: 'MDI',
+                legacyData: null,
               },
             ],
-            overallConvictionDate: '2023-05-12',
+            overallConvictionDate: '2023-12-15',
           },
         ],
         prisonId: 'MDI',
@@ -5718,7 +5712,18 @@ export default {
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
           hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
-          outcome: null,
+          outcome: {
+            outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
+            outcomeName: 'Imprisonment',
+            nomisCode: '1002',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+            isSubList: false,
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+            warrantType: 'SENTENCING',
+          },
           courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',
           criminalAppealOfficeReference: null,
@@ -5735,10 +5740,69 @@ export default {
               courtDataIngested: false,
             },
           ],
-          charges: [],
-          overallConvictionDate: null,
+          charges: [
+            {
+              chargeUuid: '1dd5a6cf-0594-44b8-bc99-7e45ccf1d1c0',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2022-07-04',
+              offenceEndDate: null,
+              outcome: {
+                outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+                outcomeName: 'Imprisonment',
+                nomisCode: '1002',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+                hmctsCode: 'IMP',
+                status: 'ACTIVE',
+              },
+              aggravatingFactors: [],
+              sentence: {
+                sentenceUuid: 'f092b4ee-80dc-4acf-9813-43f45665119e',
+                chargeNumber: null,
+                periodLengths: [
+                  {
+                    years: null,
+                    months: 2,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                    legacyData: null,
+                    periodLengthUuid: 'ee0083d8-4e1e-4339-9ede-6c67acc7709b',
+                  },
+                ],
+                sentenceServeType: 'FORTHWITH',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                  hintText: null,
+                  displayOrder: 10,
+                },
+                convictionDate: '2023-12-15',
+                fineAmount: null,
+                legacyData: null,
+                consecutiveToSentenceUuid: null,
+                hasRecall: false,
+                status: 'ACTIVE',
+              },
+            },
+          ],
+          overallConvictionDate: '2023-12-15',
           legacyData: null,
-          periodLengths: [],
+          periodLengths: [
+            {
+              years: null,
+              months: 2,
+              weeks: null,
+              days: null,
+              periodOrder: 'years,months,weeks,days',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+              legacyData: null,
+              periodLengthUuid: 'f09a291c-f906-4417-9b77-8b1e10d0d5c9',
+            },
+          ],
           source: 'DPS',
           deleteStatus: 'SUPPORTED',
         },

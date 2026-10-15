@@ -154,6 +154,18 @@ export default class CourtCaseRoutes extends BaseRoutes {
       ),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
+    if (config.featureToggles.checkAutomaticSentenceFix && courtCases.anyConsecutiveToFixes) {
+      return res.redirect(
+        JourneyUrls.checkAutomaticSentenceFix(
+          nomsId,
+          sortBy,
+          appearanceDateFrom,
+          appearanceDateTo,
+          includeCasesFromPreviousPeriodsOfCustody,
+          pageNumber,
+        ),
+      )
+    }
     const consecutiveToSentenceUuids = courtCases.content
       .flatMap(courtCase => courtCase.latestCourtAppearance.charges)
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)

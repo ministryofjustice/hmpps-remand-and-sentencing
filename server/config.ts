@@ -189,5 +189,6 @@ export default {
     sentenceStatus: get('FEATURES_SENTENCE_STATUS_ENABLED', false, requiredInProduction) === 'true',
     judicialFindings: get('FEATURES_JUDICIAL_FINDINGS', false, requiredInProduction) === 'true',
     generatedDocuments: get('FEATURES_GENERATED_DOCUMENTS', false) === 'true',
+    checkAutomaticSentenceFix: get('FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX', false, requiredInProduction) === 'true',
   },
 }

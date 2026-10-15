@@ -13,32 +13,27 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-const createCourtCasesPage = (outcome?: string) =>
-  ({
-    content: [
-      {
-        courtCaseUuid: '1',
-        latestCourtAppearance: {
-          appearanceUuid: '1',
-          warrantDate: '2025-07-25',
-          courtCode: 'ACCRYC',
-          caseReference: 'A123',
-          outcome,
-          charges: [{ offenceCode: 'OFF123' }],
-        },
-      },
-    ],
-  }) as never
-
-const setupDefaultMocks = (outcome?: string) => {
-  defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue(createCourtCasesPage(outcome))
+const setupDefaultMocks = (eligible = true) => {
+  defaultServices.remandAndSentencingService.getF986EligibleAppearances.mockResolvedValue(
+    eligible
+      ? ([
+          {
+            appearanceUuid: '1',
+            warrantDate: '2025-07-25',
+            courtCode: 'ACCRYC',
+            caseReference: 'A123',
+            offenceCodes: ['OFF123'],
+          },
+        ] as never)
+      : [],
+  )
   defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })
   defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({ ACCRYC: 'Court description' })
 }
 
 describe('GET view-generated-documents/type/f986', () => {
   it('should list eligible court appearances as radios pointing at the F986 download', async () => {
-    setupDefaultMocks('Imprisonment in default of a fine')
+    setupDefaultMocks()
 
     const res = await request(app).get('/person/A1234AB/view-generated-documents/type/f986')
     const $ = cheerio.load(res.text)
@@ -52,7 +47,7 @@ describe('GET view-generated-documents/type/f986', () => {
   })
 
   it('should show a message when there are no eligible court appearances', async () => {
-    setupDefaultMocks('Some other outcome')
+    setupDefaultMocks(false)
 
     const res = await request(app).get('/person/A1234AB/view-generated-documents/type/f986')
     const $ = cheerio.load(res.text)

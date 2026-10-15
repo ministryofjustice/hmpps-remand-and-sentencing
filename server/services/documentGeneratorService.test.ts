@@ -11,7 +11,7 @@ describe('DocumentGeneratorService', () => {
   let documentGeneratorService: DocumentGeneratorService
 
   const req = {
-    params: { appearanceUuid: '60B6BB03-549A-4A2C-8874-85ACCFA62880' },
+    params: { nomsId: '1234AB', appearanceUuid: '60B6BB03-549A-4A2C-8874-85ACCFA62880' },
     user: { username: 'jbloggs' },
   } as never
 
@@ -102,6 +102,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
           {
             courtAppearanceUuid: '60B6BB03-549A-4A2C-8874-85ACCFA62880',
             courtPremise: 'Court Premise',
@@ -124,6 +125,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
           expect.objectContaining({
             courtPremise: null,
             courtStreet: null,
@@ -144,6 +146,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
           expect.objectContaining({ courtPremise: null }),
           'res-user',
         )
@@ -158,6 +161,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
           expect.objectContaining({ prisonTelephoneNumber: null }),
           'res-user',
         )
@@ -174,6 +178,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
           expect.objectContaining({ prisonTelephoneNumber: null }),
           'res-user',
         )
@@ -203,6 +208,7 @@ describe('DocumentGeneratorService', () => {
         await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
 
         expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
           expect.objectContaining({ courtPremise: 'First', prisonTelephoneNumber: '00495 844732' }),
           'res-user',
         )

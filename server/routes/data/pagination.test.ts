@@ -32,6 +32,7 @@ describe('pagination tests', () => {
       numberOfElements: 1,
       empty: false,
       prisonerCourtCaseTotal: 1,
+      anyConsecutiveToFixes: false,
     } as SearchCourtCasesPage
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result).toBeNull()
@@ -66,6 +67,7 @@ describe('pagination tests', () => {
       numberOfElements: 14,
       empty: false,
       prisonerCourtCaseTotal: 14,
+      anyConsecutiveToFixes: false,
     }
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.previous).toEqual({
@@ -138,6 +140,7 @@ describe('pagination tests', () => {
       numberOfElements: 14,
       empty: false,
       prisonerCourtCaseTotal: 34,
+      anyConsecutiveToFixes: false,
     }
     const result = getPaginationResults(pageCourtCase)
     expect(result).toEqual({

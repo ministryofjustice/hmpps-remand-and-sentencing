@@ -2512,6 +2512,9 @@ export interface components {
       /** Format: int32 */
       messagesFoundCount: number
     }
+    PersonFixManyChargesToSentence: {
+      anyConsecutiveToFixes: boolean
+    }
     LegacyCreateFine: {
       fineAmount: number
     }
@@ -2603,10 +2606,11 @@ export interface components {
       previousSentenceIds?: string[] | null
       originalSentenceId?: string | null
       isOnFutureAppearance?: boolean | null
-      isBreach?: boolean | null
+      isBreach: boolean | null
       courtAppearanceIds?: string[] | null
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
+      hasUnconfirmedConsecutiveToFix?: boolean | null
     }
     LegacyLinkCase: {
       /** Format: date */
@@ -2643,7 +2647,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2781,7 +2785,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3914,7 +3918,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -4210,7 +4214,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4233,7 +4237,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4288,7 +4292,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4300,7 +4304,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4544,7 +4548,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:36:24.71092 */
+      /** @example 16:51:17.978486713 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -4621,19 +4625,20 @@ export interface components {
       total?: number
       /** Format: int64 */
       prisonerCourtCaseTotal: number
+      anyConsecutiveToFixes: boolean
+      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      last?: boolean
-      /** Format: int32 */
-      numberOfElements?: number
-      sort?: components['schemas']['SortObject']
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
+      sort?: components['schemas']['SortObject']
+      first?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
@@ -4973,25 +4978,31 @@ export interface operations {
     requestBody?: never
     responses: {
       /** @description Fix applied */
-      204: {
+      200: {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['PersonFixManyChargesToSentence']
+        }
       }
       /** @description Unauthorised */
       401: {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['PersonFixManyChargesToSentence']
+        }
       }
       /** @description Forbidden */
       403: {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['PersonFixManyChargesToSentence']
+        }
       }
     }
   }

@@ -156,8 +156,52 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/task-list`
   }
 
-  static courtCases = (nomsId: string) => {
-    return `/person/${nomsId}`
+  static courtCases = (
+    nomsId: string,
+    sortBy?: string,
+    appearanceDateFrom?: string,
+    appearanceDateTo?: string,
+    includeCasesFromPreviousPeriodsOfCustody?: string,
+    pageNumber?: number | string,
+  ) => {
+    return `/person/${nomsId}${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+  }
+
+  private static getCourtCasesQueryParameters = (
+    sortBy: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+    includeCasesFromPreviousPeriodsOfCustody: string,
+    pageNumber: number | string,
+  ) => {
+    const queryParameters = []
+    if (sortBy) {
+      queryParameters.push(`sortBy=${sortBy}`)
+    }
+    if (appearanceDateFrom) {
+      queryParameters.push(`appearanceDateFrom=${appearanceDateFrom}`)
+    }
+    if (appearanceDateTo) {
+      queryParameters.push(`appearanceDateTo=${appearanceDateTo}`)
+    }
+    if (includeCasesFromPreviousPeriodsOfCustody) {
+      queryParameters.push(`includeCasesFromPreviousPeriodsOfCustody=${includeCasesFromPreviousPeriodsOfCustody}`)
+    }
+    if (pageNumber) {
+      queryParameters.push(`pageNumber=${pageNumber}`)
+    }
+    return queryParameters.length ? `?${queryParameters.join('&')}` : ''
+  }
+
+  static checkAutomaticSentenceFix = (
+    nomsId: string,
+    sortBy: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+    includeCasesFromPreviousPeriodsOfCustody: string,
+    pageNumber: number | string,
+  ) => {
+    return `/person/${nomsId}/check-automatic-sentence-fix${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
   }
 
   static sentenceType = (
@@ -515,7 +559,6 @@ export const urlMapByName = {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
   ) => JourneyUrls.taskList(nomsId, addOrEditCourtCase, courtCaseUuid, addOrEditCourtAppearance, courtAppearanceUuid),
-  courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
   sentenceType: (
     nomsId: string,
     addOrEditCourtCase: string,

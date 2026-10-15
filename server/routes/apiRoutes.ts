@@ -103,22 +103,28 @@ export default class ApiRoutes {
         throw new Error('No data returned from document generator')
       }
 
-      let fileStream: Readable
-      if (result.body instanceof Readable) {
-        fileStream = result.body
-      } else if (Buffer.isBuffer(result.body)) {
-        fileStream = new Readable()
-        fileStream.push(result.body)
-        fileStream.push(null)
-      } else {
+      const { body } = result
+
+      if (!Buffer.isBuffer(body) && !(body instanceof Readable)) {
         throw new Error('Unexpected body type returned from document generator')
       }
 
-      res.set('content-type', result.header['content-type'] ?? 'application/pdf')
-      res.set('content-disposition', `inline; filename="${documentType}'`)
-      res.set('content-length', result.header['content-length'])
+      res.status(200)
+      res.set('content-type', 'application/pdf')
+      res.set('content-disposition', `inline; filename="${documentType}.pdf"`)
+      res.set('cache-control', 'no-store')
 
-      fileStream.pipe(res)
+      if (Buffer.isBuffer(body)) {
+        res.set('content-length', String(body.length))
+        res.end(body)
+        return
+      }
+
+      body.on('error', err => {
+        logger.error(err, `Stream failed for ${documentType}`)
+        res.destroy(err)
+      })
+      body.pipe(res)
     } catch (error) {
       logger.error(error, `Failed to generate document ${documentType}`)
       res.status(500).send('Failed to generate document')

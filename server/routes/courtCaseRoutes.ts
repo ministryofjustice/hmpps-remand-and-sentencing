@@ -240,7 +240,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
-    const isF986Eligible = courtCaseDetailModels.some(appearance => appearance.isF986Eligible)
+    const isF986Eligible = await this.remandAndSentencingService.hasF986EligibleAppearances(nomsId, req.user.username)
 
     if (!courtCases.empty) {
       const auditDetails = this.getCourtCasesAuditUuids(courtCases, consecutiveToSentenceDetails)

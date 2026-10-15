@@ -11,8 +11,6 @@ import config from '../../config'
 import { pagedAppearancePeriodLengthToSentenceLength, pagedChargeToOffence } from '../../utils/mappingUtils'
 import { orderOffences, sortByDateDesc } from '../../utils/utils'
 
-export const F986_ELIGIBLE = 'Imprisonment in default of a fine'
-
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
 
@@ -65,8 +63,6 @@ export default class CourtCasesDetailsModel {
   canBreach: boolean
 
   canAddHearing: boolean
-
-  isF986Eligible: boolean
 
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
@@ -141,6 +137,5 @@ export default class CourtCasesDetailsModel {
     this.canBreach = pagedCourtCase.canBreach && this.overallCaseStatus !== 'MERGED'
     this.canAddHearing =
       !this.canAppeal && !this.canBreach && this.warrantType !== 'SENTENCING' && this.overallCaseStatus !== 'MERGED'
-    this.isF986Eligible = this.overallCaseOutcome === F986_ELIGIBLE
   }
 }

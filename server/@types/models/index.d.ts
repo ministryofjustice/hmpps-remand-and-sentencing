@@ -128,7 +128,7 @@ declare module 'models' {
   }
 
   export interface FileDownload {
-    body: Buffer
+    body: Buffer | Readable
     header: {
       [key: string]: string
     }

@@ -22,6 +22,7 @@ import BreachRoutes from './breachRoutes'
 import datafixAdminRoutes from './datafixAdminRoutes'
 import JudicialFindingsRoutes from './judicialFindingsRoutes'
 import DocumentGeneratorRoutes from './documentGeneratorRoutes'
+import AutomaticSentenceFixRoutes from './automaticSentenceFixRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -187,6 +188,16 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
   )
 
+  const automaticSentenceFixRoutes = new AutomaticSentenceFixRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
   router.get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
 
@@ -220,6 +231,8 @@ export default function routes(services: Services): Router {
   router.get('/person/:nomsId/view-sentence/:sentenceUuid', sentencingRoutes.getSentenceDetails)
 
   router.get('/person/:nomsId', courtCaseRoutes.start)
+
+  router.get('/person/:nomsId/check-automatic-sentence-fix', automaticSentenceFixRoutes.checkUpdatesInterrupt)
 
   router.get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
 

@@ -5,24 +5,15 @@ import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
-import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
-import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
-import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
-import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
-import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
-import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
-import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
-import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
-import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 
 context('New Sentencing Court Case from hmcts data journey', () => {
-  const remandWarrantHearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
+  const hearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
   const futureDate = dayjs().add(10, 'day')
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -44,7 +35,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     cy.task('stubGetCourtHearing')
     cy.task('stubDocumentViewed')
     cy.signIn()
-    cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing`)
+    cy.visit(`/person/A1234AB/review-new-documents/${hearingId}/landing`)
   })
 
   it('fill in sentencing journey from hmcts court data', () => {
@@ -152,40 +143,28 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     courtCaseTaskListPage.warrantInformationLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
-    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
-    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
-    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.weeksInput().type('3')
-    courtCaseOverallSentenceLengthPage.daysInput().type('2')
+    courtCaseOverallSentenceLengthPage.radioSelector('true').should('be.checked')
+    courtCaseOverallSentenceLengthPage.yearsInput().should('be.empty')
+    courtCaseOverallSentenceLengthPage.monthsInput().should('have.value', '2')
+    courtCaseOverallSentenceLengthPage.weeksInput().should('be.empty')
+    courtCaseOverallSentenceLengthPage.daysInput().should('be.empty')
     courtCaseOverallSentenceLengthPage.continueButton().click()
-
-    const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
-    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
-    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
-    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
-    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
-    courtCaseOverallConvictionDatePage.continueButton().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+    courtCaseOverallSentenceLengthPage
+      .radioSelector('62412083-9892-48c9-bf01-7864af4a8b3c|f17328cf-ceaa-43c2-930a-26cf74480e18')
+      .should('be.checked')
     courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
-    courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Imprisonment')
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     const warrantInformationCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     warrantInformationCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
-      'Overall sentence length': '4 years 5 months 3 weeks 2 days',
-      'Is the conviction date the same for all offences on the warrant?': 'Yes',
-      'Conviction date': '12/05/2023',
+      'Overall sentence length': '0 years 2 months 0 weeks 0 days',
+      'Conviction date': '15/12/2023',
       'Overall case outcome': 'Imprisonment',
-      'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
     warrantInformationCheckAnswersPage.confirmAndContinueButton().click()
     courtCaseTaskListPage
@@ -215,44 +194,17 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       ])
     courtCaseTaskListPage.offencesLink().click()
 
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(
-      OffenceOffenceDatePage,
-      'Enter the offence dates for the first offence',
-    )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-
-    offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.continueButton().click()
-
-    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceCountNumber = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumber.radioLabelSelector('true').click()
-    offenceCountNumber.input().type('1')
-    offenceCountNumber.continueButton().click()
-
-    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-    offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
-    offenceSentenceTypePage.continueButton().click()
-
-    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
-    offencePeriodLengthPage.yearsInput().type('1')
-    offencePeriodLengthPage.monthsInput().type('2')
-    offencePeriodLengthPage.weeksInput().type('3')
-    offencePeriodLengthPage.daysInput().type('4')
-    offencePeriodLengthPage.continueButton().click()
-
-    const sentenceIsConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
-    sentenceIsConsecutiveToPage.radioLabelSelector('false').click()
-    sentenceIsConsecutiveToPage.continueButton().click()
-
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+
+    const expectedSummary: Record<string, string> = {
+      'Committed on': '04/07/2022',
+      'Conviction date': '15/12/2023',
+      Outcome: 'Imprisonment',
+      'Sentence type': 'SDS (Standard Determinate Sentence)',
+      'Sentence length': '0 years 2 months 0 weeks 0 days',
+      'Consecutive or concurrent': 'Forthwith',
+    }
+    offenceCheckOffenceAnswersPage.custodialOffences().getSummaryList().should('deep.equal', expectedSummary)
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

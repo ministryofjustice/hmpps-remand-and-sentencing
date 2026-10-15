@@ -17,6 +17,6 @@ export default class CourtDataIngestionApiClient extends RestClient {
   }
 
   async documentViewed(documentId: string, courtDocumentView: CourtDocumentView, username: string): Promise<void> {
-    return this.post({ path: `/court-document/${documentId}/view` }, asSystem(username))
+    return this.post({ path: `/court-document/${documentId}/view`, data: courtDocumentView }, asSystem(username))
   }
 }

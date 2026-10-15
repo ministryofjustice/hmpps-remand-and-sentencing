@@ -7,6 +7,7 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
+  defaultServices.remandAndSentencingService.getF986EligibleAppearances.mockResolvedValue([])
 })
 
 afterEach(() => {

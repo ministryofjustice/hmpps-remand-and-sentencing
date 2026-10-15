@@ -114,11 +114,12 @@ export default class OverallSentencingRoutes extends BaseRoutes {
   public submitOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
       appearanceReference,
     )
+    const { warrantType } = courtAppearance
     const overallSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const errors = this.courtAppearanceService.setOverallSentenceLength(
       req.session,
@@ -160,6 +161,19 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       }
       return res.redirect(
         JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+
+    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
+    if (isHmctsJourneyWithChargeData) {
+      return res.redirect(
+        JourneyUrls.sentencingOverallCaseOutcome(
           nomsId,
           addOrEditCourtCase,
           courtCaseReference,
@@ -468,8 +482,17 @@ export default class OverallSentencingRoutes extends BaseRoutes {
         ),
       )
     }
-
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !submitToCheckAnswers) {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
+    if (
+      !isHmctsJourneyWithChargeData &&
+      this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) &&
+      !submitToCheckAnswers
+    ) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/case-outcome-applied-all`,
       )
@@ -587,6 +610,8 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+
+    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
     return res.render('pages/overallSentencing/check-overall-answers', {
       nomsId,
       courtAppearance,
@@ -597,6 +622,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       isAddJourney,
       overallSentenceLength,
+      isHmctsJourneyWithChargeData,
     })
   }
 

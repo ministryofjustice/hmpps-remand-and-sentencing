@@ -49,6 +49,43 @@
                     }) }}
                 </div>
             {% endif %}
+            {% if unconfirmedCourtCases | length %}
+                {% call govukNotificationBanner({
+                    attributes: {
+                        'data-qa': 'unconfirmedCourtCasesBanner'
+                    }
+                }) %}
+                    <h3 class="govuk-notification-banner__heading">
+                        Check the automatic updates are correct
+                    </h3>
+                    <p class="govuk-body">
+                        Multiple offences were attached to a single sentence on NOMIS. This service has automatically split these in to individual sentences for each offence. </br>
+                        Check that these automatic updates reflect the warrant information.
+                    </p>
+                    {% call govukDetails({
+                        summaryText: "What are the updates?",
+                        open: true
+                    }) %}
+                        The single sentence has been split into individual sentences for each offence, which are:
+                        <ul class="govuk-list govuk-list--bullet" data-qa="unconfirmedCourtCaseSentenceList">
+                        {% for sentence in unconfirmedCourtCaseSentences %}
+                            <li>{{sentence.offenceCode}} {{ offenceMap[sentence.offenceCode] }}<br>
+                                {{sentence.sentenceServeType | capitalize }}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        This has impacted the sentences on:
+                        <ul class="govuk-list govuk-list--bullet" data-qa="unconfirmedCourtCaseList">
+                            {% for courtCase in unconfirmedCourtCases %}
+                                <li>
+                                    Case{{' ' + courtCase.caseReference if courtCase.caseReference }} at {{ courtMap[courtCase.courtCode] }} on {{ courtCase.sentencingHearingDate | formatDate }}
+                                </li>
+                            {% endfor%}
+                        </ul>
+
+                    {% endcall %}
+                {% endcall %}
+            {% endif %}
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
                         <details class="govuk-details filter filter-box govuk-!-margin-bottom-2" open>

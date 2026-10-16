@@ -2,16 +2,19 @@ import type { Sentence } from 'models'
 import type { CourtCaseAlternativeSentenceLengthForm, SentenceLengthForm } from 'forms'
 import type {
   APISentence,
+  NextCourtAppearance,
   PageCourtCaseAppearance,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   apiSentenceToSentence,
+  nextCourtAppearanceToCourtAppearance,
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthFormToSentenceLength,
   sentenceToCreateSentence,
 } from './mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import { NIL_UUID } from './constants'
 
 describe('mapping API to session util tests', () => {
   it('correctly map next court appearance', () => {
@@ -35,6 +38,26 @@ describe('mapping API to session util tests', () => {
     } as PageCourtCaseAppearance
     const result = pageCourtCaseAppearanceToCourtAppearance(appearance)
     expect(result.nextAppearanceSelect).toEqual(false)
+  })
+
+  it('correctly map blank next court appearance from court data', () => {
+    const nextAppearance = {
+      appearanceDate: '-9999-01-01',
+      appearanceType: {
+        appearanceTypeUuid: NIL_UUID,
+        description: null,
+        displayOrder: 1,
+        hasSubtypes: false,
+      },
+      courtCode: null,
+      appearanceTime: '00:00',
+      futureSkeletonAppearanceUuid: NIL_UUID,
+      courtAppearanceSubType: null,
+      hmctsCourtHearingId: null,
+    } as NextCourtAppearance
+    const result = nextCourtAppearanceToCourtAppearance(nextAppearance)
+    expect(result.nextAppearanceSelect).toEqual(true)
+    expect(result.nextAppearanceDate).toEqual(undefined)
   })
 
   it('correctly map fine amount', () => {

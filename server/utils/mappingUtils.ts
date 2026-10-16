@@ -467,9 +467,10 @@ export function pageCourtCaseAppearanceToCourtAppearance(
   } as CourtAppearance
 }
 
-function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppearance): CourtAppearance {
+export function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppearance): CourtAppearance {
   let nextAppearanceDate
-  if (nextCourtAppearance?.appearanceDate !== undefined) {
+  // Court data with a next court appearance but unknown appearance datetime will return a LocalDate.MIN -9999...-01-01
+  if (nextCourtAppearance?.appearanceDate !== undefined && !nextCourtAppearance?.appearanceDate?.startsWith('-')) {
     nextAppearanceDate = dayjs(
       `${nextCourtAppearance.appearanceDate}${nextCourtAppearance.appearanceTime ? `T${nextCourtAppearance.appearanceTime}` : ''}`,
     )

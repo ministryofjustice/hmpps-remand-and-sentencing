@@ -53,6 +53,7 @@ import {
   SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
+  UnconfirmedCourtCases,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
@@ -154,28 +155,63 @@ export default class CourtCaseRoutes extends BaseRoutes {
       ),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
+    if (config.featureToggles.checkAutomaticSentenceFix && courtCases.anyConsecutiveToFixes) {
+      return res.redirect(
+        JourneyUrls.checkAutomaticSentenceFix(
+          nomsId,
+          sortBy,
+          appearanceDateFrom,
+          appearanceDateTo,
+          includeCasesFromPreviousPeriodsOfCustody,
+          pageNumber,
+        ),
+      )
+    }
     const consecutiveToSentenceUuids = courtCases.content
       .flatMap(courtCase => courtCase.latestCourtAppearance.charges)
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
 
-    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-      consecutiveToSentenceUuids,
-      req.user.username,
-    )
+    const unconfirmedCourtCaseUuids = courtCases.content
+      .filter(courtCase => courtCase.hasUnconfirmedConsecutiveToFixSentences)
+      .map(courtCase => courtCase.courtCaseUuid)
+    let unconfirmedCourtCasePromise = Promise.resolve({ courtCases: [] } as UnconfirmedCourtCases)
+    if (config.featureToggles.checkAutomaticSentenceFix && unconfirmedCourtCaseUuids.length > 0) {
+      unconfirmedCourtCasePromise = this.remandAndSentencingService.getUnconfirmedSentenceFixCourtCasesByUuids(
+        unconfirmedCourtCaseUuids,
+        req.user.username,
+      )
+    }
+
+    const [consecutiveToSentenceDetails, unconfirmedCourtCases] = await Promise.all([
+      this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username),
+      unconfirmedCourtCasePromise,
+    ])
     const charges = courtCases.content.flatMap(courtCase => courtCase.latestCourtAppearance.charges)
     const chargeCodes = charges
       .map(charge => charge.offenceCode)
-      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
+      .concat(
+        consecutiveToSentenceDetails.sentences
+          .map(consecutiveToDetails => consecutiveToDetails.offenceCode)
+          .concat(
+            unconfirmedCourtCases.courtCases.flatMap(courtCase =>
+              courtCase.sentences.map(sentence => sentence.offenceCode),
+            ),
+          ),
+      )
     const chargeDescriptions: [string, string][] = Array.from(
       new Set(
         charges
           .filter(charge => charge.legacyData?.offenceDescription)
           .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription])
-          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences)) as [
-          string,
-          string,
-        ][],
+          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences))
+          .concat(
+            unconfirmedCourtCases.courtCases.flatMap(courtCase =>
+              courtCase.sentences
+                .filter(sentence => sentence.chargeLegacyOffenceDescription)
+                .map(sentence => [sentence.offenceCode, sentence.chargeLegacyOffenceDescription]),
+            ),
+          ) as [string, string][],
       ),
     )
     const courtIds = courtCases.content
@@ -190,6 +226,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       .flat()
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(unconfirmedCourtCases.courtCases.map(courtCase => courtCase.courtCode))
+
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username, chargeDescriptions),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
@@ -278,6 +316,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       bookingCourtCasePreviousPeriodsCount,
       displayMaintenanceAlert: true,
       isF986Eligible,
+      unconfirmedCourtCases: unconfirmedCourtCases.courtCases,
+      unconfirmedCourtCaseSentences: unconfirmedCourtCases.courtCases.flatMap(courtCase => courtCase.sentences),
     })
   }
 

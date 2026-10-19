@@ -7,6 +7,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
+import JourneyUrls from './data/JourneyUrls'
 
 export default class AutomaticSentenceFixRoutes extends BaseRoutes {
   constructor(
@@ -31,6 +32,14 @@ export default class AutomaticSentenceFixRoutes extends BaseRoutes {
 
   public checkUpdatesInterrupt: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const { sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber } =
+      req.query as unknown as {
+        sortBy: string
+        appearanceDateFrom: string
+        appearanceDateTo: string
+        includeCasesFromPreviousPeriodsOfCustody: string
+        pageNumber: string
+      }
     const { username } = res.locals.user
     const unconfirmedCourtCases = await this.remandAndSentencingService.getUnconfirmedSentenceFixCourtCases(
       nomsId,
@@ -56,6 +65,14 @@ export default class AutomaticSentenceFixRoutes extends BaseRoutes {
       sentences,
       offenceMap,
       courtMap,
+      continueLink: JourneyUrls.courtCases(
+        nomsId,
+        sortBy,
+        appearanceDateFrom,
+        appearanceDateTo,
+        includeCasesFromPreviousPeriodsOfCustody,
+        pageNumber,
+      ),
     })
   }
 }

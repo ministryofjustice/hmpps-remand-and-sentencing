@@ -812,4 +812,19 @@ export default class RemandAndSentencingApiClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async getUnconfirmedSentenceFixCourtCasesByUuids(
+    courtCaseUuids: string[],
+    username: string,
+  ): Promise<UnconfirmedCourtCases> {
+    return this.get(
+      {
+        path: '/court-case/multiple/unconfirmed-sentence-fix-court-cases',
+        query: {
+          courtCaseUuids: courtCaseUuids.join(','),
+        },
+      },
+      asSystem(username),
+    )
+  }
 }

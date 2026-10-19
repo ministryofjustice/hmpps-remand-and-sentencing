@@ -2,6 +2,11 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import {
+  PagedCourtCase,
+  SearchCourtCasesPage,
+} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../../config'
 
 let app: Express
 
@@ -14,87 +19,91 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-const setupCourtCase = () => {
-  defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
-    totalPages: 0,
-    totalElements: 1,
-    size: 20,
-    content: [
+const defaultPagedCourtCase: PagedCourtCase = {
+  prisonerId: 'A1234AB',
+  courtCaseUuid: '123',
+  courtCaseStatus: 'ACTIVE',
+  appearanceCount: 2,
+  caseReferences: ['C123'],
+  latestCourtAppearance: {
+    appearanceUuid: '836',
+    caseReference: 'C123',
+    courtCode: 'ACCRYC',
+    warrantDate: '2023-12-15',
+    warrantType: 'NON_SENTENCING',
+    outcome: 'Remanded in custody',
+    nextCourtAppearance: {
+      appearanceDate: '2024-12-15',
+      appearanceTime: '10:30:00.000000000',
+      courtCode: 'BCC',
+      appearanceTypeDescription: 'Court appearance',
+      futureSkeletonAppearanceUuid: '456',
+    },
+    charges: [
       {
-        prisonerId: 'A1234AB',
-        courtCaseUuid: '123',
-        courtCaseStatus: 'ACTIVE',
-        appearanceCount: 2,
-        caseReferences: ['C123'],
-        latestCourtAppearance: {
-          appearanceUuid: '836',
-          caseReference: 'C123',
-          courtCode: 'ACCRYC',
-          warrantDate: '2023-12-15',
-          warrantType: 'NON_SENTENCING',
-          outcome: 'Remanded in custody',
-          nextCourtAppearance: {
-            appearanceDate: '2024-12-15',
-            appearanceTime: '10:30:00.000000000',
-            courtCode: 'BCC',
-            appearanceTypeDescription: 'Court appearance',
-            futureSkeletonAppearanceUuid: '456',
-          },
-          charges: [
-            {
-              chargeUuid: '456',
-              offenceCode: 'PS90037',
-              offenceStartDate: '2023-12-15',
-              outcome: {
-                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-                outcomeName: 'Remanded in custody',
-              },
-              createdAt: '2025-03-11T14:30:00.000Z',
-            },
-            {
-              chargeUuid: '789',
-              offenceCode: 'PS90037',
-              outcome: {
-                outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
-                outcomeName: 'Commit to Crown Court for trial in custody',
-              },
-              createdAt: '2025-03-11T14:31:00.000Z',
-            },
-          ],
-          periodLengths: [],
+        chargeUuid: '456',
+        offenceCode: 'PS90037',
+        offenceStartDate: '2023-12-15',
+        outcome: {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
         },
-        firstDayInCustody: '',
-        mergedFromCases: [],
-        allAppearancesHaveRecall: false,
-        firstDayInCustodyWarrantType: 'NON_SENTENCING',
-        canAppeal: false,
-        canBreach: false,
+        createdAt: '2025-03-11T14:30:00.000Z',
+      },
+      {
+        chargeUuid: '789',
+        offenceCode: 'PS90037',
+        outcome: {
+          outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
+          outcomeName: 'Commit to Crown Court for trial in custody',
+        },
+        createdAt: '2025-03-11T14:31:00.000Z',
       },
     ],
-    number: 0,
+    periodLengths: [],
+  },
+  firstDayInCustody: '',
+  mergedFromCases: [],
+  allAppearancesHaveRecall: false,
+  firstDayInCustodyWarrantType: 'NON_SENTENCING',
+  canAppeal: false,
+  canBreach: false,
+  hasUnconfirmedConsecutiveToFixSentences: false,
+}
+
+const defaultSearchCourtCasesResponse: SearchCourtCasesPage = {
+  totalPages: 0,
+  totalElements: 1,
+  size: 20,
+  content: [defaultPagedCourtCase],
+  number: 0,
+  sort: {
+    empty: true,
+    sorted: true,
+    unsorted: true,
+  },
+  numberOfElements: 0,
+  pageable: {
+    offset: 0,
     sort: {
       empty: true,
       sorted: true,
       unsorted: true,
     },
-    numberOfElements: 0,
-    pageable: {
-      offset: 0,
-      sort: {
-        empty: true,
-        sorted: true,
-        unsorted: true,
-      },
-      pageSize: 0,
-      pageNumber: 0,
-      paged: true,
-      unpaged: true,
-    },
-    last: true,
-    first: true,
-    empty: true,
-    prisonerCourtCaseTotal: 1,
-  })
+    pageSize: 0,
+    pageNumber: 0,
+    paged: true,
+    unpaged: true,
+  },
+  last: true,
+  first: true,
+  empty: true,
+  prisonerCourtCaseTotal: 1,
+  anyConsecutiveToFixes: false,
+}
+
+const setupCourtCase = () => {
+  defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue(defaultSearchCourtCasesResponse)
   defaultServices.courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue({
     services: {
       overview: {
@@ -242,6 +251,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 1,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 1,
@@ -291,6 +301,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 1,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 0,
@@ -339,6 +350,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 0,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 0,
@@ -419,6 +431,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 0,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 0,
@@ -534,6 +547,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 0,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 0,
@@ -649,6 +663,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 0,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 0,
@@ -758,6 +773,7 @@ describe('GET Start', () => {
       first: true,
       empty: true,
       prisonerCourtCaseTotal: 0,
+      anyConsecutiveToFixes: false,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
       suppliedBookingCount: 0,
@@ -841,5 +857,55 @@ describe('GET Start', () => {
     const bannerInColumn = $('.govuk-grid-column-two-thirds .moj-ticket-panel__content')
     expect(bannerInColumn.length).toBe(1)
     expect(bannerInColumn.text()).toContain('Enter information from a new remand warrant')
+  })
+  it('should redirect to check automatic sentence fix interrupt when there were consecutive to fixes', async () => {
+    setupCourtCase()
+    defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
+      ...defaultSearchCourtCasesResponse,
+      anyConsecutiveToFixes: true,
+    })
+    config.featureToggles.checkAutomaticSentenceFix = true
+    await request(app)
+      .get('/person/A1234AB')
+      .expect(302)
+      .expect('Location', '/person/A1234AB/check-automatic-sentence-fix')
+  })
+
+  it('should display banner when visible court case has unconfirmed consecutive to fixes', async () => {
+    setupCourtCase()
+    defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
+      ...defaultSearchCourtCasesResponse,
+      content: [
+        {
+          ...defaultPagedCourtCase,
+          hasUnconfirmedConsecutiveToFixSentences: true,
+        },
+      ],
+    })
+    defaultServices.remandAndSentencingService.getUnconfirmedSentenceFixCourtCasesByUuids.mockResolvedValue({
+      courtCases: [
+        {
+          courtCaseUuid: defaultPagedCourtCase.courtCaseUuid,
+          courtCode: 'ACCRYC',
+          sentencingHearingDate: '2025-06-06',
+          caseReference: 'CASE1',
+          sentences: [
+            {
+              offenceCode: 'PS90037',
+              sentenceServeType: 'CONCURRENT',
+              sentenceUuid: '456',
+            },
+          ],
+        },
+      ],
+    })
+    config.featureToggles.checkAutomaticSentenceFix = true
+    const res = await request(app).get('/person/A1234AB').expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const unconfirmedCourtCaseSentenceList = $('[data-qa=unconfirmedCourtCaseSentenceList]').text()
+    expect(unconfirmedCourtCaseSentenceList).toContain('PS90037 An offence description')
+    expect(unconfirmedCourtCaseSentenceList).toContain('Concurrent')
+    const unconfirmedCourtCaseList = $('[data-qa=unconfirmedCourtCaseList]').text()
+    expect(unconfirmedCourtCaseList).toContain('Case CASE1 at A court description on 06/06/2025')
   })
 })

@@ -105,7 +105,7 @@
     "cheerio": "^1.2.0",
     "cypress": "^15.21.1",
     "cypress-axe": "^1.7.0",
-    "del": "8.0.1",
+    "del": "9.0.1",
     "esbuild": "^0.28.1",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",

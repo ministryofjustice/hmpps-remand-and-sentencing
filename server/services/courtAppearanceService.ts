@@ -882,7 +882,8 @@ export default class CourtAppearanceService {
         'isValidDate.nextAppearanceDate-day': 'This date does not exist.',
         'regex.nextAppearanceTime': 'Time must be in 1:00 or 13:00 format',
         'isFutureOrCurrentDate.nextAppearanceDate-day': 'The next court date must be in the future',
-        'isWithinNextThreeYears.nextAppearanceDate-day': 'The next court appearance must be within 3 years of today’s date',
+        'isWithinNextThreeYears.nextAppearanceDate-day':
+          'The next court appearance must be within 3 years of today’s date',
       },
     )
     if (errors.length === 0) {

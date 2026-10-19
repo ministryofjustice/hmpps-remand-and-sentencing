@@ -338,4 +338,8 @@ declare module 'forms' {
   export interface ViewGeneratedDocumentForm {
     documentSelected?: string
   }
+
+  export interface ConfirmConsecutiveToSentenceFixesForm {
+    sentenceUuids?: string[]
+  }
 }

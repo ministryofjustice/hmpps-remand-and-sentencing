@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import type { ConfirmConsecutiveToSentenceFixesForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -8,6 +9,7 @@ import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import JourneyUrls from './data/JourneyUrls'
+import trimForm from '../utils/trim'
 
 export default class AutomaticSentenceFixRoutes extends BaseRoutes {
   constructor(
@@ -74,5 +76,33 @@ export default class AutomaticSentenceFixRoutes extends BaseRoutes {
         pageNumber,
       ),
     })
+  }
+
+  public confirmConsecutiveSentenceFix: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const { sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber } =
+      req.query as unknown as {
+        sortBy: string
+        appearanceDateFrom: string
+        appearanceDateTo: string
+        includeCasesFromPreviousPeriodsOfCustody: string
+        pageNumber: string
+      }
+    const { username } = res.locals.user
+    const confirmConsecutiveToSentenceFixesForm = trimForm<ConfirmConsecutiveToSentenceFixesForm>(req.body)
+    await this.remandAndSentencingService.confirmConsecutiveToSentenceFixes(
+      confirmConsecutiveToSentenceFixesForm.sentenceUuids,
+      username,
+    )
+    return res.redirect(
+      JourneyUrls.courtCases(
+        nomsId,
+        sortBy,
+        appearanceDateFrom,
+        appearanceDateTo,
+        includeCasesFromPreviousPeriodsOfCustody,
+        pageNumber,
+      ),
+    )
   }
 }

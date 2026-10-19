@@ -113,6 +113,14 @@ context('Add Offence Conviction Date Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The conviction date must be after the offence start date')
 
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('16')
+    offenceConvictionDatePage.continueButton().click()
+    Page.verifyOnPageTitle(OffenceSentenceTypePage, 'Select the sentence type')
+
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('21')
+    offenceConvictionDatePage.continueButton().click()
+
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('20')
     offenceOffenceDatePage.monthDateInput('offenceEndDate').clear().type('8')
@@ -131,6 +139,10 @@ context('Add Offence Conviction Date Page', () => {
         'equal',
         'There is a problem The conviction date must be after the offence start date and offence end date',
       )
+
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('20')
+    offenceConvictionDatePage.continueButton().click()
+    Page.verifyOnPageTitle(OffenceSentenceTypePage, 'Select the sentence type')
   })
 })
 

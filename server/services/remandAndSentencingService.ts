@@ -514,4 +514,8 @@ export default class RemandAndSentencingService {
   ): Promise<UnconfirmedCourtCases> {
     return this.remandAndSentencingApiClient.getUnconfirmedSentenceFixCourtCasesByUuids(courtCaseUuids, username)
   }
+
+  async confirmConsecutiveToSentenceFixes(sentenceUuids: string[], username: string): Promise<void> {
+    return this.remandAndSentencingApiClient.confirmConsecutiveToSentenceFixes({ sentenceUuids }, username)
+  }
 }

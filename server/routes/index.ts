@@ -232,6 +232,11 @@ export default function routes(services: Services): Router {
 
   router.get('/person/:nomsId', courtCaseRoutes.start)
 
+  router.post(
+    '/person/:nomsId/confirm-consecutive-to-sentence-fix',
+    automaticSentenceFixRoutes.confirmConsecutiveSentenceFix,
+  )
+
   router.get('/person/:nomsId/check-automatic-sentence-fix', automaticSentenceFixRoutes.checkUpdatesInterrupt)
 
   router.get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)

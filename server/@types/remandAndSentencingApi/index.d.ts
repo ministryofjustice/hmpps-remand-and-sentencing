@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+  '/sentence/confirm-consecutive-to-sentence-fix': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Confirm consecutive to sentence fixes
+     * @description This endpoint will mark unconfirmed consecutive to sentence fixes to confirmed
+     */
+    put: operations['confirmConsecutiveToSentenceFixes']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sentence-type/{sentenceTypeUuid}': {
     parameters: {
       query?: never
@@ -2413,6 +2433,9 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    ConfirmConsecutiveToSentenceFixes: {
+      sentenceUuids: string[]
+    }
     CreateSentenceType: {
       /** Format: uuid */
       sentenceTypeUuid: string | null
@@ -2626,7 +2649,7 @@ export interface components {
       previousSentenceIds?: string[] | null
       originalSentenceId?: string | null
       isOnFutureAppearance?: boolean | null
-      isBreach?: boolean | null
+      isBreach: boolean | null
       courtAppearanceIds?: string[] | null
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
@@ -2667,7 +2690,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2805,7 +2828,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3938,7 +3961,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -4234,7 +4257,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4257,7 +4280,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4312,7 +4335,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4324,7 +4347,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4569,7 +4592,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:52:02.823107 */
+      /** @example 10:03:14.264005959 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -4647,19 +4670,19 @@ export interface components {
       /** Format: int64 */
       prisonerCourtCaseTotal: number
       anyConsecutiveToFixes: boolean
+      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      last?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
+      first?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
@@ -4688,6 +4711,42 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  confirmConsecutiveToSentenceFixes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConfirmConsecutiveToSentenceFixes']
+      }
+    }
+    responses: {
+      /** @description confirmed consecutive to sentence fixes */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   getSentenceTypeByUuid: {
     parameters: {
       query?: never

@@ -291,6 +291,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       })
     }
     const successMessage = req.flash('success')[0]
+    const confirmConsecutiveToSentenceFixesUrl = JourneyUrls.confirmConsecutiveToSentenceFixes(
+      nomsId,
+      sortBy,
+      appearanceDateFrom,
+      appearanceDateTo,
+      includeCasesFromPreviousPeriodsOfCustody,
+      pageNumber,
+    )
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -318,6 +326,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       isF986Eligible,
       unconfirmedCourtCases: unconfirmedCourtCases.courtCases,
       unconfirmedCourtCaseSentences: unconfirmedCourtCases.courtCases.flatMap(courtCase => courtCase.sentences),
+      confirmConsecutiveToSentenceFixesUrl,
     })
   }
 

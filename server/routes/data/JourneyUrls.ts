@@ -204,6 +204,17 @@ export default class JourneyUrls {
     return `/person/${nomsId}/check-automatic-sentence-fix${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
   }
 
+  static confirmConsecutiveToSentenceFixes = (
+    nomsId: string,
+    sortBy: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+    includeCasesFromPreviousPeriodsOfCustody: string,
+    pageNumber: number | string,
+  ) => {
+    return `/person/${nomsId}/confirm-consecutive-to-sentence-fix${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+  }
+
   static sentenceType = (
     nomsId: string,
     addOrEditCourtCase: string,

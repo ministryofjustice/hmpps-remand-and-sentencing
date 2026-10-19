@@ -2649,7 +2649,7 @@ export interface components {
       previousSentenceIds?: string[] | null
       originalSentenceId?: string | null
       isOnFutureAppearance?: boolean | null
-      isBreach: boolean | null
+      isBreach?: boolean | null
       courtAppearanceIds?: string[] | null
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
@@ -4670,11 +4670,15 @@ export interface components {
       /** Format: int64 */
       prisonerCourtCaseTotal: number
       anyConsecutiveToFixes: boolean
-      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      last?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */

@@ -16,7 +16,6 @@ import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSente
 import DocumentManagementService from '../services/documentManagementService'
 import NonSentencingJourneyUrls from './data/NonSentencingJourneyUrls'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
-import config from '../config'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -170,8 +169,7 @@ export default class RemandRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
-      hasActiveSentence:
-        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(
         req.params as unknown as UrlParameters,
       ),

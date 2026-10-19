@@ -351,8 +351,7 @@ export default class SentencingRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
-      hasActiveSentence:
-        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(
         req.params as unknown as UrlParameters,
       ),

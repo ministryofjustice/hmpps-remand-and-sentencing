@@ -61,8 +61,26 @@ context('Next appearance date page', () => {
       .should('equal', 'There is a problem The next court date must be in the future')
   })
 
-  it('submitting over 1 year away results in an error', () => {
-    const futureDate = dayjs().add(1, 'year').add(1, 'day')
+  it('submitting a date less than 3 years away continues to the next page', () => {
+    const futureDate = dayjs().add(2, 'years')
+    courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
+    courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
+    courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())
+    courtCaseNextAppearanceDatePage.continueButton().click()
+    cy.url().should('include', '/next-appearance-court-select')
+  })
+
+  it('submitting a date exactly 3 years away continues to the next page', () => {
+    const futureDate = dayjs().add(3, 'years')
+    courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
+    courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
+    courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())
+    courtCaseNextAppearanceDatePage.continueButton().click()
+    cy.url().should('include', '/next-appearance-court-select')
+  })
+
+  it('submitting over 3 years away results in an error', () => {
+    const futureDate = dayjs().add(3, 'years').add(1, 'day')
     courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
     courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
     courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())
@@ -70,7 +88,7 @@ context('Next appearance date page', () => {
     courtCaseNextAppearanceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The next court appearance must be within 1 year of today’s date')
+      .should('equal', 'There is a problem The next court appearance must be within 3 years of today’s date')
   })
 
   it('caption should only be shown for add next court appearance journey', () => {

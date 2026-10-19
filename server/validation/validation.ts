@@ -20,7 +20,7 @@ import isUniqueTimePeriod from './isUniqueTimePeriod'
 import atLeastOneNumberInStringOr10Char from './atLeastOneNumberInStringOr10Char'
 import isNotTrue from './isNotTrue'
 import isWithinLast100Years from './isWithinLast100Years'
-import isWithinNextOneYear from './isWithinNextOneYear'
+import isWithinNextThreeYears from './isWithinNextThreeYears'
 import isBeforeWarrantDate from './isBeforeWarrantDate'
 import isBeforeConvictionDate from './isBeforeConvictionDate'
 import isSameOrBeforeWarrantDate from './isSameOrBeforeWarrantDate'
@@ -111,4 +111,4 @@ Validator.register(
   isWithinLast100Years,
   'All dates must be within the last 100 years from today’s date',
 )
-Validator.register('isWithinNextOneYear', isWithinNextOneYear, 'date must be within 1 year of today’s date')
+Validator.register('isWithinNextThreeYears', isWithinNextThreeYears, 'date must be within 3 years of today’s date')

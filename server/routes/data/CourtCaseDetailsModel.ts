@@ -115,12 +115,10 @@ export default class CourtCaseDetailsModel {
       ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
       : undefined
     this.showEditLink = pageCourtCaseContent.status !== 'MERGED'
-    if (config.featureToggles.sentenceStatus) {
-      if (pageCourtCaseContent.status === 'ACTIVE') {
-        this.markCourtCaseStatusAction = 'inactive'
-      } else if (pageCourtCaseContent.status === 'INACTIVE') {
-        this.markCourtCaseStatusAction = 'active'
-      }
+    if (pageCourtCaseContent.status === 'ACTIVE') {
+      this.markCourtCaseStatusAction = 'inactive'
+    } else if (pageCourtCaseContent.status === 'INACTIVE') {
+      this.markCourtCaseStatusAction = 'active'
     }
     this.hasActiveSentence = pageCourtCaseContent.appearances.some(appearance =>
       appearance.charges.some(charge => charge.sentence?.status === 'ACTIVE'),

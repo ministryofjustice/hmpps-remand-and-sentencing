@@ -32,7 +32,6 @@ import {
 import { chargeToOffence, pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
-import config from '../config'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 
 export default class AppealsRoutes extends BaseRoutes {
@@ -797,8 +796,7 @@ export default class AppealsRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
-      hasActiveSentence:
-        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],

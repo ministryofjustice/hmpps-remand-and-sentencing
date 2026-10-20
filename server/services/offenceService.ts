@@ -965,8 +965,7 @@ export default class OffenceService {
         'required.convictionDate-day': 'Conviction date must include day',
         'isValidDate.convictionDate-day': 'This date does not exist.',
         'isPastOrCurrentDate.convictionDate-day': 'The conviction date cannot be a date in the future',
-        'isWithinLast100Years.convictionDate-day':
-          'All dates must be within the last 100 years from today’s date',
+        'isWithinLast100Years.convictionDate-day': 'All dates must be within the last 100 years from today’s date',
         'isSameOrBeforeWarrantDate.convictionDate-day': 'The conviction date must be on or before the warrant date',
         'isAfterOffenceEndDate.convictionDate-day':
           'The conviction date must be after the offence start date and offence end date',

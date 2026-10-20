@@ -3,10 +3,8 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import { PageCourtCaseContent } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../../config'
 
 let app: Express
-const sentenceStatusFeatureToggleWasEnabled = config.featureToggles.sentenceStatus
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -14,7 +12,6 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
-  config.featureToggles.sentenceStatus = sentenceStatusFeatureToggleWasEnabled
 })
 
 const createCourtCase = (
@@ -111,10 +108,6 @@ const createCourtCaseWithSentence = (status: string, sentenceStatus?: string): P
 }
 
 describe('Mark case as active/inactive button', () => {
-  beforeEach(() => {
-    config.featureToggles.sentenceStatus = true
-  })
-
   it('shows "Mark case as inactive" for an ACTIVE case with no active sentences, linking to the confirm page', async () => {
     const courtCase = createCourtCaseWithSentence('ACTIVE', 'INACTIVE')
     defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
@@ -152,18 +145,6 @@ describe('Mark case as active/inactive button', () => {
     expect(button.text().trim()).toEqual('Mark case as active')
     expect(button.attr('href')).toEqual('/person/A1234AB/edit-court-case/1/confirm-mark-court-case-as-active')
     expect($('[data-qa="mark-court-case-as-inactive-button"]')).toHaveLength(0)
-  })
-
-  it('hides the button entirely when the feature toggle is off', async () => {
-    config.featureToggles.sentenceStatus = false
-    const courtCase = createCourtCaseWithSentence('ACTIVE', 'INACTIVE')
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-    setupDefaultMocks()
-
-    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details')
-    const $ = cheerio.load(res.text)
-    expect($('[data-qa="mark-court-case-as-inactive-button"]')).toHaveLength(0)
-    expect($('[data-qa="mark-court-case-as-active-button"]')).toHaveLength(0)
   })
 
   it('hides the button for a MERGED case', async () => {

@@ -195,7 +195,7 @@
                     visuallyHiddenText: "edit offence",
                     classes: "govuk-link--no-visited-state"
                   }].concat(actionItems) %}
-            {% if showSentenceStatusTag and offence.sentence.status === 'INACTIVE' %}
+            {% if offence.sentence.status === 'INACTIVE' %}
               {% set markAsActiveHtml %}
                 <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offence.chargeUuid }}/check-mark-sentence-as-active" data-qa="mark-as-active-link-{{ offence.chargeUuid }}" class="govuk-link govuk-link--no-visited-state">Mark as active</a>
               {% endset %}
@@ -253,7 +253,7 @@
                   visuallyHiddenText: "edit offence",
                   classes: "govuk-link--no-visited-state"
                 }].concat(actionItems) %}
-          {% if showSentenceStatusTag and offence.sentence.status === 'INACTIVE' %}
+          {% if offence.sentence.status === 'INACTIVE' %}
             {% set markAsActiveHtml %}
               <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offence.chargeUuid }}/check-mark-sentence-as-active" data-qa="mark-as-active-link-{{ offence.chargeUuid }}" class="govuk-link govuk-link--no-visited-state">Mark as active</a>
             {% endset %}

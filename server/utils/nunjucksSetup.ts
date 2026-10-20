@@ -68,7 +68,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
   app.locals.breachWarrantTypes = BREACH_WARRANT_TYPES
-  app.locals.showSentenceStatusTag = config.featureToggles.sentenceStatus
   app.locals.showGeneratedDocuments = config.featureToggles.generatedDocuments
 
   if (config.environmentName === 'LOCAL') {
@@ -305,7 +304,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         isSentenced: offence.sentence,
         periodLengths: offence.sentence?.periodLengths,
         sentenceServeType: offence.sentence?.sentenceServeType,
-        sentenceStatus: config.featureToggles.sentenceStatus ? offence.sentence?.status : undefined,
+        sentenceStatus: offence.sentence?.status,
         consecutiveTo: consecutiveToSentenceMap[offence.sentence?.consecutiveToSentenceUuid],
         sentenceType: sentenceTypeValueOrLegacy(
           sentenceTypeMap[offence.sentence?.sentenceTypeId],

@@ -36,7 +36,6 @@ import {
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 import RefDataService from '../services/refDataService'
-import config from '../config'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 
 export default class BreachRoutes extends BaseRoutes {
@@ -742,8 +741,7 @@ export default class BreachRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
-      hasActiveSentence:
-        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],

@@ -50,6 +50,7 @@ import {
   CreateF986,
   F986EligibleCourtAppearance,
   UnconfirmedCourtCases,
+  ConfirmConsecutiveToSentenceFixes,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import logger from '../../logger'
@@ -823,6 +824,19 @@ export default class RemandAndSentencingApiClient extends RestClient {
         query: {
           courtCaseUuids: courtCaseUuids.join(','),
         },
+      },
+      asSystem(username),
+    )
+  }
+
+  async confirmConsecutiveToSentenceFixes(
+    confirmConsecutiveToSentenceFixes: ConfirmConsecutiveToSentenceFixes,
+    username: string,
+  ): Promise<void> {
+    return this.put(
+      {
+        path: '/sentence/confirm-consecutive-to-sentence-fix',
+        data: confirmConsecutiveToSentenceFixes,
       },
       asSystem(username),
     )

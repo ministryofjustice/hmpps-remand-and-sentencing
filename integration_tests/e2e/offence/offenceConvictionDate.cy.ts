@@ -77,6 +77,7 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type('1')
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2024')
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -96,6 +97,14 @@ context('Add Offence Conviction Date Page', () => {
   })
 
   it('Conviction date must be after offence start and end dates', () => {
+    const sentenceTypeSearches = [
+      { convictionDate: '2023-08-16', offenceDate: '2023-08-16' },
+      { convictionDate: '2023-08-21', offenceDate: '2023-08-16' },
+      { convictionDate: '2023-08-21', offenceDate: '2023-08-20' },
+      { convictionDate: '2023-08-20', offenceDate: '2023-08-20' },
+    ]
+    sentenceTypeSearches.forEach(dates => cy.task('stubSearchSentenceTypes', { ...dates, age: '58' }))
+
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('16')

@@ -939,7 +939,7 @@ export default class OffenceService {
           (offenceEndDate.month() + 1).toString(),
           offenceEndDate.date().toString(),
         )
-        offenceRules = `|isAfterOffenceEndDate:${offenceEndDateString},${convictionDateString}`
+        offenceRules = `|isOnOrAfterOffenceEndDate:${offenceEndDateString},${convictionDateString}`
       } else if (offence.offenceStartDate) {
         const offenceStartDate = dayjs(offence.offenceStartDate)
         const offenceStartDateString = toDateString(
@@ -947,7 +947,7 @@ export default class OffenceService {
           (offenceStartDate.month() + 1).toString(),
           offenceStartDate.date().toString(),
         )
-        offenceRules = `|isAfterOffenceStartDate:${offenceStartDateString},${convictionDateString}`
+        offenceRules = `|isOnOrAfterOffenceStartDate:${offenceStartDateString},${convictionDateString}`
       }
       isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastOrCurrentDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${convictionDateString}${offenceRules}`
     }
@@ -967,9 +967,10 @@ export default class OffenceService {
         'isPastOrCurrentDate.convictionDate-day': 'The conviction date cannot be a date in the future',
         'isWithinLast100Years.convictionDate-day': 'All dates must be within the last 100 years from today’s date',
         'isSameOrBeforeWarrantDate.convictionDate-day': 'The conviction date must be on or before the warrant date',
-        'isAfterOffenceEndDate.convictionDate-day':
-          'The conviction date must be after the offence start date and offence end date',
-        'isAfterOffenceStartDate.convictionDate-day': 'The conviction date must be after the offence start date',
+        'isOnOrAfterOffenceEndDate.convictionDate-day':
+          'The conviction date must be on or after the offence start date and offence end date',
+        'isOnOrAfterOffenceStartDate.convictionDate-day':
+          'The conviction date must be on or after the offence start date',
       },
     )
     if (errors.length === 0) {

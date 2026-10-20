@@ -82,7 +82,7 @@
                                 </li>
                             {% endfor%}
                         </ul>
-                        <form method="port" action="{{ confirmConsecutiveToSentenceFixesUrl }}" autocomplete="off">
+                        <form method="post" action="{{ confirmConsecutiveToSentenceFixesUrl }}" autocomplete="off">
                             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                             {% for sentence in unconfirmedCourtCaseSentences%}
                                 <input type="hidden" name="sentenceUuids" value="{{ sentence.sentenceUuid }}">

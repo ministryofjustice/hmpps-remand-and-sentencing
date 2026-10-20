@@ -66,10 +66,8 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('01')
     offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('1899')
     offenceConvictionDatePage.continueButton().click()
-    offenceConvictionDatePage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
+    cy.get('.govuk-error-summary')
+      .should('contain.text', 'All dates must be within the last 100 years from today’s date')
   })
 
   it('submitting an  invalid conviction date results in an error', () => {

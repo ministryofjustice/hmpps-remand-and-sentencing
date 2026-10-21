@@ -27,6 +27,13 @@ describe('GET Sentence consecutive to', () => {
             sentenceUuid: '3',
           },
         },
+        {
+          chargeUuid: '3',
+          offenceCode: 'BB6557',
+          sentence: {
+            sentenceUuid: '4',
+          },
+        },
       ],
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
@@ -62,6 +69,13 @@ describe('GET Sentence consecutive to', () => {
               sentenceUuid: '1',
               countNumber: '1',
             },
+            {
+              offenceCode: 'BB6557',
+              offenceStartDate: '2023-01-12',
+              chargeUuid: '3',
+              sentenceUuid: '4',
+              countNumber: '2',
+            },
           ],
         },
         {
@@ -89,6 +103,19 @@ describe('GET Sentence consecutive to', () => {
       ACCRYC: 'A court name',
       GHEUTY: 'Another court name',
     })
+    defaultServices.offenceService.getAllOffences.mockReturnValue([
+      {
+        chargeUuid: '1',
+        offenceCode: 'CC12345',
+        sentence: {
+          sentenceUuid: '2',
+        },
+      },
+      {
+        chargeUuid: '3',
+        offenceCode: 'BB6557',
+      },
+    ])
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/sentence-consecutive-to')
       .expect('Content-Type', /html/)
@@ -109,11 +136,15 @@ describe('GET Sentence consecutive to', () => {
 
         expect(sameCaseSection.find('input[type="radio"][value="3"]').length).toBe(1)
 
+        expect(sameCaseSection.find('input[type="radio"][value="4"]').length).toBe(0)
+
         const otherCasesSection = radiosContainer
           .find('> h2[data-qa="sentencesOnOtherCasesHeader"]')
           .nextUntil('h2.govuk-heading-m')
 
         expect(otherCasesSection.find('input[type="radio"][value="3"]').length).toBe(0)
+
+        expect(otherCasesSection.find('input[type="radio"][value="4"]').length).toBe(0)
       })
   })
 })

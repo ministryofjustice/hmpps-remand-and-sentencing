@@ -325,10 +325,10 @@ export default class CourtAppearanceService {
     )
     if (latestOffenceDateResponse.offenceDate) {
       const latestOffenceDate = dayjs(latestOffenceDateResponse.offenceDate)
-      if (!overallConvictionDate.isAfter(latestOffenceDate)) {
+      if (overallConvictionDate.isBefore(latestOffenceDate, 'day')) {
         return [
           {
-            text: `The conviction date must be after any existing offence dates in the court case`,
+            text: `The conviction date must be on or after any existing offence dates in the court case`,
             href: '#overallConvictionDate',
           },
         ]

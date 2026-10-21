@@ -127,7 +127,7 @@ context('Court Case Overall Conviction Date Page', () => {
       .should('equal', 'There is a problem The conviction date must be on or before the warrant date')
   })
 
-  it('Conviction date must be after any offence date in remand-to-sentencing journey', () => {
+  it('Conviction date must be on or after any offence date in remand-to-sentencing journey', () => {
     cy.task('stubGetLatestCourtAppearance', {})
     cy.task('stubGetLatestOffenceDate', {})
     cy.task('stubGetAllAppearanceOutcomes', {})
@@ -151,25 +151,14 @@ context('Court Case Overall Conviction Date Page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem The conviction date must be after any existing offence dates in the court case',
+        'There is a problem The conviction date must be on or after any existing offence dates in the court case',
       )
 
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('01')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('01')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2000')
     courtCaseOverallConvictionDatePage.continueButton().click()
-    courtCaseOverallConvictionDatePage
-      .errorSummary()
-      .trimTextContent()
-      .should(
-        'equal',
-        'There is a problem The conviction date must be after any existing offence dates in the court case',
-      )
-
-    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('02')
-    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('01')
-    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2000')
-    courtCaseOverallConvictionDatePage.continueButton().click()
     Page.verifyOnPageTitle(CourtCaseOverallCaseOutcomePage, 'Select the overall case outcome')
+    courtCaseOverallConvictionDatePage.errorSummary().should('not.exist')
   })
 })

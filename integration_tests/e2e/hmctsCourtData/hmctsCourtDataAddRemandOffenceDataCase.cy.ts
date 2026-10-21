@@ -168,6 +168,7 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
     courtCaseTaskListPage.offencesLink().click()
 
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
+    offenceCheckOffenceAnswersPage.addMultipleCountsLink('0').should('not.exist')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     offenceCheckOffenceAnswersPage

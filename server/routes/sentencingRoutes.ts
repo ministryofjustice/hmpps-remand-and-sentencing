@@ -604,8 +604,18 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
+    const allSessionOffences = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+    const allSessionOffencesWithoutSentenceUuids = allSessionOffences
+      .filter(allSessionOffence => !allSessionOffence.sentence)
+      .map(allSessionOffence => allSessionOffence.chargeUuid)
+
     const sentencesOnSameCase = courtAppearance.offences
-      .filter(sessionOffence => sessionOffence.chargeUuid !== chargeUuid && sessionOffence.sentence)
+      .filter(
+        sessionOffence =>
+          sessionOffence.chargeUuid !== chargeUuid &&
+          !allSessionOffencesWithoutSentenceUuids.includes(sessionOffence.chargeUuid) &&
+          sessionOffence.sentence,
+      )
       .map(sessionOffence => {
         return {
           countNumber: sessionOffence.sentence.countNumber,

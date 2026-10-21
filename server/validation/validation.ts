@@ -25,8 +25,8 @@ import isBeforeWarrantDate from './isBeforeWarrantDate'
 import isBeforeConvictionDate from './isBeforeConvictionDate'
 import isSameOrBeforeWarrantDate from './isSameOrBeforeWarrantDate'
 import isSameOrBeforeConvictionDate from './isSameOrBeforeConvictionDate'
-import isAfterOffenceEndDate from './isAfterOffenceEndDate'
-import isAfterOffenceStartDate from './isAfterOffenceStartDate'
+import isOnOrAfterOffenceEndDate from './isOnOrAfterOffenceEndDate'
+import isOnOrAfterOffenceStartDate from './isOnOrAfterOffenceStartDate'
 
 export default function validate<T>(
   form: T,
@@ -69,8 +69,8 @@ Validator.register(
   isSameOrBeforeConvictionDate,
   'date must be same or before conviction date',
 )
-Validator.register('isAfterOffenceEndDate', isAfterOffenceEndDate, 'date must be after offence end date')
-Validator.register('isAfterOffenceStartDate', isAfterOffenceStartDate, 'date must be after offence end date')
+Validator.register('isOnOrAfterOffenceEndDate', isOnOrAfterOffenceEndDate, 'date must be after offence end date')
+Validator.register('isOnOrAfterOffenceStartDate', isOnOrAfterOffenceStartDate, 'date must be after offence end date')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',
   requireAlternativeSentenceLength,

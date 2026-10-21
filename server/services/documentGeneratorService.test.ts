@@ -152,6 +152,50 @@ describe('DocumentGeneratorService', () => {
         )
       })
 
+      it('should generate the document without court address details when the court agency lookup returns 404', async () => {
+        const fileDownload = { body: Buffer.from('pdf-bytes'), header: { 'content-type': 'application/pdf' } }
+        prisonerService.getAgencyDetails
+          .mockResolvedValueOnce(prisonDetailsWithPhone)
+          .mockRejectedValueOnce(Object.assign(new Error('Not Found'), { responseStatus: 404 }))
+        remandAndSentencingService.generateF986Document.mockResolvedValue(fileDownload as never)
+
+        const result = await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
+
+        expect(result).toBe(fileDownload)
+        expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
+          expect.objectContaining({
+            courtPremise: null,
+            courtStreet: null,
+            courtTown: null,
+            courtCounty: null,
+            courtPostalCode: null,
+            prisonTelephoneNumber: '01234567890',
+          }),
+          'res-user',
+        )
+      })
+
+      it('should generate the document without a prison telephone number when the prison agency lookup returns 404', async () => {
+        const fileDownload = { body: Buffer.from('pdf-bytes'), header: { 'content-type': 'application/pdf' } }
+        prisonerService.getAgencyDetails
+          .mockRejectedValueOnce(Object.assign(new Error('Not Found'), { responseStatus: 404 }))
+          .mockResolvedValueOnce(courtDetailsWithAddress)
+        remandAndSentencingService.generateF986Document.mockResolvedValue(fileDownload as never)
+
+        const result = await documentGeneratorService.streamDocumentGeneratedDocument(req, res, 'f986')
+
+        expect(result).toBe(fileDownload)
+        expect(remandAndSentencingService.generateF986Document).toHaveBeenCalledWith(
+          '1234AB',
+          expect.objectContaining({
+            courtPremise: 'Court Premise',
+            prisonTelephoneNumber: null,
+          }),
+          'res-user',
+        )
+      })
+
       it('should fall back to a null prison telephone number when the prison has no addresses', async () => {
         prisonerService.getAgencyDetails
           .mockResolvedValueOnce({ addresses: [] } as never)

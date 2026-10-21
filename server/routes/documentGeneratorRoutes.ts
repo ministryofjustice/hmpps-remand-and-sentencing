@@ -79,13 +79,13 @@ export default class DocumentGeneratorRoutes extends BaseRoutes {
       const offenceDescriptions = appearance.offenceCodes
         .map(code => `${code} ${offenceMap[code] ?? ''}`.trim())
         .join('<br/>')
-      const committedOnText = `committed on ${dayjs(appearance.warrantDate).format(config.dateFormat)}`
       return {
         appearanceUuid: appearance.appearanceUuid,
         courtName,
         appearanceDate: dayjs(appearance.warrantDate).format(config.dateFormat),
+        committedOnDate: { offenceStartDate: appearance.warrantDate },
         caseReference: appearance.caseReference,
-        offenceDescriptions: `${title}<br/><span class="govuk-hint">${offenceDescriptions}<br/>${committedOnText}</span>`,
+        offenceDescriptions: `${title}<br/><span class="govuk-hint">${offenceDescriptions}<br/>`,
       }
     })
 

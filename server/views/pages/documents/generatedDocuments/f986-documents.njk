@@ -22,7 +22,7 @@
                 {% for appearance in courtAppearancesWithFines %}
                     {% set _ = items.push({
                         value: '/api/persons/' + nomsId + '/court-appearances/' + appearance.appearanceUuid + '/documents/f986',
-                        html: appearance.offenceDescriptions,
+                        html: appearance.offenceDescriptions + 'committed on ' + (appearance.committedOnDate | offenceDatesText(false)) + '</span>',
                         checked: false
                       }) %}
                 {% endfor %}
@@ -75,4 +75,3 @@
             {% endif %}
     </form>
 {% endblock %}
-

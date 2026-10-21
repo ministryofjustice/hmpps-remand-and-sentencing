@@ -1594,6 +1594,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonerId}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve person status indicators
+     * @description isOnRemand is true when an active court case has a latest appearance outcome of type REMAND
+     */
+    get: operations['getPersonStatus']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/person/{prisonerId}/sentences-to-chain-to': {
     parameters: {
       query?: never
@@ -1698,6 +1718,26 @@ export interface paths {
      * @description This endpoint will get court appearance in the schedules format for prisoner id
      */
     get: operations['getCourtAppearanceSchedulesByPrisonerId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/person/{prisonerId}/charges': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve charges for person
+     * @description This endpoint will retrieve charges for person
+     */
+    get: operations['charges']
     put?: never
     post?: never
     delete?: never
@@ -1874,8 +1914,8 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Retrieve all active immigration detention records for a person
-     * @description This endpoint will retrieve  all active immigration detention records for a person
+     * Retrieve active immigration detention records for a person. optionally filtered by dates
+     * @description This endpoint will retrieve active immigration detention records for a person, optional startDate and endDate filter on record date
      */
     get: operations['getImmigrationDetentionByPrisonerId']
     put?: never
@@ -2649,7 +2689,7 @@ export interface components {
       previousSentenceIds?: string[] | null
       originalSentenceId?: string | null
       isOnFutureAppearance?: boolean | null
-      isBreach?: boolean | null
+      isBreach: boolean | null
       courtAppearanceIds?: string[] | null
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
@@ -2690,7 +2730,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2828,7 +2868,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3852,6 +3892,10 @@ export interface components {
       chargeLegacyOffenceDescription?: string | null
       sentenceServeType: string
     }
+    /** @description Status indicators for a person */
+    PersonStatus: {
+      isOnRemand: boolean
+    }
     AppearanceToChainTo: {
       courtCode: string
       courtCaseReference?: string | null
@@ -3961,7 +4005,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -4060,6 +4104,65 @@ export interface components {
     }
     PrisonerDocuments: {
       courtCaseDocuments: components['schemas']['CourtCaseDocuments'][]
+    }
+    PersonCharge: {
+      /** Format: uuid */
+      chargeUuid: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string | null
+      /** Format: date */
+      offenceEndDate?: string | null
+      outcome?: components['schemas']['ChargeOutcome'] | null
+      aggravatingFactors: components['schemas']['AggravatingFactor'][]
+      legacyData?: components['schemas']['ChargeLegacyData'] | null
+      findingOfDomesticAbuse?: boolean | null
+      sentence?: components['schemas']['PersonSentence'] | null
+    }
+    PersonCharges: {
+      charges: components['schemas']['PersonCharge'][]
+    }
+    PersonPeriodLength: {
+      /** Format: int32 */
+      years?: number | null
+      /** Format: int32 */
+      months?: number | null
+      /** Format: int32 */
+      weeks?: number | null
+      /** Format: int32 */
+      days?: number | null
+      periodOrder: string
+      /** @enum {string} */
+      periodLengthType:
+        | 'SENTENCE_LENGTH'
+        | 'CUSTODIAL_TERM'
+        | 'LICENCE_PERIOD'
+        | 'TARIFF_LENGTH'
+        | 'TERM_LENGTH'
+        | 'OVERALL_SENTENCE_LENGTH'
+        | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
+        | 'UNSUPPORTED'
+      legacyData?: components['schemas']['PeriodLengthLegacyData'] | null
+      /** Format: uuid */
+      periodLengthUuid: string
+    }
+    PersonSentence: {
+      /** Format: uuid */
+      sentenceUuid: string
+      chargeNumber?: string | null
+      sentenceServeType: string
+      sentenceType?: components['schemas']['SentenceType'] | null
+      /** Format: date */
+      convictionDate?: string | null
+      fineAmount?: components['schemas']['FineAmount'] | null
+      legacyData?: components['schemas']['SentenceLegacyData'] | null
+      /** Format: uuid */
+      consecutiveToSentenceUuid?: string | null
+      hasRecall: boolean
+      /** @enum {string} */
+      status: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MANY_CHARGES_DATA_FIX' | 'INACTIVE'
+      periodLengths: components['schemas']['PersonPeriodLength'][]
     }
     PersonCourtCaseCount: {
       /** Format: int64 */
@@ -4257,7 +4360,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4280,7 +4383,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4335,7 +4438,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4347,7 +4450,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4382,7 +4485,14 @@ export interface components {
       warrantDate: string
       courtCode: string
       caseReference?: string | null
-      offenceCodes: string[]
+      offences: components['schemas']['F986EligibleCourtAppearanceOffence'][]
+    }
+    F986EligibleCourtAppearanceOffence: {
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string | null
+      /** Format: date */
+      offenceEndDate?: string | null
     }
     RecallableCourtCase: {
       courtCaseUuid: string
@@ -4592,7 +4702,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:03:14.264005959 */
+      /** @example 17:02:04.591445061 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -4670,15 +4780,11 @@ export interface components {
       /** Format: int64 */
       prisonerCourtCaseTotal: number
       anyConsecutiveToFixes: boolean
+      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      last?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
@@ -8782,6 +8888,46 @@ export interface operations {
       }
     }
   }
+  getPersonStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns person status indicators */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonStatus']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonStatus']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonStatus']
+        }
+      }
+    }
+  }
   sentencesToChainTo: {
     parameters: {
       query: {
@@ -8990,6 +9136,50 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['CourtAppearanceSchedulesResponse']
+        }
+      }
+    }
+  }
+  charges: {
+    parameters: {
+      query?: {
+        statuses?: ('ACTIVE' | 'INACTIVE')[]
+        fromDate?: string
+        toDate?: string
+      }
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns charges for person */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonCharges']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonCharges']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonCharges']
         }
       }
     }
@@ -9360,7 +9550,8 @@ export interface operations {
   getImmigrationDetentionByPrisonerId: {
     parameters: {
       query?: {
-        bookingId?: string
+        startDate?: string
+        endDate?: string
       }
       header?: never
       path: {

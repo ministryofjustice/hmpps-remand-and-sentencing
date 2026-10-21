@@ -20,9 +20,18 @@
 
                 {% set items = [] %}
                 {% for appearance in courtAppearancesWithFines %}
+                    {% set offenceDescriptions %}
+                      {% for offence in appearance.offences %}
+                        {{ offence.offenceCode }} {{ offenceMap[offence.offenceCode] or '' }}
+                        {% if offence.offenceStartDate %}
+                          <br/>committed on {{ offence | offenceDatesText(false) }}
+                        {% endif %}
+                        {% if not loop.last %}<br/>{% endif %}
+                      {% endfor %}
+                    {% endset %}
                     {% set _ = items.push({
                         value: '/api/persons/' + nomsId + '/court-appearances/' + appearance.appearanceUuid + '/documents/f986',
-                        html: appearance.offenceDescriptions + 'committed on ' + (appearance.committedOnDate | offenceDatesText(false)) + '</span>',
+                        html: appearance.title + '<br/><span class="govuk-hint">' + offenceDescriptions | trim + '</span>',
                         checked: false
                       }) %}
                 {% endfor %}

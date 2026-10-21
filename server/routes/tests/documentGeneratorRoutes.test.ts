@@ -22,12 +22,18 @@ const setupDefaultMocks = (eligible = true) => {
             warrantDate: '2025-07-25',
             courtCode: 'ACCRYC',
             caseReference: 'A123',
-            offenceCodes: ['OFF123'],
+            offences: [
+              { offenceCode: 'OFF123', offenceStartDate: '2024-04-03', offenceEndDate: '2024-04-05' },
+              { offenceCode: 'OFF456' },
+            ],
           },
         ] as never)
       : [],
   )
-  defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })
+  defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+    OFF123: 'Offence code description',
+    OFF456: 'Another offence description',
+  })
   defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({ ACCRYC: 'Court description' })
 }
 
@@ -45,7 +51,9 @@ describe('GET view-generated-documents/type/f986', () => {
     const radioLabel = $(`label[for="${radio.attr('id')}"]`)
     expect(radioLabel.text()).toContain('A123 at Court description')
     expect(radioLabel.find('.govuk-hint').text()).toContain('Offence code description')
-    expect(radioLabel.find('.govuk-hint').text()).toContain('committed on 25/07/2025')
+    expect(radioLabel.find('.govuk-hint').text()).toContain('committed on 03/04/2024 to 05/04/2024')
+    expect(radioLabel.find('.govuk-hint').text()).toContain('Another offence description')
+    expect(radioLabel.find('.govuk-hint').text()).not.toContain('25/07/2025')
   })
 
   it('should show a message when there are no eligible court appearances', async () => {

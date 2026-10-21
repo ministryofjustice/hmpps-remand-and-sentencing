@@ -76,13 +76,16 @@ export default class DocumentGeneratorRoutes extends BaseRoutes {
     const courtAppearancesWithFines = appearances.map(appearance => {
       const courtName = courtMap[appearance.courtCode] ?? appearance.courtCode
       const title = appearance.caseReference ? `${appearance.caseReference} at ${courtName}` : courtName
+      const offenceDescriptions = appearance.offenceCodes
+        .map(code => `${code} ${offenceMap[code] ?? ''}`.trim())
+        .join('<br/>')
+      const committedOnText = `committed on ${dayjs(appearance.warrantDate).format(config.dateFormat)}`
       return {
         appearanceUuid: appearance.appearanceUuid,
         courtName,
         appearanceDate: dayjs(appearance.warrantDate).format(config.dateFormat),
         caseReference: appearance.caseReference,
-        offenceDescriptions:
-          title + appearance.offenceCodes.map(code => `<br/>${`${code} ${offenceMap[code] ?? ''}`.trim()}`).join(''),
+        offenceDescriptions: `${title}<br/><span class="govuk-hint">${offenceDescriptions}<br/>${committedOnText}</span>`,
       }
     })
 

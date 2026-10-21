@@ -42,8 +42,10 @@ describe('GET view-generated-documents/type/f986', () => {
     const radio = $('input[name="documentSelected"]')
     expect(radio.length).toEqual(1)
     expect(radio.attr('value')).toEqual('/api/persons/A1234AB/court-appearances/1/documents/f986')
-    expect(res.text).toContain('A123 at Court description')
-    expect(res.text).toContain('Offence code description')
+    const radioLabel = $(`label[for="${radio.attr('id')}"]`)
+    expect(radioLabel.text()).toContain('A123 at Court description')
+    expect(radioLabel.find('.govuk-hint').text()).toContain('Offence code description')
+    expect(radioLabel.find('.govuk-hint').text()).toContain('committed on 25/07/2025')
   })
 
   it('should show a message when there are no eligible court appearances', async () => {

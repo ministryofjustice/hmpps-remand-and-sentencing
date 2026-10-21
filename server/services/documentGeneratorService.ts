@@ -1,4 +1,5 @@
 import type { FileDownload } from 'models'
+import logger from '../../logger'
 import RemandAndSentencingService from './remandAndSentencingService'
 import PrisonerService from './prisonerService'
 
@@ -35,8 +36,8 @@ export default class DocumentGeneratorService {
     )
 
     const [prisonDetails, courtDetails] = await Promise.all([
-      this.prisonerService.getAgencyDetails(res.locals.user.activeCaseLoadId, req.user.username),
-      this.prisonerService.getAgencyDetails(courtAppearance.courtCode, req.user.username),
+      this.getAgencyDetailsOrNullOnNotFound(res.locals.user.activeCaseLoadId, req.user.username),
+      this.getAgencyDetailsOrNullOnNotFound(courtAppearance.courtCode, req.user.username),
     ])
 
     const courtAddressDetails = courtDetails?.addresses?.filter(p => p.addressType === 'Business Address')[0]
@@ -57,5 +58,18 @@ export default class DocumentGeneratorService {
       },
       res.locals.user.username,
     )
+  }
+
+  private async getAgencyDetailsOrNullOnNotFound(agencyId: string, username: string) {
+    try {
+      return await this.prisonerService.getAgencyDetails(agencyId, username)
+    } catch (error) {
+      if (typeof error !== 'object' || error === null || !('responseStatus' in error) || error.responseStatus !== 404) {
+        throw error
+      }
+
+      logger.warn(`Agency details not found for agency ID ${agencyId}; generating F986 without those details`)
+      return null
+    }
   }
 }

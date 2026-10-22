@@ -651,8 +651,8 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
-
-    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference, sessionOffence)
 
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (warrantType === 'SENTENCING') {
@@ -3156,28 +3156,6 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     return `This offence will replace ${offenceDesc.code} - ${offenceDesc.description}`
-  }
-
-  private initiateOffenceReplacement(
-    req,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-    res,
-    addOrEditCourtCase: string,
-    addOrEditCourtAppearance: string,
-    appearanceReference: string,
-  ) {
-    const oldOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-    const newOffenceUuid = crypto.randomUUID()
-    const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, newOffenceUuid)
-    newOffence.onFinishGoToEdit = oldOffence.onFinishGoToEdit
-    newOffence.replacesOffenceUuid = oldOffence.chargeUuid
-    this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, newOffence)
-
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${newOffenceUuid}/offence-date`,
-    )
   }
 
   private async determineSentenceServeType(

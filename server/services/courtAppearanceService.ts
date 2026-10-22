@@ -1685,36 +1685,6 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setOffenceAppealOutcome(
-    session: Partial<SessionData>,
-    urlParameters: UrlParameters,
-    appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
-    const errors = validate(
-      appealOffenceOutcomeForm,
-      {
-        offenceOutcome: 'required',
-      },
-      {
-        'required.offenceOutcome': 'You must select an appeal outcome for this offence',
-      },
-    )
-    if (errors.length === 0) {
-      const { nomsId, chargeUuid, appearanceReference } = urlParameters
-      const offence = this.getOffence(session, nomsId, chargeUuid, appearanceReference)
-      offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
-      offence.updatedOutcome = true
-      delete offence.sentence
-      delete offence.aggravatingFactors
-      this.addOffence(session, nomsId, chargeUuid, offence, appearanceReference)
-    }
-    return errors
-  }
-
   finishRecordingAppeals(
     session: Partial<SessionData>,
     urlParameters: UrlParameters,

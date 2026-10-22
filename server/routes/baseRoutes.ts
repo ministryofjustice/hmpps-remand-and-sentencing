@@ -87,11 +87,14 @@ export default abstract class BaseRoutes {
     nomsId: string,
     appearanceReference: string,
     courtCaseReference: string,
+    submittedOffence?: Offence,
   ) {
     const allOffencesData = this.offenceService.getAllOffences(session, nomsId, courtCaseReference)
-    allOffencesData.forEach(offence => {
-      this.courtAppearanceService.addOffence(session, nomsId, offence.chargeUuid, offence, appearanceReference)
-    })
+    allOffencesData
+      .filter(offence => !submittedOffence || offence.replacesOffenceUuid !== submittedOffence.chargeUuid)
+      .forEach(offence => {
+        this.courtAppearanceService.addOffence(session, nomsId, offence.chargeUuid, offence, appearanceReference)
+      })
     this.offenceService.clearAllOffences(session, nomsId, appearanceReference)
   }
 
@@ -118,7 +121,7 @@ export default abstract class BaseRoutes {
         ),
       )
     }
-    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference, offence)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         JourneyUrls.checkOffenceAnswers(
@@ -695,5 +698,29 @@ export default abstract class BaseRoutes {
   private static readonly documentErrorMessages: Record<string, string> = {
     'Payload Too Large': 'The selected document must be smaller than 50MB.',
     'virus scan': 'The selected file contains a virus',
+  }
+
+  protected initiateOffenceReplacement(
+    req,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    res,
+    addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
+    appearanceReference: string,
+    replacedSentenceUuid?: string,
+  ) {
+    const oldOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const newOffenceUuid = crypto.randomUUID()
+    const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, newOffenceUuid)
+    newOffence.onFinishGoToEdit = oldOffence.onFinishGoToEdit
+    newOffence.replacesOffenceUuid = oldOffence.chargeUuid
+    newOffence.replacesSentenceUuid = replacedSentenceUuid
+    this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, newOffence)
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${newOffenceUuid}/offence-date`,
+    )
   }
 }

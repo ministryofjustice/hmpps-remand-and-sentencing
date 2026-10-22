@@ -2210,7 +2210,8 @@ export default class OffenceRoutes extends BaseRoutes {
       consecutiveToSentenceMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
-      showAddMultipleCountsLink: courtAppearance.warrantType === 'NON_SENTENCING',
+      showAddMultipleCountsLink:
+        courtAppearance.warrantType === 'NON_SENTENCING' && !courtAppearance.isCommonPlatformJourney,
       overallSentenceLength,
     })
   }

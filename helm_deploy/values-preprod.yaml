@@ -30,6 +30,7 @@ generic-service:
     FEATURES_JUDICIAL_FINDINGS: 'true'
     FEATURES_GENERATED_DOCUMENTS: 'true'
     FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'false'
+    FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'false'
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30

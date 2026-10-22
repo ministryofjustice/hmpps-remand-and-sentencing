@@ -246,7 +246,12 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
       appearanceReference,
     )
     const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(appearanceOutcomeUuid, warrantType, req.user.username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(
+        appearanceOutcomeUuid,
+        warrantType,
+        req.user.username,
+        Boolean(offence.replacesOffenceUuid),
+      ),
       this.getOffenceHint(offence, req.user.username),
     ])
     const backLink = ReplicateOffenceJourneyUrls.isOffenceDateSame(

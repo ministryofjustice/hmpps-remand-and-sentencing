@@ -512,6 +512,7 @@ export default class OffenceRoutes extends BaseRoutes {
         courtAppearance.appearanceOutcomeUuid,
         courtAppearance.warrantType,
         req.user.username,
+        Boolean(offence.replacesOffenceUuid),
       ),
       isMultipleOffences ? undefined : this.getOffenceHint(offence, req.user.username),
     ])
@@ -691,7 +692,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
     const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(outcomeUuid, warrantType, req.user.username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(
+        outcomeUuid,
+        warrantType,
+        req.user.username,
+        Boolean(offence.replacesOffenceUuid),
+      ),
       this.getOffenceHint(offence, req.user.username),
     ])
 
@@ -709,7 +715,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence || offence.onFinishGoToEdit === true) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
-    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.replacesOffenceUuid) {
       if (warrantType === 'SENTENCING') {
         backLink = JourneyUrls.updateOffenceOutcomes(
           nomsId,
@@ -2829,6 +2835,17 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         ),
+      )
+    }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(
+        AppealsJourneyUrls.recordAppeal({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        }),
       )
     }
     return res.redirect(

@@ -15,6 +15,8 @@ import {
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache, { clearCache } from '../cache/refDataCache'
+import config from '../config'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class RefDataService {
   chargeOutcomeCacheKey = 'charge-outcomes:all'
@@ -149,6 +151,7 @@ export default class RefDataService {
       this.getAllChargeOutcomes(username),
     ])
     let outcomeTypes = ['REMAND', 'NON_CUSTODIAL']
+    let includeReplacedWithAnother = false
     if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
       outcomeTypes = ['NON_CUSTODIAL']
     } else if (appearanceOutcome.outcomeType === 'SENTENCING') {
@@ -157,13 +160,18 @@ export default class RefDataService {
       if (isReplacingOffence) {
         outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
       } else {
+        includeReplacedWithAnother = config.featureToggles.replacedWithAnotherAppeals
         outcomeTypes = ['APPEAL']
       }
     } else if (warrantType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING']
     }
     const allOutcomes = chargeOutcomes
-      .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))
+      .filter(
+        caseOutcome =>
+          outcomeTypes.includes(caseOutcome.outcomeType) ||
+          (includeReplacedWithAnother && caseOutcome.outcomeUuid === REPLACEMENT_OUTCOME_UUID),
+      )
       .sort((a, b) => a.displayOrder - b.displayOrder)
 
     const primaryOutcomes = allOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')

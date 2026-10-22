@@ -30,6 +30,7 @@ generic-service:
     FEATURES_JUDICIAL_FINDINGS: 'true'
     FEATURES_GENERATED_DOCUMENTS: 'true'
     FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'true'
+    FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'true'
 
   scheduledDowntime:
     enabled: true

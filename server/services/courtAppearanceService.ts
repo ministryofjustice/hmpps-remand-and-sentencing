@@ -2,7 +2,6 @@ import type { CourtAppearance, Offence, SentenceLength, UploadedDocument, UrlPar
 import type {
   AppealCourtNameForm,
   AppealDateForm,
-  AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
   BreachCourtNameForm,
   BreachDateForm,

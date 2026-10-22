@@ -124,6 +124,7 @@ export default class RefDataService {
     appearanceOutcomeUuid: string,
     warrantType: string,
     username: string,
+    isReplacingOffence: boolean,
   ): Promise<{
     primaryOutcomes: OffenceOutcome[]
     nonCustodialOutcomes: OffenceOutcome[]
@@ -153,7 +154,11 @@ export default class RefDataService {
     } else if (appearanceOutcome.outcomeType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
     } else if (appearanceOutcome.outcomeType === 'APPEAL') {
-      outcomeTypes = ['APPEAL']
+      if (isReplacingOffence) {
+        outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
+      } else {
+        outcomeTypes = ['APPEAL']
+      }
     } else if (warrantType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING']
     }

@@ -509,7 +509,12 @@ export default class AppealsRoutes extends BaseRoutes {
     }
     const [offenceHint, primaryNonCustodialChargeOutcomes] = await Promise.all([
       this.getOffenceHint(offence, username),
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(appearanceOutcomeUuid, warrantType, username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(
+        appearanceOutcomeUuid,
+        warrantType,
+        username,
+        Boolean(offence.replacesOffenceUuid),
+      ),
     ])
     const appealOutcomes = primaryNonCustodialChargeOutcomes.allOutcomes
     let backLink = AppealsJourneyUrls.recordAppeal(urlParameters)

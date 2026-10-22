@@ -7,7 +7,11 @@ interface CourtHearingWithFine {
   warrantDate: string
   courtCode: string
   caseReference: string
-  offenceCodes: string[]
+  offences: {
+    offenceCode: string
+    offenceStartDate?: string | null
+    offenceEndDate?: string | null
+  }[]
 }
 
 const courtHearingWithFine1: CourtHearingWithFine = {
@@ -15,14 +19,14 @@ const courtHearingWithFine1: CourtHearingWithFine = {
   warrantDate: '2026-09-15',
   courtCode: 'ACCRYC',
   caseReference: 'C894623',
-  offenceCodes: ['PS90037'],
+  offences: [{ offenceCode: 'PS90037', offenceStartDate: '2024-04-03', offenceEndDate: '2024-04-05' }],
 }
 const courtHearingWithFine2: CourtHearingWithFine = {
   appearanceUuid: '641931E3-FCD9-41A0-8D2D-BFFC6AE6DE18',
   warrantDate: '2026-03-02',
   courtCode: 'ACCRYC',
   caseReference: 'C894623',
-  offenceCodes: ['PS90037'],
+  offences: [{ offenceCode: 'PS90037', offenceStartDate: '2023-01-15' }],
 }
 
 const documentUrl = (prisonerId: string, appearanceUuid: string) =>
@@ -106,6 +110,14 @@ context('View F986 generated document', () => {
       page.radios().should('have.length', 2)
       page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid)).should('exist')
       page.radioForDocument(documentUrl('A1234AB', courtHearingWithFine2.appearanceUuid)).should('exist')
+      page
+        .radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid))
+        .parent()
+        .should('contain.text', 'committed on 03/04/2024 to 05/04/2024')
+      page
+        .radioForDocument(documentUrl('A1234AB', courtHearingWithFine1.appearanceUuid))
+        .parent()
+        .should('not.contain.text', '15/09/2026')
     })
 
     it('should only allow one case to be selected at a time', () => {

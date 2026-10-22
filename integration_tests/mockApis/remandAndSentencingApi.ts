@@ -6498,7 +6498,7 @@ export default {
         warrantDate: '2026-10-15',
         courtCode: 'ACCRYC',
         caseReference: 'C894623',
-        offenceCodes: ['PS90037'],
+        offences: [{ offenceCode: 'PS90037', offenceStartDate: '2025-10-15' }],
       },
     ],
   }: {
@@ -6508,7 +6508,11 @@ export default {
       warrantDate: string
       courtCode: string
       caseReference?: string | null
-      offenceCodes: string[]
+      offences: {
+        offenceCode: string
+        offenceStartDate?: string | null
+        offenceEndDate?: string | null
+      }[]
     }[]
   }): SuperAgentRequest =>
     stubFor({

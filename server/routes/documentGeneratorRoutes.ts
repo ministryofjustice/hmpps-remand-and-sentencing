@@ -1,8 +1,6 @@
 import { RequestHandler } from 'express'
-import dayjs from 'dayjs'
 import type { ViewGeneratedDocumentForm } from 'forms'
 import BaseRoutes from './baseRoutes'
-import config from '../config'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -68,7 +66,9 @@ export default class DocumentGeneratorRoutes extends BaseRoutes {
     )
 
     const offenceMap = await this.manageOffencesService.getOffenceMap(
-      Array.from(new Set(appearances.flatMap(appearance => appearance.offenceCodes))),
+      Array.from(
+        new Set(appearances.flatMap(appearance => appearance.offences.flatMap(offence => offence.offenceCode))),
+      ),
       username,
       [],
     )
@@ -78,16 +78,14 @@ export default class DocumentGeneratorRoutes extends BaseRoutes {
       const title = appearance.caseReference ? `${appearance.caseReference} at ${courtName}` : courtName
       return {
         appearanceUuid: appearance.appearanceUuid,
-        courtName,
-        appearanceDate: dayjs(appearance.warrantDate).format(config.dateFormat),
-        caseReference: appearance.caseReference,
-        offenceDescriptions:
-          title + appearance.offenceCodes.map(code => `<br/>${`${code} ${offenceMap[code] ?? ''}`.trim()}`).join(''),
+        title,
+        offences: appearance.offences,
       }
     })
 
     return res.render('pages/documents/generatedDocuments/f986-documents', {
       nomsId,
+      offenceMap,
       courtAppearancesWithFines,
       backLink: `/person/${nomsId}`,
       errors: req.flash('errors') || [],

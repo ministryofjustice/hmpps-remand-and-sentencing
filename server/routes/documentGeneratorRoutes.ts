@@ -9,6 +9,7 @@ import AuditService from '../services/auditService'
 import DocumentManagementService from '../services/documentManagementService'
 import CourtRegisterService from '../services/courtRegisterService'
 import trimForm from '../utils/trim'
+import logger from '../../logger'
 
 export default class DocumentGeneratorRoutes extends BaseRoutes {
   constructor(
@@ -59,21 +60,35 @@ export default class DocumentGeneratorRoutes extends BaseRoutes {
     const { username } = res.locals.user
 
     const appearances = await this.remandAndSentencingService.getF986EligibleAppearances(nomsId, username)
+    const appearancesWithOffences = appearances.map(appearance => {
+      if (Array.isArray(appearance.offences)) {
+        return appearance
+      }
+
+      const legacyOffenceCodes = (appearance as typeof appearance & { offenceCodes?: string[] }).offenceCodes ?? []
+      logger.warn(
+        `F986 eligible appearance ${appearance.appearanceUuid} has no offences array; using legacy offence codes if available`,
+      )
+      return {
+        ...appearance,
+        offences: legacyOffenceCodes.map(offenceCode => ({ offenceCode })),
+      }
+    })
 
     const courtMap = await this.courtRegisterService.getCourtMap(
-      Array.from(new Set(appearances.map(appearance => appearance.courtCode))),
+      Array.from(new Set(appearancesWithOffences.map(appearance => appearance.courtCode))),
       username,
     )
 
     const offenceMap = await this.manageOffencesService.getOffenceMap(
       Array.from(
-        new Set(appearances.flatMap(appearance => appearance.offences.flatMap(offence => offence.offenceCode))),
+        new Set(appearancesWithOffences.flatMap(appearance => appearance.offences.map(offence => offence.offenceCode))),
       ),
       username,
       [],
     )
 
-    const courtAppearancesWithFines = appearances.map(appearance => {
+    const courtAppearancesWithFines = appearancesWithOffences.map(appearance => {
       const courtName = courtMap[appearance.courtCode] ?? appearance.courtCode
       const title = appearance.caseReference ? `${appearance.caseReference} at ${courtName}` : courtName
       return {

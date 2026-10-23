@@ -65,4 +65,24 @@ describe('GET view-generated-documents/type/f986', () => {
     expect($('[data-qa="no-f986-appearances"]').length).toEqual(1)
     expect($('input[name="documentSelected"]').length).toEqual(0)
   })
+
+  it('should still list eligible appearances returned with the legacy offenceCodes field', async () => {
+    setupDefaultMocks()
+    defaultServices.remandAndSentencingService.getF986EligibleAppearances.mockResolvedValue([
+      {
+        appearanceUuid: '1',
+        warrantDate: '2025-07-25',
+        courtCode: 'ACCRYC',
+        caseReference: 'A123',
+        offenceCodes: ['OFF123'],
+      },
+    ] as never)
+
+    const res = await request(app).get('/person/A1234AB/view-generated-documents/type/f986')
+    const $ = cheerio.load(res.text)
+
+    expect(res.status).toBe(200)
+    expect($('input[name="documentSelected"]')).toHaveLength(1)
+    expect($('label[for="documentSelected"] .govuk-hint').text()).toContain('OFF123 Offence code description')
+  })
 })

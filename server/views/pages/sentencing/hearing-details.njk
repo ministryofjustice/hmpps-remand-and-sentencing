@@ -37,13 +37,13 @@
     value: { text: hearing.warrantDate | formatDate }
   },
   {
-    key: { text: "Location" },
+    key: { text: "Court name" },
     value: { text: courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode },
     actions: {
       items: [{
         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name",
         text: "Edit",
-        visuallyHiddenText: "location",
+        visuallyHiddenText: "court name",
         classes: "govuk-link--no-visited-state"
       }]
     }

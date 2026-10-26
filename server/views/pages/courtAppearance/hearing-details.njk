@@ -47,13 +47,13 @@
 ] %}
 
 {% set hearingSummaryRows = hearingSummaryRows.concat({
-  key: { text: "Location" },
+  key: { text: "Court name" },
   value: { text: courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode },
   actions: {
     items: [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name",
       text: "Edit",
-      visuallyHiddenText: "location",
+      visuallyHiddenText: "court name",
       classes: "govuk-link--no-visited-state"
     }]
   }
@@ -88,7 +88,7 @@
 {% if hearing.nextAppearanceSelect %}
   {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
     {
-      key: { text: "Location" },
+      key: { text: "Court name" },
       value: { text: courtMap[hearing.nextAppearanceCourtCode] },
       actions: {
         items: [{

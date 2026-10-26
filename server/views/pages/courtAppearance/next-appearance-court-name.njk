@@ -13,7 +13,7 @@
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukSelect({
             label: {
-                text: "What court is the next appearance at?"  if isAddCourtAppearance else "Edit next court appearance location",
+                text: "What court is the next appearance at?"  if isAddCourtAppearance else "Edit next court appearance court name",
                 classes: "govuk-label--l",
                 isPageHeading: true,
                 for: "next-appearance-court-name",

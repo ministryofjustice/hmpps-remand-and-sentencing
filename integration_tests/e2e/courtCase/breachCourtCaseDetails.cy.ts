@@ -24,7 +24,7 @@ context('Breach Court Case details Page', () => {
       .should('deep.equal', [
         {
           'Case reference': 'C894623',
-          Location: 'Accrington Youth Court',
+          'Court name': 'Accrington Youth Court',
           'Breach hearing date': '15/12/2023',
           Outcome: 'DTO (Detention and Training Order)',
           'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
@@ -46,7 +46,7 @@ context('Breach Court Case details Page', () => {
         },
         {
           'Case reference': 'C894623',
-          Location: 'Accrington Youth Court',
+          'Court name': 'Accrington Youth Court',
           'Breach hearing date': '15/10/2023',
           Outcome: 'DTO (Detention and Training Order)',
           'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',

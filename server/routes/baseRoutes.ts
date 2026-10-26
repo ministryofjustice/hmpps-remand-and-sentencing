@@ -178,6 +178,17 @@ export default abstract class BaseRoutes {
         ),
       )
     }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(
+        AppealsJourneyUrls.recordAppeal({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        }),
+      )
+    }
     return res.redirect(
       JourneyUrls.reviewOffences(
         nomsId,

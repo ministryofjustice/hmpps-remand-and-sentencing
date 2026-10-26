@@ -58,7 +58,7 @@ context('Check Next Appearance Answers page', () => {
     Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
   })
 
-  it('clicking next appearance location and submitting goes back to check answers page', () => {
+  it('clicking next appearance court name and submitting goes back to check answers page', () => {
     cy.task('stubGetCourtById', {
       courtId: 'STHHPM',
       courtName: 'Southampton Magistrate Court',
@@ -77,7 +77,7 @@ context('Check Next Appearance Answers page', () => {
       .getSummaryList()
       .should('deep.equal', {
         Date: `${futureDate.format('DD/MM/YYYY')} 09:30`,
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })

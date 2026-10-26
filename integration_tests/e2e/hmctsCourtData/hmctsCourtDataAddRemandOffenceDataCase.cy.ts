@@ -253,7 +253,7 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
       .getSummaryList()
       .should('deep.equal', {
         Date: `${futureDate.format('DD/MM/YYYY')} 10:00`,
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })

@@ -69,7 +69,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
@@ -77,7 +77,7 @@ context('Court Case Hearing details Page', () => {
     it('next appearance summary shows correct data', () => {
       courtCaseHearingDetailsPage.nextAppearanceSummaryList().getSummaryList().should('deep.equal', {
         'Next appearance set': 'Yes',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Appearance type': 'Court appearance',
         Date: '15/12/2024',
       })
@@ -101,7 +101,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
 
@@ -128,7 +128,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'T12345678',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
@@ -141,7 +141,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
 
@@ -171,7 +171,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Accrington Youth Court',
+        'Court name': 'Accrington Youth Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
@@ -344,7 +344,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'A Nomis description',
       })
 
@@ -367,7 +367,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })

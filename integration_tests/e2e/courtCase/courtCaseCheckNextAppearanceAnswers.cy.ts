@@ -77,7 +77,7 @@ context('Check Next Appearance Answers page', () => {
       .getSummaryList()
       .should('deep.equal', {
         Date: `${futureDate.format('DD/MM/YYYY')} 09:30`,
-        Location: 'Southampton Magistrate Court',
+        'Court Name': 'Southampton Magistrate Court',
         'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })

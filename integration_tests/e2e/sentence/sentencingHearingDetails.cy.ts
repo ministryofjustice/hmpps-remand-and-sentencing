@@ -87,7 +87,7 @@ context('Sentencing appearance details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Hearing date': '15/12/2023',
-        Location: 'Southampton Magistrate Court',
+        'Court Name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Imprisonment',
       })
     })
@@ -595,7 +595,7 @@ context('Sentencing appearance details Page', () => {
       courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'BB7937',
         'Hearing date': '27/01/2025',
-        Location: 'Southampton Magistrate Court',
+        'Court Name': 'Southampton Magistrate Court',
         'Overall case outcome': 'A Nomis description',
       })
     })

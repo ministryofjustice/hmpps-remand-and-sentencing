@@ -232,7 +232,7 @@ context('New Court Case journey', () => {
       .getSummaryList()
       .should('deep.equal', {
         Date: futureDate.format('DD/MM/YYYY'),
-        Location: 'Accrington Youth Court',
+        'Court Name': 'Accrington Youth Court',
         'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })

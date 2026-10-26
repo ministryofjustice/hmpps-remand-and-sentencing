@@ -28,7 +28,7 @@ context('Court Case details Page', () => {
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
-            Location: 'Accrington Youth Court',
+            'Court Name': 'Accrington Youth Court',
             'Hearing date': '15/12/2023',
             Outcome: 'Remanded in custody',
             'Next appearance': '15/12/2024 at Accrington Youth Court',
@@ -50,7 +50,7 @@ context('Court Case details Page', () => {
           },
           {
             'Case reference': 'F23325',
-            Location: 'Birmingham Crown Court',
+            'Court Name': 'Birmingham Crown Court',
             'Hearing date': '15/10/2022',
             Outcome: 'Lie on file',
             'Next appearance': '15/12/2023 at Birmingham Crown Court',
@@ -105,7 +105,7 @@ context('Court Case details Page', () => {
           {
             'Case reference': 'C894623',
             'Hearing date': '15/12/2023',
-            Location: 'Accrington Youth Court',
+            'Court Name': 'Accrington Youth Court',
             Outcome: 'Imprisonment',
             'Court documents': 'No documents uploaded',
             Offences: {
@@ -149,7 +149,7 @@ context('Court Case details Page', () => {
           {
             'Case reference': 'F23325',
             'Hearing date': '15/10/2022',
-            Location: 'Birmingham Crown Court',
+            'Court Name': 'Birmingham Crown Court',
             Outcome: 'A Nomis Outcome',
             'Court documents': 'No documents uploaded',
             Offences: {
@@ -199,7 +199,7 @@ context('Court Case details Page', () => {
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
-            Location: 'Accrington Youth Court',
+            'Court Name': 'Accrington Youth Court',
             'Date of the appeal hearing': '15/12/2023',
             Outcome: 'Sentence varied',
             'Court documents': 'No documents uploaded',

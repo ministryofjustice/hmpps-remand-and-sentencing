@@ -47,7 +47,7 @@
 ] %}
 
 {% set hearingSummaryRows = hearingSummaryRows.concat({
-  key: { text: "Location" },
+  key: { text: "Court name" },
   value: { text: courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode },
   actions: {
     items: [{
@@ -88,7 +88,7 @@
 {% if hearing.nextAppearanceSelect %}
   {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
     {
-      key: { text: "Location" },
+      key: { text: "Court name" },
       value: { text: courtMap[hearing.nextAppearanceCourtCode] },
       actions: {
         items: [{

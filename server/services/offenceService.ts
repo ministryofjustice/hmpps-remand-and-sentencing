@@ -23,6 +23,7 @@ import type {
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
   SelectJudicialFindingsForm,
+  AppealOffenceOutcomeForm,
 } from 'forms'
 import type { CourtAppearance, Offence, Sentence, SentenceLength, UrlParameters } from 'models'
 import dayjs from 'dayjs'
@@ -1365,7 +1366,7 @@ export default class OffenceService {
   }
 
   private getSentence(offence: Offence): Sentence {
-    return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
+    return offence.sentence ?? { sentenceUuid: offence.replacesSentenceUuid ?? crypto.randomUUID() }
   }
 
   private getOffenceId(nomsId: string, courtCaseReference: string, chargeUuid: string): string {
@@ -1527,5 +1528,44 @@ export default class OffenceService {
     }
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
+  }
+
+  setOffenceAppealOutcome(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
+  ): {
+    errors: {
+      text?: string
+      html?: string
+      href: string
+    }[]
+    sentenceUuid: string
+    offence: Offence
+  } {
+    const errors = validate(
+      appealOffenceOutcomeForm,
+      {
+        offenceOutcome: 'required',
+      },
+      {
+        'required.offenceOutcome': 'You must select an appeal outcome for this offence',
+      },
+    )
+    let sentenceUuid
+    let offence
+    if (errors.length === 0) {
+      const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
+      offence = this.getOffence(session.offences, id)
+      offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
+      sentenceUuid = offence.sentence?.sentenceUuid
+      delete offence.sentence
+      delete offence.aggravatingFactors
+      delete offence.findingOfDomesticAbuse
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return { errors, sentenceUuid, offence }
   }
 }

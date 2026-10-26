@@ -33,6 +33,7 @@ import { chargeToOffence, pageCourtCaseAppearanceToCourtAppearance } from '../ut
 import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -501,6 +502,9 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.chargeUuid,
       urlParameters.appearanceReference,
     )
+    this.offenceService.setSessionOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference, [
+      offence,
+    ])
     let appealOffenceOutcomeForm = (req.flash('appealOffenceOutcomeForm')[0] || {}) as AppealOffenceOutcomeForm
     if (Object.keys(appealOffenceOutcomeForm).length === 0) {
       appealOffenceOutcomeForm = {
@@ -535,7 +539,7 @@ export default class AppealsRoutes extends BaseRoutes {
   public subtmitSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const appealOffenceOutcomeForm = trimForm<AppealOffenceOutcomeForm>(req.body)
-    const errors = this.courtAppearanceService.setOffenceAppealOutcome(
+    const { errors, sentenceUuid, offence } = this.offenceService.setOffenceAppealOutcome(
       req.session,
       urlParameters,
       appealOffenceOutcomeForm,
@@ -545,9 +549,33 @@ export default class AppealsRoutes extends BaseRoutes {
       req.flash('appealOffenceOutcomeForm', { ...appealOffenceOutcomeForm })
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
+
+    if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
+      return this.initiateOffenceReplacement(
+        req,
+        urlParameters.nomsId,
+        urlParameters.courtCaseReference,
+        urlParameters.chargeUuid,
+        res,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+        sentenceUuid,
+      )
+    }
+
+    this.saveAllOffencesToAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+      urlParameters.courtCaseReference,
+      offence,
+    )
+
     if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
       return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
     }
+
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
   }
 

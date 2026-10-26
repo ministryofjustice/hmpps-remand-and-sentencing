@@ -57,6 +57,7 @@ declare module 'models' {
     mergedFromCase?: PagedMergedFromCase
     onFinishGoToEdit?: boolean
     replacesOffenceUuid?: string
+    replacesSentenceUuid?: string
     createChargeOrder?: number
     replicatedFromUuid?: string
     offenceDateIsSame?: string

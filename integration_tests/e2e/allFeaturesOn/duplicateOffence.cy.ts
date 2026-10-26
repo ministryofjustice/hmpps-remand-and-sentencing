@@ -4,6 +4,10 @@ import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswe
 context('Duplicate offence with multiple offence instances enabled', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetCourtById', {
+      courtId: 'STHHPM',
+      courtName: 'Southampton Magistrate Court',
+    })
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')

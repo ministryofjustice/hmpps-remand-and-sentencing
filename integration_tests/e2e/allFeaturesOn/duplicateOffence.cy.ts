@@ -34,10 +34,7 @@ context('Duplicate offence with multiple offence instances enabled', () => {
     Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
 
     cy.createSentencedOffence('A1234AB', '0', '0', '1', '2')
-    const checkOffenceAnswersPage = Page.verifyOnPageTitle(
-      OffenceCheckOffenceAnswersPage,
-      'You have added 2 offences',
-    )
+    const checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 2 offences')
 
     checkOffenceAnswersPage
       .custodialOffences()

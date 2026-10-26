@@ -148,3 +148,51 @@ describe('GET Sentence consecutive to', () => {
       })
   })
 })
+
+describe('POST Sentence consecutive to', () => {
+  it('should redirect back to record appeal when on appeal journey', async () => {
+    defaultServices.offenceService.setSentenceConsecutiveTo.mockResolvedValue([])
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'BB6557',
+          sentence: {
+            sentenceUuid: '3',
+          },
+        },
+        {
+          chargeUuid: '3',
+          offenceCode: 'BB6557',
+          sentence: {
+            sentenceUuid: '4',
+          },
+        },
+      ],
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '2',
+      offenceCode: 'BB6557',
+      sentence: {
+        sentenceUuid: '3',
+      },
+    })
+    defaultServices.offenceService.getAllOffences.mockReturnValue([
+      {
+        chargeUuid: '2',
+        offenceCode: 'BB6557',
+        sentence: {
+          sentenceUuid: '3',
+        },
+      },
+    ])
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('APPEAL')
+    return request(app)
+      .post('/person/A1234AB/edit-court-case/0/add-court-appearance/0/sentencing/offences/0/sentence-consecutive-to')
+      .send({})
+      .expect(302)
+      .expect('Location', '/person/A1234AB/edit-court-case/0/add-court-appearance/0/appeals/record-appeal')
+  })
+})

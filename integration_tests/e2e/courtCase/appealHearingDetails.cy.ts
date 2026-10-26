@@ -43,7 +43,7 @@ context('Appeal appearance details Page', () => {
         'Case reference': 'C894623',
         'Criminal Appeal Office reference': 'G35461',
         'Hearing date': '15/12/2023',
-        Location: 'Accrington Youth Court',
+        'Court name': 'Accrington Youth Court',
         'Overall case outcome': 'Sentence varied',
       })
     })

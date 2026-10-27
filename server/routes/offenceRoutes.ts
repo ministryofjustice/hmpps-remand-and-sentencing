@@ -2438,6 +2438,8 @@ export default class OffenceRoutes extends BaseRoutes {
           appearanceReference,
         )
       }
+    } else if (courtAppearance.warrantType === 'APPEAL') {
+      cancelLink = AppealsJourneyUrls.recordAppeal(urlParameters)
     }
 
     return res.render('pages/offence/delete-offence', {
@@ -2488,9 +2490,8 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       appearanceReference,
     )
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-
       const offenceDetails = await this.manageOffencesService.getOffenceByCode(
         deletedOffence.offenceCode,
         req.user.username,
@@ -2525,6 +2526,9 @@ export default class OffenceRoutes extends BaseRoutes {
           appearanceReference,
         ),
       )
+    }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
     }
     return res.redirect(
       JourneyUrls.checkOffenceAnswers(

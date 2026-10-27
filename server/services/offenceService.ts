@@ -1188,6 +1188,25 @@ export default class OffenceService {
     return replicatedOffence
   }
 
+  setSessionDuplicatedOffence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    originalOffence: Offence,
+  ): Offence {
+    const duplicatedOffence: Offence = structuredClone(originalOffence)
+    duplicatedOffence.chargeUuid = crypto.randomUUID()
+    if (duplicatedOffence.sentence) {
+      duplicatedOffence.sentence.sentenceUuid = crypto.randomUUID()
+      duplicatedOffence.sentence.periodLengths = duplicatedOffence.sentence.periodLengths?.map(periodLength => ({
+        ...periodLength,
+        uuid: crypto.randomUUID(),
+      }))
+    }
+    this.setSessionOffence(session, nomsId, courtCaseReference, duplicatedOffence)
+    return duplicatedOffence
+  }
+
   invalidateFromOffenceDate(
     session: Partial<SessionData>,
     nomsId: string,

@@ -2602,7 +2602,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
-  public getEditOffence: RequestHandler = async (req, res): Promise<void> => {
+  public loadDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,
@@ -2611,6 +2611,76 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const checkOffenceAnswersUrl = JourneyUrls.checkOffenceAnswers(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+    const originalOffence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    if (!config.featureToggles.multipleOffenceInstances || !originalOffence) {
+      return res.redirect(checkOffenceAnswersUrl)
+    }
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
+    this.offenceService.setSessionDuplicatedOffence(req.session, nomsId, courtCaseReference, originalOffence)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence`,
+    )
+  }
+
+  public getDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const [duplicatedOffence] = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+    if (!config.featureToggles.multipleOffenceInstances || !duplicatedOffence) {
+      return res.redirect(
+        JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+    return this.renderEditOffence(req, res, duplicatedOffence.chargeUuid, 'pages/offence/add-offence-details')
+  }
+
+  public submitDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const [duplicatedOffence] = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+    if (config.featureToggles.multipleOffenceInstances && duplicatedOffence) {
+      const errors = this.offenceService.validateOffenceMandatoryFields(duplicatedOffence)
+      if (errors.length > 0) {
+        req.flash('errors', errors)
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence?hasErrors=true`,
+        )
+      }
+      this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+    }
+    return res.redirect(
+      JourneyUrls.checkOffenceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
+  }
+
+  public getEditOffence: RequestHandler = async (req, res): Promise<void> => {
+    return this.renderEditOffence(req, res, req.params.chargeUuid)
+  }
+
+  private async renderEditOffence(
+    req,
+    res,
+    chargeUuid: string,
+    template: string = 'pages/offence/edit-offence',
+  ): Promise<void> {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
@@ -2692,7 +2762,7 @@ export default class OffenceRoutes extends BaseRoutes {
         consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
       }
     }
-    return res.render('pages/offence/edit-offence', {
+    return res.render(template, {
       nomsId,
       courtCaseReference,
       offence,

@@ -2218,6 +2218,10 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       showAddMultipleCountsLink:
         courtAppearance.warrantType === 'NON_SENTENCING' && !courtAppearance.isCommonPlatformJourney,
+      showDuplicateOffenceLink:
+        config.featureToggles.multipleOffenceInstances &&
+        courtAppearance.warrantType === 'SENTENCING' &&
+        addOrEditCourtAppearance === 'add-court-appearance',
       overallSentenceLength,
     })
   }

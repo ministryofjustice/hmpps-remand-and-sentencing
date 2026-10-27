@@ -135,7 +135,7 @@ context('Appeals journey', () => {
     selectOffenceAppealOutcomePage.continueButton().click()
     recordAppealPage = Page.verifyOnPage(RecordAppealPage)
     recordAppealPage
-      .appealedOffences()
+      .updatedOffences()
       .getOffenceCards()
       .should('deep.equal', [
         {

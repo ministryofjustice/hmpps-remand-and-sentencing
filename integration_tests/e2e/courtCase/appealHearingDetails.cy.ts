@@ -50,7 +50,7 @@ context('Appeal appearance details Page', () => {
 
     it('displays offences correctly', () => {
       courtCaseHearingDetailsPage
-        .appealedOffences()
+        .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
           {
@@ -86,7 +86,7 @@ context('Appeal appearance details Page', () => {
       selectOffenceAppealOutcomePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
-        .appealedOffences()
+        .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
           {
@@ -117,7 +117,7 @@ context('Appeal appearance details Page', () => {
       offenceDeleteOffencePage.deleteButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
-        .appealedOffences()
+        .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
           {
@@ -178,7 +178,7 @@ context('Appeal appearance details Page', () => {
 
     it('displays sentences correctly', () => {
       courtCaseHearingDetailsPage
-        .appealedOffences()
+        .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
           {
@@ -231,7 +231,7 @@ context('Appeal appearance details Page', () => {
       offenceEditOffencePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
-        .appealedOffences()
+        .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
           {
@@ -289,7 +289,7 @@ context('Appeal appearance details Page', () => {
       sentencingDeleteSentenceInChainPage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
-        .appealedOffences()
+        .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
           {

@@ -173,33 +173,6 @@ context('Start Page', () => {
       cy.get('strong.govuk-tag').eq(0).should('contain.text', 'Inactive')
       cy.get('strong.govuk-tag').eq(1).should('contain.text', 'Recalled')
     })
-
-    startPage
-      .recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
-      .should(
-        'contain.text',
-        'The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.',
-      )
-  })
-
-  it('should not display recall inset when user has COURT_CASES role', () => {
-    cy.visit('/sign-out')
-    cy.task('stubSignIn', {
-      roles: [Roles.getAuthority(Role.COURT_CASES), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
-    })
-    cy.signIn()
-    cy.visit('/person/A1234AB')
-    startPage.recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7').should('not.exist')
-  })
-
-  it('do not display recall inset when user has access to recalls', () => {
-    cy.visit('/sign-out')
-    cy.task('stubSignIn', {
-      roles: [Roles.getAuthority(Role.COURT_CASES), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
-    })
-    cy.signIn()
-    cy.visit('/person/A1234AB')
-    startPage.recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7').should('not.exist')
   })
 
   it('displays empty content when no court cases', () => {

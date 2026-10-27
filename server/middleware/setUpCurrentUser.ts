@@ -38,12 +38,10 @@ export default function setUpCurrentUser(userService: UserService) {
       res.locals.user.authSource = authSource
 
       if (res.locals.user.authSource === 'nomis') {
-        const recallRoles = [Roles.getRole(Role.RECALL_MAINTAINER), Roles.getRole(Role.COURT_CASES)]
-
         res.locals.user.staffId = userId !== undefined ? parseInt(userId, 10) : undefined
-        res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
-        res.locals.user.hasRecallsAccess = userRoles.some(role => recallRoles.includes(role))
-        res.locals.user.hasBookASecureMoveAccess = userRoles.includes('PECS_PRISON')
+        res.locals.user.hasInactiveBookingsAccess = userRoles.includes(Roles.getRole(Role.INACTIVE_BOOKINGS))
+        res.locals.user.hasRecallsAccess = userRoles.includes(Roles.getRole(Role.COURT_CASES))
+        res.locals.user.hasBookASecureMoveAccess = userRoles.includes(Roles.getRole(Role.PECS_PRISON))
         await getUserCaseLoads(res, userService)
       }
 

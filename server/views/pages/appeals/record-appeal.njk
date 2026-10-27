@@ -43,10 +43,10 @@
         </span>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <h2 class="govuk-heading-m govuk-!-margin-top-7">
-            Offences with an appeal recorded ({{ appealedOffences.length }})
+            Offences with an appeal recorded ({{ updatedOffences.length }})
         </h2>
-        <span data-qa="appealedOffences">
-            {% for offence in appealedOffences %}
+        <span data-qa="updatedOffences">
+            {% for offence in updatedOffences %}
                 {% set offenceId = 'offences.' + offence.index %}
                 {% set recordAppealHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
                 {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {

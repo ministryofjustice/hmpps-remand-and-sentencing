@@ -95,6 +95,10 @@ describe('Duplicate offence', () => {
     expect(summary).toContain('PS90037 An offence description')
     expect(summary).toContain('10/05/2023')
     expect(summary).toContain('12/05/2023')
+
+    // Values come from setUpCurrentCourtAppearance middleware, which the test app doesn't run
+    expect($('h2:contains("Hearing details")').length).toBe(1)
+    expect($('[data-qa="hearingDetails"]').length).toBe(1)
   })
 
   it('saves the duplicated offence to the appearance and returns to add offences', async () => {

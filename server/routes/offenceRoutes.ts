@@ -2643,7 +2643,9 @@ export default class OffenceRoutes extends BaseRoutes {
         ),
       )
     }
-    return this.renderEditOffence(req, res, duplicatedOffence.chargeUuid, 'pages/offence/add-offence-details')
+    return this.renderEditOffence(req, res, duplicatedOffence.chargeUuid, 'pages/offence/add-offence-details', {
+      showHearingDetails: true,
+    })
   }
 
   public submitDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
@@ -2679,6 +2681,7 @@ export default class OffenceRoutes extends BaseRoutes {
     res,
     chargeUuid: string,
     template: string = 'pages/offence/edit-offence',
+    overrides: Record<string, unknown> = {},
   ): Promise<void> {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToEditOffence } = req.query
@@ -2788,6 +2791,7 @@ export default class OffenceRoutes extends BaseRoutes {
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
       isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
       showJudicialFindingsRow: config.featureToggles.judicialFindings,
+      ...overrides,
     })
   }
 

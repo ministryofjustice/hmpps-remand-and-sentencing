@@ -445,11 +445,11 @@ export default class AppealsRoutes extends BaseRoutes {
       }),
     )
 
-    const [appealedOffences, otherOffences] = offences.reduce(
-      ([appealedList, otherList], offence) => {
-        return outcomeMap[offence.outcomeUuid].outcomeType === 'APPEAL'
-          ? [[...appealedList, offence], otherList]
-          : [appealedList, [...otherList, offence]]
+    const [updatedOffences, otherOffences] = offences.reduce(
+      ([updatedList, otherList], offence) => {
+        return offence.updatedOutcome === true
+          ? [[...updatedList, offence], otherList]
+          : [updatedList, [...otherList, offence]]
       },
       [[], []],
     )
@@ -465,7 +465,7 @@ export default class AppealsRoutes extends BaseRoutes {
       sentenceTypeMap,
       outcomeMap,
       otherOffences,
-      appealedOffences,
+      updatedOffences,
       courtMap,
       consecutiveToSentenceMap,
       errors: req.flash('errors') || [],

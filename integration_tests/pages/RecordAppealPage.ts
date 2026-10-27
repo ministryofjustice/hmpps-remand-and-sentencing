@@ -13,5 +13,5 @@ export default class RecordAppealPage extends Page {
 
   updateAppealOutcomeLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="update-outcome-link-${chargeUuid}"]`)
 
-  appealedOffences = (): PageElement => cy.get('[data-qa="appealedOffences"]')
+  updatedOffences = (): PageElement => cy.get('[data-qa="updatedOffences"]')
 }

@@ -157,7 +157,7 @@ context('Record appeal', () => {
     selectOffenceAppealOutcomePage.continueButton().click()
     recordAppealPage = Page.verifyOnPage(RecordAppealPage)
     recordAppealPage
-      .appealedOffences()
+      .updatedOffences()
       .getOffenceCards()
       .should('deep.equal', [
         {
@@ -173,7 +173,7 @@ context('Record appeal', () => {
     selectOffenceAppealOutcomePage.continueButton().click()
     recordAppealPage = Page.verifyOnPage(RecordAppealPage)
     recordAppealPage
-      .appealedOffences()
+      .updatedOffences()
       .getOffenceCards()
       .should('deep.equal', [
         {

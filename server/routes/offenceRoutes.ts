@@ -2666,7 +2666,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const [duplicatedOffence] = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
     if (config.featureToggles.multipleOffenceInstances && duplicatedOffence) {
-      const errors = this.offenceService.validateOffenceMandatoryFields(duplicatedOffence)
+      const errors = this.offenceService.validateDuplicatedOffenceMandatoryFields(duplicatedOffence)
       if (errors.length > 0) {
         req.flash('errors', errors)
         return res.redirect(

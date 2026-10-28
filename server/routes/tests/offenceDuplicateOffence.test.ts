@@ -101,9 +101,85 @@ describe('Duplicate offence', () => {
     expect($('[data-qa="hearingDetails"]').length).toBe(1)
   })
 
+  it('shows an Enter committed on date link when the offence has no committed on date', async () => {
+    const noDateOffence = { ...duplicatedOffence, offenceStartDate: undefined } as Offence
+    defaultServices.offenceService.getAllOffences.mockReturnValue([noDateOffence])
+    defaultServices.offenceService.getSessionOffence.mockReturnValue(noDateOffence)
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '0',
+      warrantType: 'SENTENCING',
+      offences: [originalOffence],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ PS90037: 'An offence description' })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
+      outcomeUuid: '3',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+      displayOrder: 1,
+      dispositionCode: 'F',
+      nomisCode: '1',
+      status: 'ACTIVE',
+    })
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+
+    expect($('[data-qa="edit-offence-date-cta"]').text().trim()).toBe('Enter committed on date')
+  })
+
+  it('shows an Enter a consecutive or concurrent link when none is entered', async () => {
+    const noServeTypeOffence = {
+      ...duplicatedOffence,
+      sentence: { ...duplicatedOffence.sentence, sentenceServeType: undefined },
+    } as Offence
+    defaultServices.offenceService.getAllOffences.mockReturnValue([noServeTypeOffence])
+    defaultServices.offenceService.getSessionOffence.mockReturnValue(noServeTypeOffence)
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '0',
+      warrantType: 'SENTENCING',
+      offences: [originalOffence],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ PS90037: 'An offence description' })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
+      outcomeUuid: '3',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+      displayOrder: 1,
+      dispositionCode: 'F',
+      nomisCode: '1',
+      status: 'ACTIVE',
+    })
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+
+    expect($('[data-qa="edit-sentence-serve-type-cta"]').text().trim()).toBe('Enter a consecutive or concurrent')
+    expect($('[data-qa="edit-sentence-serve-type-5"]').length).toBe(0)
+  })
+
+  it('does not save and redirects back when required details are missing', async () => {
+    defaultServices.offenceService.getAllOffences.mockReturnValue([duplicatedOffence])
+    defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([
+      { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
+      { text: 'You must enter a committed on date', href: '#' },
+    ])
+
+    await request(app)
+      .post(`${baseUrl}/duplicate-offence`)
+      .expect(302)
+      .expect('Location', `${baseUrl}/duplicate-offence?hasErrors=true`)
+
+    expect(defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields).toHaveBeenCalledWith(
+      duplicatedOffence,
+    )
+    expect(defaultServices.courtAppearanceService.addOffence).not.toHaveBeenCalled()
+  })
+
   it('saves the duplicated offence to the appearance and returns to add offences', async () => {
     defaultServices.offenceService.getAllOffences.mockReturnValue([duplicatedOffence])
-    defaultServices.offenceService.validateOffenceMandatoryFields.mockReturnValue([])
+    defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([])
 
     await request(app)
       .post(`${baseUrl}/duplicate-offence`)

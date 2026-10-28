@@ -28,7 +28,7 @@
 {% set offenceDateRow = {
       key: { text: "Committed on" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter offence date</a>'
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter committed on date</a>'
       }
     }%}
 {% endif %}
@@ -250,22 +250,32 @@ outcomeRow] %}
     {% endif %}
   {% endif %}
 
-  {% set consecutiveOrConcurrentRows = [] %}
-  {% set consecutiveOrConcurrentRows = (consecutiveOrConcurrentRows.concat({
-    key: { text: "Consecutive or concurrent" },
-    value: { text: offence.sentence.sentenceServeType | capitalize },
-    actions: {
-      items: [{
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
-        text: "Edit",
-        visuallyHiddenText: "consecutive or concurrent",
-        classes: "govuk-link--no-visited-state",
-        attributes: {
-          'data-qa': 'edit-sentence-serve-type-' + chargeUuid
-        }
-      }]
-    }
-  })) %}
+  {% set sentenceServeTypeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true" %}
+  {% if offence.sentence.sentenceServeType %}
+    {% set consecutiveOrConcurrentRow = {
+      key: { text: "Consecutive or concurrent" },
+      value: { text: offence.sentence.sentenceServeType | capitalize },
+      actions: {
+        items: [{
+          href: sentenceServeTypeHref,
+          text: "Edit",
+          visuallyHiddenText: "consecutive or concurrent",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-sentence-serve-type-' + chargeUuid
+          }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set consecutiveOrConcurrentRow = {
+      key: { text: "Consecutive or concurrent" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceServeTypeHref + '" data-qa="edit-sentence-serve-type-cta">Enter a consecutive or concurrent</a>'
+      }
+    } %}
+  {% endif %}
+  {% set consecutiveOrConcurrentRows = [consecutiveOrConcurrentRow] %}
 
   {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
     {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}

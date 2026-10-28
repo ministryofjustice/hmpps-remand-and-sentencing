@@ -109,7 +109,44 @@ describe('offenceService', () => {
     })
   })
 
+  describe('validateDuplicatedOffenceMandatoryFields', () => {
+    const completeSentence = {
+      sentenceTypeClassification: 'UNKNOWN',
+      sentenceServeType: 'FORTHWITH',
+    } as Offence['sentence']
+
+    it('returns no errors when committed on and consecutive or concurrent are entered', () => {
+      const offence = { offenceStartDate: new Date(), sentence: completeSentence } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([])
+    })
+
+    it('requires consecutive or concurrent', () => {
+      const offence = {
+        offenceStartDate: new Date(),
+        sentence: { ...completeSentence, sentenceServeType: undefined },
+      } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
+        { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
+      ])
+    })
+
+    it('requires both consecutive or concurrent and committed on, in that order', () => {
+      const offence = { sentence: { ...completeSentence, sentenceServeType: undefined } } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
+        { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
+        { text: 'You must enter a committed on date', href: '#' },
+      ])
+    })
+  })
+
   describe('validateOffenceMandatoryFields', () => {
+    it('uses the supplied offence date error text', () => {
+      const offence = { sentence: {} } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence, 'You must enter a committed on date')
+      expect(errors).toContainEqual({ href: '#', text: 'You must enter a committed on date' })
+      expect(errors).not.toContainEqual({ href: '#', text: 'You must enter the offence date' })
+    })
+
     it('no errors for if no sentence on offence', () => {
       const offence = {} as Offence
       const errors = service.validateOffenceMandatoryFields(offence)

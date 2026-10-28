@@ -110,7 +110,12 @@ outcomeRow] %}
           attributes: {
             'data-qa': 'enter-count-number-' + chargeUuid
           }
-        }
+        },
+      actions: {
+        items: [{
+          html: '<strong class="govuk-tag govuk-tag--grey">Optional</strong>'
+        }]
+      }
     } %}
   {% endif %}
 
@@ -368,14 +373,26 @@ outcomeRow] %}
     {% include "../../partials/offenceCaption.njk" %}
     <h1 class="govuk-heading-l">Add the details for this offence</h1>
 
+    <p class="govuk-body">By duplicating this count, you have created a new count for this sentence. You can edit any details that need updating.</p>
+
     {{ govukSummaryList({
       rows: summaryRows,
       attributes: { 'data-qa': 'edit-summary-list' }
     }) }}
 
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden">Warning</span>
+        Not checking the offence information could result in a release in error
+      </strong>
+    </div>
+
+    <p class="govuk-body">Before you continue, check that all of the details for this count match the information on the warrant.</p>
+
     <div class="govuk-button-group">
       {{ govukButton({
-        text: "Accept changes",
+        text: "Confirm and continue",
         attributes: { 'data-qa': 'continue-button' }
       }) }}
       {{ govukButton({

@@ -42,7 +42,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1153.0",
+    "@aws-sdk/client-sqs": "^3.1154.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.5",
     "@microsoft/applicationinsights-web": "^3.4.5",
     "@ministryofjustice/frontend": "^11.1.0",

@@ -679,7 +679,20 @@ export default class AppealsRoutes extends BaseRoutes {
 
   public getConfirmation: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
-    return res.render('pages/appeals/confirmation', urlParameters)
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      urlParameters.appearanceReference,
+      req.user.username,
+    )
+    const hasReplaceOffence = storedAppearance.charges.some(
+      charge => charge.outcome?.outcomeUuid === REPLACEMENT_OUTCOME_UUID,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(storedAppearance.courtCode, req.user.username)
+    return res.render('pages/appeals/confirmation', {
+      ...urlParameters,
+      caseReference: storedAppearance.courtCaseReference,
+      courtDetails,
+      hasReplaceOffence,
+    })
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {

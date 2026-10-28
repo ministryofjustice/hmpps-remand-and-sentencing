@@ -51,7 +51,6 @@ const testUser: HmppsUser = {
   caseLoads: [{ caseLoadId: 'MDI', description: 'mdi prison', type: 'INST', currentlyActive: true }],
   activeCaseLoadId: 'MDI',
   hasInactiveBookingsAccess: false,
-  hasRecallsAccess: false,
   hasBookASecureMoveAccess: false,
 } as HmppsUser
 

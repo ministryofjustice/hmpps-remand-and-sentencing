@@ -2659,6 +2659,13 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     return this.renderEditOffence(req, res, duplicatedOffence.chargeUuid, 'pages/offence/add-offence-details', {
       showHearingDetails: true,
+      backLink: JourneyUrls.checkOffenceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     })
   }
 

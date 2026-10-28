@@ -91,6 +91,7 @@ describe('Duplicate offence', () => {
     const summary = $('[data-qa="edit-summary-list"]').text()
 
     expect($('h1').text()).toContain('Add the details for this offence')
+    expect($('[data-qa="back-link"]').attr('href')).toBe(`${baseUrl}/check-offence-answers`)
     expect(summary).toContain('Count 1')
     expect(summary).toContain('PS90037 An offence description')
     expect(summary).toContain('10/05/2023')

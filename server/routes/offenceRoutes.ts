@@ -201,6 +201,16 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      }
+      if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
+        backLink = AppealsJourneyUrls.selectOffenceAppealOutcome({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid: offence.replacesOffenceUuid,
+        })
       } else {
         backLink = JourneyUrls.updateOffenceOutcomes(
           nomsId,
@@ -2218,6 +2228,10 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       showAddMultipleCountsLink:
         courtAppearance.warrantType === 'NON_SENTENCING' && !courtAppearance.isCommonPlatformJourney,
+      showDuplicateOffenceLink:
+        config.featureToggles.multipleOffenceInstances &&
+        courtAppearance.warrantType === 'SENTENCING' &&
+        addOrEditCourtAppearance === 'add-court-appearance',
       overallSentenceLength,
     })
   }
@@ -2438,6 +2452,8 @@ export default class OffenceRoutes extends BaseRoutes {
           appearanceReference,
         )
       }
+    } else if (courtAppearance.warrantType === 'APPEAL') {
+      cancelLink = AppealsJourneyUrls.recordAppeal(urlParameters)
     }
 
     return res.render('pages/offence/delete-offence', {
@@ -2488,9 +2504,8 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       appearanceReference,
     )
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-
       const offenceDetails = await this.manageOffencesService.getOffenceByCode(
         deletedOffence.offenceCode,
         req.user.username,
@@ -2525,6 +2540,9 @@ export default class OffenceRoutes extends BaseRoutes {
           appearanceReference,
         ),
       )
+    }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
     }
     return res.redirect(
       JourneyUrls.checkOffenceAnswers(

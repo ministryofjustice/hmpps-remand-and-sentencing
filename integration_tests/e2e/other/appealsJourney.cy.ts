@@ -42,6 +42,7 @@ context('Appeals journey', () => {
     })
     cy.task('stubUploadDocument')
     cy.task('stubCreateCourtAppearance')
+    cy.task('stubGetAppearanceByUuid', { appearanceUuid: '([a-zA-Z0-9-]*)' })
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -135,7 +136,7 @@ context('Appeals journey', () => {
     selectOffenceAppealOutcomePage.continueButton().click()
     recordAppealPage = Page.verifyOnPage(RecordAppealPage)
     recordAppealPage
-      .appealedOffences()
+      .updatedOffences()
       .getOffenceCards()
       .should('deep.equal', [
         {

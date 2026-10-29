@@ -30,4 +30,4 @@ generic-service:
     FEATURES_MULTIPLE_OFFENCE_INSTANCES: 'false'
 
 generic-prometheus-alerts:
-  alertSeverity: legacy-replacement-alerts
+  alertSeverityOverride: legacy-replacement-alerts

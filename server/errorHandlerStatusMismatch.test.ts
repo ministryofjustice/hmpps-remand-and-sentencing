@@ -64,7 +64,9 @@ describe('errorHandler.ts vs a real SanitisedError from an API client', () => {
   }
 
   beforeAll(() => {
-    if (!nock.isActive()) nock.activate()
+    if (!nock.isActive()) {
+      nock.activate()
+    }
   })
 
   afterAll(() => {

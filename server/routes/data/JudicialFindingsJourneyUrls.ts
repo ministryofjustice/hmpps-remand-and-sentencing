@@ -4,11 +4,11 @@ import type { UrlParameters } from 'models'
 export default class JudicialFindingsJourneyUrls {
 
   static selectOffenceWithJudicialFindings = (urlParameters: UrlParameters, hasErrors?: string, fromCheckAnswers?: string): string => {
-    return `${this.basePath(urlParameters)}/select-offence-with-judicial-findings${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
+    return `${JudicialFindingsJourneyUrls.basePath(urlParameters)}/select-offence-with-judicial-findings${JudicialFindingsJourneyUrls.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
   static checkAnswers = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `${this.basePath(urlParameters)}/check-answers${this.getQueryParameters(hasErrors)}`
+    return `${JudicialFindingsJourneyUrls.basePath(urlParameters)}/check-answers${JudicialFindingsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
   private static basePath(urlParameters: UrlParameters): string {

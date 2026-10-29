@@ -128,6 +128,7 @@ describe.each([401, 403])('full snapshot/restore loop against a real %i', authFa
 
   beforeEach(() => {
     nock.cleanAll()
+    nock.enableNetConnect('127.0.0.1')
     fakeRedisStore.clear()
     jest.clearAllMocks()
     app = buildApp()

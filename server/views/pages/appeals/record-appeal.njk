@@ -43,22 +43,51 @@
         </span>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <h2 class="govuk-heading-m govuk-!-margin-top-7">
-            Offences with an appeal recorded ({{ appealedOffences.length }})
+            Offences with an appeal recorded ({{ updatedOffences.length }})
         </h2>
-        <span data-qa="appealedOffences">
-            {% for offence in appealedOffences %}
+        <span data-qa="updatedOffences">
+            {% for offence in updatedOffences %}
                 {% set offenceId = 'offences.' + offence.index %}
-                {% set recordAppealHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
-                {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
-                    listItems: {
-                        classes: 'govuk-!-margin-top-4',
-                        items: [
-                            {
-                                html: '<a href="' + recordAppealHref + '" data-qa="update-outcome-link-' + offence.chargeUuid + '">Update outcome</a>'
-                            }
-                        ]
-                    }
-                })) }}
+                {% if offence.sentence %}
+                    {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
+                        consecutiveConcurrentLink: {
+                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
+                            text: 'Select consecutive or concurrent'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/load-edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence",
+                                    attributes: {
+                                        'data-qa': 'edit-offence-link-' + offence.chargeUuid
+                                    }
+                                },
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
+                                    text: "Delete",
+                                    visuallyHiddenText: "delete offence",
+                                    attributes: {
+                                        'data-qa': 'delete-offence-link-' + offence.chargeUuid
+                                    }
+                                }
+                            ]
+                        }
+                    })) }}
+                {% else %}
+                    {% set recordAppealHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
+                    {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+                        listItems: {
+                            classes: 'govuk-!-margin-top-4',
+                            items: [
+                                {
+                                    html: '<a href="' + recordAppealHref + '" data-qa="update-outcome-link-' + offence.chargeUuid + '">Update outcome</a>'
+                                }
+                            ]
+                        }
+                    })) }}
+                {% endif%}
             {% else %}
                 {{ govukInsetText({
                             text: "There are no offences with an appeal outcome recorded",

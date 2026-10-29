@@ -31,6 +31,7 @@ generic-service:
     FEATURES_GENERATED_DOCUMENTS: 'true'
     FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'true'
     FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'true'
+    FEATURES_MULTIPLE_OFFENCE_INSTANCES: 'true'
 
   scheduledDowntime:
     enabled: true

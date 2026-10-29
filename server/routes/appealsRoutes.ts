@@ -99,32 +99,35 @@ export default class AppealsRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+    const sessionCourtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    const courtAppearanceWithoutSentences = {
-      ...courtAppearance,
-      offences: courtAppearance.offences.map(offence => {
-        const { sentence: _, ...offenceWithoutSentence } = offence
-        return offenceWithoutSentence
+    const toSaveCourtAppearance = {
+      ...sessionCourtAppearance,
+      offences: sessionCourtAppearance.offences.map(offence => {
+        if (!offence.updatedOutcome) {
+          const { sentence: _, ...offenceWithoutSentence } = offence
+          return offenceWithoutSentence
+        }
+        return offence
       }),
     }
     const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
       username,
       urlParameters.courtCaseReference,
       urlParameters.appearanceReference,
-      courtAppearanceWithoutSentences,
+      toSaveCourtAppearance,
       prisonId,
     )
     const auditDetails = {
       courtCaseUuids: [urlParameters.courtCaseReference],
       courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
-      chargesUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+      chargesUuids: sessionCourtAppearance.offences?.map(offence => offence.chargeUuid),
       sentenceUuids: [],
       periodLengthUuids: [],
-      documentUuids: (courtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
+      documentUuids: (sessionCourtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
     }
     await this.auditService.logCreateHearing({
       who: username,
@@ -445,11 +448,11 @@ export default class AppealsRoutes extends BaseRoutes {
       }),
     )
 
-    const [appealedOffences, otherOffences] = offences.reduce(
-      ([appealedList, otherList], offence) => {
-        return outcomeMap[offence.outcomeUuid].outcomeType === 'APPEAL'
-          ? [[...appealedList, offence], otherList]
-          : [appealedList, [...otherList, offence]]
+    const [updatedOffences, otherOffences] = offences.reduce(
+      ([updatedList, otherList], offence) => {
+        return offence.updatedOutcome === true
+          ? [[...updatedList, offence], otherList]
+          : [updatedList, [...otherList, offence]]
       },
       [[], []],
     )
@@ -465,7 +468,7 @@ export default class AppealsRoutes extends BaseRoutes {
       sentenceTypeMap,
       outcomeMap,
       otherOffences,
-      appealedOffences,
+      updatedOffences,
       courtMap,
       consecutiveToSentenceMap,
       errors: req.flash('errors') || [],
@@ -676,7 +679,20 @@ export default class AppealsRoutes extends BaseRoutes {
 
   public getConfirmation: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
-    return res.render('pages/appeals/confirmation', urlParameters)
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      urlParameters.appearanceReference,
+      req.user.username,
+    )
+    const hasReplacedOffence = storedAppearance.charges.some(
+      charge => charge.outcome?.outcomeUuid === REPLACEMENT_OUTCOME_UUID,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(storedAppearance.courtCode, req.user.username)
+    return res.render('pages/appeals/confirmation', {
+      ...urlParameters,
+      caseReference: storedAppearance.courtCaseReference,
+      courtDetails,
+      hasReplacedOffence,
+    })
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {

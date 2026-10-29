@@ -223,16 +223,6 @@
                                       }
                               ))%}
                             {% endif %}
-                            {% if courtCaseDetails.hasARecall and not user.hasRecallsAccess %}
-
-                                {{ govukInsetText({
-                                    text: "The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.",
-                                    classes: "govuk-!-margin-top-2",
-                                    attributes: {
-                                        "data-qa": "recallInset-" + courtCaseDetails.courtCaseUuid
-                                    }
-                                }) }}
-                            {% endif %}
 
                             {% if courtCaseDetails.mergedToCase %}
                                 {{ govukInsetText({

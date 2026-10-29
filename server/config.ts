@@ -190,5 +190,6 @@ export default {
     generatedDocuments: get('FEATURES_GENERATED_DOCUMENTS', false) === 'true',
     checkAutomaticSentenceFix: get('FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX', false, requiredInProduction) === 'true',
     replacedWithAnotherAppeals: get('FEATURES_REPLACED_WITH_ANOTHER_APPEALS', false, requiredInProduction) === 'true',
+    multipleOffenceInstances: get('FEATURES_MULTIPLE_OFFENCE_INSTANCES', false, requiredInProduction) === 'true',
   },
 }

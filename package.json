@@ -42,7 +42,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1152.0",
+    "@aws-sdk/client-sqs": "^3.1155.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.5",
     "@microsoft/applicationinsights-web": "^3.4.5",
     "@ministryofjustice/frontend": "^11.1.0",
@@ -52,7 +52,7 @@
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "accessible-autocomplete": "3.0.2",
-    "body-parser": "^2.3.0",
+    "body-parser": "^2.4.0",
     "brace-expansion": "^5.0.12",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
@@ -67,7 +67,7 @@
     "helmet": "^8.3.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
-    "multer": "^2.4.0",
+    "multer": "^2.5.0",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",

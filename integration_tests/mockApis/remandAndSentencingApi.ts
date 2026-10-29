@@ -3740,7 +3740,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/remand-and-sentencing-api/court-appearance/${appearanceUuid}`,
+        urlPathPattern: `/remand-and-sentencing-api/court-appearance/${appearanceUuid}`,
       },
       response: {
         status: 200,

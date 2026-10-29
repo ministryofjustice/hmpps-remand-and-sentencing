@@ -1,0 +1,416 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set offenceDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true" %}
+
+{% if offence.offenceStartDate %}
+  {% set offenceDateRow = {
+  key: {
+    text: "Committed on"
+  },
+  value: {
+    text: offence | offenceDatesText(false)
+  },
+  actions: {
+    items: [{
+      href: offenceDateHref,
+      text: "Edit",
+      visuallyHiddenText: "committed on",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-date-' + chargeUuid
+      }
+    }]
+  }
+}%}
+{% else %}
+{% set offenceDateRow = {
+      key: { text: "Committed on" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter committed on date</a>'
+      }
+    }%}
+{% endif %}
+
+
+{% if showOutcomeCta %}
+  {% set outcomeRow = {
+    key: { text: "Outcome" },
+    value: {
+      html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true&backTo=editOffence" class="govuk-link govuk-link--no-visited-state" data-qa="update-outcome-cta">Update outcome</a>'
+    }
+  }%}
+{% else %}
+  {% set outcomeRow = {
+    key: { text: "Outcome" },
+    value: {
+      text: outcome | outcomeValueOrLegacy(offence.legacyData)
+    },
+    actions:{
+      items: [] if isBreachGeneratedOffence else [{
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
+      text: "Edit",
+      visuallyHiddenText: "outcome",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-outcome-' + chargeUuid
+      }
+    }]
+    }
+  }%}
+{% endif %}
+
+
+{% set summaryRows=[{
+  key: {
+    text: "Offence"
+  },
+  value: {
+    text: offence.offenceCode + " " + offenceMap[offence.offenceCode]
+  },
+  actions: {
+    items: [] if isBreachGeneratedOffence else [{
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-code?submitToEditOffence=true",
+      text: "Edit",
+      visuallyHiddenText: "offence code",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-code-' + chargeUuid
+      }
+    }]
+  }
+},
+offenceDateRow,
+outcomeRow] %}
+
+{% if offence.sentence %}
+  {% set countNumberHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true" %}
+  {% if offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
+    {% set countNumberRow = {
+      key: { text: "Count number" },
+      value: { text: "Count " + offence.sentence.countNumber },
+      actions: {
+        items: [{
+          href: countNumberHref,
+          text: "Edit",
+          visuallyHiddenText: "count number",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+                    'data-qa': 'edit-count-number-' + chargeUuid
+                  }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set countNumberRow = {
+      key: { text: "Count number" },
+      value: {
+          html: '<a class="govuk-link govuk-link--no-visited-state" href="' + countNumberHref + '">Enter count number</a>',
+          attributes: {
+            'data-qa': 'enter-count-number-' + chargeUuid
+          }
+        },
+      actions: {
+        items: [{
+          html: '<strong class="govuk-tag govuk-tag--grey">Optional</strong>'
+        }]
+      }
+    } %}
+  {% endif %}
+
+  {% set convictionDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true" %}
+
+  {% if offence.sentence.convictionDate %}
+    {% set convictionDateRow = {
+      key: { text: "Conviction date" },
+      value: {
+        text: (offence.sentence.convictionDate | formatDate)
+      },
+      actions: {
+        items: [{
+          href: convictionDateHref,
+          text: "Edit",
+          visuallyHiddenText: "conviction date",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+                    'data-qa': 'edit-conviction-date-' + chargeUuid
+                  }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set convictionDateRow = {
+      key: { text: "Conviction date" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + convictionDateHref + '" data-qa="edit-conviction-date-' + chargeUuid + '">Enter conviction date</a>'
+      }
+    }%}
+  {% endif %}
+
+  {% set sentenceTypeValidatorHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/validate-sentence-type-access"%}
+
+  {% if sentenceType %}
+    {% set sentenceTypeRow = {
+      key: { text: "Sentence type" },
+      value: {
+        text: sentenceType
+      },
+      actions: {
+        items: [] if isBreachGeneratedOffence else [{
+          href: sentenceTypeValidatorHref,
+          text: "Edit",
+          visuallyHiddenText: "sentence type",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-sentence-type-' + chargeUuid
+          }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set sentenceTypeRow = {
+      key: { text: "Sentence type" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeValidatorHref + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
+      }
+    }%}
+  {% endif %}
+
+
+  {% set periodLengthRows = [] %}
+
+  {% for periodLength in periodLengths %}
+    {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type + "&submitToEditOffence=true" %}
+    {% set periodLengthValue = {
+      html: '<a href="' + periodLengthEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '">Enter ' + periodLength.key + '</a>'
+    } %}
+    {% if periodLength.lengths.length > 0 %}
+      {% if periodLength.lengths.length === 1 %}
+        {% set periodLengthValue = {
+          text: periodLength.lengths[0] | formatLengths
+        } %}
+      {% else %}
+        {% set periodLengthValueHtml = '' %}
+
+        {% for specificLength in periodLength.lengths %}
+          {% set periodLengthValueHtml = periodLengthValueHtml + (specificLength | formatLengths) %}
+          {% if not loop.last %}
+            {% set periodLengthValueHtml = periodLengthValueHtml + '<br>' %}
+          {% endif %}
+        {% endfor %}
+        {% set periodLengthValue = {
+          html: periodLengthValueHtml
+        } %}
+        {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/correct-many-period-length?periodLengthType=" + periodLength.type + (("&legacyCode= " + periodLength.legacyCode) if periodLength.legacyCode) %}
+      {% endif %}
+    {% endif %}
+    {% set periodLengthRows = (periodLengthRows.concat({
+      key: { text: periodLength.key | capitalize },
+      value: periodLengthValue,
+      actions: {
+        items: [{
+          href: periodLengthEditLink,
+          text: "Edit",
+          visuallyHiddenText: periodLength.key | capitalize,
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-period-length-' + periodLength.type + '-' + chargeUuid
+          }
+        }] if periodLength.lengths.length else []
+      }
+    })) %}
+  {% endfor %}
+
+  {% if sentenceTypeClassification === 'FINE' %}
+    {% set fineAmountHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/fine-amount?submitToEditOffence=true" %}
+    {% if offence.sentence.fineAmount %}
+      {% set fineAmountRow = {
+      key: { text: "Fine Amount" },
+      value: { text: "£" + offence.sentence.fineAmount },
+      actions: {
+        items: [{
+          href: fineAmountHref,
+          text: "Edit",
+          visuallyHiddenText: "fine amount",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-fine-amount-' + chargeUuid
+          }
+        }]
+      }
+      } %}
+    {% else %}
+      {% set fineAmountRow = {
+      key: { text: "Fine Amount" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + fineAmountHref + '" data-qa="edit-fine-amount-cta">Enter fine amount</a>'
+      }
+    }%}
+    {% endif %}
+  {% endif %}
+
+  {% set sentenceServeTypeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true" %}
+  {% if offence.sentence.sentenceServeType %}
+    {% set consecutiveOrConcurrentRow = {
+      key: { text: "Consecutive or concurrent" },
+      value: { text: offence.sentence.sentenceServeType | capitalize },
+      actions: {
+        items: [{
+          href: sentenceServeTypeHref,
+          text: "Edit",
+          visuallyHiddenText: "consecutive or concurrent",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-sentence-serve-type-' + chargeUuid
+          }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set consecutiveOrConcurrentRow = {
+      key: { text: "Consecutive or concurrent" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceServeTypeHref + '" data-qa="edit-sentence-serve-type-cta">Enter a consecutive or concurrent</a>'
+      }
+    } %}
+  {% endif %}
+  {% set consecutiveOrConcurrentRows = [consecutiveOrConcurrentRow] %}
+
+  {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
+    {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
+    {% set consecutiveToValue = {
+      html: '<a href="' + consecutiveToEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
+    } %}
+    {% if consecutiveToDetails %}
+      {% set consecutiveToValue = {
+        text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
+      } %}
+    {% endif %}
+    {% set consecutiveOrConcurrentRows = (consecutiveOrConcurrentRows.concat({
+      key: { text: "Consecutive to" },
+      value: consecutiveToValue,
+      actions: {
+        items: [{
+          href: consecutiveToEditLink,
+          text: "Edit",
+          visuallyHiddenText: "consecutive to",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-consecutive-to-' + chargeUuid
+          }
+        }] if consecutiveToDetails else []
+      }
+    })) %}
+  {% endif %}
+  {% set aggravatingFactorsList = offence.aggravatingFactors or [] %}
+  {% if aggravatingFactorsList.length > 0 %}
+    {% set aggHtml %}
+      <ul class="govuk-list">
+        {% for factor in aggravatingFactorsList %}
+          <li>{{ factor.title }}</li>
+        {% endfor %}
+      </ul>
+    {% endset %}
+    {% set aggravatingFactorsRow = {
+      key: { text: "Aggravating factors" },
+      value: { html: aggHtml },
+      actions: {
+        items: [{
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?isEditing=true&returnTo=editOffence",
+          text: "Edit",
+          visuallyHiddenText: "aggravating factors",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-aggravating-factors-' + chargeUuid
+          }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set addLink = '<a class="govuk-link" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/aggravating-factors/' + chargeUuid + '/select-which-aggravating-factors-apply?returnTo=editOffence" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
+    {% set aggravatingFactorsRow = {
+      key: { text: "Aggravating factors" },
+      value: { html: addLink }
+    } %}
+  {% endif %}
+
+  {% if showJudicialFindingsRow %}
+    {% set selectJudicialFindingsLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/select-judicial-findings"%}
+    {% if offence.findingOfDomesticAbuse %}
+      {% set judicialFindingsRow= {
+          key: { text: "Judicial findings"},
+          value: { text: "Finding of domestic abuse" },
+          actions: {
+            items: [{
+              href: selectJudicialFindingsLink,
+              text: "Edit",
+              visuallyHiddenText: "judicial findings",
+              classes: "govuk-link--no-visited-state",
+              attributes: {
+                'data-qa': 'edit-judicial-findings-link'
+              }
+            }]
+          }
+        }%}
+    {% else %}
+      {% set judicialFindingsRow= {
+        key: { text: "Judicial findings"},
+        value: { html: '<a class="govuk-link govuk-link--no-visited-state" href="' + selectJudicialFindingsLink + '" data-qa="add-judicial-findings-cta">Add judicial finding of domestic abuse</a>'  }
+      }%}
+    {% endif %}
+  {% endif %}
+
+  {% if isBreachGeneratedOffence %}
+    {% set summaryRows = (summaryRows.concat([sentenceTypeRow], periodLengthRows, consecutiveOrConcurrentRows)) %}
+  {% else %}
+    {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow], periodLengthRows, [fineAmountRow], consecutiveOrConcurrentRows, [aggravatingFactorsRow])) %}
+    {% if judicialFindingsRow %}
+      {% set summaryRows = (summaryRows.concat(judicialFindingsRow)) %}
+    {% endif %}
+  {% endif %}
+
+
+{% endif %}
+
+
+
+{% set pageTitle = applicationName + " - Add the details for this offence" %}
+{% block pageContent %}
+  {{ super() }}
+  <form method="post" autocomplete="off">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% include "../../partials/offenceCaption.njk" %}
+    <h1 class="govuk-heading-l">Add the details for this offence</h1>
+
+    <p class="govuk-body">By duplicating this count, you have created a new count for this sentence. You can edit any details that need updating.</p>
+
+    {{ govukSummaryList({
+      rows: summaryRows,
+      attributes: { 'data-qa': 'edit-summary-list' }
+    }) }}
+
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden">Warning</span>
+        Not checking the offence information could result in a release in error
+      </strong>
+    </div>
+
+    <p class="govuk-body">Before you continue, check that all of the details for this count match the information on the warrant.</p>
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Confirm and continue",
+        attributes: { 'data-qa': 'continue-button' }
+      }) }}
+      {{ govukButton({
+        text: "Cancel changes",
+        classes: "govuk-button--secondary",
+        attributes: { 'data-qa': 'cancel-button' },
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/cancel-offence"
+      }) }}
+    </div>
+  </form>
+{% endblock %}

@@ -63,6 +63,9 @@ describe('GET Check offence answers page', () => {
 
     expect(duplicateLink.length).toBe(enabled ? 1 : 0)
     if (enabled) {
+      expect(duplicateLink.closest('.offence-card-offence-details [data-qa="offenceCardList"]').length).toBe(1)
+      expect(duplicateLink.closest('[data-qa="offenceCardList"]').prev('[data-qa="offenceSummaryList"]').length).toBe(1)
+      expect($('.offence-card-actions [data-qa="duplicate-offence-link-2"]').length).toBe(0)
       expect(duplicateLink.text().trim()).toBe('Duplicate this offence')
       expect(duplicateLink.attr('href')).toBe(
         '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/2/duplicate-offence',

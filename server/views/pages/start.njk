@@ -66,7 +66,7 @@
                         summaryText: "What are the updates?",
                         open: true
                     }) %}
-                        The single sentence has been split into individual sentences for each offence, which are:
+                        The single sentence has been split into individual sentences for each offence. The sentences that have been affected are:
                         <ul class="govuk-list govuk-list--bullet" data-qa="unconfirmedCourtCaseSentenceList">
                         {% for sentence in unconfirmedCourtCaseSentences %}
                             <li>{{sentence.offenceCode}} {{ offenceMap[sentence.offenceCode] }}<br>

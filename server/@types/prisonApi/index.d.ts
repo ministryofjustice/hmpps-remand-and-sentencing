@@ -21553,17 +21553,7 @@ export interface operations {
          * @example ASSIAL
          */
         participationRoles:
-          | 'ACTINV'
-          | 'ASSIAL'
-          | 'FIGHT'
-          | 'IMPED'
-          | 'PERP'
-          | 'SUSASS'
-          | 'SUSINV'
-          | 'VICT'
-          | 'AI'
-          | 'PAS'
-          | 'AO'
+          'ACTINV' | 'ASSIAL' | 'FIGHT' | 'IMPED' | 'PERP' | 'SUSASS' | 'SUSINV' | 'VICT' | 'AI' | 'PAS' | 'AO'
       }
       path: {
         /** @description bookingId */

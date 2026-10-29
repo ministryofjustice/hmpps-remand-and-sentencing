@@ -2780,11 +2780,7 @@ export interface components {
       appearanceOutcomeUuid: string
       /** @enum {string} */
       immigrationDetentionRecordType:
-        | 'IS91'
-        | 'DEPORTATION_ORDER'
-        | 'NO_LONGER_OF_INTEREST'
-        | 'IMMIGRATION_BAIL'
-        | 'UNKNOWN'
+        'IS91' | 'DEPORTATION_ORDER' | 'NO_LONGER_OF_INTEREST' | 'IMMIGRATION_BAIL' | 'UNKNOWN'
       /** Format: date */
       recordDate: string
       homeOfficeReferenceNumber?: string | null
@@ -4462,11 +4458,7 @@ export interface components {
       prisonerId: string
       /** @enum {string} */
       immigrationDetentionRecordType:
-        | 'IS91'
-        | 'DEPORTATION_ORDER'
-        | 'NO_LONGER_OF_INTEREST'
-        | 'IMMIGRATION_BAIL'
-        | 'UNKNOWN'
+        'IS91' | 'DEPORTATION_ORDER' | 'NO_LONGER_OF_INTEREST' | 'IMMIGRATION_BAIL' | 'UNKNOWN'
       /** Format: date */
       recordDate: string
       homeOfficeReferenceNumber?: string | null

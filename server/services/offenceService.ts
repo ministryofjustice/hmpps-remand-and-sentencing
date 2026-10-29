@@ -102,7 +102,7 @@ export default class OffenceService {
     }
 
     let isValidOffenceEndDateRule = ''
-    let endDateString = ''
+    let endDateString: string
     if (
       offenceOffenceDateForm['offenceEndDate-day'] &&
       offenceOffenceDateForm['offenceEndDate-month'] &&

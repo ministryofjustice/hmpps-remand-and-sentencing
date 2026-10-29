@@ -1,3 +1,5 @@
+/* eslint-disable import-x/first */
+
 import express from 'express'
 import session from 'express-session'
 import request from 'supertest'
@@ -13,9 +15,7 @@ jest.mock('../errorHandler', () => ({
   snapshotSessionForRecovery: jest.fn(),
 }))
 
-// eslint-disable-next-line import/first
 import setupAuthentication from './setUpAuthentication'
-// eslint-disable-next-line import/first
 import { snapshotSessionForRecovery } from '../errorHandler'
 
 function init() {

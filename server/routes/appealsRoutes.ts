@@ -799,7 +799,11 @@ export default class AppealsRoutes extends BaseRoutes {
       .reduce(
         ([appealedList, nonAppealedList], offence) => {
           const outcome = outcomeMap[offence.outcomeUuid]
-          if (outcome?.outcomeType === 'APPEAL') {
+          if (
+            outcome?.outcomeType === 'APPEAL' ||
+            offence.sentence ||
+            offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID
+          ) {
             return [[...appealedList, offence], nonAppealedList]
           }
           return [appealedList, [...nonAppealedList, offence]]

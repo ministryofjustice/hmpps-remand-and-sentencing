@@ -126,6 +126,15 @@ describe.each([401, 403])('full snapshot/restore loop against a real %i', authFa
     return built
   }
 
+  beforeAll(() => {
+    if (!nock.isActive()) nock.activate()
+  })
+
+  afterAll(() => {
+    nock.cleanAll()
+    nock.restore()
+  })
+
   beforeEach(() => {
     nock.cleanAll()
     nock.enableNetConnect('127.0.0.1')

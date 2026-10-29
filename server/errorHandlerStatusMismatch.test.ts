@@ -63,6 +63,15 @@ describe('errorHandler.ts vs a real SanitisedError from an API client', () => {
     return testApp
   }
 
+  beforeAll(() => {
+    if (!nock.isActive()) nock.activate()
+  })
+
+  afterAll(() => {
+    nock.cleanAll()
+    nock.restore()
+  })
+
   beforeEach(() => {
     nock.cleanAll()
     app = buildApp()

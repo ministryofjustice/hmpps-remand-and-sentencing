@@ -1581,11 +1581,7 @@ export interface components {
       shortReference: string
       /** @enum {string} */
       misMatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'FATAL_EXCEPTION'
+        'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE' | 'FATAL_EXCEPTION'
       sdsSentencesIdentified: components['schemas']['JsonNode']
       establishment?: string
       fatalException?: string
@@ -1644,11 +1640,7 @@ export interface components {
       hasDiscrepancyRecord: boolean
       /** @enum {string} */
       mismatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'FATAL_EXCEPTION'
+        'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE' | 'FATAL_EXCEPTION'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
@@ -1960,9 +1952,7 @@ export interface components {
       calculationBreakdown?: components['schemas']['CalculationBreakdown']
       /** @enum {string} */
       breakdownMissingReason?:
-        | 'PRISON_API_DATA_MISSING'
-        | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
-        | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
+        'PRISON_API_DATA_MISSING' | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION' | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
       /** @enum {string} */
       tranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
     }

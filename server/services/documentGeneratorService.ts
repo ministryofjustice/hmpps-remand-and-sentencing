@@ -14,7 +14,7 @@ export default class DocumentGeneratorService {
   ) {}
 
   public async streamDocumentGeneratedDocument(req, res, documentType): Promise<FileDownload> {
-    let result: FileDownload = null
+    let result: FileDownload
     switch (documentType) {
       case 'f986': {
         result = await this.generateF986(req, res)

@@ -34,7 +34,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       statuses,
       createChargeOutcome,
       errors: req.flash('errors') || [],
-      backLink: ReferenceDataJourneyUrls.viewChargeOutcomes(),
+      backLink: ReferenceDataJourneyUrls.viewHmctsChargeOutcomes(),
     })
   }
 
@@ -45,7 +45,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       // await this.refDataService.createChargeOutcome(createChargeOutcome, req.user.username)
       // await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully created')
-      return res.redirect(ReferenceDataJourneyUrls.viewChargeOutcomes())
+      return res.redirect(ReferenceDataJourneyUrls.viewHmctsChargeOutcomes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -82,7 +82,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       statuses,
       updateChargeOutcome,
       errors: req.flash('errors') || [],
-      backLink: ReferenceDataJourneyUrls.viewChargeOutcomes(),
+      backLink: ReferenceDataJourneyUrls.viewHmctsChargeOutcomes(),
     })
   }
 
@@ -94,7 +94,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       // await this.refDataService.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, req.user.username)
       // await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully updated')
-      return res.redirect(ReferenceDataJourneyUrls.viewChargeOutcomes())
+      return res.redirect(ReferenceDataJourneyUrls.viewHmctsChargeOutcomes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError

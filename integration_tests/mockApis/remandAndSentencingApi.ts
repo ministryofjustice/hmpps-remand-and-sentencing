@@ -357,7 +357,7 @@ export default {
               canBreach: true,
               hasUnconfirmedConsecutiveToFixSentences: false,
               hasRecalls: false,
-              canAddHearing: true,
+              canAddHearing: false,
             },
             {
               prisonerId: 'A1234AB',

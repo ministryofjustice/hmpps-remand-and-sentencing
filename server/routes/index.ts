@@ -23,7 +23,7 @@ import datafixAdminRoutes from './datafixAdminRoutes'
 import JudicialFindingsRoutes from './judicialFindingsRoutes'
 import DocumentGeneratorRoutes from './documentGeneratorRoutes'
 import AutomaticSentenceFixRoutes from './automaticSentenceFixRoutes'
-import hmctsChargeOutcomeDataAdminRoutes from "./hmctsChargeOutcomeDataAdminRoutes";
+import hmctsChargeOutcomeDataAdminRoutes from './hmctsChargeOutcomeDataAdminRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()

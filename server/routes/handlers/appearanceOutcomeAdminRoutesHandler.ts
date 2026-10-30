@@ -36,7 +36,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
     const dispositionCodes = new Set(appearanceOutcomes.map(outcome => outcome.dispositionCode))
     const warrantTypes = new Set(appearanceOutcomes.map(outcome => outcome.warrantType))
     const sortedChargeOutcomes = chargeOutcomes.sort((a, b) => a.outcomeName.localeCompare(b.outcomeName))
-    const statuses: CreateAppearanceOutcome['status'][] = ['ACTIVE', 'INACTIVE']
+    const statuses: CreateAppearanceOutcome['status'][] = ['ACTIVE', 'INACTIVE', 'LEGACY']
     const createAppearanceOutcome = (req.flash('createAppearanceOutcome')[0] || {}) as CreateAppearanceOutcome
     return res.render('pages/referenceData/appearanceOutcome/add', {
       types,
@@ -89,7 +89,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
     const dispositionCodes = new Set(appearanceOutcomes.map(outcome => outcome.dispositionCode))
     const warrantTypes = new Set(appearanceOutcomes.map(outcome => outcome.warrantType))
     const sortedChargeOutcomes = chargeOutcomes.sort((a, b) => a.outcomeName.localeCompare(b.outcomeName))
-    const statuses: CreateAppearanceOutcome['status'][] = ['ACTIVE', 'INACTIVE']
+    const statuses: CreateAppearanceOutcome['status'][] = ['ACTIVE', 'INACTIVE', 'LEGACY']
     const updateAppearanceOutcome = (req.flash('updateAppearanceOutcome')[0] || {
       ...existingAppearanceOutcome,
     }) as CreateAppearanceOutcome

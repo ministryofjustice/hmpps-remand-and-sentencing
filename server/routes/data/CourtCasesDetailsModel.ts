@@ -127,7 +127,7 @@ export default class CourtCasesDetailsModel {
         ?.filter(charge => charge.sentence?.sentenceType)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
     )
-    this.hasARecall = pagedCourtCase.latestCourtAppearance.charges.some(charge => charge.sentence?.hasRecall)
+    this.hasARecall = pagedCourtCase.hasRecalls
     this.mergedFromCases = pagedCourtCase.mergedFromCases
     this.allAppearancesHaveRecall = pagedCourtCase.allAppearancesHaveRecall
     this.mergedToCase = pagedCourtCase.mergedToCase
@@ -135,7 +135,6 @@ export default class CourtCasesDetailsModel {
       pagedCourtCase.latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid ?? crypto.randomUUID()
     this.canAppeal = pagedCourtCase.canAppeal && this.overallCaseStatus !== 'MERGED'
     this.canBreach = pagedCourtCase.canBreach && this.overallCaseStatus !== 'MERGED'
-    this.canAddHearing =
-      !this.canAppeal && !this.canBreach && this.warrantType !== 'SENTENCING' && this.overallCaseStatus !== 'MERGED'
+    this.canAddHearing = pagedCourtCase.canAddHearing
   }
 }

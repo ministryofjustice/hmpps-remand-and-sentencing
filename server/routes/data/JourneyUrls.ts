@@ -164,7 +164,7 @@ export default class JourneyUrls {
     includeCasesFromPreviousPeriodsOfCustody?: string,
     pageNumber?: number | string,
   ) => {
-    return `/person/${nomsId}${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+    return `/person/${nomsId}${JourneyUrls.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
   }
 
   private static getCourtCasesQueryParameters = (
@@ -201,7 +201,7 @@ export default class JourneyUrls {
     includeCasesFromPreviousPeriodsOfCustody: string,
     pageNumber: number | string,
   ) => {
-    return `/person/${nomsId}/check-automatic-sentence-fix${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+    return `/person/${nomsId}/check-automatic-sentence-fix${JourneyUrls.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
   }
 
   static confirmConsecutiveToSentenceFixes = (
@@ -212,7 +212,7 @@ export default class JourneyUrls {
     includeCasesFromPreviousPeriodsOfCustody: string,
     pageNumber: number | string,
   ) => {
-    return `/person/${nomsId}/confirm-consecutive-to-sentence-fix${this.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+    return `/person/${nomsId}/confirm-consecutive-to-sentence-fix${JourneyUrls.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
   }
 
   static sentenceType = (

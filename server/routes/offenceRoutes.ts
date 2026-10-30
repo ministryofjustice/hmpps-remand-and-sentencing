@@ -194,7 +194,6 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'NON_SENTENCING') {
-        // eslint-disable-next-line no-useless-assignment -- always overwritten below; likely missing `else if`
         backLink = JourneyUrls.reviewOffences(
           nomsId,
           addOrEditCourtCase,
@@ -202,8 +201,7 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
-      }
-      if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
+      } else if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
         backLink = AppealsJourneyUrls.selectOffenceAppealOutcome({
           nomsId,
           addOrEditCourtCase,

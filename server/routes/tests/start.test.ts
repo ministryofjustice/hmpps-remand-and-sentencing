@@ -69,6 +69,8 @@ const defaultPagedCourtCase: PagedCourtCase = {
   canAppeal: false,
   canBreach: false,
   hasUnconfirmedConsecutiveToFixSentences: false,
+  hasRecalls: false,
+  canAddHearing: true,
 }
 
 const defaultSearchCourtCasesResponse: SearchCourtCasesPage = {

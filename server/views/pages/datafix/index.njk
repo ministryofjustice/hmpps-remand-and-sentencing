@@ -1,0 +1,44 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% block content %}
+    {% if success %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full govuk-!-margin-top-2">
+                {{ govukNotificationBanner({
+                        text: "Successfully kicked off fix, ask a dev to check the logs for when its completed",
+                        type: "success",
+                        attributes: {  'data-qa': 'success-banner' }
+                    }) }}
+            </div>
+        </div>
+        {% endif %}
+    <div class="govuk-grid-row">
+        <div class="govuk-!-width-three-quarters govuk-!-margin-top-8">
+
+                <form method="post">
+                    <h1 class="govuk-heading-l">Data fix admin</h1>
+                    <p class="govuk-body">
+                        Currently the only thing that can be data fixed is many charges to single sentence. To kick this off supply a list of prisoner ids below and click continue.
+                    </p>
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                        {{ govukTextarea({
+                            name: "prisonerIds",
+                            id: "prisonerIds",
+                            value: prisonerIds,
+                            rows: 12
+                        }) }}
+
+                        {{ govukButton({
+                            text: "Continue",
+                            preventDoubleClick: true,
+                            type: submit,
+                            attributes: {  'data-qa': 'continue-button' }
+                        }) }}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

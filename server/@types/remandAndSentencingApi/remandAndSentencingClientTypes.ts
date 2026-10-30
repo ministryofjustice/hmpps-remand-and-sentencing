@@ -1,4 +1,4 @@
-import { components } from './index'
+import { components } from './index.d'
 
 export type CreateCourtCase = components['schemas']['CreateCourtCase']
 
@@ -9,6 +9,8 @@ export type CreateNextCourtAppearance = components['schemas']['CreateNextCourtAp
 export type CreateCharge = components['schemas']['CreateCharge']
 
 export type CreateCourtCaseResponse = components['schemas']['CreateCourtCaseResponse']
+
+export type UpdateCourtCaseStatus = components['schemas']['UpdateCourtCaseStatus']
 
 export type CreateCourtAppearanceResponse = components['schemas']['CreateCourtAppearanceResponse']
 
@@ -90,6 +92,9 @@ export type HasSentenceAfterOnOtherCourtAppearanceResponse =
 export type SentencesAfterOnOtherCourtAppearanceDetailsResponse =
   components['schemas']['SentencesAfterOnOtherCourtAppearanceDetailsResponse']
 
+export type SentenceUuidsWithActiveSentencesAfterResponse =
+  components['schemas']['SentenceUuidsWithActiveSentencesAfterResponse']
+
 export type MergedFromCase = components['schemas']['MergedFromCase']
 
 export type MergedToCaseDetails = components['schemas']['MergedToCaseDetails']
@@ -143,3 +148,13 @@ export type SentencedCharges = components['schemas']['SentencedCharges']
 export type AggravatingFactor = components['schemas']['AggravatingFactor']
 
 export type DeleteSentenceStatusDetails = components['schemas']['DeleteSentenceStatusDetails']
+
+export type FixSingleSentenceMultipleChargesPeople = components['schemas']['FixSingleSentenceMultipleChargesPeople']
+
+export type CreateF986 = components['schemas']['CreateF986']
+
+export type F986EligibleCourtAppearance = components['schemas']['F986EligibleCourtAppearance']
+
+export type UnconfirmedCourtCases = components['schemas']['UnconfirmedCourtCases']
+
+export type ConfirmConsecutiveToSentenceFixes = components['schemas']['ConfirmConsecutiveToSentenceFixes']

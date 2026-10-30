@@ -1,10 +1,12 @@
 import { jwtDecode } from 'jwt-decode'
 import express from 'express'
+import { UUID } from 'crypto'
 import { convertToTitleCase } from '../utils/utils'
 import logger from '../../logger'
 import UserService from '../services/userService'
 import { CaseLoad } from '../@types/prisonApi/types'
 import { AuthSource } from '../interfaces/hmppsUser'
+import { Role, Roles } from '../@types/roles'
 
 export default function setUpCurrentUser(userService: UserService) {
   const router = express.Router()
@@ -14,11 +16,13 @@ export default function setUpCurrentUser(userService: UserService) {
       const {
         name,
         user_id: userId,
+        user_uuid: userUuid,
         authorities: roles = [],
         auth_source: authSource,
       } = jwtDecode(res.locals.user.token) as {
         name?: string
         user_id?: string
+        user_uuid?: UUID
         authorities?: string[]
         auth_source?: AuthSource
       }
@@ -26,6 +30,7 @@ export default function setUpCurrentUser(userService: UserService) {
       res.locals.user = {
         ...res.locals.user,
         userId,
+        userUuid,
         name,
         displayName: convertToTitleCase(name),
         userRoles,
@@ -34,9 +39,8 @@ export default function setUpCurrentUser(userService: UserService) {
 
       if (res.locals.user.authSource === 'nomis') {
         res.locals.user.staffId = userId !== undefined ? parseInt(userId, 10) : undefined
-        res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
-        res.locals.user.hasRecallsAccess = userRoles.includes('RECALL_MAINTAINER')
-        res.locals.user.hasBookASecureMoveAccess = userRoles.includes('PECS_PRISON')
+        res.locals.user.hasInactiveBookingsAccess = userRoles.includes(Roles.getRole(Role.INACTIVE_BOOKINGS))
+        res.locals.user.hasBookASecureMoveAccess = userRoles.includes(Roles.getRole(Role.PECS_PRISON))
         await getUserCaseLoads(res, userService)
       }
 

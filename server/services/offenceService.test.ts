@@ -73,6 +73,42 @@ describe('offenceService', () => {
     expect(offence.offenceEndDate).toBeUndefined()
   })
 
+  describe('markSentenceAsActive', () => {
+    it('sets the sentence status to ACTIVE and clears any previously stored reason', () => {
+      const offence = {
+        chargeUuid: '1',
+        sentence: {
+          sentenceUuid: '1',
+          status: 'INACTIVE',
+          reason: 'Sentence quashed on appeal',
+        },
+      } as Offence
+
+      const errors = service.markSentenceAsActive(offence, { confirmMarkAsActive: 'true' })
+
+      expect(errors.length).toBe(0)
+      expect(offence.sentence.status).toBe('ACTIVE')
+      expect(offence.sentence.reason).toBeUndefined()
+    })
+
+    it('does not change the sentence when the user selects no', () => {
+      const offence = {
+        chargeUuid: '1',
+        sentence: {
+          sentenceUuid: '1',
+          status: 'INACTIVE',
+          reason: 'Sentence quashed on appeal',
+        },
+      } as Offence
+
+      const errors = service.markSentenceAsActive(offence, { confirmMarkAsActive: 'false' })
+
+      expect(errors.length).toBe(0)
+      expect(offence.sentence.status).toBe('INACTIVE')
+      expect(offence.sentence.reason).toBe('Sentence quashed on appeal')
+    })
+  })
+
   describe('validateOffenceMandatoryFields', () => {
     it('no errors for if no sentence on offence', () => {
       const offence = {} as Offence

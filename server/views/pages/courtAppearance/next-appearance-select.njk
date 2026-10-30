@@ -6,7 +6,7 @@
 {% set pageTitle = applicationName + " - Next appearance been set" %}
 {% block pageContent %}
     {{ super() }}
-    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/next-appearance-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios({
@@ -15,20 +15,23 @@
             errorMessage: errors | findError('nextAppearanceSelect'),
             fieldset: {
                 legend: {
-                text: "Has the next appearance been set?",
+                text: "Do you need to record the next appearance date?",
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--l"
                 }
             },
+            hint: {
+                text: "You do not need to record a next appearance date if it is in the past"
+            },
             items: [
                 {
                     value: "true",
-                    text: "Yes, it has been set",
+                    text: "Yes, the date has been set",
                     checked: nextAppearanceSelectForm.nextAppearanceSelect === 'true'
                 },
                 {
                     value: "false",
-                    text: "No, date to be fixed",
+                    text: "No",
                     checked: nextAppearanceSelectForm.nextAppearanceSelect === 'false'
                 }
             ]

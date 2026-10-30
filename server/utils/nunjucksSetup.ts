@@ -12,6 +12,7 @@ import {
   formatMergedFromCase,
   formatCountNumber,
   groupAndSortPeriodLengths,
+  sentenceStatusTagText,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -44,6 +45,7 @@ import type {
   PagedMergedToCase,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { BREACH_WARRANT_TYPES } from './constants'
 
 type Error = {
   href: string
@@ -65,6 +67,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.buildNumber = config.buildNumber
   app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
+  app.locals.breachWarrantTypes = BREACH_WARRANT_TYPES
+  app.locals.showGeneratedDocuments = config.featureToggles.generatedDocuments
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'
@@ -219,6 +223,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
   njkEnv.addFilter('formatMergedFromCase', formatMergedFromCase)
   njkEnv.addFilter('formatCountNumber', formatCountNumber)
+  njkEnv.addFilter('sentenceStatusTagText', sentenceStatusTagText)
   njkEnv.addFilter('groupAndSortPeriodLengths', groupAndSortPeriodLengths)
   njkEnv.addFilter(
     'formatOverallMergedFromCase',
@@ -288,22 +293,25 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return {
         offenceCode: offence.offenceCode,
         offenceName: offenceMap[offence.offenceCode],
-        offenceStartDate: formatDate(offence.offenceStartDate),
+        offenceStartDate: formatDate(offence.offenceStartDate) ?? 'Not entered',
         offenceEndDate: formatDate(offence.offenceEndDate),
         outcome: outcomeValueOrLegacy(outcomeMap[offence.outcomeUuid]?.outcomeName, offence.legacyData),
         countNumber: offence.sentence?.countNumber,
         lineNumber: offence.sentence?.legacyData?.nomisLineReference,
         convictionDate: formatDate(offence.sentence?.convictionDate),
         aggravatingFactors: getAggravatingFactors(offence),
+        findingOfDomesticAbuse: offence.findingOfDomesticAbuse,
         isSentenced: offence.sentence,
         periodLengths: offence.sentence?.periodLengths,
         sentenceServeType: offence.sentence?.sentenceServeType,
+        sentenceStatus: offence.sentence?.status,
         consecutiveTo: consecutiveToSentenceMap[offence.sentence?.consecutiveToSentenceUuid],
         sentenceType: sentenceTypeValueOrLegacy(
           sentenceTypeMap[offence.sentence?.sentenceTypeId],
           offence.sentence?.legacyData,
         ),
         fineAmount: offence.sentence?.fineAmount,
+        mergedFromCase: offence.mergedFromCase,
         courtDetails: courtMap,
         id: offenceId,
         errorMessages: findErrorsBeginningWith(errors, offenceId),
@@ -311,4 +319,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       }
     },
   )
+  njkEnv.addFilter('offenceDatesText', (offence: Offence, prependCommittedOn: boolean = true) => {
+    if (offence.offenceStartDate) {
+      return `${prependCommittedOn ? 'Committed on ' : ''}${formatDate(offence.offenceStartDate)}${offence.offenceEndDate ? ` to ${formatDate(offence.offenceEndDate)}` : ''}`
+    }
+    return undefined
+  })
 }

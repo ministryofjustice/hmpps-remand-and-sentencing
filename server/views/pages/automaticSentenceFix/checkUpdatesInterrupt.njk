@@ -1,0 +1,42 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
+
+{% set pageTitle = applicationName + " - check the automatic updates are correct" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "Check the automatic update are correct",
+                primaryAction: {
+                    text: "Continue",
+                    href: continueLink,
+                    attributes: {
+                        "data-qa": "continue-button"
+                    }
+                }
+            }) %}
+                <p class="govuk-body govuk-!-width-three-quarters">
+                    Multiple offences were attached to a single sentence on NOMIS. This service has automatically split these in to individual sentences for each offence, which are:
+                </p>
+                <ul class="govuk-list govuk-list--bullet" data-qa="sentenceList">
+                    {% for sentence in sentences %}
+                        <li>{{sentence.offenceCode}} {{ offenceMap[sentence.offenceCode] }}<br>
+                            {{sentence.sentenceServeType | capitalize }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p class="govuk-body govuk-!-width-three-quarters bold">What you need to do</p>
+                <p class="govuk-body govuk-!-width-three-quarters">Check that the automatic updates to the sentences reflect the warrant on:</p>
+                <ul class="govuk-list govuk-list--bullet" data-qa="courtCaseList">
+                    {% for courtCase in unconfirmedCourtCases %}
+                        <li>
+                            Case{{' ' + courtCase.caseReference if courtCase.caseReference }} at {{ courtMap[courtCase.courtCode] }} on {{ courtCase.sentencingHearingDate | formatDate }}
+                        </li>
+                    {% endfor%}
+                </ul>
+                <p class="govuk-body govuk-!-width-three-quarters">If it does not reflect the warrant, edit the sentence details and try again.</p>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}

@@ -202,6 +202,7 @@ export interface components {
     }
     CourtDocumentView: {
       username: string
+      type: 'DOCUMENT_VIEW' | 'DOCUMENT_PROCESSED'
     }
     ThingsToDo: {
       prisonerId: string

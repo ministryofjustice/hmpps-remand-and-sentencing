@@ -111,6 +111,16 @@
                     errorMessage: errors | findError('dispositionCode')
                 }) }}
 
+                {{ govukInput({
+                    label: {
+                        text: "HMCTS Code"
+                    },
+                    id: "hmctsCode",
+                    name: "hmctsCode",
+                    value: createChargeOutcome.hmctsCode,
+                    errorMessage: errors | findError('hmctsCode')
+                }) }}
+
                 {{ govukSelect({
                     id: "status",
                     name: "status",

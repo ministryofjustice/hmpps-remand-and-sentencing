@@ -44,6 +44,7 @@ describe('GET /sentencing/hearing-details', () => {
           appearanceDate: '2023-05-01',
           offenceCode: 'AB1234',
           sentenceUuid: '999',
+          status: 'ACTIVE',
         },
       ],
     })
@@ -100,6 +101,64 @@ describe('GET /sentencing/hearing-details', () => {
         expect(hasSentenceAfterOnOtherCourtAppearanceInsetText).toContain(
           'One or more sentences on other cases are consecutive to a sentence on this case. If the consecutive status of a sentence is changed, check that any linked cases accurately reflect the correct warrant information.',
         )
+      })
+  })
+
+  it('shows the Mark sentences as inactive button when there is an active sentence', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '999',
+            status: 'ACTIVE',
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
+      })
+  })
+
+  it('does not show the Mark sentences as inactive button when there are no active sentences', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '999',
+            status: 'INACTIVE',
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(0)
       })
   })
 })

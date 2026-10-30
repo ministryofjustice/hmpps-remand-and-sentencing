@@ -8,7 +8,6 @@ import timezone from 'dayjs/plugin/timezone'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import RemandAndSentencingService from './remandAndSentencingService'
-import DocumentManagementService from './documentManagementService'
 import CourtAppearanceService from './courtAppearanceService'
 import RefDataService from './refDataService'
 
@@ -19,21 +18,18 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Europe/London')
 
-jest.mock('./documentManagementService')
 jest.mock('./remandAndSentencingService')
 jest.mock('./refDataService')
 
 describe('courtAppearanceService', () => {
   let remandAndSentencingService: jest.Mocked<RemandAndSentencingService>
-  let documentManagementService: jest.Mocked<DocumentManagementService>
   let refDataService: jest.Mocked<RefDataService>
   let service: CourtAppearanceService
 
   beforeEach(() => {
     remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
-    documentManagementService = new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>
     refDataService = new RefDataService(null) as jest.Mocked<RefDataService>
-    service = new CourtAppearanceService(remandAndSentencingService, documentManagementService, refDataService)
+    service = new CourtAppearanceService(remandAndSentencingService, refDataService)
   })
 
   it('must reset chain when multiple sentences are consecutive to same sentence', () => {
@@ -96,7 +92,7 @@ describe('courtAppearanceService', () => {
   })
 
   describe('validate warrant date', () => {
-    it('submitting a sentencing warrant date before an existing remand appearance returns error', async () => {
+    it('submitting a sentence date before an existing remand appearance returns error', async () => {
       const nomsId = 'P123'
       remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
         offenceDate: '2000-01-01',
@@ -199,6 +195,30 @@ describe('courtAppearanceService', () => {
         text: 'You must enter an overall case outcome before editing an offence',
         href: '#appearanceOutcomeUuid',
       })
+    })
+  })
+
+  describe('validate case reference', () => {
+    it('can submit case reference without number when 10 characters long', () => {
+      const nomsId = 'P123'
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'NON_SENTENCING',
+        offences: [],
+      } as CourtAppearance
+
+      const session = {
+        courtAppearances: {
+          [nomsId]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+      const errors = service.setCaseReferenceNumber(
+        session,
+        nomsId,
+        { referenceNumber: 'COURTREFEN' },
+        courtAppearance.appearanceUuid,
+      )
+      expect(errors.length).toBe(0)
     })
   })
 })

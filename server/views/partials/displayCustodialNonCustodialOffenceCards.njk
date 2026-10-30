@@ -6,22 +6,14 @@
 <span data-qa="custodialOffences">
     {% for offence in custodialOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {{ offenceCard({
-            offenceCode: offence.offenceCode,
-            offenceName: offenceMap[offence.offenceCode],
-            offenceStartDate: offence.offenceStartDate | formatDate,
-            offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-            countNumber: offence.sentence.countNumber,
-            lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-            convictionDate: offence.sentence.convictionDate | formatDate,
-            aggravatingFactors: offence | getAggravatingFactors,
-            isSentenced: offence.sentence,
-            periodLengths: offence.sentence.periodLengths,
-            sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: consecutiveToSentenceMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
-            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-            fineAmount: offence.sentence.fineAmount,
+        {% set duplicateOffenceActions = [{
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/duplicate-offence",
+            text: "Duplicate this offence",
+            attributes: {
+                'data-qa': 'duplicate-offence-link-' + offence.chargeUuid
+            }
+        }] if showDuplicateOffenceLink else [] %}
+        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
             consecutiveConcurrentLink: {
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or concurrent'
@@ -41,11 +33,9 @@
                         text: "Delete",
                         visuallyHiddenText: "delete offence"
                     }
-                ]
-            },
-            id: offenceId,
-            errorMessage: errors | findErrorsBeginningWith(offenceId)
-        }) }}
+                ].concat(duplicateOffenceActions)
+            }
+        })) }}
     {% else %}
         {{ govukInsetText({
                     text: "There are no offences with custodial outcomes.",
@@ -61,21 +51,7 @@
 <span data-qa="nonCustodialOffences">
     {% for offence in nonCustodialOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {{ offenceCard({
-            offenceCode: offence.offenceCode,
-            offenceName: offenceMap[offence.offenceCode],
-            offenceStartDate: offence.offenceStartDate | formatDate,
-            offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-            countNumber: offence.sentence.countNumber,
-            lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-            convictionDate: offence.sentence.convictionDate | formatDate,
-            isSentenced: offence.sentence,
-            periodLengths: offence.sentence.periodLengths,
-            sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: consecutiveToSentenceMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
-            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-            fineAmount: offence.sentence.fineAmount,
+        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
             actions: {
                 items: [
                     {
@@ -92,10 +68,8 @@
                         visuallyHiddenText: "delete offence"
                     }
                 ]
-            },
-            id: offenceId,
-            errorMessage: errors | findErrorsBeginningWith(offenceId)
-        }) }}
+            }
+        })) }}
     {% else %}
         {{ govukInsetText({
                     text: "There are no offences with non-custodial outcomes.",

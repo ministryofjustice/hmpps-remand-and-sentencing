@@ -23,6 +23,7 @@ import {
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
+import { BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE } from './constants'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
   return {
@@ -55,6 +56,8 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
       ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),
       ...(sentence.consecutiveToSentenceUuid && { consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid }),
+      ...(sentence.status && { status: sentence.status }),
+      ...(sentence.reason && { reason: sentence.reason }),
     } as CreateSentence
   }
   return createSentence
@@ -71,6 +74,7 @@ const courtAppearanceToCreateNextCourtAppearance = (
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
       courtCode: courtAppearance.nextAppearanceCourtCode,
       appearanceTypeUuid: courtAppearance.nextAppearanceTypeUuid,
+      hmctsCourtHearingId: courtAppearance.nextHmctsCourtHearingId,
       prisonId,
       ...(courtAppearance.nextAppearanceTimeSet
         ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') }
@@ -87,6 +91,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
   const sentence = sentenceToCreateSentence(offence.sentence, prisonId)
   return {
     appearanceUuid,
+    hmctsChargeId: offence.hmctsChargeId,
     offenceCode: offence.offenceCode,
     outcomeUuid: offence.outcomeUuid,
     prisonId,
@@ -98,6 +103,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
     ...(sentence && { sentence }),
     ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
     ...{ replacingChargeUuid: offence.replacesOffenceUuid },
+    ...(offence.findingOfDomesticAbuse && { findingOfDomesticAbuse: offence.findingOfDomesticAbuse }),
   } as CreateCharge
 }
 
@@ -111,6 +117,7 @@ export const courtAppearanceToCreateCourtAppearance = (
   return {
     courtCaseUuid,
     appearanceUuid,
+    hmctsCourtHearingId: courtAppearance.hmctsCourtHearingId,
     outcomeUuid: courtAppearance.appearanceOutcomeUuid,
     courtCode: courtAppearance.courtCode,
     courtCaseReference: courtAppearance.caseReferenceNumber,
@@ -214,6 +221,7 @@ export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
     consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: apiSentence.fineAmount?.fineAmount,
+    status: apiSentence.status,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence
@@ -224,6 +232,7 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
+    hmctsChargeId: charge.hmctsChargeId,
     aggravatingFactors: charge.aggravatingFactors,
     createChargeOrder,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
@@ -231,6 +240,7 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
     ...(charge.mergedFromCase && { mergedFromCase: charge.mergedFromCase }),
+    ...(charge.findingOfDomesticAbuse && { findingOfDomesticAbuse: charge.findingOfDomesticAbuse }),
   } as Offence
 }
 
@@ -245,6 +255,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, createChargeOrder
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
     ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence) }),
     ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
+    ...(pagedCharge.findingOfDomesticAbuse && { findingOfDomesticAbuse: pagedCharge.findingOfDomesticAbuse }),
   } as Offence
 }
 
@@ -260,6 +271,7 @@ export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence 
     sentenceTypeClassification: pagedSentence.sentenceType?.classification,
     consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: pagedSentence.fineAmount,
+    status: pagedSentence.status,
     ...(pagedSentence.convictionDate && { convictionDate: dayjs(pagedSentence.convictionDate).toDate() }),
     ...(pagedSentence.legacyData && { legacyData: { ...pagedSentence.legacyData } }),
   } as Sentence
@@ -420,8 +432,17 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     })
     .map(chargeToOffence)
   populateConsecutiveToSentenceUuid(offences)
+  if (pageCourtCaseAppearance.warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
+    offences
+      .filter(offence => offence.offenceCode === BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE)
+      .forEach(offence => {
+        // eslint-disable-next-line no-param-reassign
+        offence.isGeneratedBreachOffence = 'true'
+      })
+  }
   return {
     appearanceUuid: pageCourtCaseAppearance.appearanceUuid,
+    hmctsCourtHearingId: pageCourtCaseAppearance.hmctsCourtHearingId,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
     criminalAppealOfficeReference: pageCourtCaseAppearance.criminalAppealOfficeReference,
     noCaseReference: pageCourtCaseAppearance.courtCaseReference ? undefined : 'true',
@@ -446,9 +467,10 @@ export function pageCourtCaseAppearanceToCourtAppearance(
   } as CourtAppearance
 }
 
-function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppearance): CourtAppearance {
+export function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppearance): CourtAppearance {
   let nextAppearanceDate
-  if (nextCourtAppearance?.appearanceDate !== undefined) {
+  // Court data with a next court appearance but unknown appearance datetime will return a LocalDate.MIN -9999...-01-01
+  if (nextCourtAppearance?.appearanceDate !== undefined && !nextCourtAppearance?.appearanceDate?.startsWith('-')) {
     nextAppearanceDate = dayjs(
       `${nextCourtAppearance.appearanceDate}${nextCourtAppearance.appearanceTime ? `T${nextCourtAppearance.appearanceTime}` : ''}`,
     )
@@ -467,6 +489,7 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextAppearanceDate,
     nextAppearanceSubTypeUuid,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
+    nextHmctsCourtHearingId: nextCourtAppearance?.hmctsCourtHearingId,
   } as CourtAppearance
 }
 
@@ -487,9 +510,8 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
   sentenceConsecutiveToDetails: SentenceConsecutiveToDetails,
   offenceMap: { [key: string]: string },
   courtMap: { [key: string]: string },
-  isInSameAppearance: boolean,
 ): ConsecutiveToDetails {
-  let consecutiveToDetailsEntry = {
+  return {
     countNumber: sentenceConsecutiveToDetails.countNumber,
     offenceCode: sentenceConsecutiveToDetails.offenceCode,
     offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
@@ -501,16 +523,4 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
       sentenceConsecutiveToDetails.offenceEndDate &&
       dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
   } as ConsecutiveToDetails
-  if (isInSameAppearance) {
-    consecutiveToDetailsEntry = {
-      countNumber: sentenceConsecutiveToDetails.countNumber,
-      offenceCode: sentenceConsecutiveToDetails.offenceCode,
-      offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
-      offenceStartDate: dayjs(sentenceConsecutiveToDetails.offenceStartDate).format(config.dateFormat),
-      offenceEndDate:
-        sentenceConsecutiveToDetails.offenceEndDate &&
-        dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
-    }
-  }
-  return consecutiveToDetailsEntry
 }

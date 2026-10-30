@@ -134,7 +134,6 @@ export default {
   stubSignIn: (
     userToken: UserToken = {
       roles: [
-        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
         Roles.getAuthority(Role.COURT_CASES),
         Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
         Roles.getAuthority(Role.RAS_REFERENCE_ADMIN),

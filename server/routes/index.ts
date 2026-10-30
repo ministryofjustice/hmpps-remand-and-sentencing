@@ -19,7 +19,11 @@ import AggravatingFactorsRoutes from './aggravatingFactorsRoutes'
 import AppealsRoutes from './appealsRoutes'
 import CourtDataIngestionRoutes from './courtDataIngestionRoutes'
 import BreachRoutes from './breachRoutes'
-import hmctsChargeOutcomeDataAdminRoutes from './hmctsChargeOutcomeDataAdminRoutes'
+import datafixAdminRoutes from './datafixAdminRoutes'
+import JudicialFindingsRoutes from './judicialFindingsRoutes'
+import DocumentGeneratorRoutes from './documentGeneratorRoutes'
+import AutomaticSentenceFixRoutes from './automaticSentenceFixRoutes'
+import hmctsChargeOutcomeDataAdminRoutes from "./hmctsChargeOutcomeDataAdminRoutes";
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -29,6 +33,7 @@ export default function routes(services: Services): Router {
   router.use('/admin/charge-outcomes', chargeOutcomeDataAdminRoutes(services))
   router.use('/admin/appearance-outcomes', appearanceOutcomeDataAdminRoutes(services))
   router.use('/admin/sentence-type', sentenceTypeDataAdminRoutes(services))
+  router.use('/admin/data-fix', datafixAdminRoutes(services))
   router.use('/admin/hmcts-charge-outcomes', hmctsChargeOutcomeDataAdminRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
@@ -42,12 +47,14 @@ export default function routes(services: Services): Router {
     services.courtCasesReleaseDatesService,
     services.refDataService,
     services.prisonerService,
+    services.courtDataIngestionService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
     services.manageOffencesService,
     services.courtRegisterService,
     services.documentManagementService,
+    services.documentGeneratorService,
   )
   const offenceRoutes = new OffenceRoutes(
     services.offenceService,
@@ -163,6 +170,36 @@ export default function routes(services: Services): Router {
     services.refDataService,
   )
 
+  const judicialFindingsRoutes = new JudicialFindingsRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
+  const documentGeneratorRoutes = new DocumentGeneratorRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
+  const automaticSentenceFixRoutes = new AutomaticSentenceFixRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
   router.get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
 
@@ -176,6 +213,20 @@ export default function routes(services: Services): Router {
   router.get('/api/document/:documentId/download', apiRoutes.downloadDocument)
   router.get('/api/document/:documentId/view-document/:documentName', apiRoutes.viewDocument)
 
+  // Generated Documents URIs
+  router.get(
+    '/person/:nomsId/view-generated-documents/type/:documentType',
+    documentGeneratorRoutes.viewGeneratedDocuments,
+  )
+  router.post(
+    '/person/:nomsId/view-generated-documents/type/:documentType',
+    documentGeneratorRoutes.submitViewGeneratedDocuments,
+  )
+  router.get(
+    '/api/persons/:nomsId/court-appearances/:appearanceUuid/documents/:documentType',
+    apiRoutes.viewGeneratedDocument,
+  )
+
   router.get('/person/:nomsId/documents', courtCaseRoutes.documents)
 
   router.get('/person/:nomsId/view-sentences', sentencingRoutes.getSentences)
@@ -183,7 +234,49 @@ export default function routes(services: Services): Router {
 
   router.get('/person/:nomsId', courtCaseRoutes.start)
 
+  router.post(
+    '/person/:nomsId/confirm-consecutive-to-sentence-fix',
+    automaticSentenceFixRoutes.confirmConsecutiveSentenceFix,
+  )
+
+  router.get('/person/:nomsId/check-automatic-sentence-fix', automaticSentenceFixRoutes.checkUpdatesInterrupt)
+
   router.get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/confirm-mark-court-case-as-active',
+    courtCaseRoutes.getConfirmMarkCourtCaseAsActive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/confirm-mark-court-case-as-active',
+    courtCaseRoutes.submitConfirmMarkCourtCaseAsActive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/confirm-mark-court-case-as-inactive',
+    courtCaseRoutes.getConfirmMarkCourtCaseAsInactive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/confirm-mark-court-case-as-inactive',
+    courtCaseRoutes.submitConfirmMarkCourtCaseAsInactive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/cannot-mark-court-case-as-inactive-active-sentences',
+    courtCaseRoutes.getCannotMarkCourtCaseAsInactiveActiveSentences,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/provide-reason-for-marking-court-case-as-inactive',
+    courtCaseRoutes.getProvideReasonForMarkingCourtCaseAsInactive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/provide-reason-for-marking-court-case-as-inactive',
+    courtCaseRoutes.submitProvideReasonForMarkingCourtCaseAsInactive,
+  )
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/confirm-delete',
@@ -191,7 +284,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-delete-appearance',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/confirm-delete',
     courtCaseRoutes.submitDeleteAppearanceConfirmation,
   )
 
@@ -221,13 +314,63 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-details-edit',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/hearing-details',
     sentencingRoutes.submitHearingDetailsEdit,
   )
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/check-delete-offence',
     sentencingRoutes.checkDeleteOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-sentences-to-mark-as-inactive',
+    sentencingRoutes.getSelectSentencesToMarkAsInactive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-sentences-to-mark-as-inactive',
+    sentencingRoutes.submitSelectSentencesToMarkAsInactive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/provide-reason-for-marking-sentences-as-inactive',
+    sentencingRoutes.getProvideReasonForMarkingSentencesAsInactive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/provide-reason-for-marking-sentences-as-inactive',
+    sentencingRoutes.submitProvideReasonForMarkingSentencesAsInactive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/cannot-mark-sentences-as-inactive',
+    sentencingRoutes.getCannotMarkSentencesAsInactive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/check-mark-sentence-as-active',
+    sentencingRoutes.checkMarkSentenceAsActive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
+    sentencingRoutes.getConfirmMarkSentenceAsActive,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/confirm-mark-sentence-as-active',
+    sentencingRoutes.submitConfirmMarkSentenceAsActive,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-mark-sentence-as-active-inactive-case',
+    sentencingRoutes.getCannotMarkSentenceAsActiveInactiveCase,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-mark-sentence-as-active-consecutive-chain',
+    sentencingRoutes.getCannotMarkSentenceAsActiveConsecutiveChain,
   )
 
   router.get(
@@ -261,7 +404,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/submit-details-edit',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/hearing-details',
     remandRoutes.submitHearingDetailsEdit,
   )
 
@@ -286,7 +429,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-received-custodial-sentence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/received-custodial-sentence',
     courtCaseRoutes.submitReceivedCustodialSentence,
   )
 
@@ -296,7 +439,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-task-list',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/task-list',
     courtCaseRoutes.submitTaskList,
   )
 
@@ -306,7 +449,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-reference',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/reference',
     courtCaseRoutes.submitReference,
   )
 
@@ -316,7 +459,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-select-reference',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/select-reference',
     courtCaseRoutes.submitSelectReference,
   )
 
@@ -326,7 +469,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-warrant-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/warrant-date',
     courtCaseRoutes.submitWarrantDate,
   )
 
@@ -336,7 +479,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-select-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/select-court-name',
     courtCaseRoutes.submitSelectCourtName,
   )
 
@@ -346,7 +489,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/court-name',
     courtCaseRoutes.submitCourtName,
   )
 
@@ -356,7 +499,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-case-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/overall-case-outcome',
     courtCaseRoutes.submitOverallCaseOutcome,
   )
 
@@ -376,7 +519,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-answers',
     courtCaseRoutes.submitCheckAnswers,
   )
 
@@ -386,7 +529,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-review-offences',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/review-offences',
     offenceRoutes.submitReviewOffences,
   )
 
@@ -396,7 +539,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-update-offence-outcomes',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/update-offence-outcomes',
     offenceRoutes.submitUpdateOffenceOutcomes,
   )
 
@@ -436,7 +579,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-more-than-one-offence-to-be-updated',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/more-than-one-offence-to-be-updated',
     offenceRoutes.submitMoreThanOneOffenceToBeUpdated,
   )
 
@@ -446,7 +589,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-which-offences-outcome-applies-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/which-offences-outcome-applies-to',
     offenceRoutes.submitWhichOffencesOutcomeAppliesTo,
   )
 
@@ -456,7 +599,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-update-offence-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/update-offence-outcome',
     offenceRoutes.submitUpdateOffenceOutcome,
   )
 
@@ -466,7 +609,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-offence-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/offence-outcome',
     offenceRoutes.submitOffenceOutcome,
   )
 
@@ -476,7 +619,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-count-number',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/count-number',
     offenceRoutes.submitCountNumber,
   )
 
@@ -486,7 +629,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-offence-code',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/offence-code',
     offenceRoutes.submitOffenceCode,
   )
 
@@ -496,7 +639,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-offence-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/offence-name',
     offenceRoutes.submitOffenceName,
   )
 
@@ -511,7 +654,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-confirm-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/confirm-offence-code',
     offenceRoutes.submitConfirmOffenceCode,
   )
 
@@ -561,7 +704,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-correct-many-period-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/correct-many-period-length',
     sentencingRoutes.submitCorrectManyPeriodLength,
   )
 
@@ -571,7 +714,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-correct-many-alternative-period-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/correct-many-alternative-period-length',
     sentencingRoutes.submitAlternativeCorrectManyPeriodLength,
   )
 
@@ -596,7 +739,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-sentence-serve-type',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/sentence-serve-type',
     offenceRoutes.submitSentenceServeType,
   )
 
@@ -606,7 +749,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/submit-is-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/is-sentence-consecutive-to',
     sentencingRoutes.submitIsSentenceConsecutiveTo,
   )
 
@@ -616,7 +759,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/submit-first-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/first-sentence-consecutive-to',
     sentencingRoutes.submitFirstSentenceConsecutiveTo,
   )
 
@@ -626,7 +769,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/submit-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/sentence-consecutive-to',
     sentencingRoutes.submitSentenceConsecutiveTo,
   )
 
@@ -636,7 +779,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-offence-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/check-offence-answers',
     offenceRoutes.submitCheckOffenceAnswers,
   )
 
@@ -661,7 +804,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-delete-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/delete-offence',
     offenceRoutes.submitDeleteOffence,
   )
 
@@ -686,7 +829,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-edit-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/edit-offence',
     offenceRoutes.submitEditOffence,
   )
 
@@ -726,7 +869,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-select',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-select',
     courtCaseRoutes.submitNextAppearanceSelect,
   )
 
@@ -736,7 +879,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-type',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-type',
     courtCaseRoutes.submitNextAppearanceType,
   )
 
@@ -756,7 +899,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-date',
     courtCaseRoutes.submitNextAppearanceDate,
   )
 
@@ -766,7 +909,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-court-select',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-court-select',
     courtCaseRoutes.submitNextAppearanceCourtSelect,
   )
 
@@ -776,7 +919,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-court-name',
     courtCaseRoutes.submitNextAppearanceCourtName,
   )
 
@@ -786,7 +929,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-next-appearance-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-next-appearance-answers',
     courtCaseRoutes.submitChecknextAppearanceAnswers,
   )
 
@@ -806,7 +949,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-sentence-length',
     overallSentencingRoutes.submitOverallSentenceLength,
   )
 
@@ -816,7 +959,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-conviction-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-conviction-date',
     overallSentencingRoutes.submitOverallConvictionDate,
   )
 
@@ -826,7 +969,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-case-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-case-outcome',
     overallSentencingRoutes.submitOverallCaseOutcome,
   )
 
@@ -836,7 +979,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-case-outcome-applied-all',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/case-outcome-applied-all',
     overallSentencingRoutes.submitCaseOutcomeAppliedAll,
   )
 
@@ -846,7 +989,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-check-overall-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/check-overall-answers',
     overallSentencingRoutes.submitCheckOverallAnswers,
   )
 
@@ -856,7 +999,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-alternative-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/alternative-overall-sentence-length',
     overallSentencingRoutes.submitAlternativeSentenceLength,
   )
 
@@ -886,22 +1029,22 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentId/submit-delete-document',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentId/delete-document',
     courtCaseRoutes.submitConfirmDeleteUploadedDocument,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-upload-court-documents',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/upload-court-documents',
     sentencingRoutes.submitCourtDocuments,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-upload-court-documents',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/upload-court-documents',
     courtCaseRoutes.submitCourtDocuments,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/upload-documents',
     courtCaseRoutes.submitUploadDocuments,
   )
 
@@ -993,7 +1136,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/submit-select-offence-with-aggravated-factors',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/select-offence-with-aggravated-factors',
     aggravatingFactorsRoutes.submitSelectOffenceWithAggravatedFactors,
   )
 
@@ -1003,7 +1146,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/submit-select-which-aggravating-factors-apply',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/select-which-aggravating-factors-apply',
     aggravatingFactorsRoutes.submitSelectWhichAggravatingFactorsApply,
   )
 
@@ -1013,7 +1156,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/submit-delete-aggravating-factor',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/delete-aggravating-factor',
     aggravatingFactorsRoutes.submitDeleteAggravatingFactor,
   )
 
@@ -1023,7 +1166,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/submit-check-aggravating-factors-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravating-factors-answers',
     aggravatingFactorsRoutes.submitCheckAggravatingFactorsAnswers,
   )
 
@@ -1172,8 +1315,19 @@ export default function routes(services: Services): Router {
     appealsRoutes.getCannotDeleteConsecutiveOffence,
   )
 
-  router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/landing', courtDataIngestionRoutes.landing)
-  router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/start', courtDataIngestionRoutes.start)
+  const landingUrl = '/person/:nomsId/review-new-documents/:hmctsHearingId/landing'
+  router.get([landingUrl, `${landingUrl}/:existingCase`], courtDataIngestionRoutes.landing)
+  router.post([landingUrl, `${landingUrl}/:existingCase`], courtDataIngestionRoutes.submitLanding)
+  router.get(
+    '/person/:nomsId/review-new-documents/:hmctsHearingId/select-court-case',
+    courtDataIngestionRoutes.selectCourtCase,
+  )
+  router.post(
+    '/person/:nomsId/review-new-documents/:hmctsHearingId/select-court-case',
+    courtDataIngestionRoutes.submitSelectCourtCase,
+  )
+  const startUrl = '/person/:nomsId/review-new-documents/:hmctsHearingId/start'
+  router.get([startUrl, `${startUrl}/:caseId`], courtDataIngestionRoutes.start)
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/new-journey',
@@ -1238,6 +1392,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/alternative-breach-term-length',
     breachRoutes.submitAlternativeBreachTermLength,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-offence-date',
+    breachRoutes.getBreachOffenceDate,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-offence-date',
+    breachRoutes.submitBreachOffenceDate,
   )
 
   router.get(
@@ -1313,6 +1477,61 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-period-length-offence',
     appealsRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/check-delete-offence',
+    breachRoutes.checkDeleteOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-consecutive-offence',
+    breachRoutes.getCannotDeleteConsecutiveOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-period-length-offence',
+    breachRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/select-offence-with-judicial-findings',
+    judicialFindingsRoutes.selectOffenceWithJudicialFindings,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/select-offence-with-judicial-findings',
+    judicialFindingsRoutes.submitOffenceWithJudicialFindings,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/check-answers',
+    judicialFindingsRoutes.getCheckAnswers,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/check-answers',
+    judicialFindingsRoutes.submitCheckAnswers,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/offences/:chargeUuid/delete-judicial-findings',
+    judicialFindingsRoutes.getOffenceDeleteJudicialFindings,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/judicial-findings/offences/:chargeUuid/delete-judicial-findings',
+    judicialFindingsRoutes.submitOffenceDeleteJudicialFindings,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/select-judicial-findings',
+    judicialFindingsRoutes.getOffenceSelectJudicialFindings,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/select-judicial-findings',
+    judicialFindingsRoutes.submitOffenceSelectJudicialFindings,
   )
 
   return router

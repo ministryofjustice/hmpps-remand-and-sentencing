@@ -1,3 +1,4 @@
+import type { FileDownload } from 'models'
 import { Request, Response, RequestHandler } from 'express'
 import path from 'path'
 import { Readable } from 'stream'
@@ -6,6 +7,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import CourtRegisterService from '../services/courtRegisterService'
 import DocumentManagementService from '../services/documentManagementService'
 import logger from '../../logger'
+import DocumentGeneratorService from '../services/documentGeneratorService'
 
 const placeHolderImage = path.join(process.cwd(), '/dist/assets/images/prisoner-profile-image.png')
 export default class ApiRoutes {
@@ -14,6 +16,7 @@ export default class ApiRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly documentManagementService: DocumentManagementService,
+    private readonly documentGeneratorService: DocumentGeneratorService,
   ) {}
 
   public personImage: RequestHandler = async (req, res): Promise<void> => {
@@ -76,5 +79,55 @@ export default class ApiRoutes {
 
   public viewDocument: RequestHandler = async (req, res): Promise<void> => {
     return this.streamDocument(req, res, true)
+  }
+
+  /**
+   * Unlike the downloadDocument and viewDocument functions
+   * which reach out to the documentManagementService this
+   * function's responsibility is to open 'just in time'
+   * generated documents that are ephemeral and never persisted
+   * @param req
+   * @param res
+   */
+  public viewGeneratedDocument: RequestHandler = async (req, res): Promise<void> => {
+    const { documentType } = req.params
+
+    try {
+      const result: FileDownload = await this.documentGeneratorService.streamDocumentGeneratedDocument(
+        req,
+        res,
+        documentType,
+      )
+
+      if (!result) {
+        throw new Error('No data returned from document generator')
+      }
+
+      const { body } = result
+
+      if (!Buffer.isBuffer(body) && !(body instanceof Readable)) {
+        throw new Error('Unexpected body type returned from document generator')
+      }
+
+      res.status(200)
+      res.set('content-type', 'application/pdf')
+      res.set('content-disposition', `inline; filename="${documentType}.pdf"`)
+      res.set('cache-control', 'no-store')
+
+      if (Buffer.isBuffer(body)) {
+        res.set('content-length', String(body.length))
+        res.end(body)
+        return
+      }
+
+      body.on('error', err => {
+        logger.error(err, `Stream failed for ${documentType}`)
+        res.destroy(err)
+      })
+      body.pipe(res)
+    } catch (error) {
+      logger.error(error, `Failed to generate document ${documentType}`)
+      res.status(500).send('Failed to generate document')
+    }
   }
 }

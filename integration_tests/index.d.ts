@@ -7,6 +7,7 @@ declare namespace Cypress {
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
     getTable()
     getSummaryList()
+    getSummaryCardLists()
     getActions()
     getTaskList()
     getOffenceCards()
@@ -14,6 +15,7 @@ declare namespace Cypress {
     getAppearances()
     getHearingCardDetails()
     getRadioOptions()
+    getOffenceCheckboxOptions()
     getListItems()
     createCourtCase(personId: string, courtCaseNumber: string, appearanceReference: string): Chainable<AUTWindow>
     setupComponentsStubs(): Chainable<AUTWindow>

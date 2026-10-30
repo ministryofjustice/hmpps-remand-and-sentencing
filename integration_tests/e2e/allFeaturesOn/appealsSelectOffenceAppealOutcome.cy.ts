@@ -5,6 +5,7 @@ import AppealOverallCaseOutcomePage from '../../pages/AppealOverallCaseOutcomePa
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CriminalOfficeReferencePage from '../../pages/CriminalOfficeReferencePage'
+import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import Page from '../../pages/page'
 import RecordAppealPage from '../../pages/RecordAppealPage'
 import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
@@ -124,11 +125,14 @@ context('Appeals select offence appeal outcome page', () => {
     selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
   })
 
-  it('submitting without selecting anything results in an error', () => {
+  it('includes replaced with another offence outcome', () => {
+    selectOffenceAppealOutcomePage.radioLabelContains('Replaced with Another Offence').should('exist')
+  })
+
+  it('should redirect to enter offence date if replaced by another offence is chosen while editing outcome', () => {
+    selectOffenceAppealOutcomePage.radioLabelContains('Replaced with Another Offence').click()
     selectOffenceAppealOutcomePage.continueButton().click()
-    selectOffenceAppealOutcomePage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem You must select an appeal outcome for this offence')
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.hintText().should('contain', 'This offence will replace PS90037 - An offence description')
   })
 })

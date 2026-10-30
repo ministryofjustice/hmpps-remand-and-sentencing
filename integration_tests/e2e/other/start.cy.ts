@@ -90,14 +90,12 @@ context('Start Page', () => {
 
   it('can sort by earliest', () => {
     cy.task('stubSearchCourtCases', { sortBy: 'APPEARANCE_DATE_ASC' })
-    startPage.filterSortSummary().click()
     startPage.radioLabelContains('Court appearance (earliest)').click()
     startPage.applyButton().click()
     Page.verifyOnPage(StartPage)
   })
 
   it('displays include previous periods checkbox label with count filter with total', () => {
-    startPage.filterSortSummary().click()
     startPage.includeCasesFromPreviousPeriodsLabel(1)
   })
 
@@ -159,6 +157,14 @@ context('Start Page', () => {
   })
 
   it('displays inactive and recalled tags on inactive recalled case', () => {
+    cy.visit('/sign-out')
+    cy.task('stubSignIn', {
+      roles: [Roles.getAuthority(Role.COURT_CASES), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
+    })
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+    startPage = Page.verifyOnPage(StartPage)
+
     const card = startPage.courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
 
     card.within(() => {
@@ -167,28 +173,6 @@ context('Start Page', () => {
       cy.get('strong.govuk-tag').eq(0).should('contain.text', 'Inactive')
       cy.get('strong.govuk-tag').eq(1).should('contain.text', 'Recalled')
     })
-
-    startPage
-      .recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
-      .should(
-        'contain.text',
-        'The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.',
-      )
-  })
-
-  it('do not display recall inset when user has access to recalls', () => {
-    cy.visit('/sign-out')
-    cy.task('stubSignIn', {
-      roles: [
-        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
-        Roles.getAuthority(Role.COURT_CASES),
-        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
-        Roles.getAuthority(Role.RECALL_MAINTAINER),
-      ],
-    })
-    cy.signIn()
-    cy.visit('/person/A1234AB')
-    startPage.recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7').should('not.exist')
   })
 
   it('displays empty content when no court cases', () => {
@@ -232,5 +216,41 @@ context('Start Page', () => {
     cy.task('stubGetServiceDefinitionsMaintenanceEnabled')
     cy.visit('/person/A1234AB')
     startPage.outageBanner().should('contain.text', 'There is due to be an outage in the future')
+  })
+
+  it('displays appeal court case summary', () => {
+    startPage.courtCaseSummaryList('fa078b3d-7c29-4f61-8120-b40b16ed9633').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'Sentence varied',
+    })
+  })
+
+  it('filter panel is open by default', () => {
+    startPage.filterSortSummaryPanel().should('have.attr', 'open')
+  })
+
+  it('filter panel is visible when toggled closed then opened', () => {
+    startPage.filterSortSummary().click() // Close
+    startPage.filterSortSummary().click() // Open
+    startPage.filterSortSummaryPanel().should('have.attr', 'open')
+  })
+
+  it('displays breach of supervision court case summary', () => {
+    startPage.courtCaseSummaryList('cb0469bd-aca1-4ae7-9a65-46366ea5d48e').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'DTO (Detention and Training Order)',
+      'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
+    })
+  })
+
+  it('displays breach of imprisonable court case summary', () => {
+    startPage.courtCaseSummaryList('db3e04ce-69f9-4480-ae3b-d17eb6ba15ef').getSummaryList().should('deep.equal', {
+      'Case references': 'HT32511',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'DTO (Detention and Training Order)',
+      'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',
+    })
   })
 })

@@ -17,16 +17,16 @@ import requireOneNonZeroSentenceLengthIf from './requireOneNonZeroSentenceLength
 import isAfterDate from './isAfterDate'
 import isFutureOrCurrentDate from './isFutureOrCurrentDate'
 import isUniqueTimePeriod from './isUniqueTimePeriod'
-import atLeastOneNumberInString from './atLeastOneNumberInString'
+import atLeastOneNumberInStringOr10Char from './atLeastOneNumberInStringOr10Char'
 import isNotTrue from './isNotTrue'
 import isWithinLast100Years from './isWithinLast100Years'
-import isWithinNextOneYear from './isWithinNextOneYear'
+import isWithinNextThreeYears from './isWithinNextThreeYears'
 import isBeforeWarrantDate from './isBeforeWarrantDate'
 import isBeforeConvictionDate from './isBeforeConvictionDate'
 import isSameOrBeforeWarrantDate from './isSameOrBeforeWarrantDate'
 import isSameOrBeforeConvictionDate from './isSameOrBeforeConvictionDate'
-import isAfterOffenceEndDate from './isAfterOffenceEndDate'
-import isAfterOffenceStartDate from './isAfterOffenceStartDate'
+import isOnOrAfterOffenceEndDate from './isOnOrAfterOffenceEndDate'
+import isOnOrAfterOffenceStartDate from './isOnOrAfterOffenceStartDate'
 
 export default function validate<T>(
   form: T,
@@ -69,8 +69,8 @@ Validator.register(
   isSameOrBeforeConvictionDate,
   'date must be same or before conviction date',
 )
-Validator.register('isAfterOffenceEndDate', isAfterOffenceEndDate, 'date must be after offence end date')
-Validator.register('isAfterOffenceStartDate', isAfterOffenceStartDate, 'date must be after offence end date')
+Validator.register('isOnOrAfterOffenceEndDate', isOnOrAfterOffenceEndDate, 'date must be after offence end date')
+Validator.register('isOnOrAfterOffenceStartDate', isOnOrAfterOffenceStartDate, 'date must be after offence end date')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',
   requireAlternativeSentenceLength,
@@ -100,11 +100,15 @@ Validator.register(
   isUniqueTimePeriod,
   'More than one of the same period length unit is not allowed',
 )
-Validator.register('atLeastOneNumberInString', atLeastOneNumberInString, 'Must enter at least one number')
+Validator.register(
+  'atLeastOneNumberInStringOr10Char',
+  atLeastOneNumberInStringOr10Char,
+  'Must enter at least one number or 10 characters long',
+)
 Validator.register('isNotTrue', isNotTrue, 'Cannot be true')
 Validator.register(
   'isWithinLast100Years',
   isWithinLast100Years,
   'All dates must be within the last 100 years from today’s date',
 )
-Validator.register('isWithinNextOneYear', isWithinNextOneYear, 'date must be within 1 year of today’s date')
+Validator.register('isWithinNextThreeYears', isWithinNextThreeYears, 'date must be within 3 years of today’s date')

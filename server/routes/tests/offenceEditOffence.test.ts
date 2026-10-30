@@ -143,6 +143,7 @@ describe('GET Edit offence', () => {
           courtCode: null,
           appearanceDate: null,
           offenceStartDate: '2025-01-01',
+          status: 'ACTIVE',
         },
       ],
     })

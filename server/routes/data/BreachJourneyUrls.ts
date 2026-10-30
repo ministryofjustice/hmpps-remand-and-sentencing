@@ -29,6 +29,10 @@ export default class BreachJourneyUrls {
     return `${this.basePath(urlParameters)}/alternative-breach-term-length${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
+  static breachOffenceDate(urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string): string {
+    return `${this.basePath(urlParameters)}/breach-offence-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
   static checkHearingAnswers = (urlParameters: UrlParameters) => {
     return `${this.basePath(urlParameters)}/check-hearing-answers`
   }
@@ -49,16 +53,20 @@ export default class BreachJourneyUrls {
     return `${this.basePath(urlParameters)}/${urlParameters.documentUuid}/delete-document${this.getQueryParameters(hasErrors)}`
   }
 
-  static confirmation = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/confirmation`
+  static confirmation = (urlParameters: UrlParameters, warrantType: string) => {
+    return `${this.basePath(urlParameters)}/confirmation?warrantType=${warrantType}`
   }
 
   static hearingDetails = (urlParameters: UrlParameters, hasErrors?: string) => {
     return `${this.basePath(urlParameters)}/hearing-details${this.getQueryParameters(hasErrors)}`
   }
 
-  static cannotDeleteOffence = (urlParameters: UrlParameters) => {
+  static cannotDeleteConsecutiveOffence = (urlParameters: UrlParameters) => {
     return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-consecutive-offence`
+  }
+
+  static cannotDeletePeriodLengthOffence = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-period-length-offence`
   }
 
   private static basePath(urlParameters: UrlParameters): string {

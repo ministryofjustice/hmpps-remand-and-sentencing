@@ -17,8 +17,8 @@ context('Review court documents ingested from Common Platform', () => {
     cy.signIn()
     cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing`)
 
-    const landingPage = Page.verifyOnPage(HmctsCourtDataLandingPage)
-    landingPage.continueLink().click()
+    const landingPage = Page.verifyOnPageTitle(HmctsCourtDataLandingPage, 'Review new documents and add a court case')
+    landingPage.continueButton().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,

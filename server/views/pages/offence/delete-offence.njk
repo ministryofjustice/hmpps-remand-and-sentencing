@@ -14,7 +14,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-delete-offence" autocomplete="off">
+            <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
@@ -26,25 +26,7 @@
                         }
                 }) %}
 
-                    {{
-                        offenceCard({
-                                offenceCode: offence.offenceCode,
-                                offenceName: offenceMap[offence.offenceCode],
-                                offenceStartDate: offence.offenceStartDate | formatDate,
-                                offenceEndDate: offence.offenceEndDate | formatDate,
-                                outcome: outcome | outcomeValueOrLegacy(offence.legacyData),
-                                countNumber: offence.sentence.countNumber,
-                                lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                                convictionDate: offence.sentence.convictionDate | formatDate,
-                                aggravatingFactors: offence | getAggravatingFactors,
-                                isSentenced: offence.sentence,
-                                periodLengths: offence.sentence.periodLengths,
-                                sentenceServeType: offence.sentence.sentenceServeType,
-                                consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
-                                sentenceType: sentenceType.description if sentenceType,
-                                fineAmount: offence.sentence.fineAmount
-                            })
-                    }}
+                    {{  offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceDetailsMap, sentenceTypeMap, courtMap, errors))}}
 
                     {% if isEditJourney and offence.sentence %}
                         {{ govukInsetText({

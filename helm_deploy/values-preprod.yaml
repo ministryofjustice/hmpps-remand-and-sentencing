@@ -27,9 +27,11 @@ generic-service:
     RECORD_RECALLS_UI_URL: "https://record-a-recall-preprod.hmpps.service.justice.gov.uk"
     BOOK_SECURE_MOVE_UI_URL: "https://hmpps-book-secure-move-frontend-preprod.apps.cloud-platform.service.justice.gov.uk"
     COURT_DATA_INGESTION_API_URL: "https://court-data-ingestion-api-preprod.hmpps.service.justice.gov.uk"
-    FEATURES_APPEALS_ENABLED: 'true'
-    FEATURES_BREACH_SUPERVISION_ENABLED: 'false'
-    FEATURES_BULK_OUTCOME_APPLIED: 'true'
+    FEATURES_JUDICIAL_FINDINGS: 'true'
+    FEATURES_GENERATED_DOCUMENTS: 'true'
+    FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'false'
+    FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'false'
+    FEATURES_MULTIPLE_OFFENCE_INSTANCES: 'false'
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30
@@ -41,4 +43,3 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
-  alertSeverity: legacy-replacement-alerts-non-prod

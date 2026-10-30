@@ -1,6 +1,11 @@
-import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
+import type { CourtAppearance, CourtCase, Offence, UploadedDocument, FileDownload } from 'models'
 import { Dayjs } from 'dayjs'
-import type { CancelCourtCaseForm, DeleteHearingForm } from 'forms'
+import type {
+  CancelCourtCaseForm,
+  ConfirmMarkCourtCaseStatusForm,
+  DeleteHearingForm,
+  MarkCourtCaseAsInactiveReasonForm,
+} from 'forms'
 import validate from '../validation/validation'
 import {
   ConsecutiveChainValidationRequest,
@@ -10,6 +15,7 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   DeleteSentenceStatusDetails,
+  FixSingleSentenceMultipleChargesPeople,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -28,8 +34,12 @@ import {
   SentenceDetails,
   SentenceDetailsForConsecValidation,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
+  SentenceUuidsWithActiveSentencesAfterResponse,
   SentencesToChainToResponse,
   SentenceTypeIsValid,
+  CreateF986,
+  F986EligibleCourtAppearance,
+  UnconfirmedCourtCases,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import {
@@ -172,6 +182,74 @@ export default class RemandAndSentencingService {
     return this.remandAndSentencingApiClient.getCourtCaseByUuid(courtCaseUuid, username)
   }
 
+  async confirmMarkCourtCaseAsActive(
+    courtCaseUuid: string,
+    username: string,
+    confirmMarkCourtCaseStatusForm: ConfirmMarkCourtCaseStatusForm,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    const errors = validate(
+      confirmMarkCourtCaseStatusForm,
+      { confirmMarkCourtCaseStatus: 'required' },
+      { 'required.confirmMarkCourtCaseStatus': "Select 'Yes' if you want to mark this court case as active" },
+    )
+    if (errors.length === 0 && confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus === 'true') {
+      await this.remandAndSentencingApiClient.updateCourtCaseStatus(
+        courtCaseUuid,
+        { status: 'ACTIVE', reason: null },
+        username,
+      )
+    }
+    return errors
+  }
+
+  confirmMarkCourtCaseAsInactive(confirmMarkCourtCaseStatusForm: ConfirmMarkCourtCaseStatusForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    return validate(
+      confirmMarkCourtCaseStatusForm,
+      { confirmMarkCourtCaseStatus: 'required' },
+      { 'required.confirmMarkCourtCaseStatus': "Select 'Yes' if you want to mark this court case as inactive" },
+    )
+  }
+
+  async markCourtCaseAsInactive(
+    courtCaseUuid: string,
+    username: string,
+    markCourtCaseAsInactiveReasonForm: MarkCourtCaseAsInactiveReasonForm,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    const errors = validate(
+      markCourtCaseAsInactiveReasonForm,
+      { reason: 'required|max:200' },
+      {
+        'required.reason': 'Enter a reason for marking this case as inactive',
+        'max.reason': 'Reason must be 200 characters or less',
+      },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    await this.remandAndSentencingApiClient.updateCourtCaseStatus(
+      courtCaseUuid,
+      { status: 'INACTIVE', reason: markCourtCaseAsInactiveReasonForm.reason },
+      username,
+    )
+    return errors
+  }
+
   async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {
     return this.remandAndSentencingApiClient.getLegacySentenceTypesSummaryAll(username)
   }
@@ -274,6 +352,13 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
     return this.remandAndSentencingApiClient.hasSentenceAfterOnOtherCourtAppearance(sentenceUuids, username)
+  }
+
+  async getSentenceUuidsWithActiveSentencesAfter(
+    sentenceUuids: string[],
+    username: string,
+  ): Promise<SentenceUuidsWithActiveSentencesAfterResponse> {
+    return this.remandAndSentencingApiClient.getSentenceUuidsWithActiveSentencesAfter(sentenceUuids, username)
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(
@@ -391,5 +476,46 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<DeleteSentenceStatusDetails> {
     return this.remandAndSentencingApiClient.getSentenceDeleteStatus(sentenceUuid, sentenceUuidsInChain, username)
+  }
+
+  async fixPrisonersManyChargesToSentence(prisonerIds: string[], username: string): Promise<void> {
+    const fixSingleSentenceMultipleChargesPeople: FixSingleSentenceMultipleChargesPeople = {
+      prisonerIds,
+    }
+    return this.remandAndSentencingApiClient.fixPrisonersManyChargesToSentence(
+      fixSingleSentenceMultipleChargesPeople,
+      username,
+    )
+  }
+
+  async generateF986Document(
+    prisonerId: string,
+    f986DocumentRequest: CreateF986,
+    username: string,
+  ): Promise<FileDownload> {
+    return this.remandAndSentencingApiClient.generateF986Document(prisonerId, f986DocumentRequest, username)
+  }
+
+  async getF986EligibleAppearances(prisonerId: string, username: string): Promise<F986EligibleCourtAppearance[]> {
+    return this.remandAndSentencingApiClient.getF986EligibleAppearances(prisonerId, username)
+  }
+
+  async hasF986EligibleAppearances(prisonerId: string, username: string): Promise<boolean> {
+    return this.remandAndSentencingApiClient.hasF986EligibleAppearances(prisonerId, username)
+  }
+
+  async getUnconfirmedSentenceFixCourtCases(prisonerId: string, username: string): Promise<UnconfirmedCourtCases> {
+    return this.remandAndSentencingApiClient.getUnconfirmedSentenceFixCourtCases(prisonerId, username)
+  }
+
+  async getUnconfirmedSentenceFixCourtCasesByUuids(
+    courtCaseUuids: string[],
+    username: string,
+  ): Promise<UnconfirmedCourtCases> {
+    return this.remandAndSentencingApiClient.getUnconfirmedSentenceFixCourtCasesByUuids(courtCaseUuids, username)
+  }
+
+  async confirmConsecutiveToSentenceFixes(sentenceUuids: string[], username: string): Promise<void> {
+    return this.remandAndSentencingApiClient.confirmConsecutiveToSentenceFixes({ sentenceUuids }, username)
   }
 }

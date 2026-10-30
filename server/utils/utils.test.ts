@@ -7,11 +7,13 @@ import {
   outcomeValueOrLegacy,
   orderCharges,
   orderOffences,
+  getSortedDocumentsWithUiDocumentType,
 } from './utils'
 import type {
   Sentence as ApiSentence,
   SentenceLegacyData,
   Charge,
+  UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 // utils.offences.test.ts (or add to your existing utils.test.ts)
@@ -524,5 +526,33 @@ describe('orderOffences', () => {
     const second = withOffenceNoSentence('B123', 0, { start: '2025-01-01' })
     const out = orderOffences([second, first]).map(o => o.offenceCode)
     expect(out).toEqual(['A123', 'B123'])
+  })
+})
+
+describe('getSortedDocumentsWithUiDocumentType', () => {
+  it('order by document type', () => {
+    const a: UploadedDocument = {
+      documentUUID: '1',
+      documentType: 'BAIL_ORDER',
+      courtDataIngested: false,
+      fileName: 'bailOrder1.doc',
+    }
+
+    const b: UploadedDocument = {
+      documentUUID: '2',
+      documentType: 'PRISON_COURT_REGISTER',
+      courtDataIngested: false,
+      fileName: 'pcr2.doc',
+    }
+
+    const c: UploadedDocument = {
+      documentUUID: '3',
+      documentType: 'HMCTS_WARRANT',
+      courtDataIngested: false,
+      fileName: 'warrant1.doc',
+    }
+
+    const docOrder = getSortedDocumentsWithUiDocumentType([a, b, c], 'NON_SENTENCING').map(doc => doc.documentUUID)
+    expect(docOrder).toEqual([c.documentUUID, b.documentUUID, a.documentUUID])
   })
 })

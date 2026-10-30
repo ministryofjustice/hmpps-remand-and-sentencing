@@ -36,7 +36,7 @@
 {% set pageTitle = applicationName + " - Next appearance type" %}
 {% block pageContent %}
     {{ super() }}
-    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/next-appearance-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios(radiosData) }}

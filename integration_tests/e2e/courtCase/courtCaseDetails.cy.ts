@@ -28,7 +28,7 @@ context('Court Case details Page', () => {
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
-            Location: 'Accrington Youth Court',
+            'Court name': 'Accrington Youth Court',
             'Hearing date': '15/12/2023',
             Outcome: 'Remanded in custody',
             'Next appearance': '15/12/2024 at Accrington Youth Court',
@@ -50,7 +50,7 @@ context('Court Case details Page', () => {
           },
           {
             'Case reference': 'F23325',
-            Location: 'Birmingham Crown Court',
+            'Court name': 'Birmingham Crown Court',
             'Hearing date': '15/10/2022',
             Outcome: 'Lie on file',
             'Next appearance': '15/12/2023 at Birmingham Crown Court',
@@ -105,7 +105,7 @@ context('Court Case details Page', () => {
           {
             'Case reference': 'C894623',
             'Hearing date': '15/12/2023',
-            Location: 'Accrington Youth Court',
+            'Court name': 'Accrington Youth Court',
             Outcome: 'Imprisonment',
             'Court documents': 'No documents uploaded',
             Offences: {
@@ -149,7 +149,7 @@ context('Court Case details Page', () => {
           {
             'Case reference': 'F23325',
             'Hearing date': '15/10/2022',
-            Location: 'Birmingham Crown Court',
+            'Court name': 'Birmingham Crown Court',
             Outcome: 'A Nomis Outcome',
             'Court documents': 'No documents uploaded',
             Offences: {
@@ -175,6 +175,59 @@ context('Court Case details Page', () => {
 
     it('show edit or delete when appearance has no recalls', () => {
       courtCaseDetailsPage.hearingActionList('5b4cbea0-edd3-4bac-9485-b3e3cd46ad77').children().should('have.length', 2)
+    })
+  })
+
+  context('Appeals Court Case details Page', () => {
+    beforeEach(() => {
+      cy.task('happyPathStubs')
+      cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetCourtCaseAppealLatest')
+      cy.task('stubGetCourtsByIds')
+      cy.signIn()
+      cy.visit('/person/A1234AB/edit-court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633/details')
+      courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Hearings for C894623 at Accrington Youth Court',
+      )
+    })
+
+    it('hearing tab shows correct data', () => {
+      courtCaseDetailsPage
+        .hearingsSection()
+        .getHearingCardDetails()
+        .should('deep.equal', [
+          {
+            'Case reference': 'C894623',
+            'Court name': 'Accrington Youth Court',
+            'Date of the appeal hearing': '15/12/2023',
+            Outcome: 'Sentence varied',
+            'Court documents': 'No documents uploaded',
+            'Criminal Appeal Office case reference': 'G35461',
+            Offences: {
+              'offences (2)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/12/2025',
+                  Outcome: 'Sentence varied',
+                },
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': 'Not entered',
+                  Outcome: 'Sentence quashed',
+                },
+              ],
+            },
+          },
+        ])
+    })
+
+    it('should show delete button', () => {
+      courtCaseDetailsPage
+        .hearingActionList('94608b2e-c532-4cea-bae7-57bfff4566cb')
+        .children()
+        .should('have.length', 2)
+        .and('contain.text', 'Delete')
     })
   })
 })

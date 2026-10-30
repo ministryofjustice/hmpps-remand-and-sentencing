@@ -11,6 +11,7 @@ import { PrisonerSearchApiPrisoner } from '../../@types/prisonerSearchApi/prison
 import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
+import setUpJourneySession from '../../middleware/setUpJourneySession'
 import CourtAppearanceService from '../../services/courtAppearanceService'
 import PrisonerService from '../../services/prisonerService'
 import UserService from '../../services/userService'
@@ -25,6 +26,7 @@ import CalculateReleaseDatesService from '../../services/calculateReleaseDatesSe
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 import RefDataService from '../../services/refDataService'
 import CourtDataIngestionService from '../../services/courtDataIngestionService'
+import DocumentGeneratorService from '../../services/documentGeneratorService'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtAppearanceService')
@@ -35,6 +37,7 @@ jest.mock('../../services/manageOffencesService')
 jest.mock('../../services/remandAndSentencingService')
 jest.mock('../../services/feComponentsService')
 jest.mock('../../services/documentManagementService')
+jest.mock('../../services/documentGeneratorService')
 jest.mock('../../services/prisonerSearchService')
 jest.mock('../../services/courtRegisterService')
 jest.mock('../../services/calculateReleaseDatesService')
@@ -59,8 +62,9 @@ export const defaultServices = {
   manageOffencesService: new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>,
   feComponentsService: new FeComponentsService(null) as jest.Mocked<FeComponentsService>,
   remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
-  courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
+  courtAppearanceService: new CourtAppearanceService(null, null) as jest.Mocked<CourtAppearanceService>,
   documentManagementService: new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>,
+  documentGeneratorService: new DocumentGeneratorService(null, null) as jest.Mocked<DocumentGeneratorService>,
   prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   auditService: new AuditService(null) as jest.Mocked<AuditService>,
   courtRegisterService: new CourtRegisterService(null) as jest.Mocked<CourtRegisterService>,
@@ -73,6 +77,7 @@ export const defaultServices = {
 export const user: HmppsUser = {
   name: 'FIRST LAST',
   userId: 'id',
+  userUuid: '11111111-1111-1111-1111-111111111111',
   token: 'token',
   username: 'user1',
   displayName: 'First Last',
@@ -89,7 +94,6 @@ export const user: HmppsUser = {
   ],
   activeCaseLoadId: 'MDI',
   hasInactiveBookingsAccess: false,
-  hasRecallsAccess: false,
   hasBookASecureMoveAccess: false,
 }
 
@@ -120,6 +124,7 @@ function appSetup(
 
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpWebSession())
+  app.use(setUpJourneySession())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
     req.flash = flashProvider

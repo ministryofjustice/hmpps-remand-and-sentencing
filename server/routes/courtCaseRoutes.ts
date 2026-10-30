@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import type {
   CancelCourtCaseForm,
+  ConfirmMarkCourtCaseStatusForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextAppearanceCourtNameForm,
@@ -16,6 +17,7 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   DeleteHearingForm,
+  MarkCourtCaseAsInactiveReasonForm,
   ReceivedCustodialSentenceForm,
 } from 'forms'
 import type { CourtCase, UrlParameters } from 'models'
@@ -38,7 +40,6 @@ import {
   convertToTitleCase,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
-import { chargeToOffence } from '../utils/mappingUtils'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
@@ -52,6 +53,7 @@ import {
   SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
+  UnconfirmedCourtCases,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
@@ -67,6 +69,8 @@ import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsMo
 import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
+import { BREACH_WARRANT_TYPES, NIL_UUID } from '../utils/constants'
+import CourtDataIngestionService from '../services/courtDataIngestionService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -80,6 +84,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
     private readonly prisonerService: PrisonerService,
+    private readonly courtDataIngestionService: CourtDataIngestionService,
   ) {
     super(
       courtAppearanceService,
@@ -150,28 +155,63 @@ export default class CourtCaseRoutes extends BaseRoutes {
       ),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
+    if (config.featureToggles.checkAutomaticSentenceFix && courtCases.anyConsecutiveToFixes) {
+      return res.redirect(
+        JourneyUrls.checkAutomaticSentenceFix(
+          nomsId,
+          sortBy,
+          appearanceDateFrom,
+          appearanceDateTo,
+          includeCasesFromPreviousPeriodsOfCustody,
+          pageNumber,
+        ),
+      )
+    }
     const consecutiveToSentenceUuids = courtCases.content
       .flatMap(courtCase => courtCase.latestCourtAppearance.charges)
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
 
-    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-      consecutiveToSentenceUuids,
-      req.user.username,
-    )
+    const unconfirmedCourtCaseUuids = courtCases.content
+      .filter(courtCase => courtCase.hasUnconfirmedConsecutiveToFixSentences)
+      .map(courtCase => courtCase.courtCaseUuid)
+    let unconfirmedCourtCasePromise = Promise.resolve({ courtCases: [] } as UnconfirmedCourtCases)
+    if (config.featureToggles.checkAutomaticSentenceFix && unconfirmedCourtCaseUuids.length > 0) {
+      unconfirmedCourtCasePromise = this.remandAndSentencingService.getUnconfirmedSentenceFixCourtCasesByUuids(
+        unconfirmedCourtCaseUuids,
+        req.user.username,
+      )
+    }
+
+    const [consecutiveToSentenceDetails, unconfirmedCourtCases] = await Promise.all([
+      this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username),
+      unconfirmedCourtCasePromise,
+    ])
     const charges = courtCases.content.flatMap(courtCase => courtCase.latestCourtAppearance.charges)
     const chargeCodes = charges
       .map(charge => charge.offenceCode)
-      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
+      .concat(
+        consecutiveToSentenceDetails.sentences
+          .map(consecutiveToDetails => consecutiveToDetails.offenceCode)
+          .concat(
+            unconfirmedCourtCases.courtCases.flatMap(courtCase =>
+              courtCase.sentences.map(sentence => sentence.offenceCode),
+            ),
+          ),
+      )
     const chargeDescriptions: [string, string][] = Array.from(
       new Set(
         charges
           .filter(charge => charge.legacyData?.offenceDescription)
           .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription])
-          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences)) as [
-          string,
-          string,
-        ][],
+          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences))
+          .concat(
+            unconfirmedCourtCases.courtCases.flatMap(courtCase =>
+              courtCase.sentences
+                .filter(sentence => sentence.chargeLegacyOffenceDescription)
+                .map(sentence => [sentence.offenceCode, sentence.chargeLegacyOffenceDescription]),
+            ),
+          ) as [string, string][],
       ),
     )
     const courtIds = courtCases.content
@@ -186,6 +226,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       .flat()
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(unconfirmedCourtCases.courtCases.map(courtCase => courtCase.courtCode))
+
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username, chargeDescriptions),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
@@ -217,7 +259,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .flatMap(courtCase =>
           courtCase.latestCourtAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
         )
-        .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
+        .map(outcome => [outcome.outcomeUuid, outcome]),
     )
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(JourneyUrls.courtCases(nomsId), config.domain)
@@ -236,6 +278,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
+    const isF986Eligible = await this.remandAndSentencingService.hasF986EligibleAppearances(nomsId, req.user.username)
 
     if (!courtCases.empty) {
       const auditDetails = this.getCourtCasesAuditUuids(courtCases, consecutiveToSentenceDetails)
@@ -248,6 +291,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       })
     }
     const successMessage = req.flash('success')[0]
+    const confirmConsecutiveToSentenceFixesUrl = JourneyUrls.confirmConsecutiveToSentenceFixes(
+      nomsId,
+      sortBy,
+      appearanceDateFrom,
+      appearanceDateTo,
+      includeCasesFromPreviousPeriodsOfCustody,
+      pageNumber,
+    )
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -272,6 +323,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       disableIncludeCasesFromPreviousPeriodsOfCustody,
       bookingCourtCasePreviousPeriodsCount,
       displayMaintenanceAlert: true,
+      isF986Eligible,
+      unconfirmedCourtCases: unconfirmedCourtCases.courtCases,
+      unconfirmedCourtCaseSentences: unconfirmedCourtCases.courtCases.flatMap(courtCase => courtCase.sentences),
+      confirmConsecutiveToSentenceFixesUrl,
     })
   }
 
@@ -519,6 +574,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }),
     )
     const successMessage = req.flash('success')[0]
+    const courtCaseStatusChangeSuccessMessage = req.flash('courtCaseStatusChangeSuccess')[0]
     const auditDetails = this.getCourtCaseAuditUuids(courtCaseDetails, consecutiveToSentenceDetails)
     await this.auditService.logPageView(Page.COURT_CASE, {
       who: res.locals.user.username,
@@ -537,7 +593,137 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       backLink: JourneyUrls.courtCases(nomsId),
       successMessage,
+      courtCaseStatusChangeSuccessMessage,
     })
+  }
+
+  public getConfirmMarkCourtCaseAsActive: RequestHandler = async (req, res): Promise<void> => {
+    return this.renderConfirmMarkCourtCaseStatus(req, res, 'pages/courtCase/confirm-mark-court-case-as-active')
+  }
+
+  public getConfirmMarkCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    return this.renderConfirmMarkCourtCaseStatus(req, res, 'pages/courtCase/confirm-mark-court-case-as-inactive')
+  }
+
+  private getCaseAndCourtDetails = async (
+    courtCaseReference: string,
+    username: string,
+  ): Promise<{ caseReference: string; courtName: string }> => {
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
+    const courtDetails = courtCaseDetails.latestAppearance?.courtCode
+      ? await this.courtRegisterService.findCourtById(courtCaseDetails.latestAppearance.courtCode, username)
+      : undefined
+    return {
+      caseReference: courtCaseDetails.latestAppearance?.courtCaseReference,
+      courtName: courtDetails?.courtName,
+    }
+  }
+
+  private renderConfirmMarkCourtCaseStatus = async (req, res, view: string): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    const { caseReference, courtName } = await this.getCaseAndCourtDetails(courtCaseReference, username)
+    return res.render(view, {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      backLink,
+      caseReference,
+      courtName,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitConfirmMarkCourtCaseAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const confirmMarkCourtCaseStatusForm = trimForm<ConfirmMarkCourtCaseStatusForm>(req.body)
+    const errors = await this.remandAndSentencingService.confirmMarkCourtCaseAsActive(
+      courtCaseReference,
+      username,
+      confirmMarkCourtCaseStatusForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-active`,
+      )
+    }
+    if (confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus === 'true') {
+      req.flash('courtCaseStatusChangeSuccess', 'Court case successfully marked active')
+    }
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+  }
+
+  public submitConfirmMarkCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const confirmMarkCourtCaseStatusForm = trimForm<ConfirmMarkCourtCaseStatusForm>(req.body)
+    const errors = await this.remandAndSentencingService.confirmMarkCourtCaseAsInactive(confirmMarkCourtCaseStatusForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-inactive`,
+      )
+    }
+    if (confirmMarkCourtCaseStatusForm.confirmMarkCourtCaseStatus !== 'true') {
+      return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/provide-reason-for-marking-court-case-as-inactive`,
+    )
+  }
+
+  public getCannotMarkCourtCaseAsInactiveActiveSentences: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    return res.render('pages/courtCase/cannot-mark-court-case-as-inactive-active-sentences', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      backLink,
+    })
+  }
+
+  public getProvideReasonForMarkingCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/confirm-mark-court-case-as-inactive`
+    const cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    const { caseReference, courtName } = await this.getCaseAndCourtDetails(courtCaseReference, username)
+    const markCourtCaseAsInactiveReasonForm = (req.flash('markCourtCaseAsInactiveReasonForm')[0] ||
+      {}) as MarkCourtCaseAsInactiveReasonForm
+    return res.render('pages/courtCase/provide-reason-for-marking-court-case-as-inactive', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      backLink,
+      cancelLink,
+      caseReference,
+      courtName,
+      reason: markCourtCaseAsInactiveReasonForm.reason,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitProvideReasonForMarkingCourtCaseAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user
+    const markCourtCaseAsInactiveReasonForm = trimForm<MarkCourtCaseAsInactiveReasonForm>(req.body)
+    const errors = await this.remandAndSentencingService.markCourtCaseAsInactive(
+      courtCaseReference,
+      username,
+      markCourtCaseAsInactiveReasonForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('markCourtCaseAsInactiveReasonForm', { ...markCourtCaseAsInactiveReasonForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/provide-reason-for-marking-court-case-as-inactive`,
+      )
+    }
+    req.flash('courtCaseStatusChangeSuccess', 'Court case successfully marked inactive')
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
   }
 
   private getCourtCaseAuditUuids(
@@ -787,7 +973,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       } else if (warrantType === 'APPEAL') {
         backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
-      } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         backLink = BreachJourneyUrls.hearingDetails(urlParameters)
       } else {
         backLink = JourneyUrls.nonSentencingHearing(
@@ -801,7 +987,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     } else if (submitToCheckAnswers) {
       if (warrantType === 'APPEAL') {
         backLink = AppealsJourneyUrls.checkHearingAnswers(urlParameters)
-      } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
       } else {
         backLink = JourneyUrls.checkAppearanceAnswers(
@@ -825,7 +1011,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     } else if (warrantType === 'APPEAL') {
       backLink = AppealsJourneyUrls.taskList(urlParameters)
-    } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+    } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
       backLink = BreachJourneyUrls.taskList(urlParameters)
     }
 
@@ -876,7 +1062,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
       }
       return res.redirect(
@@ -894,7 +1080,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.checkHearingAnswers(urlParameters))
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.checkHearingAnswers(urlParameters))
       }
       return res.redirect(
@@ -910,7 +1096,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     if (warrantType === 'APPEAL') {
       return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
     }
-    if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+    if (BREACH_WARRANT_TYPES.includes(warrantType)) {
       return res.redirect(BreachJourneyUrls.hearingDate(urlParameters))
     }
     return res.redirect(
@@ -954,7 +1140,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     } else if (warrantType === 'APPEAL') {
       backLink = AppealsJourneyUrls.taskList(urlParameters)
-    } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+    } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
       backLink = BreachJourneyUrls.taskList(urlParameters)
     }
     return res.render('pages/courtAppearance/select-reference', {
@@ -1010,7 +1196,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.hearingDate(urlParameters))
       }
       return res.redirect(
@@ -1157,7 +1343,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
-    if (addOrEditCourtCase === 'edit-court-case') {
+    const sessionAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    if (addOrEditCourtCase === 'edit-court-case' && !sessionAppearance.isCommonPlatformJourney) {
       try {
         const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
           req.user.username,
@@ -1418,18 +1609,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid) {
         courtAppearanceUuid = latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid
       }
-      latestCourtAppearance.charges
-        .filter(charge => {
-          const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
-          return !dispositionCode || dispositionCode === 'INTERIM' || dispositionCode === 'I'
-        })
-        .sort((a, b) => {
-          return sortByDateDesc(b.createdAt, a.createdAt)
-        })
-        .map((charge, index) => chargeToOffence(charge, index))
-        .forEach(offence =>
-          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, courtAppearanceUuid),
-        )
+      this.courtAppearanceService.addChargesFromPreviousAppearance(
+        req.session,
+        nomsId,
+        courtAppearanceUuid,
+        latestCourtAppearance,
+      )
     }
     return res.redirect(
       JourneyUrls.receivedCustodialSentence(
@@ -1528,15 +1713,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let model
     switch (courtAppearance.warrantType) {
       case 'SENTENCING':
-        model = new SentencingTaskListModel(
-          nomsId,
-          addOrEditCourtCase,
-          addOrEditCourtAppearance,
-          courtCaseReference,
-          appearanceReference,
-          courtAppearance,
-          caseReferenceSet,
-        )
+        model = new SentencingTaskListModel(urlParameters, courtAppearance, caseReferenceSet)
         break
       default:
         model = new NonSentencingTaskListModel(
@@ -1570,11 +1747,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+    if (courtAppearance.isCommonPlatformJourney) {
+      await this.remandAndSentencingService.createUploadDocuments(
+        courtAppearance.uploadedDocuments.filter(it => it.courtDataIngested),
+        username,
+      )
+    }
     if (addOrEditCourtCase === 'add-court-case') {
-      if (courtAppearance.hasCommonPlatformDocuments) {
-        await this.remandAndSentencingService.createUploadDocuments(courtAppearance.uploadedDocuments, username)
-      }
-
       const courtCase = { appearances: [courtAppearance] } as CourtCase
       const courtCaseResponse = await this.remandAndSentencingService.createCourtCase(
         nomsId,
@@ -1631,6 +1810,23 @@ export default class CourtCaseRoutes extends BaseRoutes {
         correlationId: req.id,
         details: auditDetails,
       })
+    }
+    if (courtAppearance.isCommonPlatformJourney) {
+      try {
+        await Promise.all(
+          courtAppearance.uploadedDocuments
+            .filter(it => it.courtDataIngested)
+            .map(it =>
+              this.courtDataIngestionService.documentViewed(
+                it.documentUUID,
+                { username, type: 'DOCUMENT_PROCESSED' },
+                username,
+              ),
+            ),
+        )
+      } catch (err) {
+        logger.error(`Failed to mark cdia documents as viewed`, err)
+      }
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {
@@ -1753,7 +1949,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
 
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !isHmctsJourneyWithChargeData) {
       return res.redirect(
         JourneyUrls.overallCaseOutcomeAppliedAll(
           nomsId,
@@ -2083,6 +2285,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let currentlySetTypeDescription
     if (
       nextAppearanceTypeUuid &&
+      nextAppearanceTypeUuid !== NIL_UUID &&
       !appearanceTypes.map(type => type.appearanceTypeUuid).includes(nextAppearanceTypeUuid)
     ) {
       const currentlySetType = await this.refDataService.getAppearanceTypeByUuid(
@@ -2422,11 +2625,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitNextAppearanceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const { warrantType } = appearance
     const nextAppearanceDateForm = trimForm<CourtCaseNextAppearanceDateForm>(req.body)
     const errors = this.courtAppearanceService.setNextAppearanceDate(
       req.session,
@@ -2479,8 +2679,26 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
+
+    if (appearance.nextAppearanceCourtCode) {
+      return res.redirect(
+        JourneyUrls.nextAppearanceCourtName(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-select`,
+      JourneyUrls.nextAppearanceCourtSelect(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -2825,41 +3043,26 @@ export default class CourtCaseRoutes extends BaseRoutes {
   }
 
   public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
-    const expectedDocumentTypes = documentTypes.NON_SENTENCING
-    const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
+    const urlParameters = req.params as unknown as UrlParameters
+    const documentRowMetadata = this.getDocumentRowMetadata(req, urlParameters, documentTypes.NON_SENTENCING)
     return res.render('pages/courtAppearance/upload-court-documents', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      courtAppearance,
-      documentRows,
-      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+      ...urlParameters,
+      ...documentRowMetadata,
+      isEditJourney: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+      backLink: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
         ? JourneyUrls.nonSentencingHearing(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
           )
         : JourneyUrls.taskList(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
           ),
     })
   }
@@ -3206,7 +3409,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
   ) {
     let { warrantOrHearing } = res.locals
 
-    if (warrantType === 'NON_SENTENCING') {
+    if (warrantType === 'NON_SENTENCING' && outcomeUuid) {
       const outcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, username)
       if (outcome.outcomeType === 'REMAND') {
         warrantOrHearing = 'warrant'

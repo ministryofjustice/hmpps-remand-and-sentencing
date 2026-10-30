@@ -4,6 +4,7 @@ import UploadRemandCourtDocumentsPage from '../../pages/uploadRemandCourtDocumen
 import DocumentUploadPage from '../../pages/documentUpload'
 
 context('Upload remand court document page', () => {
+  let uploadRemandCourtDocumentsPage: UploadRemandCourtDocumentsPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubUploadWarrant')
@@ -15,15 +16,16 @@ context('Upload remand court document page', () => {
     receivedCustodialSentencePage.radioLabelSelector('false').click()
     receivedCustodialSentencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/upload-court-documents')
-    Page.verifyOnPage(UploadRemandCourtDocumentsPage)
+    uploadRemandCourtDocumentsPage = Page.verifyOnPage(UploadRemandCourtDocumentsPage)
   })
 
   it(`uploads a document and shows on the upload court documents page`, () => {
-    cy.contains('Upload remand warrant').click()
+    uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('contain.text', 'Upload remand warrant').click()
     const documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'remand warrant')
     documentUploadPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
     documentUploadPage.continueButton().click()
-    Page.verifyOnPage(UploadRemandCourtDocumentsPage)
+    uploadRemandCourtDocumentsPage = Page.verifyOnPage(UploadRemandCourtDocumentsPage)
     cy.contains('testfile.doc')
+    uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('exist')
   })
 })

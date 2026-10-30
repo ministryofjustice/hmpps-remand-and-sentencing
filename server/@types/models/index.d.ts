@@ -22,6 +22,7 @@ declare module 'models' {
     nextAppearanceDate?: Date
     nextAppearanceTimeSet?: boolean
     nextAppearanceSubTypeUuid?: string
+    nextHmctsCourtHearingId?: string
     offences?: Offence[]
     warrantType?: string
     referenceNumberSelect?: string
@@ -37,8 +38,10 @@ declare module 'models' {
     uploadedDocuments?: UploadedDocument[]
     documentUploadAccepted?: boolean
     criminalAppealOfficeReference?: string
-    hasCommonPlatformDocuments?: boolean
+    isCommonPlatformJourney?: boolean
     periodLengths?: SentenceLength[]
+    judicialFindingsAccepted?: boolean
+    hmctsCourtHearingId?: string
   }
 
   export interface Offence {
@@ -54,9 +57,13 @@ declare module 'models' {
     mergedFromCase?: PagedMergedFromCase
     onFinishGoToEdit?: boolean
     replacesOffenceUuid?: string
+    replacesSentenceUuid?: string
     createChargeOrder?: number
     replicatedFromUuid?: string
     offenceDateIsSame?: string
+    isGeneratedBreachOffence?: string
+    findingOfDomesticAbuse?: boolean
+    hmctsChargeId?: string
   }
 
   export interface Sentence {
@@ -73,6 +80,8 @@ declare module 'models' {
     isSentenceConsecutiveToAnotherCase?: string
     consecutiveToSentenceUuid?: string
     returnUrlKey?: string
+    status?: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MANY_CHARGES_DATA_FIX' | 'INACTIVE'
+    reason?: string
   }
 
   export interface SentenceLength {
@@ -98,6 +107,7 @@ declare module 'models' {
 
   export interface TaskListItem {
     title: { text: string; classes?: string }
+    hint?: { text: string; classes?: string }
     href: string
     status: TaskListItemStatus
   }
@@ -119,7 +129,7 @@ declare module 'models' {
   }
 
   export interface FileDownload {
-    body: Buffer
+    body: Buffer | Readable
     header: {
       [key: string]: string
     }

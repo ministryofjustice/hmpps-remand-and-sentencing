@@ -8,13 +8,14 @@ import ManageOffencesService from '../services/manageOffencesService'
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
-import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
+import { getSortedDocumentsWithUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
 import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import DocumentManagementService from '../services/documentManagementService'
 import NonSentencingJourneyUrls from './data/NonSentencingJourneyUrls'
+import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -128,21 +129,16 @@ export default class RemandRoutes extends BaseRoutes {
       hasSentenceAfterOnOtherCourtAppearancePromise,
       appearanceSubtypePromise,
     ])
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+      hearing.offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
     )
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, nomsId, appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference),
+      hearing.warrantType,
+    )
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
@@ -173,6 +169,10 @@ export default class RemandRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(
+        req.params as unknown as UrlParameters,
+      ),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })

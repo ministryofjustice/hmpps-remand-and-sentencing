@@ -9,8 +9,6 @@ export default class StartPage extends Page {
 
   courtCaseCard = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=courtCaseCard-${courtCaseUuid}]`)
 
-  recallInset = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=recallInset-${courtCaseUuid}]`)
-
   mergedCaseInset = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=mergedCaseInset-${courtCaseUuid}]`)
 
   mergedToCaseInset = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=mergedToCaseInset-${courtCaseUuid}]`)
@@ -40,6 +38,8 @@ export default class StartPage extends Page {
 
   filterSortSummary = (): PageElement => cy.get('[data-qa=filterSortSummary]')
 
+  filterSortSummaryPanel = (): PageElement => cy.get('.filter-box')
+
   addAppearanceLink = (courtCaseReference: string): PageElement =>
     cy.get(`[data-qa=add-appearance-link-${courtCaseReference}]`)
 
@@ -62,4 +62,6 @@ export default class StartPage extends Page {
   outageBanner = (): PageElement => cy.get('.moj-outage-banner')
 
   addBreachLink = (courtCaseReference: string): PageElement => cy.get(`[data-qa=add-breach-link-${courtCaseReference}]`)
+
+  viewF986Link = (): PageElement => cy.get('[data-qa=view-f986-form-link]')
 }

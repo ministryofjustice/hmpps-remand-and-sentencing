@@ -1,6 +1,6 @@
 import { Readable } from 'stream'
 import PrisonApiClient from '../data/prisonApiClient'
-import { CaseLoad, InmateDetail } from '../@types/prisonApi/types'
+import { Agency, CaseLoad, InmateDetail } from '../@types/prisonApi/types'
 
 export default class PrisonerService {
   constructor(private readonly prisonApiClient: PrisonApiClient) {}
@@ -15,5 +15,9 @@ export default class PrisonerService {
 
   async getBookingDetails(bookingId: string, username: string): Promise<InmateDetail> {
     return this.prisonApiClient.getBookingDetails(bookingId, username)
+  }
+
+  async getAgencyDetails(agencyId: string, username: string): Promise<Agency> {
+    return this.prisonApiClient.getAgencyDetails(agencyId, username)
   }
 }

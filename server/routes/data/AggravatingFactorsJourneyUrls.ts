@@ -8,7 +8,7 @@ export default class AggravatingFactorsJourneyUrls {
     hasErrors?: string,
     fromCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/check-aggravating-factors-answers${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/check-aggravating-factors-answers${AggravatingFactorsJourneyUrls.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
   static selectOffenceWithAggravatingFactors = (
@@ -20,7 +20,7 @@ export default class AggravatingFactorsJourneyUrls {
     hasErrors?: string,
     fromCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/select-offence-with-aggravated-factors${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/select-offence-with-aggravated-factors${AggravatingFactorsJourneyUrls.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
   static selectWhichAggravatingFactorsApply = (
@@ -33,7 +33,7 @@ export default class AggravatingFactorsJourneyUrls {
     fromCheckAnswers?: string,
     hasErrors?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply${AggravatingFactorsJourneyUrls.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
   private static getQueryParameters(hasErrors?: string, fromCheckAnswers?: string): string {

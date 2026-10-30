@@ -25,7 +25,14 @@
 
             <div class="govuk-!-margin-top-6">
                 <h2 class="govuk-heading-l">What you can do next</h2>
-
+                {% if warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE' %}
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">Add a court case for the new offences</a>
+                    </div>
+                {% endif %}
+                <div class="govuk-body govuk-!-margin-top-6">
+                    <a class="govuk-link govuk-link--no-visited-state" href="{{ adjustmentServiceUrl }}/{{ nomsId }}">Add adjustments</a>
+                </div>
                 <div class="govuk-body govuk-!-margin-top-6">
                     <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
                     <ul class="govuk-list govuk-!-margin-top-2">

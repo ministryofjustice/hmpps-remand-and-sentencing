@@ -8,7 +8,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { formatDate, getUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'
+import { formatDate, getSortedDocumentsWithUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -35,11 +35,11 @@ export default class CourtCaseDetailsModel {
 
   mergedToInsetText?: string
 
-  showAppealRow: boolean
-
-  showBreachRow: boolean
-
   showEditLink: boolean
+
+  markCourtCaseStatusAction?: 'active' | 'inactive'
+
+  hasActiveSentence: boolean
 
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
@@ -86,6 +86,13 @@ export default class CourtCaseDetailsModel {
             ),
           ),
         )
+        const breachOfImprisonableOffence = formatLengths(
+          periodLengthToSentenceLength(
+            hearing.periodLengths.find(
+              periodLength => periodLength.periodLengthType === 'BREACH_OF_IMPRISONABLE_OFFENCE',
+            ),
+          ),
+        )
         return {
           ...hearing,
           charges: sortedCharges,
@@ -95,13 +102,9 @@ export default class CourtCaseDetailsModel {
             hearing.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
             courtMap,
           ),
-          documentsWithUiType: Array.isArray(hearing.documents)
-            ? hearing.documents.map(document => ({
-                ...document,
-                documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-              }))
-            : [],
+          documentsWithUiType: getSortedDocumentsWithUiDocumentType(hearing.documents, hearing.warrantType),
           breachOfSupervisionLength,
+          breachOfImprisonableOffence,
         }
       })
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))
@@ -111,9 +114,15 @@ export default class CourtCaseDetailsModel {
     this.mergedToInsetText = this.mergedToCaseDetails
       ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
       : undefined
-    this.showAppealRow = config.featureToggles.appeals
-    this.showBreachRow = config.featureToggles.breachSupervision
     this.showEditLink = pageCourtCaseContent.status !== 'MERGED'
+    if (pageCourtCaseContent.status === 'ACTIVE') {
+      this.markCourtCaseStatusAction = 'inactive'
+    } else if (pageCourtCaseContent.status === 'INACTIVE') {
+      this.markCourtCaseStatusAction = 'active'
+    }
+    this.hasActiveSentence = pageCourtCaseContent.appearances.some(appearance =>
+      appearance.charges.some(charge => charge.sentence?.status === 'ACTIVE'),
+    )
   }
 
   private static buildMergedToInsetText(merged: MergedToCaseDetails, courtMap: { [key: string]: string }): string {

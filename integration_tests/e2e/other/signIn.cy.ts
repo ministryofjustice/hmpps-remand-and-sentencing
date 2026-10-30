@@ -72,11 +72,7 @@ context('Sign In', () => {
     cy.task('stubVerifyToken', true)
     cy.task('stubSignIn', {
       name: 'bobby brown',
-      roles: [
-        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
-        Roles.getAuthority(Role.COURT_CASES),
-        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
-      ],
+      roles: [Roles.getAuthority(Role.COURT_CASES), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
     })
 
     cy.signIn()
@@ -86,7 +82,7 @@ context('Sign In', () => {
 
   it('User without release dates calculator role is shown auth error page', () => {
     cy.task('stubSignIn', {
-      roles: [Roles.getAuthority(Role.REMAND_AND_SENTENCING), Roles.getAuthority(Role.COURT_CASES)],
+      roles: [Roles.getAuthority(Role.COURT_CASES)],
     })
     cy.signIn({ failOnStatusCode: false })
     Page.verifyOnPage(AuthErrorPage)

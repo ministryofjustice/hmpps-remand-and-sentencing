@@ -1,0 +1,24 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - You cannot mark this sentence as active" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">You cannot mark this sentence as active</h1>
+
+            <p class="govuk-body">This sentence cannot be marked as active as it is consecutive to an inactive sentence.</p>
+
+            <h2 class="govuk-heading-m">What to do next</h2>
+            <p class="govuk-body">You must make the consecutive chain active before changing this sentence to active.</p>
+
+            {{ govukButton({
+                text: "Cancel and go back",
+                classes: "govuk-button--secondary",
+                href: editHearingLink,
+                attributes: { 'data-qa': 'cancel-and-go-back-button' }
+            }) }}
+        </div>
+    </div>
+{% endblock %}

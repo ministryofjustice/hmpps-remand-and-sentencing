@@ -48,6 +48,7 @@ export default {
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
+    recoveryTtlMinutes: Number(get('SESSION_RECOVERY_TTL_MINUTES', 30)),
   },
   apis: {
     hmppsAuth: {
@@ -185,8 +186,10 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
-    appeals: get('FEATURES_APPEALS_ENABLED', false, requiredInProduction) === 'true',
-    breachSupervision: get('FEATURES_BREACH_SUPERVISION_ENABLED', false, requiredInProduction) === 'true',
-    bulkOutcomeApplied: get('FEATURES_BULK_OUTCOME_APPLIED', false, requiredInProduction) === 'true',
+    judicialFindings: get('FEATURES_JUDICIAL_FINDINGS', false, requiredInProduction) === 'true',
+    generatedDocuments: get('FEATURES_GENERATED_DOCUMENTS', false) === 'true',
+    checkAutomaticSentenceFix: get('FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX', false, requiredInProduction) === 'true',
+    replacedWithAnotherAppeals: get('FEATURES_REPLACED_WITH_ANOTHER_APPEALS', false, requiredInProduction) === 'true',
+    multipleOffenceInstances: get('FEATURES_MULTIPLE_OFFENCE_INSTANCES', false, requiredInProduction) === 'true',
   },
 }

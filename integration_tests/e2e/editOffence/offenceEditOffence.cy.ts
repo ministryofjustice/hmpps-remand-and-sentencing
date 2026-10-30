@@ -4,7 +4,6 @@ import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentence
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
-import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
@@ -23,6 +22,7 @@ import SentencingCorrectManyPeriodLengthPage from '../../pages/sentencingCorrect
 import SentencingCorrectManyPeriodLengthInterruptPage from '../../pages/sentencingCorrectManyPeriodLengthInterruptPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
+import OffenceOffenceNamePage from '../../pages/offenceOffenceNamePage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -70,7 +70,7 @@ context('Add Offence Edit offence Page', () => {
         .first()
         .then($el => {
           const href = $el.attr('href')
-          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          const match = href?.match(/offences\/([a-f0-9-]+)\//)
           if (match) {
             // eslint-disable-next-line prefer-destructuring
             chargeUuid = match[1]
@@ -106,11 +106,11 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetOffencesByCodes', { offenceCode: 'AB11000', offenceDescription: 'Another offence description' })
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
       offenceOffenceCodePage.input().should('have.value', 'PS90037')
-      offenceOffenceCodePage.input().clear().type('AB11000')
+      offenceOffenceCodePage.unknownCodeCheckbox().check()
       offenceOffenceCodePage.continueButton().click()
-
-      const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-      offenceOffenceCodeConfirmPage.continueButton().click()
+      const offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
+      offenceOffenceNamePage.autoCompleteInput().type('ab11000')
+      offenceOffenceNamePage.continueButton().click()
 
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
@@ -180,7 +180,7 @@ context('Add Offence Edit offence Page', () => {
         .first()
         .then($el => {
           const href = $el.attr('href')
-          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          const match = href?.match(/offences\/([a-f0-9-]+)\//)
           if (match) {
             // eslint-disable-next-line prefer-destructuring
             chargeUuid = match[1]

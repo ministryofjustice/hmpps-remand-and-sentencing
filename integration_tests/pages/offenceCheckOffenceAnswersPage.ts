@@ -44,6 +44,8 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
 
   nonCustodialOffences = (): PageElement => cy.get('[data-qa="nonCustodialOffences"]')
 
+  custodialOffences = (): PageElement => cy.get('[data-qa="custodialOffences"]')
+
   noNonCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noNonCustodialOutcomeInset"]')
 
   noCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noCustodialOutcomeInset"]')

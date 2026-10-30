@@ -7,6 +7,8 @@ export default class OffenceEditOffencePage extends Page {
 
   editFieldLink = (chargeUuid: string, page: string): PageElement => cy.get(`a[data-qa="edit-${page}-${chargeUuid}"]`)
 
+  addJudicialFindingsCta = (): PageElement => cy.get('a[data-qa="add-judicial-findings-cta"]')
+
   editPeriodLengthLink = (
     personId: string,
     addOrEdit: string,

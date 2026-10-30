@@ -1,5 +1,6 @@
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import type { FileDownload } from 'models'
 import {
   AggravatingFactor,
   AllSentenceTypes,
@@ -19,6 +20,7 @@ import {
   CreateCourtCaseResponse,
   CreateSentenceType,
   DeleteSentenceStatusDetails,
+  FixSingleSentenceMultipleChargesPeople,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -37,12 +39,18 @@ import {
   SentencedCharges,
   SentenceDetails,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
+  SentenceUuidsWithActiveSentencesAfterResponse,
   SentencesToChainToResponse,
   SentenceType,
   SentenceTypeChargeOutcomes,
   SentenceTypeDetails,
   SentenceTypeIsValid,
+  UpdateCourtCaseStatus,
   UploadedDocument,
+  CreateF986,
+  F986EligibleCourtAppearance,
+  UnconfirmedCourtCases,
+  ConfirmConsecutiveToSentenceFixes,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import logger from '../../logger'
@@ -64,6 +72,20 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<CreateCourtCaseResponse>
+  }
+
+  async updateCourtCaseStatus(
+    courtCaseUuid: string,
+    updateCourtCaseStatus: UpdateCourtCaseStatus,
+    username: string,
+  ): Promise<void> {
+    return this.put(
+      {
+        data: updateCourtCaseStatus,
+        path: `/court-case/${courtCaseUuid}/status`,
+      },
+      asSystem(username),
+    )
   }
 
   async searchCourtCases(
@@ -89,6 +111,24 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )
+  }
+
+  async getF986EligibleAppearances(prisonerId: string, username: string): Promise<F986EligibleCourtAppearance[]> {
+    return (await this.get(
+      {
+        path: `/document-generator/f986/person/${prisonerId}/eligible-appearances`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<F986EligibleCourtAppearance[]>
+  }
+
+  async hasF986EligibleAppearances(prisonerId: string, username: string): Promise<boolean> {
+    return (await this.get(
+      {
+        path: `/document-generator/f986/person/${prisonerId}/eligible-appearances/exists`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<boolean>
   }
 
   async putCourtAppearance(
@@ -440,6 +480,21 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )) as unknown as Promise<HasSentenceAfterOnOtherCourtAppearanceResponse>
   }
 
+  async getSentenceUuidsWithActiveSentencesAfter(
+    sentenceUuids: string[],
+    username: string,
+  ): Promise<SentenceUuidsWithActiveSentencesAfterResponse> {
+    return this.get<SentenceUuidsWithActiveSentencesAfterResponse>(
+      {
+        path: `/sentence/has-active-sentences-after-on-other-court-appearance`,
+        query: {
+          sentenceUuids: sentenceUuids.join(','),
+        },
+      },
+      asSystem(username),
+    )
+  }
+
   async getSentencesAfterOnOtherCourtAppearanceDetails(
     sentenceUuids: string[],
     username: string,
@@ -716,6 +771,72 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: `/sentence/${sentenceUuid}/delete-status`,
         ...(sentenceUuidsInChain.length && { query: { sentenceUuidsInChain: sentenceUuidsInChain.join(',') } }),
+      },
+      asSystem(username),
+    )
+  }
+
+  async fixPrisonersManyChargesToSentence(
+    fixSingleSentenceMultipleChargesPeople: FixSingleSentenceMultipleChargesPeople,
+    username: string,
+  ): Promise<void> {
+    return this.post(
+      {
+        path: '/person-admin/fix-many-charges-to-sentence',
+        data: fixSingleSentenceMultipleChargesPeople,
+      },
+      asSystem(username),
+    )
+  }
+
+  async generateF986Document(
+    prisonerId: string,
+    generateF986DocumentRequest: CreateF986,
+    username: string,
+  ): Promise<FileDownload> {
+    return this.post(
+      {
+        path: `/document-generator/f986/person/${prisonerId}`,
+        data: generateF986DocumentRequest,
+        responseType: 'blob',
+        raw: true,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getUnconfirmedSentenceFixCourtCases(prisonerId: string, username: string): Promise<UnconfirmedCourtCases> {
+    return this.get(
+      {
+        path: `/person/${prisonerId}/unconfirmed-sentence-fix-court-cases`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getUnconfirmedSentenceFixCourtCasesByUuids(
+    courtCaseUuids: string[],
+    username: string,
+  ): Promise<UnconfirmedCourtCases> {
+    return this.get(
+      {
+        path: '/court-case/multiple/unconfirmed-sentence-fix-court-cases',
+        query: {
+          courtCaseUuids: courtCaseUuids.join(','),
+        },
+      },
+      asSystem(username),
+    )
+  }
+
+  async confirmConsecutiveToSentenceFixes(
+    confirmConsecutiveToSentenceFixes: ConfirmConsecutiveToSentenceFixes,
+    username: string,
+  ): Promise<void> {
+    return this.put(
+      {
+        path: '/sentence/confirm-consecutive-to-sentence-fix',
+        data: confirmConsecutiveToSentenceFixes,
       },
       asSystem(username),
     )

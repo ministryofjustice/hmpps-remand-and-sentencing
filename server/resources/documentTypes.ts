@@ -67,17 +67,29 @@ const expectedTypes = {
       uploadLinkSegment: 'upload-breach-order',
     },
   ],
+  BREACH_OF_IMPRISONABLE_OFFENCE: [
+    {
+      type: 'BREACH_ORDER',
+      name: 'Breach order',
+      uploadLinkSegment: 'upload-breach-order',
+    },
+  ],
 }
 
 export default expectedTypes
 
-export function getDocumentTypeNameMap(): { [key: string]: string } {
+export function getDocumentTypeNameMap(): {
+  [key: string]: {
+    name: string
+    order: number
+  }
+} {
   return Object.fromEntries(
     Object.keys(expectedTypes).flatMap(warrantType => {
-      return expectedTypes[warrantType].flatMap(documentType => {
+      return expectedTypes[warrantType].flatMap((documentType, index) => {
         return [
-          [`${warrantType}_${documentType.type}`, documentType.name],
-          [documentType.type, documentType.name],
+          [`${warrantType}_${documentType.type}`, { name: documentType.name, order: index }],
+          [documentType.type, { name: documentType.name, order: index }],
         ]
       })
     }),

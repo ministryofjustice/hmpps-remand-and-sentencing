@@ -23,7 +23,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import RefDataService from '../services/refDataService'
 import {
-  getUiDocumentType,
+  getSortedDocumentsWithUiDocumentType,
   offencesToOffenceDescriptions,
   orderOffences,
   outcomeValueOrLegacy,
@@ -32,6 +32,8 @@ import {
 import { chargeToOffence, pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
+import SentencingJourneyUrls from './data/SetencingJourneyUrls'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -97,32 +99,35 @@ export default class AppealsRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+    const sessionCourtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    const courtAppearanceWithoutSentences = {
-      ...courtAppearance,
-      offences: courtAppearance.offences.map(offence => {
-        const { sentence: _, ...offenceWithoutSentence } = offence
-        return offenceWithoutSentence
+    const toSaveCourtAppearance = {
+      ...sessionCourtAppearance,
+      offences: sessionCourtAppearance.offences.map(offence => {
+        if (!offence.updatedOutcome) {
+          const { sentence: _, ...offenceWithoutSentence } = offence
+          return offenceWithoutSentence
+        }
+        return offence
       }),
     }
     const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
       username,
       urlParameters.courtCaseReference,
       urlParameters.appearanceReference,
-      courtAppearanceWithoutSentences,
+      toSaveCourtAppearance,
       prisonId,
     )
     const auditDetails = {
       courtCaseUuids: [urlParameters.courtCaseReference],
       courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
-      chargesUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+      chargesUuids: sessionCourtAppearance.offences?.map(offence => offence.chargeUuid),
       sentenceUuids: [],
       periodLengthUuids: [],
-      documentUuids: (courtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
+      documentUuids: (sessionCourtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
     }
     await this.auditService.logCreateHearing({
       who: username,
@@ -443,28 +448,19 @@ export default class AppealsRoutes extends BaseRoutes {
       }),
     )
 
-    const [appealedOffences, otherOffences] = offences.reduce(
-      ([appealedList, otherList], offence) => {
-        return outcomeMap[offence.outcomeUuid].outcomeType === 'APPEAL'
-          ? [[...appealedList, offence], otherList]
-          : [appealedList, [...otherList, offence]]
+    const [updatedOffences, otherOffences] = offences.reduce(
+      ([updatedList, otherList], offence) => {
+        return offence.updatedOutcome === true
+          ? [[...updatedList, offence], otherList]
+          : [updatedList, [...otherList, offence]]
       },
       [[], []],
     )
-    const allSentenceUuids = offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
-    )
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      urlParameters.nomsId,
-      offenceMap,
-      urlParameters.appearanceReference,
     )
     return res.render('pages/appeals/record-appeal', {
       ...urlParameters,
@@ -472,12 +468,9 @@ export default class AppealsRoutes extends BaseRoutes {
       sentenceTypeMap,
       outcomeMap,
       otherOffences,
-      appealedOffences,
+      updatedOffences,
       courtMap,
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       errors: req.flash('errors') || [],
     })
   }
@@ -512,6 +505,9 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.chargeUuid,
       urlParameters.appearanceReference,
     )
+    this.offenceService.setSessionOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference, [
+      offence,
+    ])
     let appealOffenceOutcomeForm = (req.flash('appealOffenceOutcomeForm')[0] || {}) as AppealOffenceOutcomeForm
     if (Object.keys(appealOffenceOutcomeForm).length === 0) {
       appealOffenceOutcomeForm = {
@@ -520,7 +516,12 @@ export default class AppealsRoutes extends BaseRoutes {
     }
     const [offenceHint, primaryNonCustodialChargeOutcomes] = await Promise.all([
       this.getOffenceHint(offence, username),
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(appearanceOutcomeUuid, warrantType, username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(
+        appearanceOutcomeUuid,
+        warrantType,
+        username,
+        Boolean(offence.replacesOffenceUuid),
+      ),
     ])
     const appealOutcomes = primaryNonCustodialChargeOutcomes.allOutcomes
     let backLink = AppealsJourneyUrls.recordAppeal(urlParameters)
@@ -541,7 +542,7 @@ export default class AppealsRoutes extends BaseRoutes {
   public subtmitSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const appealOffenceOutcomeForm = trimForm<AppealOffenceOutcomeForm>(req.body)
-    const errors = this.courtAppearanceService.setOffenceAppealOutcome(
+    const { errors, sentenceUuid, offence } = this.offenceService.setOffenceAppealOutcome(
       req.session,
       urlParameters,
       appealOffenceOutcomeForm,
@@ -551,9 +552,33 @@ export default class AppealsRoutes extends BaseRoutes {
       req.flash('appealOffenceOutcomeForm', { ...appealOffenceOutcomeForm })
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
+
+    if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
+      return this.initiateOffenceReplacement(
+        req,
+        urlParameters.nomsId,
+        urlParameters.courtCaseReference,
+        urlParameters.chargeUuid,
+        res,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+        sentenceUuid,
+      )
+    }
+
+    this.saveAllOffencesToAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+      urlParameters.courtCaseReference,
+      offence,
+    )
+
     if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
       return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
     }
+
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
   }
 
@@ -581,16 +606,7 @@ export default class AppealsRoutes extends BaseRoutes {
   public getViewAppealOrder: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
     const { backToUpload } = req.query
-    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
-      req.session,
-      urlParameters.nomsId,
-      urlParameters.appearanceReference,
-    )
-    const expectedDocumentTypes = documentTypes.APPEAL
-    const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
+    const documentRowMetadata = this.getDocumentRowMetadata(req, urlParameters, documentTypes.APPEAL)
     const isEditJourney = this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
     let backLink = AppealsJourneyUrls.taskList(urlParameters)
     if (backToUpload) {
@@ -600,7 +616,7 @@ export default class AppealsRoutes extends BaseRoutes {
     }
     return res.render('pages/appeals/view-appeal-order', {
       ...urlParameters,
-      documentRows,
+      ...documentRowMetadata,
       backLink,
       isEditJourney,
     })
@@ -663,7 +679,20 @@ export default class AppealsRoutes extends BaseRoutes {
 
   public getConfirmation: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
-    return res.render('pages/appeals/confirmation', urlParameters)
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      urlParameters.appearanceReference,
+      req.user.username,
+    )
+    const hasReplacedOffence = storedAppearance.charges.some(
+      charge => charge.outcome?.outcomeUuid === REPLACEMENT_OUTCOME_UUID,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(storedAppearance.courtCode, req.user.username)
+    return res.render('pages/appeals/confirmation', {
+      ...urlParameters,
+      caseReference: storedAppearance.courtCaseReference,
+      courtDetails,
+      hasReplacedOffence,
+    })
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {
@@ -770,36 +799,32 @@ export default class AppealsRoutes extends BaseRoutes {
       .reduce(
         ([appealedList, nonAppealedList], offence) => {
           const outcome = outcomeMap[offence.outcomeUuid]
-          if (outcome?.outcomeType === 'APPEAL') {
+          if (
+            outcome?.outcomeType === 'APPEAL' ||
+            offence.sentence ||
+            offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID
+          ) {
             return [[...appealedList, offence], nonAppealedList]
           }
           return [appealedList, [...nonAppealedList, offence]]
         },
         [[], []] as [typeof offences, typeof offences],
       )
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      hearing.offences,
       consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
     )
 
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      urlParameters.nomsId,
-      offenceMap,
-      urlParameters.appearanceReference,
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.appearanceReference,
+      ),
+      hearing.warrantType,
     )
-
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, urlParameters.nomsId, urlParameters.appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
@@ -819,14 +844,13 @@ export default class AppealsRoutes extends BaseRoutes {
       appearanceTypeDescription,
       appealedOffences: orderOffences(appealedOffences),
       nonAppealedOffences: orderOffences(nonAppealedOffences),
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
       showEditHearingDate,

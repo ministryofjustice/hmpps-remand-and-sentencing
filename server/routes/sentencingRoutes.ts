@@ -1,25 +1,27 @@
 import { RequestHandler } from 'express'
 import type {
+  ConfirmMarkSentenceAsActiveForm,
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
+  MarkSentencesAsInactiveReasonForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import type { CourtAppearance, UrlParameters } from 'models'
+import type { CourtAppearance, Offence, UrlParameters } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import BaseRoutes from './baseRoutes'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
-import trimForm from '../utils/trim'
+import trimForm, { normaliseToArray } from '../utils/trim'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import {
   convertToTitleCase,
   extractKeyValue,
-  getUiDocumentType,
+  getSortedDocumentsWithUiDocumentType,
   offencesToOffenceDescriptions,
   orderOffences,
   sentencesToChainToResponseToOffenceDescriptions,
@@ -308,29 +310,17 @@ export default class SentencingRoutes extends BaseRoutes {
         [[], []] as [typeof offences, typeof offences],
       )
 
-    const allSentenceUuids = hearing.offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      hearing.offences,
       consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
     )
 
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      nomsId,
-      offenceMap,
-      appearanceReference,
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference),
+      hearing.warrantType,
     )
-
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, nomsId, appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
@@ -356,14 +346,15 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypeDescription,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(
+        req.params as unknown as UrlParameters,
+      ),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
       overallSentenceLength,
@@ -613,8 +604,18 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
+    const allSessionOffences = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+    const allSessionOffencesWithoutSentenceUuids = allSessionOffences
+      .filter(allSessionOffence => !allSessionOffence.sentence)
+      .map(allSessionOffence => allSessionOffence.chargeUuid)
+
     const sentencesOnSameCase = courtAppearance.offences
-      .filter(sessionOffence => sessionOffence.chargeUuid !== chargeUuid && sessionOffence.sentence)
+      .filter(
+        sessionOffence =>
+          sessionOffence.chargeUuid !== chargeUuid &&
+          !allSessionOffencesWithoutSentenceUuids.includes(sessionOffence.chargeUuid) &&
+          sessionOffence.sentence,
+      )
       .map(sessionOffence => {
         return {
           countNumber: sessionOffence.sentence.countNumber,
@@ -700,41 +701,27 @@ export default class SentencingRoutes extends BaseRoutes {
   }
 
   public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
-    const expectedDocumentTypes = documentTypes.SENTENCING
-    const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
+    const urlParameters = req.params as unknown as UrlParameters
+    const documentRowMetadata = this.getDocumentRowMetadata(req, urlParameters, documentTypes.SENTENCING)
+
     return res.render('pages/sentencing/upload-court-documents', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      courtAppearance,
-      documentRows,
-      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+      ...urlParameters,
+      ...documentRowMetadata,
+      isEditJourney: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+      backLink: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
         ? JourneyUrls.sentencingHearing(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
           )
         : JourneyUrls.taskList(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
           ),
     })
   }
@@ -963,6 +950,220 @@ export default class SentencingRoutes extends BaseRoutes {
       ...urlParameters,
       appearanceUuid,
       backLink,
+    })
+  }
+
+  public getSelectSentencesToMarkAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const backLink = this.getHearingDetailsLink(urlParameters, warrantType)
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const activeSentenceOffences = orderOffences(
+      hearing.offences.filter(offence => offence.sentence?.status === 'ACTIVE'),
+    )
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(activeSentenceOffences.map(offence => offence.offenceCode))),
+      req.user.username,
+      offencesToOffenceDescriptions(hearing.offences, []),
+    )
+    const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
+    const countNumberBySentenceUuid = {
+      ...this.countNumberBySentenceUuid(hearing.offences),
+      ...Object.fromEntries(
+        consecutiveToSentenceDetailsFromApi.sentences.map(sentence => [sentence.sentenceUuid, sentence.countNumber]),
+      ),
+    }
+
+    return res.render('pages/sentencing/select-sentences-to-mark-as-inactive', {
+      ...urlParameters,
+      backLink,
+      activeSentenceOffences,
+      offenceMap,
+      countNumberBySentenceUuid,
+      selectedSentenceUuids: this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session),
+      errors: req.flash('errors') || [],
+      showHearingDetails: false,
+    })
+  }
+
+  public submitSelectSentencesToMarkAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const selectedSentenceUuids = Array.from(new Set(normaliseToArray(req.body.sentenceUuids)))
+
+    const errors = this.offenceService.setSentencesToMarkAsInactiveSentenceUuids(req.session, selectedSentenceUuids)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters, 'true'))
+    }
+
+    const { sentenceUuidsWithActiveSentencesAfter } =
+      await this.remandAndSentencingService.getSentenceUuidsWithActiveSentencesAfter(
+        selectedSentenceUuids,
+        req.user.username,
+      )
+
+    if (sentenceUuidsWithActiveSentencesAfter.length > 0) {
+      this.offenceService.setSentenceUuidsWithActiveSentencesAfter(req.session, sentenceUuidsWithActiveSentencesAfter)
+      return res.redirect(SentencingJourneyUrls.cannotMarkSentencesAsInactive(urlParameters))
+    }
+
+    return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
+  }
+
+  public getProvideReasonForMarkingSentencesAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const backLink = SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const selectedSentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
+    const selectedOffences = orderOffences(
+      hearing.offences.filter(offence => selectedSentenceUuids.includes(offence.sentence?.sentenceUuid)),
+    )
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(selectedOffences.map(offence => offence.offenceCode))),
+      req.user.username,
+      offencesToOffenceDescriptions(hearing.offences, []),
+    )
+
+    const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
+
+    const markSentencesAsInactiveReasonForm = (req.flash('markSentencesAsInactiveReasonForm')[0] ||
+      {}) as MarkSentencesAsInactiveReasonForm
+
+    return res.render('pages/sentencing/provide-reason-for-marking-sentences-as-inactive', {
+      ...urlParameters,
+      backLink,
+      selectedOffences,
+      offenceMap,
+      offenceNameMap: offenceMap,
+      offences: selectedOffences,
+      countNumberBySentenceUuid,
+      showHearingDetails: selectedOffences.length > 1,
+      reason: markSentencesAsInactiveReasonForm.reason,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitProvideReasonForMarkingSentencesAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const markSentencesAsInactiveReasonForm = trimForm<MarkSentencesAsInactiveReasonForm>(req.body)
+    const sentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const selectedOffences = hearing.offences.filter(offence => sentenceUuids.includes(offence.sentence?.sentenceUuid))
+
+    const errors = this.offenceService.markSentencesAsInactive(selectedOffences, markSentencesAsInactiveReasonForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('markSentencesAsInactiveReasonForm', { ...markSentencesAsInactiveReasonForm })
+      return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
+    }
+
+    this.offenceService.clearSentencesToMarkAsInactive(req.session)
+
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    return res.redirect(this.getHearingDetailsLink(urlParameters, warrantType))
+  }
+
+  public getCannotMarkSentencesAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const backLink = SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const editHearingLink = this.getHearingDetailsLink(urlParameters, warrantType)
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const blockedSentenceUuids = this.offenceService.getSentenceUuidsWithActiveSentencesAfter(req.session)
+    const blockedOffences = orderOffences(
+      hearing.offences.filter(offence => blockedSentenceUuids.includes(offence.sentence?.sentenceUuid)),
+    )
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(blockedOffences.map(offence => offence.offenceCode))),
+      req.user.username,
+      offencesToOffenceDescriptions(hearing.offences, []),
+    )
+
+    const countNumberBySentenceUuid = this.countNumberBySentenceUuid(hearing.offences)
+
+    return res.render('pages/sentencing/cannot-mark-sentences-as-inactive', {
+      ...urlParameters,
+      backLink,
+      editHearingLink,
+      blockedOffences,
+      offenceMap,
+      countNumberBySentenceUuid,
+    })
+  }
+
+  public checkMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canMarkSentenceAsActive(req, res, urlParameters)
+  }
+
+  public getConfirmMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, chargeUuid, appearanceReference } = urlParameters
+    const { username } = req.user
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const backLink = this.getHearingDetailsLink(urlParameters, warrantType)
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      username,
+      offence.legacyData?.offenceDescription,
+    )
+
+    return res.render('pages/sentencing/confirm-mark-sentence-as-active', {
+      ...urlParameters,
+      backLink,
+      offence,
+      offenceDetails,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitConfirmMarkSentenceAsActive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, chargeUuid, appearanceReference } = urlParameters
+    const confirmMarkSentenceAsActiveForm = trimForm<ConfirmMarkSentenceAsActiveForm>(req.body)
+
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const errors = this.offenceService.markSentenceAsActive(offence, confirmMarkSentenceAsActiveForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(SentencingJourneyUrls.confirmMarkSentenceAsActive(urlParameters))
+    }
+
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    return res.redirect(this.getHearingDetailsLink(urlParameters, warrantType))
+  }
+
+  public getCannotMarkSentenceAsActiveInactiveCase: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const editHearingLink = this.getHearingDetailsLink(urlParameters, warrantType)
+
+    return res.render('pages/sentencing/cannot-mark-sentence-as-active-inactive-case', {
+      ...urlParameters,
+      backLink: editHearingLink,
+      editHearingLink,
+    })
+  }
+
+  public getCannotMarkSentenceAsActiveConsecutiveChain: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const editHearingLink = this.getHearingDetailsLink(urlParameters, warrantType)
+
+    return res.render('pages/sentencing/cannot-mark-sentence-as-active-consecutive-chain', {
+      ...urlParameters,
+      backLink: editHearingLink,
+      editHearingLink,
     })
   }
 
@@ -1336,6 +1537,14 @@ export default class SentencingRoutes extends BaseRoutes {
       periodLengths: sentenceDetails.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
       backLink: `/person/${nomsId}/view-sentences`,
     })
+  }
+
+  private countNumberBySentenceUuid(offences: Offence[]): { [sentenceUuid: string]: string } {
+    return Object.fromEntries(
+      offences
+        .filter(offence => offence.sentence?.sentenceUuid)
+        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
+    )
   }
 
   private consecutiveOrConcurrentDescription(

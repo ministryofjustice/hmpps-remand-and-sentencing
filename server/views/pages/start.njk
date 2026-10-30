@@ -49,9 +49,58 @@
                     }) }}
                 </div>
             {% endif %}
+            {% if unconfirmedCourtCases | length %}
+                {% call govukNotificationBanner({
+                    attributes: {
+                        'data-qa': 'unconfirmedCourtCasesBanner'
+                    }
+                }) %}
+                    <h3 class="govuk-notification-banner__heading">
+                        Check the automatic updates are correct
+                    </h3>
+                    <p class="govuk-body">
+                        Multiple offences were attached to a single sentence on NOMIS. This service has automatically split these in to individual sentences for each offence. </br>
+                        Check that these automatic updates reflect the warrant information.
+                    </p>
+                    {% call govukDetails({
+                        summaryText: "What are the updates?",
+                        open: true
+                    }) %}
+                        The single sentence has been split into individual sentences for each offence, which are:
+                        <ul class="govuk-list govuk-list--bullet" data-qa="unconfirmedCourtCaseSentenceList">
+                        {% for sentence in unconfirmedCourtCaseSentences %}
+                            <li>{{sentence.offenceCode}} {{ offenceMap[sentence.offenceCode] }}<br>
+                                {{sentence.sentenceServeType | capitalize }}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        This has impacted the sentences on:
+                        <ul class="govuk-list govuk-list--bullet" data-qa="unconfirmedCourtCaseList">
+                            {% for courtCase in unconfirmedCourtCases %}
+                                <li>
+                                    Case{{' ' + courtCase.caseReference if courtCase.caseReference }} at {{ courtMap[courtCase.courtCode] }} on {{ courtCase.sentencingHearingDate | formatDate }}
+                                </li>
+                            {% endfor%}
+                        </ul>
+                        <form method="post" action="{{ confirmConsecutiveToSentenceFixesUrl }}" autocomplete="off">
+                            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                            {% for sentence in unconfirmedCourtCaseSentences%}
+                                <input type="hidden" name="sentenceUuids" value="{{ sentence.sentenceUuid }}">
+                            {% endfor %}
+                            {{ govukButton({
+                                text: "I can confirm the details are correct",
+                                classes: 'govuk-!-margin-bottom-1',
+                                attributes: {
+                                    'data-qa': 'confirmConsecutiveToButton'
+                                }
+                            }) }}
+                        </form>
+                    {% endcall %}
+                {% endcall %}
+            {% endif %}
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
-                        <details class="govuk-details filter filter-box govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
+                        <details class="govuk-details filter filter-box govuk-!-margin-bottom-2" open>
                             <summary class="govuk-details__summary" data-qa="filterSortSummary">
                                 <span class="govuk-details__summary-text">
                                     Filter previous periods of custody
@@ -159,6 +208,13 @@
                                     }
                                     ]))%}
                             {% endif %}
+                            {% if courtCaseDetails.warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE' %}
+                                {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
+                                        key: { text: "Breach due to imprisonable offence"},
+                                        value: { text: courtCaseDetails.overallBreachOfImprisonableOffenceLength | formatLengths if courtCaseDetails.overallBreachOfImprisonableOffenceLength else 'Not entered' }
+                                    }
+                                ]))%}
+                            {% endif %}
                             {% if courtCaseDetails.warrantType === 'NON_SENTENCING' %}
                               {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
                                       {
@@ -166,16 +222,6 @@
                                           value: { html: nextAppearanceHtml }
                                       }
                               ))%}
-                            {% endif %}
-                            {% if courtCaseDetails.hasARecall and not user.hasRecallsAccess %}
-
-                                {{ govukInsetText({
-                                    text: "The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.",
-                                    classes: "govuk-!-margin-top-2",
-                                    attributes: {
-                                        "data-qa": "recallInset-" + courtCaseDetails.courtCaseUuid
-                                    }
-                                }) }}
                             {% endif %}
 
                             {% if courtCaseDetails.mergedToCase %}
@@ -234,7 +280,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
-                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court name</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceLocation-{{courtCaseDetails.courtCaseUuid}}">{{ courtMap[courtCaseDetails.latestAppearance.courtCode] }}</p>
                                         <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome if courtCaseDetails.latestAppearance.outcome else 'Not entered' }}</p>
@@ -242,33 +288,18 @@
                                     <div class="govuk-grid-column-full govuk-!-margin-top-2">
                                         {% set offenceDetailsHtml %}
                                             {% for offence in courtCaseDetails.offences %}
+                                                {% set offenceId = 'offences.' + offence.index %}
                                                 {{
-                                                    offenceCard({
-                                                        offenceCode: offence.offenceCode,
-                                                        offenceName: offenceMap[offence.offenceCode],
-                                                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                                                        offenceEndDate: offence.offenceEndDate | formatDate,
-                                                        outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                                                        countNumber: offence.sentence.countNumber if offence.sentence,
-                                                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-                                                        convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
-                                                        aggravatingFactors: offence | getAggravatingFactors,
-                                                        isSentenced: offence.sentence,
-                                                        periodLengths: offence.sentence.periodLengths if offence.sentence,
-                                                        sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
+                                                    offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, offenceOutcomeMap, consecutiveToSentenceDetailsMap, courtCaseDetails.sentenceTypeMap, courtMap, [], {
                                                         consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,
-                                                        sentenceType: (courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData))  if offence.sentence,
-                                                        fineAmount: offence.sentence.fineAmount  if offence.sentence,
-                                                        detailsClasses: 'govuk-!-padding-4',
-                                                        mergedFromCase: offence.mergedFromCase,
-                                                        courtDetails: courtMap
-                                                    })
+                                                        detailsClasses: 'govuk-!-padding-4'
+                                                    }))
                                                 }}
                                             {% endfor %}
                                         {% endset %}
 
                                         {{ govukDetails({
-                                            summaryText: "offences (" + (courtCaseDetails.showingChargeTotal + " of " if courtCaseDetails.showingChargeTotal else "") + courtCaseDetails.chargeTotal + ")",
+                                            summaryText: "offences (" + courtCaseDetails.chargeTotal + ")",
                                             html: offenceDetailsHtml,
                                             classes: "filter show-toggle govuk-!-margin-bottom-0",
                                                 attributes: {
@@ -312,8 +343,8 @@
                         {% if courtCaseDetails.canBreach %}
                             {% set _ = actions.push({
                                 href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/breach/new-journey",
-                                text: "Add breach",
-                                visuallyHiddenText: "Add breach",
+                                text: "Add DTO breach",
+                                visuallyHiddenText: "Add DTO breach",
                                 attributes: {
                                         'data-qa': 'add-breach-link-' + courtCaseDetails.courtCaseUuid
                                     }
@@ -385,6 +416,7 @@
                     <ul class="govuk-list actions-list-list">
                         <span class="govuk-heading-m actions-list-header">Actions</span>
                         <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey" class="govuk-link govuk-link--no-visited-state">Add a new court case</a></li>
+                        {% include "partials/generatedDocumentLinks.njk" %}
                     </ul>
                 </div>
             </div>

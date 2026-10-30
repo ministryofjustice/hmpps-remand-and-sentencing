@@ -1,8 +1,10 @@
 import type {
+  ConfirmMarkSentenceAsActiveForm,
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   IsOffenceDateSameForm,
+  MarkSentencesAsInactiveReasonForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -20,8 +22,10 @@ import type {
   SentenceIsSentenceConsecutiveToForm,
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
+  SelectJudicialFindingsForm,
+  AppealOffenceOutcomeForm,
 } from 'forms'
-import type { CourtAppearance, Offence, Sentence, SentenceLength } from 'models'
+import type { CourtAppearance, Offence, Sentence, SentenceLength, UrlParameters } from 'models'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
 import { groupAndSortPeriodLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
@@ -98,7 +102,7 @@ export default class OffenceService {
     }
 
     let isValidOffenceEndDateRule = ''
-    let endDateString = ''
+    let endDateString: string
     if (
       offenceOffenceDateForm['offenceEndDate-day'] &&
       offenceOffenceDateForm['offenceEndDate-month'] &&
@@ -259,7 +263,7 @@ export default class OffenceService {
     if (errors.length === 0 && offenceCodeForm.offenceCode) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
-      offence.offenceCode = offenceCodeForm.offenceCode
+      offence.offenceCode = apiOffence?.code ?? offenceCodeForm.offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
@@ -301,7 +305,7 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
-      offence.offenceCode = offenceCode
+      offence.offenceCode = apiOffence?.code ?? offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
@@ -423,6 +427,7 @@ export default class OffenceService {
           return { errors, outcome, hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance }
         }
         delete offence.aggravatingFactors
+        delete offence.findingOfDomesticAbuse
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -459,6 +464,7 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        delete offence.findingOfDomesticAbuse
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -934,7 +940,7 @@ export default class OffenceService {
           (offenceEndDate.month() + 1).toString(),
           offenceEndDate.date().toString(),
         )
-        offenceRules = `|isAfterOffenceEndDate:${offenceEndDateString},${convictionDateString}`
+        offenceRules = `|isOnOrAfterOffenceEndDate:${offenceEndDateString},${convictionDateString}`
       } else if (offence.offenceStartDate) {
         const offenceStartDate = dayjs(offence.offenceStartDate)
         const offenceStartDateString = toDateString(
@@ -942,7 +948,7 @@ export default class OffenceService {
           (offenceStartDate.month() + 1).toString(),
           offenceStartDate.date().toString(),
         )
-        offenceRules = `|isAfterOffenceStartDate:${offenceStartDateString},${convictionDateString}`
+        offenceRules = `|isOnOrAfterOffenceStartDate:${offenceStartDateString},${convictionDateString}`
       }
       isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastOrCurrentDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${convictionDateString}${offenceRules}`
     }
@@ -960,12 +966,12 @@ export default class OffenceService {
         'required.convictionDate-day': 'Conviction date must include day',
         'isValidDate.convictionDate-day': 'This date does not exist.',
         'isPastOrCurrentDate.convictionDate-day': 'The conviction date cannot be a date in the future',
-        'isWithinLast100Years.overallConvictionDate-day':
-          'All dates must be within the last 100 years from today’s date',
+        'isWithinLast100Years.convictionDate-day': 'All dates must be within the last 100 years from today’s date',
         'isSameOrBeforeWarrantDate.convictionDate-day': 'The conviction date must be on or before the warrant date',
-        'isAfterOffenceEndDate.convictionDate-day':
-          'The conviction date must be after the offence start date and offence end date',
-        'isAfterOffenceStartDate.convictionDate-day': 'The conviction date must be after the offence start date',
+        'isOnOrAfterOffenceEndDate.convictionDate-day':
+          'The conviction date must be on or after the offence start date and offence end date',
+        'isOnOrAfterOffenceStartDate.convictionDate-day':
+          'The conviction date must be on or after the offence start date',
       },
     )
     if (errors.length === 0) {
@@ -1235,6 +1241,80 @@ export default class OffenceService {
     delete session.outcomeUpdateChargeUuids
   }
 
+  setSentencesToMarkAsInactiveSentenceUuids(session: Partial<SessionData>, sentenceUuids: string[]) {
+    const errors = validate(
+      { sentenceUuids },
+      { sentenceUuids: 'required' },
+      { 'required.sentenceUuids': 'Mark at least one sentence as inactive' },
+    )
+    if (errors.length === 0) {
+      // eslint-disable-next-line no-param-reassign
+      session.sentencesToMarkAsInactiveSentenceUuids = sentenceUuids
+    }
+    return errors
+  }
+
+  getSentencesToMarkAsInactiveSentenceUuids(session: Partial<SessionData>): string[] {
+    return session.sentencesToMarkAsInactiveSentenceUuids || []
+  }
+
+  markSentencesAsInactive(offences: Offence[], markSentencesAsInactiveReasonForm: MarkSentencesAsInactiveReasonForm) {
+    const errors = validate(
+      markSentencesAsInactiveReasonForm,
+      { reason: 'required|max:200' },
+      {
+        'required.reason': 'Enter a reason for marking as inactive',
+        'max.reason': 'Reason must be 200 characters or less',
+      },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    offences.forEach(offence => {
+      const sentence = this.getSentence(offence)
+      sentence.status = 'INACTIVE'
+      sentence.reason = markSentencesAsInactiveReasonForm.reason
+      // eslint-disable-next-line no-param-reassign
+      offence.sentence = sentence
+    })
+    return errors
+  }
+
+  markSentenceAsActive(offence: Offence, confirmMarkSentenceAsActiveForm: ConfirmMarkSentenceAsActiveForm) {
+    const errors = validate(
+      confirmMarkSentenceAsActiveForm,
+      { confirmMarkAsActive: 'required' },
+      { 'required.confirmMarkAsActive': 'Select yes if you want to mark this sentence as active' },
+    )
+    if (errors.length > 0) {
+      return errors
+    }
+    if (confirmMarkSentenceAsActiveForm.confirmMarkAsActive === 'true') {
+      const sentence = this.getSentence(offence)
+      sentence.status = 'ACTIVE'
+      sentence.reason = undefined
+      // eslint-disable-next-line no-param-reassign
+      offence.sentence = sentence
+    }
+    return errors
+  }
+
+  clearSentencesToMarkAsInactive(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentencesToMarkAsInactiveSentenceUuids
+    // eslint-disable-next-line no-param-reassign
+    delete session.sentenceUuidsWithActiveSentencesAfter
+  }
+
+  setSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>, sentenceUuids: string[]) {
+    // eslint-disable-next-line no-param-reassign
+    session.sentenceUuidsWithActiveSentencesAfter = sentenceUuids
+  }
+
+  getSentenceUuidsWithActiveSentencesAfter(session: Partial<SessionData>): string[] {
+    return session.sentenceUuidsWithActiveSentencesAfter || []
+  }
+
   setSentenceToConcurrent(
     session: Partial<SessionData>,
     nomsId: string,
@@ -1286,7 +1366,7 @@ export default class OffenceService {
   }
 
   private getSentence(offence: Offence): Sentence {
-    return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
+    return offence.sentence ?? { sentenceUuid: offence.replacesSentenceUuid ?? crypto.randomUUID() }
   }
 
   private getOffenceId(nomsId: string, courtCaseReference: string, chargeUuid: string): string {
@@ -1317,8 +1397,9 @@ export default class OffenceService {
 
       expectedPeriodLengthType.forEach(expectedPeriodLength => {
         if (
-          !offence.sentence.periodLengths ||
-          !offence.sentence.periodLengths.some(pl => pl.periodLengthType === expectedPeriodLength.type)
+          (!offence.sentence.periodLengths ||
+            !offence.sentence.periodLengths.some(pl => pl.periodLengthType === expectedPeriodLength.type)) &&
+          !offence.isGeneratedBreachOffence
         ) {
           errors.push({
             text: `You must enter the ${periodLengthTypeHeadings[expectedPeriodLength.type].toLowerCase()}`,
@@ -1431,5 +1512,60 @@ export default class OffenceService {
     offences.forEach(offence => {
       this.setSessionOffence(session, nomsId, courtCaseReference, offence)
     })
+  }
+
+  setJudicialFindings(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    selectJudicialFindingsForm: SelectJudicialFindingsForm,
+  ) {
+    const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
+    const offence = this.getOffence(session.offences, id)
+    if (selectJudicialFindingsForm.judicialFindings?.includes('FINDING_OF_DOMESTIC_ABUSE')) {
+      offence.findingOfDomesticAbuse = true
+    } else {
+      delete offence.findingOfDomesticAbuse
+    }
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
+  }
+
+  setOffenceAppealOutcome(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
+  ): {
+    errors: {
+      text?: string
+      html?: string
+      href: string
+    }[]
+    sentenceUuid: string
+    offence: Offence
+  } {
+    const errors = validate(
+      appealOffenceOutcomeForm,
+      {
+        offenceOutcome: 'required',
+      },
+      {
+        'required.offenceOutcome': 'You must select an appeal outcome for this offence',
+      },
+    )
+    let sentenceUuid
+    let offence
+    if (errors.length === 0) {
+      const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
+      offence = this.getOffence(session.offences, id)
+      offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
+      sentenceUuid = offence.sentence?.sentenceUuid
+      delete offence.sentence
+      delete offence.aggravatingFactors
+      delete offence.findingOfDomesticAbuse
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return { errors, sentenceUuid, offence }
   }
 }

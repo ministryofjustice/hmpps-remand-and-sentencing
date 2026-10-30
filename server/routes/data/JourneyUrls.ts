@@ -156,8 +156,63 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/task-list`
   }
 
-  static courtCases = (nomsId: string) => {
-    return `/person/${nomsId}`
+  static courtCases = (
+    nomsId: string,
+    sortBy?: string,
+    appearanceDateFrom?: string,
+    appearanceDateTo?: string,
+    includeCasesFromPreviousPeriodsOfCustody?: string,
+    pageNumber?: number | string,
+  ) => {
+    return `/person/${nomsId}${JourneyUrls.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+  }
+
+  private static getCourtCasesQueryParameters = (
+    sortBy: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+    includeCasesFromPreviousPeriodsOfCustody: string,
+    pageNumber: number | string,
+  ) => {
+    const queryParameters = []
+    if (sortBy) {
+      queryParameters.push(`sortBy=${sortBy}`)
+    }
+    if (appearanceDateFrom) {
+      queryParameters.push(`appearanceDateFrom=${appearanceDateFrom}`)
+    }
+    if (appearanceDateTo) {
+      queryParameters.push(`appearanceDateTo=${appearanceDateTo}`)
+    }
+    if (includeCasesFromPreviousPeriodsOfCustody) {
+      queryParameters.push(`includeCasesFromPreviousPeriodsOfCustody=${includeCasesFromPreviousPeriodsOfCustody}`)
+    }
+    if (pageNumber) {
+      queryParameters.push(`pageNumber=${pageNumber}`)
+    }
+    return queryParameters.length ? `?${queryParameters.join('&')}` : ''
+  }
+
+  static checkAutomaticSentenceFix = (
+    nomsId: string,
+    sortBy: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+    includeCasesFromPreviousPeriodsOfCustody: string,
+    pageNumber: number | string,
+  ) => {
+    return `/person/${nomsId}/check-automatic-sentence-fix${JourneyUrls.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
+  }
+
+  static confirmConsecutiveToSentenceFixes = (
+    nomsId: string,
+    sortBy: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+    includeCasesFromPreviousPeriodsOfCustody: string,
+    pageNumber: number | string,
+  ) => {
+    return `/person/${nomsId}/confirm-consecutive-to-sentence-fix${JourneyUrls.getCourtCasesQueryParameters(sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody, pageNumber)}`
   }
 
   static sentenceType = (
@@ -233,6 +288,26 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/check-next-appearance-answers`
   }
 
+  static nextAppearanceCourtSelect = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/next-appearance-court-select`
+  }
+
+  static nextAppearanceCourtName = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/next-appearance-court-name`
+  }
+
   static uploadCourtDocuments = (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -279,6 +354,18 @@ export default class JourneyUrls {
 
   static deleteOffence = (urlParameters: UrlParameters) => {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/offences/${urlParameters.chargeUuid}/delete-offence`
+  }
+
+  static courtDataIngestionStart = (nomsId: string, hearingId: string, courtCase?: string) => {
+    return `/person/${nomsId}/review-new-documents/${hearingId}/start${courtCase ? `/${courtCase}` : ''}`
+  }
+
+  static courtDataIngestionLanding = (nomsId: string, hearingId: string, existingCase: boolean) => {
+    return `/person/${nomsId}/review-new-documents/${hearingId}/landing${existingCase ? '/existing-case' : ''}`
+  }
+
+  static courtDataIngestionSelectCase = (nomsId: string, hearingId: string) => {
+    return `/person/${nomsId}/review-new-documents/${hearingId}/select-court-case`
   }
 }
 
@@ -483,7 +570,6 @@ export const urlMapByName = {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
   ) => JourneyUrls.taskList(nomsId, addOrEditCourtCase, courtCaseUuid, addOrEditCourtAppearance, courtAppearanceUuid),
-  courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
   sentenceType: (
     nomsId: string,
     addOrEditCourtCase: string,

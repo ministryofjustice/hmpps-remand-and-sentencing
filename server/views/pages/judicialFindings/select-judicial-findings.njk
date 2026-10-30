@@ -1,0 +1,49 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+
+{% set pageTitle = applicationName + " - Edit an offence" %}
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/judicialFindingsCaption.njk" %}
+        {% set hintHtml %}
+            {{ sessionOffence.offenceCode }} {{offenceDetails.description}}<br/>
+            {{ sessionOffence | offenceDatesText}}
+        {% endset %}
+        {{ govukCheckboxes({
+            name: "judicialFindings",
+            fieldset: {
+                legend: {
+                text: "Select which judicial findings apply",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+                html: hintHtml
+            },
+            items: [
+                {
+                value: "FINDING_OF_DOMESTIC_ABUSE",
+                text: "Finding of domestic abuse",
+                checked: sessionOffence.findingOfDomesticAbuse
+                }
+            ]
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+
+        </div>
+    </form>
+
+{% endblock %}

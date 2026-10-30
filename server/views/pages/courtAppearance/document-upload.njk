@@ -5,7 +5,7 @@
 
 {% set pageTitle = applicationName + " - Upload a document" %}
 {% block pageContent %}
-            <form method="post" enctype="multipart/form-data" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentType}}/submit-upload-documents" autocomplete="off">
+            <form method="post" enctype="multipart/form-data" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/uploadDocumentsCaption.njk" %}
                 {{ govukFileUpload({

@@ -198,6 +198,22 @@ declare module 'forms' {
     consecutiveToSentenceUuid?: string
   }
 
+  export interface MarkSentencesAsInactiveReasonForm {
+    reason?: string
+  }
+
+  export interface MarkCourtCaseAsInactiveReasonForm {
+    reason?: string
+  }
+
+  export interface ConfirmMarkSentenceAsActiveForm {
+    confirmMarkAsActive?: string
+  }
+
+  export interface ConfirmMarkCourtCaseStatusForm {
+    confirmMarkCourtCaseStatus?: string
+  }
+
   export interface UploadedDocumentForm {
     _csrf?: string
   }
@@ -288,5 +304,42 @@ declare module 'forms' {
   export interface BreachCourtNameForm {
     courtName?: string
     courtCode?: string
+  }
+
+  export interface CourtDataLandingForm {
+    addToExistingCase: string
+  }
+
+  export interface CourtDataSelectCaseForm {
+    courtCase: string
+  }
+
+  export interface BreachOffenceDateForm {
+    'offenceStartDate-day'?: string
+    'offenceStartDate-month'?: string
+    'offenceStartDate-year'?: string
+    'offenceEndDate-day'?: string
+    'offenceEndDate-month'?: string
+    'offenceEndDate-year'?: string
+  }
+
+  export interface JudicialFindingOffenceForm {
+    chargeUuids?: string[]
+  }
+
+  export interface JudicialFindingCheckAnswersForm {
+    finishedAddingJudicialFindings?: string
+  }
+
+  export interface SelectJudicialFindingsForm {
+    judicialFindings?: string[]
+  }
+
+  export interface ViewGeneratedDocumentForm {
+    documentSelected?: string
+  }
+
+  export interface ConfirmConsecutiveToSentenceFixesForm {
+    sentenceUuids?: string[]
   }
 }

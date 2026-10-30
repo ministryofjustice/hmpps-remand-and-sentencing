@@ -69,8 +69,8 @@
         </div>
 
         <div class="govuk-grid-column-one-third">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
-            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="location">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court name</h3>
+            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="court-name">
               {{ courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode }}
             </p>
 
@@ -98,7 +98,7 @@
                         <a class="govuk-link govuk-link--no-visited-state"
                            target="_blank"
                            href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ hearing.appearanceUuid }}/{{ document.documentUUID }}/download-document">
-                          <strong>{{ document.documentType }}</strong>
+                          <strong>{{ document.typeName }}</strong>
                         </a>
                       </span>
                       <br>
@@ -123,13 +123,15 @@
                       isSentenced: charge.sentence,
                       periodLengths: charge.sentence.periodLengths | periodLengthsToSentenceLengths,
                       sentenceServeType: charge.sentence.sentenceServeType,
+                      sentenceStatus: charge.sentence.status if charge.sentence,
                       consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
                       sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
                       fineAmount: charge.sentence.fineAmount.fineAmount,
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
                       courtDetails: courtMap,
-                      aggravatingFactors: charge | getAggravatingFactors
+                      aggravatingFactors: charge | getAggravatingFactors,
+                      findingOfDomesticAbuse: charge.findingOfDomesticAbuse
                   }) }}
               {% endfor %}
             {% endset %}

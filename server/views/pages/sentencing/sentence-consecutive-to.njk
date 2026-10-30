@@ -11,7 +11,7 @@
 {% set radioIdIndex = 0 %}
 {% block pageContent %}
     <form method="post"
-          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ chargeUuid }}/submit-sentence-consecutive-to{{ submitQuery }}" autocomplete="off">
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ chargeUuid }}/sentence-consecutive-to{{ submitQuery }}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/offenceCaption.njk" %}
         <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
@@ -55,7 +55,7 @@
                                     {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
                                     {% if sentence.offenceStartDate %}
                                         <br><span class="govuk-hint">
-                                                Committed on {{ sentence.offenceStartDate | formatDate }}{{ ' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
+                                                {{ sentence | offenceDatesText }}
                                             </span>
                                     {% endif %}
                                 </label>
@@ -86,7 +86,7 @@
                                             {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
                                             {% if sentence.offenceStartDate %}
                                                 <br><span class="govuk-hint">
-                                                        Committed on {{ sentence.offenceStartDate | formatDate }}{{ ' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
+                                                        {{ sentence | offenceDatesText }}
                                                     </span>
                                             {% endif %}
                                         </label>

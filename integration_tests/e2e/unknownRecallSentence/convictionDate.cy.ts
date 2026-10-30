@@ -27,6 +27,7 @@ context('Unknown recall sentence conviction date', () => {
 
   it('submitting without entering anything in the inputs results in an error', () => {
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -43,20 +44,23 @@ context('Unknown recall sentence conviction date', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type((futureDate.month() + 1).toString())
     offenceConvictionDatePage.yearDateInput('convictionDate').type(futureDate.year().toString())
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem The conviction date cannot be a date in the future')
 
-    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('01')
-    offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('01')
-    offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('1899')
+    offenceConvictionDatePage.dayDateInput('convictionDate').should('be.enabled').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').should('be.enabled').type('01')
+    offenceConvictionDatePage.monthDateInput('convictionDate').should('be.enabled').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').should('be.enabled').type('01')
+    offenceConvictionDatePage.yearDateInput('convictionDate').should('be.enabled').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').should('be.enabled').type('1899')
     offenceConvictionDatePage.continueButton().click()
     offenceConvictionDatePage
       .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
+      .should('contain.text', 'All dates must be within the last 100 years from today’s date')
   })
 
   it('submitting an invalid conviction date results in an error', () => {
@@ -64,6 +68,7 @@ context('Unknown recall sentence conviction date', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type('1')
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2024')
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -100,7 +105,7 @@ context('Unknown recall sentence conviction date', () => {
     offenceConvictionDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The conviction date must be after the offence start date')
+      .should('equal', 'There is a problem The conviction date must be on or after the offence start date')
 
     cy.visit(
       '/person/A1234AB/unknown-recall-sentence/court-appearance/474fd702-b329-4284-b89e-0d37fdd09eff/charge/71bb9f7e-971c-4c34-9a33-43478baee74f/offence-date',
@@ -120,7 +125,7 @@ context('Unknown recall sentence conviction date', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem The conviction date must be after the offence start date and offence end date',
+        'There is a problem The conviction date must be on or after the offence start date and offence end date',
       )
   })
 })

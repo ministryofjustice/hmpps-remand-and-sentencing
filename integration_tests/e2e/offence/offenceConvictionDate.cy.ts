@@ -40,6 +40,7 @@ context('Add Offence Conviction Date Page', () => {
 
   it('submitting without entering anything in the inputs results in an error', () => {
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -56,20 +57,24 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type((futureDate.month() + 1).toString())
     offenceConvictionDatePage.yearDateInput('convictionDate').type(futureDate.year().toString())
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem The conviction date cannot be a date in the future')
 
-    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('01')
-    offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('01')
-    offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('1899')
+    offenceConvictionDatePage.dayDateInput('convictionDate').should('be.enabled').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').should('be.enabled').type('01')
+    offenceConvictionDatePage.monthDateInput('convictionDate').should('be.enabled').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').should('be.enabled').type('01')
+    offenceConvictionDatePage.yearDateInput('convictionDate').should('be.enabled').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').should('be.enabled').type('1899')
     offenceConvictionDatePage.continueButton().click()
-    offenceConvictionDatePage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
+    cy.get('.govuk-error-summary').should(
+      'contain.text',
+      'All dates must be within the last 100 years from today’s date',
+    )
   })
 
   it('submitting an  invalid conviction date results in an error', () => {
@@ -77,6 +82,7 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type('1')
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2024')
     offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage.errorSummary().should('be.visible')
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -95,7 +101,15 @@ context('Add Offence Conviction Date Page', () => {
       .should('equal', 'There is a problem The conviction date must be on or before the warrant date')
   })
 
-  it('Conviction date must be after offence start and end dates', () => {
+  it('Conviction date must be on or after the offence start and end dates', () => {
+    const sentenceTypeSearches = [
+      { convictionDate: '2023-08-16', offenceDate: '2023-08-16' },
+      { convictionDate: '2023-08-21', offenceDate: '2023-08-16' },
+      { convictionDate: '2023-08-21', offenceDate: '2023-08-20' },
+      { convictionDate: '2023-08-20', offenceDate: '2023-08-20' },
+    ]
+    sentenceTypeSearches.forEach(dates => cy.task('stubSearchSentenceTypes', { ...dates, age: '58' }))
+
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('16')
@@ -111,7 +125,15 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The conviction date must be after the offence start date')
+      .should('equal', 'There is a problem The conviction date must be on or after the offence start date')
+
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('16')
+    offenceConvictionDatePage.continueButton().click()
+    Page.verifyOnPageTitle(OffenceSentenceTypePage, 'Select the sentence type')
+
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('21')
+    offenceConvictionDatePage.continueButton().click()
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('20')
@@ -129,8 +151,12 @@ context('Add Offence Conviction Date Page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem The conviction date must be after the offence start date and offence end date',
+        'There is a problem The conviction date must be on or after the offence start date and offence end date',
       )
+
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('20')
+    offenceConvictionDatePage.continueButton().click()
+    Page.verifyOnPageTitle(OffenceSentenceTypePage, 'Select the sentence type')
   })
 })
 

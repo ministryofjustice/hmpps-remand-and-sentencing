@@ -25,7 +25,7 @@ export default class DocumentManagementService {
       fs.unlinkSync(fileToUpload.path)
       return documentId
     } catch (error) {
-      throw new Error(`Failed to upload document: ${error.message}`)
+      throw new Error(`Failed to upload document: ${error.message}`, { cause: error })
     }
   }
 

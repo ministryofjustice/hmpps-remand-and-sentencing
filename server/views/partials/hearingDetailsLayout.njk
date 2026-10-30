@@ -7,7 +7,7 @@
 {% set offenceDetailHtml %}
     <dl class="offences-summary-card-content">
         {% for offence in offences %}
-            {{ offenceSummaryRow(offence, offenceNameMap) }}
+            {{ offenceSummaryRow(offence, offenceNameMap, countNumberBySentenceUuid) }}
         {% endfor %}
     </dl>
 {% endset %}
@@ -39,7 +39,7 @@
 {% endif %}
 
 {% block hearingContent %}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-row govuk-!-margin-top-4" data-qa="page-content">
         <div class="govuk-grid-column-two-thirds">
             {% block pageContent %}{% endblock %}
         </div>

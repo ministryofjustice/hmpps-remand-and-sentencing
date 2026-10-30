@@ -13,7 +13,7 @@
 {% set pageTitle = applicationName + " - Does this new outcome apply to more than one offence?" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-more-than-one-offence-to-be-updated{{ "?backTo=" + backTo if backTo }}" autocomplete="off">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/more-than-one-offence-to-be-updated{{ "?backTo=" + backTo if backTo }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Update offence outcomes</span>
 

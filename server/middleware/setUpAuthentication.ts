@@ -7,6 +7,7 @@ import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
 import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
+import { snapshotSessionForRecovery } from '../errorHandler'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -78,6 +79,7 @@ export default function setupAuthentication() {
     if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
       return next()
     }
+    await snapshotSessionForRecovery(res, req)
     req.session.returnTo = req.originalUrl
     return res.redirect('/sign-in')
   })

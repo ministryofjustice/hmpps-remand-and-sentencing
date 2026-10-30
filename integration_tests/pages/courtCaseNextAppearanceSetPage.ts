@@ -2,6 +2,6 @@ import Page from './page'
 
 export default class CourtCaseNextAppearanceSetPage extends Page {
   constructor() {
-    super('Has the next appearance been set?')
+    super('Do you need to record the next appearance date?')
   }
 }

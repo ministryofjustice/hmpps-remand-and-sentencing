@@ -1,0 +1,60 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Are you sure you want to mark this sentence as active?" %}
+
+{% set fieldSetHtml %}
+    <span class="govuk-caption-l">Edit appearance</span>
+    <h1 class="govuk-fieldset__heading">Are you sure you want to mark this sentence as active?</h1>
+{% endset %}
+
+{% set offenceSummaryHtml %}
+    <p class="govuk-body" data-qa="offence-summary">
+        {{ offence.offenceCode }} - {{ offenceDetails.description }}
+        {%- if offence.offenceStartDate %}
+            committed on {{ offence.offenceStartDate | formatDate }}{{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
+        {%- endif %}
+    </p>
+{% endset %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                {{ govukRadios({
+                    name: "confirmMarkAsActive",
+                    fieldset: {
+                        legend: {
+                            html: fieldSetHtml,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    formGroup: {
+                        beforeInputs: { html: offenceSummaryHtml }
+                    },
+                    errorMessage: errors | findError('confirmMarkAsActive'),
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes, mark as active"
+                        },
+                        {
+                            value: "false",
+                            text: "No, cancel changes"
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Confirm",
+                    preventDoubleClick: true,
+                    attributes: { "data-qa": "confirm-button" }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

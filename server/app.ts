@@ -1,4 +1,5 @@
 import express from 'express'
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 import createError from 'http-errors'
 import multer from 'multer' // Import multer
 
@@ -14,6 +15,7 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing' // Handles urlencoded and json
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import setUpJourneySession from './middleware/setUpJourneySession'
 import getFrontendComponents from './middleware/getFeComponents'
 
 import routes from './routes'
@@ -22,7 +24,6 @@ import populateCurrentPrisoner from './middleware/populateCurrentPrisoner'
 import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearance'
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 import setupCurrentOffence from './middleware/setupCurrentOffence'
-import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 import { Role, Roles } from './@types/roles'
 
 const upload = multer({ dest: 'uploads/' })
@@ -45,17 +46,29 @@ export default function createApp(services: Services): express.Application {
   nunjucksSetup(app, services.applicationInfo)
 
   app.use(setUpAuthentication())
-  app.use(
-    authorisationMiddleware([Roles.getAuthority(Role.REMAND_AND_SENTENCING), Roles.getAuthority(Role.COURT_CASES)]),
-  )
+  app.use(setUpJourneySession())
+  app.use(authorisationMiddleware([Roles.getAuthority(Role.COURT_CASES)]))
   app.use(authorisationMiddleware([Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)]))
   app.use('/admin/reference-data', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/hmcts-charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/appearance-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
+  app.use('/admin/data-fix', authorisationMiddleware(['ROLE_RAS_DATAFIX_ADMIN']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services.userService))
   app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))
+  app.use(
+    telemetryMiddleware.addUserMetadataToTelemetry({
+      getAttributes: (_req, res) => {
+        const { username } = res?.locals?.user || {}
+        const caseloadId = res?.locals?.prisoner?.prisonId || null
+        return {
+          ...(username && { username }),
+          ...(caseloadId && { caseloadId }),
+        }
+      },
+    }),
+  )
   app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase())
   app.use(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference',
@@ -71,7 +84,7 @@ export default function createApp(services: Services): express.Application {
     setupCurrentOffence(services.offenceService),
   )
   app.get(/(.*)/, getFrontendComponents(services))
-  app.use(addUsernameAndCaseloadToTelemetry())
+
   // --- Main application routes ---
   app.use(routes(services))
 

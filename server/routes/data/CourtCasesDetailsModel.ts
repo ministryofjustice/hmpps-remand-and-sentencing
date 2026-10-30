@@ -28,6 +28,8 @@ export default class CourtCasesDetailsModel {
 
   overallBreachOfSupervisionLength: SentenceLength
 
+  overallBreachOfImprisonableOffenceLength: SentenceLength
+
   convictionDate: string
 
   warrantType: string
@@ -41,8 +43,6 @@ export default class CourtCasesDetailsModel {
   latestAppearance: PagedLatestCourtAppearance
 
   chargeTotal: number
-
-  showingChargeTotal?: number
 
   offences: Offence[]
 
@@ -86,6 +86,11 @@ export default class CourtCasesDetailsModel {
         periodLength => periodLength.type === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
       ),
     )
+    this.overallBreachOfImprisonableOffenceLength = pagedAppearancePeriodLengthToSentenceLength(
+      pagedCourtCase.latestCourtAppearance.periodLengths.find(
+        periodLength => periodLength.type === 'BREACH_OF_IMPRISONABLE_OFFENCE',
+      ),
+    )
     this.convictionDate = 'Not entered'
     if (pagedCourtCase.latestCourtAppearance.convictionDate) {
       this.convictionDate = dayjs(pagedCourtCase.latestCourtAppearance.convictionDate).format(config.dateFormat)
@@ -113,14 +118,9 @@ export default class CourtCasesDetailsModel {
     this.appearanceTotal = pagedCourtCase.appearanceCount
     this.latestAppearance = pagedCourtCase.latestCourtAppearance
     this.chargeTotal = pagedCourtCase.latestCourtAppearance?.charges.length
-    if (this.chargeTotal > 6) {
-      this.showingChargeTotal = 6
-    }
-    const charges = pagedCourtCase.latestCourtAppearance?.charges
-      .sort((a, b) => {
-        return sortByDateDesc(b.createdAt, a.createdAt)
-      })
-      .slice(0, 6)
+    const charges = pagedCourtCase.latestCourtAppearance?.charges.sort((a, b) => {
+      return sortByDateDesc(b.createdAt, a.createdAt)
+    })
     this.offences = orderOffences(charges?.map((charge, index) => pagedChargeToOffence(charge, index)))
     this.sentenceTypeMap = Object.fromEntries(
       charges
@@ -133,9 +133,8 @@ export default class CourtCasesDetailsModel {
     this.mergedToCase = pagedCourtCase.mergedToCase
     this.newAppearanceUuid =
       pagedCourtCase.latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid ?? crypto.randomUUID()
-    this.canAppeal = pagedCourtCase.canAppeal && config.featureToggles.appeals && this.overallCaseStatus !== 'MERGED'
-    this.canBreach =
-      pagedCourtCase.canBreach && config.featureToggles.breachSupervision && this.overallCaseStatus !== 'MERGED'
+    this.canAppeal = pagedCourtCase.canAppeal && this.overallCaseStatus !== 'MERGED'
+    this.canBreach = pagedCourtCase.canBreach && this.overallCaseStatus !== 'MERGED'
     this.canAddHearing =
       !this.canAppeal && !this.canBreach && this.warrantType !== 'SENTENCING' && this.overallCaseStatus !== 'MERGED'
   }

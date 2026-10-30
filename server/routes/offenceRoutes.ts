@@ -19,10 +19,7 @@ import type {
 } from 'forms'
 import type { Offence, UrlParameters } from 'models'
 import dayjs from 'dayjs'
-import {
-  ConsecutiveToDetails,
-  PERIOD_TYPE_PRIORITY,
-} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import { PERIOD_TYPE_PRIORITY } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm, { normaliseToArray } from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -55,9 +52,8 @@ import {
   SentenceConsecutiveToDetails,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../config'
 import RefDataService from '../services/refDataService'
-import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
+import REPLACEMENT_OUTCOME_UUID, { BREACH_WARRANT_TYPES } from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
@@ -65,6 +61,7 @@ import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 import DocumentManagementService from '../services/documentManagementService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
+import config from '../config'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -197,6 +194,7 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'NON_SENTENCING') {
+        // eslint-disable-next-line no-useless-assignment -- always overwritten below; likely missing `else if`
         backLink = JourneyUrls.reviewOffences(
           nomsId,
           addOrEditCourtCase,
@@ -204,6 +202,16 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      }
+      if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
+        backLink = AppealsJourneyUrls.selectOffenceAppealOutcome({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid: offence.replacesOffenceUuid,
+        })
       } else {
         backLink = JourneyUrls.updateOffenceOutcomes(
           nomsId,
@@ -329,7 +337,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { backTo, bulkOffenceTobeUpdated } = req.query as { backTo: string; bulkOffenceTobeUpdated: string }
 
-    if (config.featureToggles.bulkOutcomeApplied && bulkOffenceTobeUpdated === 'true') {
+    if (bulkOffenceTobeUpdated === 'true') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`,
       )
@@ -515,6 +523,7 @@ export default class OffenceRoutes extends BaseRoutes {
         courtAppearance.appearanceOutcomeUuid,
         courtAppearance.warrantType,
         req.user.username,
+        Boolean(offence.replacesOffenceUuid),
       ),
       isMultipleOffences ? undefined : this.getOffenceHint(offence, req.user.username),
     ])
@@ -653,8 +662,8 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
-
-    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference, sessionOffence)
 
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (warrantType === 'SENTENCING') {
@@ -694,7 +703,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
     const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(outcomeUuid, warrantType, req.user.username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(
+        outcomeUuid,
+        warrantType,
+        req.user.username,
+        Boolean(offence.replacesOffenceUuid),
+      ),
       this.getOffenceHint(offence, req.user.username),
     ])
 
@@ -712,7 +726,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence || offence.onFinishGoToEdit === true) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
-    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.replacesOffenceUuid) {
       if (warrantType === 'SENTENCING') {
         backLink = JourneyUrls.updateOffenceOutcomes(
           nomsId,
@@ -1528,7 +1542,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, periodLengthType, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
-    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const { sentence, isGeneratedBreachOffence } = this.offenceService.getSessionOffence(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+    )
     this.offenceService.setInitialPeriodLengths(
       req.session,
       nomsId,
@@ -1566,7 +1585,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
-    if (nextPeriodLengthType && !allPeriodLengthsEntered) {
+    if (nextPeriodLengthType && !allPeriodLengthsEntered && !isGeneratedBreachOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )
@@ -1733,7 +1752,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const { periodLengthType, submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativePeriodLengthForm>(req.body)
-    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const { sentence, isGeneratedBreachOffence } = this.offenceService.getSessionOffence(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+    )
     this.offenceService.setInitialPeriodLengths(
       req.session,
       nomsId,
@@ -1763,7 +1787,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
-    if (nextPeriodLengthType && !allPeriodLengthsEntered) {
+    if (nextPeriodLengthType && !allPeriodLengthsEntered && !isGeneratedBreachOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )
@@ -2169,26 +2193,18 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const [custodialOffences, nonCustodialOffences] = offences.reduce(
       ([custodialList, nonCustodialList], offence, index) => {
-        return outcomeMap[offence.outcomeUuid].outcomeType === 'SENTENCING'
+        return outcomeMap[offence.outcomeUuid]?.outcomeType === 'SENTENCING'
           ? [[...custodialList, { ...offence, index }], nonCustodialList]
           : [custodialList, [...nonCustodialList, { ...offence, index }]]
       },
       [[], []],
     )
-    const allSentenceUuids = offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
-    )
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      nomsId,
-      offenceMap,
-      appearanceReference,
     )
     const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
       req.session,
@@ -2208,13 +2224,15 @@ export default class OffenceRoutes extends BaseRoutes {
       offences,
       custodialOffences,
       nonCustodialOffences,
-      consecutiveToSentenceMap: {
-        ...consecutiveToSentenceDetailsMap,
-        ...sessionConsecutiveToSentenceDetailsMap,
-      },
+      consecutiveToSentenceMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
-      showAddMultipleCountsLink: courtAppearance.warrantType === 'NON_SENTENCING',
+      showAddMultipleCountsLink:
+        courtAppearance.warrantType === 'NON_SENTENCING' && !courtAppearance.isCommonPlatformJourney,
+      showDuplicateOffenceLink:
+        config.featureToggles.multipleOffenceInstances &&
+        courtAppearance.warrantType === 'SENTENCING' &&
+        addOrEditCourtAppearance === 'add-court-appearance',
       overallSentenceLength,
     })
   }
@@ -2224,12 +2242,17 @@ export default class OffenceRoutes extends BaseRoutes {
     const offenceFinishedAddingForm = trimForm<OffenceFinishedAddingForm>(req.body)
     let errors = this.courtAppearanceService.checkFinishingOffences(offenceFinishedAddingForm)
     if (offenceFinishedAddingForm.finishedAddingOffences === 'true') {
-      const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
+      const mandatoryFieldErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
         req.session,
         nomsId,
         appearanceReference,
       )
-      errors = errors.concat(offenceErrors)
+      const offenceOutcomeFields = this.courtAppearanceService.checkAllOffencesHaveUpdatedOutcomes(
+        req.session,
+        nomsId,
+        appearanceReference,
+      )
+      errors = errors.concat(mandatoryFieldErrors).concat(offenceOutcomeFields)
     }
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -2349,7 +2372,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     const sentenceUuidsInSession = courtAppearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
     let consecutiveToSentenceDetails = { sentences: [] }
-    let sessionConsecutiveTo
+    let sessionConsecutiveTo: Offence | undefined
     if (offence.sentence?.consecutiveToSentenceUuid) {
       if (!sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid)) {
         consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
@@ -2380,36 +2403,27 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
       ),
     ])
-    let sentenceType
+    let sentenceTypeMap = {}
     if (offence.sentence?.sentenceTypeId) {
-      sentenceType = await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+      sentenceTypeMap = {
+        [offence.sentence?.sentenceTypeId]: (
+          await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+        ).description,
+      }
     }
-    let outcome
+    let outcomeMap = {}
     if (offence.outcomeUuid) {
-      outcome = (await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
+      outcomeMap = {
+        [offence.outcomeUuid]: (await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username))
+          .outcomeName,
+      }
     }
-    const allSentenceUuids = courtAppearance.offences
-      .map(appearanceOffence => appearanceOffence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+      [offence, sessionConsecutiveTo],
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
     )
-    let sessionConsecutiveToSentenceDetailsMap = {}
-    if (sessionConsecutiveTo) {
-      sessionConsecutiveToSentenceDetailsMap = {
-        [offence.sentence?.consecutiveToSentenceUuid]: {
-          countNumber: sessionConsecutiveTo.sentence.countNumber,
-          offenceCode: sessionConsecutiveTo.offenceCode,
-          offenceDescription: offenceMap[sessionConsecutiveTo.offenceCode],
-          offenceStartDate: dayjs(sessionConsecutiveTo.offenceStartDate).format(config.dateFormat),
-          offenceEndDate:
-            sessionConsecutiveTo.offenceEndDate && dayjs(sessionConsecutiveTo.offenceEndDate).format(config.dateFormat),
-        } as ConsecutiveToDetails,
-      }
-    }
     let cancelLink = JourneyUrls.checkOffenceAnswers(
       nomsId,
       addOrEditCourtCase,
@@ -2428,7 +2442,7 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       } else if (courtAppearance.warrantType === 'APPEAL') {
         cancelLink = AppealsJourneyUrls.hearingDetails(urlParameters)
-      } else if (courtAppearance.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      } else if (BREACH_WARRANT_TYPES.includes(courtAppearance.warrantType)) {
         cancelLink = BreachJourneyUrls.hearingDetails(urlParameters)
       } else {
         cancelLink = JourneyUrls.nonSentencingHearing(
@@ -2439,6 +2453,8 @@ export default class OffenceRoutes extends BaseRoutes {
           appearanceReference,
         )
       }
+    } else if (courtAppearance.warrantType === 'APPEAL') {
+      cancelLink = AppealsJourneyUrls.recordAppeal(urlParameters)
     }
 
     return res.render('pages/offence/delete-offence', {
@@ -2451,12 +2467,12 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
-      sentenceType,
+      sentenceTypeMap,
       consecutiveToSentenceDetailsMap,
-      sessionConsecutiveToSentenceDetailsMap,
+      courtMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      outcome,
+      outcomeMap,
       cancelLink,
     })
   }
@@ -2489,9 +2505,8 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       appearanceReference,
     )
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-
       const offenceDetails = await this.manageOffencesService.getOffenceByCode(
         deletedOffence.offenceCode,
         req.user.username,
@@ -2513,7 +2528,7 @@ export default class OffenceRoutes extends BaseRoutes {
         return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
 
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
       }
 
@@ -2526,6 +2541,9 @@ export default class OffenceRoutes extends BaseRoutes {
           appearanceReference,
         ),
       )
+    }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
     }
     return res.redirect(
       JourneyUrls.checkOffenceAnswers(
@@ -2659,7 +2677,11 @@ export default class OffenceRoutes extends BaseRoutes {
 
         const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentenceType.classification]?.periodLengths ?? []
         expectedPeriodLengthTypes
-          .filter(expectedType => !periodLengths.some(periodLength => periodLength.type === expectedType.type))
+          .filter(
+            expectedType =>
+              !periodLengths.some(periodLength => periodLength.type === expectedType.type) &&
+              !offence.isGeneratedBreachOffence,
+          )
           .map(expectedType => {
             return {
               key: periodLengthTypeHeadings[expectedType.type].toLowerCase(),
@@ -2680,7 +2702,6 @@ export default class OffenceRoutes extends BaseRoutes {
           sentenceConsecutiveToDetails,
           offenceMap,
           courtMap,
-          false,
         )
       } else {
         consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
@@ -2710,6 +2731,8 @@ export default class OffenceRoutes extends BaseRoutes {
       sentenceTypeClassification: sentenceType?.classification,
       showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
+      isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
+      showJudicialFindingsRow: config.featureToggles.judicialFindings,
     })
   }
 
@@ -2790,7 +2813,7 @@ export default class OffenceRoutes extends BaseRoutes {
           }),
         )
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(
           BreachJourneyUrls.hearingDetails({
             nomsId,
@@ -2831,6 +2854,17 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         ),
+      )
+    }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(
+        AppealsJourneyUrls.recordAppeal({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        }),
       )
     }
     return res.redirect(
@@ -3040,28 +3074,22 @@ export default class OffenceRoutes extends BaseRoutes {
       },
       [[], [], []] as [Offence[], Offence[], Offence[]],
     )
-
-    const allSentenceUuids = offences
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
-      allSentenceUuids,
+    const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
+      offences,
       consecutiveToSentenceDetails,
       offenceMap,
       courtMap,
-    )
-    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
-      req,
-      nomsId,
-      offenceMap,
-      appearanceReference,
     )
 
     const mergedFromText = this.getMergedFromText(
       offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
-
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     return res.render('pages/offence/update-offence-outcomes', {
       nomsId,
       courtCaseReference,
@@ -3077,12 +3105,12 @@ export default class OffenceRoutes extends BaseRoutes {
       courtAppearance,
       warrantType,
       backLink,
-      consecutiveToSentenceDetailsMap,
-      sessionConsecutiveToSentenceDetailsMap,
+      consecutiveToSentenceMap,
       mergedFromText,
       courtMap,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      overallSentenceLength,
     })
   }
 
@@ -3147,28 +3175,6 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     return `This offence will replace ${offenceDesc.code} - ${offenceDesc.description}`
-  }
-
-  private initiateOffenceReplacement(
-    req,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-    res,
-    addOrEditCourtCase: string,
-    addOrEditCourtAppearance: string,
-    appearanceReference: string,
-  ) {
-    const oldOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-    const newOffenceUuid = crypto.randomUUID()
-    const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, newOffenceUuid)
-    newOffence.onFinishGoToEdit = oldOffence.onFinishGoToEdit
-    newOffence.replacesOffenceUuid = oldOffence.chargeUuid
-    this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, newOffence)
-
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${newOffenceUuid}/offence-date`,
-    )
   }
 
   private async determineSentenceServeType(

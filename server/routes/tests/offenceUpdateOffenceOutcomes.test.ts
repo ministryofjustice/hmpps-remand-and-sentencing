@@ -41,6 +41,16 @@ describe('GET Update offence outcomes', () => {
       custodialLengthMatches: false,
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
+    defaultServices.courtAppearanceService.getOverallCustodialSentenceLength.mockReturnValue({
+      uuid: '2',
+      years: '4',
+      months: '5',
+      weeks: '3',
+      days: '2',
+      periodOrder: ['years', 'months', 'weeks', 'days'],
+      periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+      isAlternative: false,
+    })
     return request(app)
       .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/update-offence-outcomes')
       .expect('Content-Type', /html/)

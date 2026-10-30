@@ -14,4 +14,8 @@ export default class ReferenceDataJourneyUrls {
   static viewChargeOutcomes = () => {
     return '/admin/charge-outcomes'
   }
+
+  static viewHmctsChargeOutcomes = () => {
+    return '/admin/hmcts-charge-outcomes'
+  }
 }

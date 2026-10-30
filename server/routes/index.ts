@@ -23,6 +23,7 @@ import datafixAdminRoutes from './datafixAdminRoutes'
 import JudicialFindingsRoutes from './judicialFindingsRoutes'
 import DocumentGeneratorRoutes from './documentGeneratorRoutes'
 import AutomaticSentenceFixRoutes from './automaticSentenceFixRoutes'
+import hmctsChargeOutcomeDataAdminRoutes from './hmctsChargeOutcomeDataAdminRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -33,6 +34,7 @@ export default function routes(services: Services): Router {
   router.use('/admin/appearance-outcomes', appearanceOutcomeDataAdminRoutes(services))
   router.use('/admin/sentence-type', sentenceTypeDataAdminRoutes(services))
   router.use('/admin/data-fix', datafixAdminRoutes(services))
+  router.use('/admin/hmcts-charge-outcomes', hmctsChargeOutcomeDataAdminRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.offenceService,

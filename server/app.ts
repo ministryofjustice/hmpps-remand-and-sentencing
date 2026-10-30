@@ -51,6 +51,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware([Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)]))
   app.use('/admin/reference-data', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
+  app.use('/admin/hmcts-charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/appearance-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services.userService))

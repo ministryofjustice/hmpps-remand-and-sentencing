@@ -24,6 +24,7 @@ import type {
   UpdateOffenceOutcomesForm,
   SelectJudicialFindingsForm,
   AppealOffenceOutcomeForm,
+  OffenceValueForm,
 } from 'forms'
 import type { CourtAppearance, Offence, Sentence, SentenceLength, UrlParameters } from 'models'
 import dayjs from 'dayjs'
@@ -381,6 +382,35 @@ export default class OffenceService {
       }
 
       offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setOffenceValue(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    offenceValueForm: OffenceValueForm,
+  ) {
+    const errors = validate(
+      offenceValueForm,
+      {
+        offenceValue: `required_if:hasOffenceValue,true|minCurrency|min:0`,
+        hasOffenceValue: 'required',
+      },
+      {
+        'required_if.offenceValue': 'You must enter a value.',
+        'minCurrency.offenceValue': 'The value must be entered in a valid format, such as £21.34',
+        'required.hasOffenceValue': 'You must enter a value.',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
+      offence.offenceValue = offenceValueForm.offenceValue
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

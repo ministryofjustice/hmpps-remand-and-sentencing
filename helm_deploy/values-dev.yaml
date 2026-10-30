@@ -32,6 +32,7 @@ generic-service:
     FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'true'
     FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'true'
     FEATURES_MULTIPLE_OFFENCE_INSTANCES: 'true'
+    FEATURES_CHARGE_VALUE: 'true'
 
   scheduledDowntime:
     enabled: true

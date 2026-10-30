@@ -120,6 +120,11 @@ declare module 'forms' {
     hasCountNumber?: string
   }
 
+  export interface OffenceValueForm {
+    offenceValue?: number
+    hasOffenceValue?: string
+  }
+
   export interface MoreThanOneOffenceForm {
     moreThanOneOffence?: string
   }

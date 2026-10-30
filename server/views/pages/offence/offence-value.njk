@@ -1,0 +1,80 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set yesHtml %}
+  {{ govukInput({
+    id: "offenceValue",
+    name: "offenceValue",
+    label: {
+      text: "Value"
+    },
+    prefix: {
+      text: "£"
+    },
+    classes: "govuk-input--width-5",
+    spellcheck: false
+  }) }}
+{% endset %}
+
+{% set pageTitle = applicationName + " - Is there a value for this offence?" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/offence-value{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+                {% call govukFieldset({
+                        describedBy: "hasOffenceValue-error" if errorMessage else "",
+                        legend: {
+                            text: "Is there a value for this offence?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    }) %}
+                 {% if offenceHint %}
+                    {{
+                      govukHint(offenceHint)
+                    }}
+                  {% endif %}
+                {{ govukInsetText({
+                    text: "This is the amount of money associated with this offence."
+                }) }}
+
+
+                {{ govukRadios({
+                  name: "hasOffenceValue",
+                  value: offenceValueForm["hasOffenceValue"],
+                  errorMessage: errors | findError('hasOffenceValue'),
+                  items: [{
+                    value: "true",
+                    text: "Yes",
+                    checked: offenceValueForm.hasOffenceValue === 'true',
+                    conditional: {
+                      html: yesHtml
+                    }
+                  },
+                  {
+                    value: "false",
+                    checked: offenceValueForm.hasOffenceValue === 'false',
+                    text: "No"
+                  }]
+                }) }}
+
+                <div class="govuk-button-group">
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
+
+                {% endcall %}
+            </form>
+
+{% endblock %}

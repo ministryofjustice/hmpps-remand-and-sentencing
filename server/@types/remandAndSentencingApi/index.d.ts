@@ -456,6 +456,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/hmcts-result-code/{hmctsResultCodeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update hmcts result code
+     * @description This endpoint will update hmcts result code that will be used to map court data to charge outcome
+     */
+    put: operations['updateHmctsResultCode']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/{courtCaseUuid}': {
     parameters: {
       query?: never
@@ -982,6 +1002,26 @@ export interface paths {
      * @description This endpoint will create a record for managing immigration detention
      */
     post: operations['createImmigrationDetention']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/hmcts-result-code': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create hmcts result code
+     * @description This endpoint will create a new hmcts result code that will be used to map court data to charge outcome
+     */
+    post: operations['createHmctsResultCode']
     delete?: never
     options?: never
     head?: never
@@ -1986,6 +2026,66 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/hmcts-result-code/{outcomeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get hmcts result code by UUID
+     * @description This endpoint will retrieve hmcts result code by UUID
+     */
+    get: operations['getHmctsResultCodeByUuid']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/hmcts-result-code/uuid/multiple': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * get all hmcts result codes by uuids
+     * @description This endpoint will get all hmcts result codes by uuids
+     */
+    get: operations['getHmctsResultCodesByIds']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/hmcts-result-code/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all hmcts result codes by statuses
+     * @description This endpoint will get all hmcts result codes by statuses
+     */
+    get: operations['getAllHmctsResultCodes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/hmcts-court-data/{courtHearingId}/prisoner/{prisonerNumber}/appearance': {
     parameters: {
       query?: never
@@ -2513,7 +2613,7 @@ export interface components {
       /** Format: int32 */
       displayOrder: number | null
       /** @enum {string|null} */
-      status: 'ACTIVE' | 'INACTIVE' | null
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY' | null
       isRecallable: boolean | null
     }
     FieldError: {
@@ -2565,7 +2665,7 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
       isRecallable: boolean
     }
     CreateRecall: {
@@ -2694,6 +2794,8 @@ export interface components {
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
       hasUnconfirmedConsecutiveToFix?: boolean | null
+      nomisRecall?: boolean | null
+      sentenceDeleted?: boolean | null
     }
     LegacyLinkCase: {
       /** Format: date */
@@ -2730,7 +2832,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2763,6 +2865,7 @@ export interface components {
       legacyData: components['schemas']['ChargeLegacyData']
       performedByUser?: string | null
       offenceCode?: string | null
+      value?: number | null
     }
     LegacyLinkChargeToCase: {
       sourceCourtCaseUuid: string
@@ -2802,6 +2905,37 @@ export interface components {
       /** Format: uuid */
       courtAppearanceUuid?: string | null
     }
+    CreateHmctsResultCode: {
+      /** Format: uuid */
+      resultUuid?: string | null
+      resultName: string
+      resultCode: string
+      /** Format: uuid */
+      outcomeUuid: string
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
+    }
+    ChargeOutcome: {
+      /** Format: uuid */
+      outcomeUuid: string
+      outcomeName: string
+      nomisCode: string
+      outcomeType: string
+      /** Format: int32 */
+      displayOrder: number
+      dispositionCode: string
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
+    }
+    HmctsResultCode: {
+      /** Format: uuid */
+      resultUuid: string
+      resultName: string
+      resultCode: string
+      outcome: components['schemas']['ChargeOutcome']
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
+    }
     AggravatingFactor: {
       code: string
       title: string
@@ -2832,6 +2966,7 @@ export interface components {
       /** Format: uuid */
       hmctsChargeId?: string | null
       aggravatingFactors?: components['schemas']['AggravatingFactor'][]
+      value?: number | null
     }
     CreateCourtAppearance: {
       courtCaseUuid?: string | null
@@ -2868,7 +3003,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -2965,22 +3100,13 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
       dispositionCode: string
+      /**
+       * @deprecated
+       * @description HMCTS Code no longer required, remove after frontend update
+       */
       hmctsCode?: string | null
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
-    }
-    ChargeOutcome: {
-      /** Format: uuid */
-      outcomeUuid: string
-      outcomeName: string
-      nomisCode: string
-      outcomeType: string
-      /** Format: int32 */
-      displayOrder: number
-      dispositionCode: string
-      hmctsCode?: string | null
-      /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
     }
     CreateAppearanceOutcome: {
       /** Format: uuid */
@@ -2996,7 +3122,7 @@ export interface components {
       isSubList: boolean
       dispositionCode: string
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
     }
     CourtAppearanceOutcome: {
       /** Format: uuid */
@@ -3011,7 +3137,7 @@ export interface components {
       isSubList: boolean
       dispositionCode: string
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
       warrantType: string
     }
     CreateUploadedDocument: {
@@ -3459,6 +3585,7 @@ export interface components {
       offenceEndDate?: string | null
       legacyData: components['schemas']['ChargeLegacyData']
       performedByUser?: string | null
+      value?: number | null
     }
     LegacyChargeCreatedResponse: {
       /** Format: uuid */
@@ -3947,6 +4074,7 @@ export interface components {
       findingOfDomesticAbuse?: boolean | null
       /** Format: uuid */
       hmctsChargeId?: string | null
+      value?: number | null
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -4005,7 +4133,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -4289,7 +4417,7 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
     }
     SentenceTypePeriodDefinitions: {
       periodDefinitions: components['schemas']['Period'][]
@@ -4360,7 +4488,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -4383,7 +4511,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4428,6 +4556,7 @@ export interface components {
       /** Format: date */
       offenceEndDate?: string | null
       legacyData?: components['schemas']['ChargeLegacyData'] | null
+      value?: number | null
     }
     LegacyCourtAppearance: {
       /** Format: uuid */
@@ -4438,7 +4567,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4450,7 +4579,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4636,6 +4765,7 @@ export interface components {
       /** Format: date-time */
       createdAt: string
       findingOfDomesticAbuse?: boolean | null
+      value?: number | null
     }
     PagedChargeOutcome: {
       /** Format: uuid */
@@ -4661,6 +4791,8 @@ export interface components {
       canAppeal: boolean
       canBreach: boolean
       hasUnconfirmedConsecutiveToFixSentences: boolean
+      hasRecalls: boolean
+      canAddHearing: boolean
     }
     PagedLatestCourtAppearance: {
       /** Format: uuid */
@@ -4702,7 +4834,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 17:02:04.591445061 */
+      /** @example 16:30:56.408677656 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -4789,8 +4921,8 @@ export interface components {
       size?: number
       /** Format: int32 */
       number?: number
-      first?: boolean
       sort?: components['schemas']['SortObject']
+      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -6280,6 +6412,59 @@ export interface operations {
       }
     }
   }
+  updateHmctsResultCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        hmctsResultCodeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateHmctsResultCode']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FieldErrorErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+    }
+  }
   getCourtCaseDetails: {
     parameters: {
       query?: never
@@ -7594,6 +7779,57 @@ export interface operations {
       }
     }
   }
+  createHmctsResultCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateHmctsResultCode']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FieldErrorErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+    }
+  }
   areHmctsHearingsEligibleForAutopopulate: {
     parameters: {
       query?: never
@@ -8519,7 +8755,7 @@ export interface operations {
       query: {
         age: number
         convictionDate: string
-        statuses?: ('ACTIVE' | 'INACTIVE')[]
+        statuses?: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
         offenceDate: string
       }
       header?: never
@@ -8644,7 +8880,7 @@ export interface operations {
       query: {
         age: number
         convictionDate: string
-        statuses?: ('ACTIVE' | 'INACTIVE')[]
+        statuses?: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
         offenceDate: string
         chargeOutcomeUuid?: string
       }
@@ -9728,6 +9964,135 @@ export interface operations {
       }
     }
   }
+  getHmctsResultCodeByUuid: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        outcomeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns hmcts result code */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+      /** @description Not found if no hmcts result code at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode']
+        }
+      }
+    }
+  }
+  getHmctsResultCodesByIds: {
+    parameters: {
+      query: {
+        uuids: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns hmcts result codes */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode'][]
+        }
+      }
+    }
+  }
+  getAllHmctsResultCodes: {
+    parameters: {
+      query: {
+        statuses: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns hmcts result codes */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmctsResultCode'][]
+        }
+      }
+    }
+  }
   getCourtAppearanceFromHmctsHearingId: {
     parameters: {
       query?: never
@@ -10235,7 +10600,7 @@ export interface operations {
   getAllCourtAppearanceSubtypes: {
     parameters: {
       query: {
-        statuses: ('ACTIVE' | 'INACTIVE')[]
+        statuses: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
       }
       header?: never
       path?: never
@@ -10404,7 +10769,7 @@ export interface operations {
   getAllChargeOutcomes_1: {
     parameters: {
       query: {
-        statuses: ('ACTIVE' | 'INACTIVE')[]
+        statuses: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
       }
       header?: never
       path?: never
@@ -10484,7 +10849,7 @@ export interface operations {
   getAllAppearanceTypes: {
     parameters: {
       query: {
-        statuses: ('ACTIVE' | 'INACTIVE')[]
+        statuses: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
       }
       header?: never
       path?: never
@@ -10564,7 +10929,7 @@ export interface operations {
   getAllAppearanceOutcomes: {
     parameters: {
       query: {
-        statuses: ('ACTIVE' | 'INACTIVE')[]
+        statuses: ('ACTIVE' | 'INACTIVE' | 'LEGACY')[]
       }
       header?: never
       path?: never

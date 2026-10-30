@@ -64,6 +64,8 @@ declare module 'models' {
     isGeneratedBreachOffence?: string
     findingOfDomesticAbuse?: boolean
     hmctsChargeId?: string
+    offenceValue?: number
+    hasOffenceValue?: string
   }
 
   export interface Sentence {

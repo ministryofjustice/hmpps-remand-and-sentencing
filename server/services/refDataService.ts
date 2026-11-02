@@ -7,7 +7,9 @@ import {
   CourtAppearanceSubtype,
   CreateAppearanceOutcome,
   CreateChargeOutcome,
+  CreateHmctsResultCode,
   CreateSentenceType,
+  HmctsResultCode,
   OffenceOutcome,
   SentenceType,
   SentenceTypeChargeOutcomes,
@@ -24,6 +26,8 @@ export default class RefDataService {
   appearanceOutcomeCacheKey = 'appearance-outcomes:all'
 
   appearanceSubtypeCacheKey = 'court-appearance-subtypes:all'
+
+  hmctsResultCodeCacheKey = 'hmcts-result-codes:all'
 
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
@@ -264,5 +268,20 @@ export default class RefDataService {
 
   async getAllAggravatingFactors(username: string): Promise<AggravatingFactor[]> {
     return this.remandAndSentencingApiClient.getAllAggravatingFactors(username)
+  }
+
+  async getAllUncachedHmctsResultCodes(username: string): Promise<HmctsResultCode[]> {
+    return this.remandAndSentencingApiClient.getAllHmctsResultCodes(username, 'ACTIVE,INACTIVE')
+  }
+
+  async createHmctsResultCode(
+    createHmctsResultCode: CreateHmctsResultCode,
+    username: string,
+  ): Promise<HmctsResultCode> {
+    return this.remandAndSentencingApiClient.createHmctsResultCode(createHmctsResultCode, username)
+  }
+
+  async clearHmctsResultCodeCache(): Promise<number | `${number}`> {
+    return clearCache(this.hmctsResultCodeCacheKey)
   }
 }

@@ -3098,20 +3098,7 @@ export interface components {
       dispositionCode: string
       hmctsCode?: string | null
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
-    }
-    ChargeOutcome: {
-      /** Format: uuid */
-      outcomeUuid: string
-      outcomeName: string
-      nomisCode: string
-      outcomeType: string
-      /** Format: int32 */
-      displayOrder: number
-      dispositionCode: string
-      hmctsCode?: string | null
-      /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
+      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
     }
     CreateAppearanceOutcome: {
       /** Format: uuid */

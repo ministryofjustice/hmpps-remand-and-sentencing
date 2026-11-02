@@ -73,6 +73,77 @@ describe('offenceService', () => {
     expect(offence.offenceEndDate).toBeUndefined()
   })
 
+  describe('setSessionDuplicatedOffence', () => {
+    it.each(['FORTHWITH', 'CONCURRENT', 'CONSECUTIVE'] as const)(
+      'requires new dates and sentence serve type when duplicating a %s sentence',
+      sentenceServeType => {
+        const originalOffence = {
+          chargeUuid: 'original-charge',
+          offenceCode: 'PS90037',
+          offenceStartDate: new Date('2023-05-10'),
+          offenceEndDate: new Date('2023-05-11'),
+          sentence: {
+            sentenceUuid: 'original-sentence',
+            countNumber: '1',
+            convictionDate: new Date('2023-05-20'),
+            sentenceTypeClassification: 'UNKNOWN',
+            sentenceServeType,
+            consecutiveToSentenceUuid: sentenceServeType === 'CONSECUTIVE' ? 'previous-sentence' : undefined,
+          },
+        } as Offence
+        const session = { offences: {} } as unknown as Partial<SessionData>
+
+        const duplicate = service.setSessionDuplicatedOffence(session, 'P123', '1', originalOffence)
+
+        expect(duplicate.offenceStartDate).toBeUndefined()
+        expect(duplicate.offenceEndDate).toBeUndefined()
+        expect(originalOffence.offenceStartDate).toEqual(new Date('2023-05-10'))
+        expect(originalOffence.offenceEndDate).toEqual(new Date('2023-05-11'))
+        expect(duplicate.offenceCode).toBe(originalOffence.offenceCode)
+        expect(duplicate.sentence.countNumber).toBe('1')
+        expect(duplicate.sentence.convictionDate).toEqual(originalOffence.sentence.convictionDate)
+        expect(duplicate.chargeUuid).not.toBe(originalOffence.chargeUuid)
+        expect(duplicate.duplicatedFromUuid).toBe(originalOffence.chargeUuid)
+        expect(originalOffence.duplicatedFromUuid).toBeUndefined()
+        expect(duplicate.sentence.sentenceUuid).not.toBe(originalOffence.sentence.sentenceUuid)
+        expect(duplicate.sentence.sentenceServeType).toBeUndefined()
+        expect(duplicate.sentence.consecutiveToSentenceUuid).toBeUndefined()
+        expect(originalOffence.sentence.sentenceServeType).toBe(sentenceServeType)
+        expect(originalOffence.sentence.consecutiveToSentenceUuid).toBe(
+          sentenceServeType === 'CONSECUTIVE' ? 'previous-sentence' : undefined,
+        )
+        expect(service.validateDuplicatedOffenceMandatoryFields(duplicate)).toEqual([
+          { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
+          { text: 'You must enter a committed on date', href: '#' },
+        ])
+
+        const errors = service.setOffenceDates(
+          session,
+          'P123',
+          '1',
+          {
+            'offenceStartDate-day': '12',
+            'offenceStartDate-month': '5',
+            'offenceStartDate-year': '2023',
+          } as OffenceOffenceDateForm,
+          new Date('2023-05-20'),
+          undefined,
+          duplicate.chargeUuid,
+        )
+
+        expect(errors).toEqual([])
+        expect(service.validateDuplicatedOffenceMandatoryFields(duplicate)).toEqual([
+          { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
+        ])
+        duplicate.sentence.sentenceServeType = 'CONCURRENT'
+        expect(service.validateDuplicatedOffenceMandatoryFields(duplicate)).toEqual([])
+        expect(dayjs(duplicate.offenceStartDate).format('YYYY-MM-DD')).toBe('2023-05-12')
+        expect(originalOffence.offenceStartDate).toEqual(new Date('2023-05-10'))
+        expect(originalOffence.sentence.sentenceServeType).toBe(sentenceServeType)
+      },
+    )
+  })
+
   describe('markSentenceAsActive', () => {
     it('sets the sentence status to ACTIVE and clears any previously stored reason', () => {
       const offence = {
@@ -127,6 +198,13 @@ describe('offenceService', () => {
       } as Offence
       expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
         { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
+      ])
+    })
+
+    it('requires committed on even after consecutive or concurrent is entered', () => {
+      const offence = { sentence: completeSentence } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
+        { text: 'You must enter a committed on date', href: '#' },
       ])
     })
 

@@ -2679,6 +2679,7 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence?hasErrors=true`,
         )
       }
+      delete duplicatedOffence.duplicatedFromUuid
       this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
     }
     return res.redirect(
@@ -2693,6 +2694,20 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public getEditOffence: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (offence.duplicatedFromUuid) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence`,
+      )
+    }
     return this.renderEditOffence(req, res, req.params.chargeUuid)
   }
 
@@ -2815,7 +2830,7 @@ export default class OffenceRoutes extends BaseRoutes {
     })
   }
 
-  public submitEditOffence: RequestHandler = async (req, res): Promise<void> => {
+  public submitEditOffence: RequestHandler = async (req, res, next): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,
@@ -2825,6 +2840,10 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (offence.duplicatedFromUuid) {
+      await this.submitDuplicateOffence(req, res, next)
+      return undefined
+    }
     const errors = this.offenceService.validateOffenceMandatoryFields(offence)
     if (errors.length > 0) {
       req.flash('errors', errors)

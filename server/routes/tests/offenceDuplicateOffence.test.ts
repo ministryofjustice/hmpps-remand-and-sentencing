@@ -102,6 +102,71 @@ describe('Duplicate offence', () => {
     expect($('[data-qa="hearingDetails"]').length).toBe(1)
   })
 
+  it.each([
+    { description: 'before confirmation', missingDate: true, missingServeType: true, submitted: false },
+    { description: 'with only committed on missing', missingDate: true, missingServeType: false, submitted: true },
+    {
+      description: 'with only consecutive or concurrent missing',
+      missingDate: false,
+      missingServeType: true,
+      submitted: true,
+    },
+    { description: 'with both fields missing', missingDate: true, missingServeType: true, submitted: true },
+    { description: 'with both fields completed', missingDate: false, missingServeType: false, submitted: true },
+  ])('highlights only invalid rows $description', async ({ missingDate, missingServeType, submitted }) => {
+    const errors = []
+    const expectedRows = []
+    if (submitted && missingDate) {
+      errors.push({ text: 'You must enter a committed on date', href: '#' })
+      expectedRows.push('Committed on')
+    }
+    if (submitted && missingServeType) {
+      errors.push({ text: 'You must enter whether this offence is consecutive or concurrent', href: '#' })
+      expectedRows.push('Consecutive or concurrent')
+    }
+
+    const html = await new Promise<string>((resolve, reject) => {
+      app.render(
+        'pages/offence/add-offence-details',
+        {
+          nomsId: 'A1234AB',
+          courtCaseReference: '0',
+          appearanceReference: '0',
+          chargeUuid: '5',
+          addOrEditCourtCase: 'add-court-case',
+          addOrEditCourtAppearance: 'add-court-appearance',
+          prisoner: {},
+          serviceDefinitions: { services: [] },
+          courtAppearance: { warrantType: 'SENTENCING', offences: [] },
+          offence: {
+            ...duplicatedOffence,
+            offenceStartDate: missingDate ? undefined : duplicatedOffence.offenceStartDate,
+            sentence: {
+              ...duplicatedOffence.sentence,
+              sentenceServeType: missingServeType ? undefined : 'CONCURRENT',
+            },
+          },
+          offenceMap: { PS90037: 'An offence description' },
+          periodLengths: [],
+          errors,
+        },
+        (error, renderedHtml) => {
+          if (error) reject(error)
+          else resolve(renderedHtml)
+        },
+      )
+    })
+    const $ = cheerio.load(html)
+    const highlightedRows = $('[data-qa="edit-summary-list"] .govuk-summary-list__row--error')
+      .find('.govuk-summary-list__key')
+      .map((_index, key) => $(key).text().trim())
+      .get()
+
+    expect(highlightedRows).toEqual(expectedRows)
+    expect($('.govuk-error-summary').length).toBe(errors.length ? 1 : 0)
+    errors.forEach(error => expect($('.govuk-error-summary').text()).toContain(error.text))
+  })
+
   it('shows an Enter committed on date link when the offence has no committed on date', async () => {
     const noDateOffence = { ...duplicatedOffence, offenceStartDate: undefined } as Offence
     defaultServices.offenceService.getAllOffences.mockReturnValue([noDateOffence])
@@ -129,7 +194,7 @@ describe('Duplicate offence', () => {
     expect($('[data-qa="edit-offence-date-cta"]').text().trim()).toBe('Enter committed on date')
   })
 
-  it('shows an Enter a consecutive or concurrent link when none is entered', async () => {
+  it('shows an Enter consecutive or concurrent link when none is entered', async () => {
     const noServeTypeOffence = {
       ...duplicatedOffence,
       sentence: { ...duplicatedOffence.sentence, sentenceServeType: undefined },
@@ -156,7 +221,7 @@ describe('Duplicate offence', () => {
     const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
     const $ = cheerio.load(res.text)
 
-    expect($('[data-qa="edit-sentence-serve-type-cta"]').text().trim()).toBe('Enter a consecutive or concurrent')
+    expect($('[data-qa="edit-sentence-serve-type-cta"]').text().trim()).toBe('Enter consecutive or concurrent')
     expect($('[data-qa="edit-sentence-serve-type-5"]').length).toBe(0)
   })
 
@@ -178,8 +243,43 @@ describe('Duplicate offence', () => {
     expect(defaultServices.courtAppearanceService.addOffence).not.toHaveBeenCalled()
   })
 
+  it('returns to add offence details after editing a field on a duplicate draft', async () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      ...duplicatedOffence,
+      duplicatedFromUuid: originalOffence.chargeUuid,
+    })
+
+    await request(app)
+      .get(`${baseUrl}/5/edit-offence?submitToEditOffence=true`)
+      .expect(302)
+      .expect('Location', `${baseUrl}/duplicate-offence`)
+  })
+
+  it.each([
+    ['committed on', 'You must enter a committed on date'],
+    ['consecutive or concurrent', 'You must enter whether this offence is consecutive or concurrent'],
+  ])('cannot bypass duplicate validation through the edit route when %s is missing', async (_field, message) => {
+    const draft = { ...duplicatedOffence, duplicatedFromUuid: originalOffence.chargeUuid }
+    defaultServices.offenceService.getSessionOffence.mockReturnValue(draft)
+    defaultServices.offenceService.getAllOffences.mockReturnValue([draft])
+    defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([
+      { text: message, href: '#' },
+    ])
+
+    await request(app)
+      .post(`${baseUrl}/5/edit-offence`)
+      .expect(302)
+      .expect('Location', `${baseUrl}/duplicate-offence?hasErrors=true`)
+
+    expect(defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields).toHaveBeenCalledWith(draft)
+    expect(defaultServices.offenceService.validateOffenceMandatoryFields).not.toHaveBeenCalled()
+    expect(defaultServices.courtAppearanceService.addOffence).not.toHaveBeenCalled()
+    expect(draft.duplicatedFromUuid).toBe(originalOffence.chargeUuid)
+  })
+
   it('saves the duplicated offence to the appearance and returns to add offences', async () => {
-    defaultServices.offenceService.getAllOffences.mockReturnValue([duplicatedOffence])
+    const draft = { ...duplicatedOffence, duplicatedFromUuid: originalOffence.chargeUuid }
+    defaultServices.offenceService.getAllOffences.mockReturnValue([draft])
     defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([])
 
     await request(app)
@@ -194,5 +294,6 @@ describe('Duplicate offence', () => {
       duplicatedOffence,
       '0',
     )
+    expect(draft.duplicatedFromUuid).toBeUndefined()
   })
 })

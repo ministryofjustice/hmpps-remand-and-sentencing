@@ -1196,8 +1196,13 @@ export default class OffenceService {
   ): Offence {
     const duplicatedOffence: Offence = structuredClone(originalOffence)
     duplicatedOffence.chargeUuid = crypto.randomUUID()
+    duplicatedOffence.duplicatedFromUuid = originalOffence.chargeUuid
+    delete duplicatedOffence.offenceStartDate
+    delete duplicatedOffence.offenceEndDate
     if (duplicatedOffence.sentence) {
       duplicatedOffence.sentence.sentenceUuid = crypto.randomUUID()
+      delete duplicatedOffence.sentence.sentenceServeType
+      delete duplicatedOffence.sentence.consecutiveToSentenceUuid
       duplicatedOffence.sentence.periodLengths = duplicatedOffence.sentence.periodLengths?.map(periodLength => ({
         ...periodLength,
         uuid: crypto.randomUUID(),

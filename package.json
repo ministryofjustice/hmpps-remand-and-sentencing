@@ -131,7 +131,7 @@
       "mv": {
         "rimraf": {
           "glob": {
-            "minimatch": "^10.2.6",
+            "minimatch": "^11.0.0",
             "brace-expansion": "^5.0.12"
           }
         }

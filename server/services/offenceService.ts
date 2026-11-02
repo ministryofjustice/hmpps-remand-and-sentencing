@@ -43,7 +43,7 @@ import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSenten
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
-import { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
+import REPLACEMENT_OUTCOME_UUID, { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
 
 export default class OffenceService {
   constructor(
@@ -1530,11 +1530,13 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  setOffenceAppealOutcome(
+  async setOffenceAppealOutcome(
     session: Partial<SessionData>,
     urlParameters: UrlParameters,
     appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
-  ): {
+    sentenceUuidsInChain: string[],
+    username: string,
+  ): Promise<{
     errors: {
       text?: string
       html?: string
@@ -1542,7 +1544,8 @@ export default class OffenceService {
     }[]
     sentenceUuid: string
     offence: Offence
-  } {
+    hasSentencesAfter: boolean
+  }> {
     const errors = validate(
       appealOffenceOutcomeForm,
       {
@@ -1557,6 +1560,21 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
       offence = this.getOffence(session.offences, id)
+      if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID && offence.sentence) {
+        const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
+          sentenceUuidsInChain,
+          username,
+        )
+        if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
+          return {
+            errors,
+            sentenceUuid,
+            offence,
+            hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance,
+          }
+        }
+      }
+
       offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
       offence.updatedOutcome = true
       sentenceUuid = offence.sentence?.sentenceUuid
@@ -1566,6 +1584,6 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return { errors, sentenceUuid, offence }
+    return { errors, sentenceUuid, offence, hasSentencesAfter: false }
   }
 }

@@ -37,6 +37,10 @@ export default class AppealsJourneyUrls {
     return `${AppealsJourneyUrls.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/select-appeal-outcome${AppealsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
+  static cannotReplaceOffence = (urlParameters: UrlParameters) => {
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-replace-offence`
+  }
+
   static uploadCourtDocuments = (urlParameters: UrlParameters) => {
     return `${AppealsJourneyUrls.basePath(urlParameters)}/upload-court-documents`
   }

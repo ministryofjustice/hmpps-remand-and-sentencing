@@ -24,7 +24,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
     const chargeOutcomes = await this.refDataService.getAllUncachedChargeOutcomes(req.user.username)
     const types = new Set(chargeOutcomes.map(outcome => outcome.outcomeType))
     const dispositionCodes = new Set(chargeOutcomes.map(outcome => outcome.dispositionCode))
-    const statuses: CreateChargeOutcome['status'][] = ['ACTIVE', 'INACTIVE']
+    const statuses: CreateChargeOutcome['status'][] = ['ACTIVE', 'INACTIVE', 'LEGACY']
     const createChargeOutcome = (req.flash('createChargeOutcome')[0] || {}) as CreateChargeOutcome
     return res.render('pages/referenceData/chargeOutcome/add', {
       types,
@@ -68,7 +68,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
     const existingChargeOutcome = chargeOutcomes.find(chargeOutcome => chargeOutcome.outcomeUuid === chargeOutcomeUuid)
     const types = new Set(chargeOutcomes.map(outcome => outcome.outcomeType))
     const dispositionCodes = new Set(chargeOutcomes.map(outcome => outcome.dispositionCode))
-    const statuses: CreateChargeOutcome['status'][] = ['ACTIVE', 'INACTIVE']
+    const statuses: CreateChargeOutcome['status'][] = ['ACTIVE', 'INACTIVE', 'LEGACY']
     const updateChargeOutcome = (req.flash('updateChargeOutcome')[0] || {
       ...existingChargeOutcome,
     }) as CreateChargeOutcome

@@ -1250,7 +1250,12 @@ export default function routes(services: Services): Router {
 
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/select-appeal-outcome',
-    appealsRoutes.subtmitSelectOffenceAppealOutcome,
+    appealsRoutes.submitSelectOffenceAppealOutcome,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-replace-offence',
+    appealsRoutes.getCannotReplaceOffence,
   )
 
   router.get(

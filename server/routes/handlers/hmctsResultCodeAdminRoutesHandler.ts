@@ -8,7 +8,7 @@ import type {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import trimForm from '../../utils/trim'
 
-export default class HmctsChargeOutcomeAdminRoutesHandler {
+export default class HmctsResultCodeAdminRoutesHandler {
   constructor(private readonly refDataService: RefDataService) {}
 
   // TODO (CDIA-490): port this logic for HMCTS ResultCode (use ChargeOutcomeAdminRoutesHandler.index as reference)
@@ -34,7 +34,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       statuses,
       createChargeOutcome,
       errors: req.flash('errors') || [],
-      backLink: ReferenceDataJourneyUrls.viewHmctsChargeOutcomes(),
+      backLink: ReferenceDataJourneyUrls.viewHmctsResultCodes(),
     })
   }
 
@@ -45,7 +45,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       // await this.refDataService.createChargeOutcome(createChargeOutcome, req.user.username)
       // await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully created')
-      return res.redirect(ReferenceDataJourneyUrls.viewHmctsChargeOutcomes())
+      return res.redirect(ReferenceDataJourneyUrls.viewHmctsResultCodes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -82,7 +82,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       statuses,
       updateChargeOutcome,
       errors: req.flash('errors') || [],
-      backLink: ReferenceDataJourneyUrls.viewHmctsChargeOutcomes(),
+      backLink: ReferenceDataJourneyUrls.viewHmctsResultCodes(),
     })
   }
 
@@ -94,7 +94,7 @@ export default class HmctsChargeOutcomeAdminRoutesHandler {
       // await this.refDataService.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, req.user.username)
       // await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully updated')
-      return res.redirect(ReferenceDataJourneyUrls.viewHmctsChargeOutcomes())
+      return res.redirect(ReferenceDataJourneyUrls.viewHmctsResultCodes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError

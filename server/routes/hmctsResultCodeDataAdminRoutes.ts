@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import type { Services } from '../services'
-import HmctsChargeOutcomeAdminRoutesHandler from './handlers/hmctsChargeOutcomeAdminRoutesHandler'
+import HmctsResultCodeAdminRoutesHandler from './handlers/hmctsResultCodeAdminRoutesHandler'
 
-export default function hmctsChargeOutcomeDataAdminRoutes(services: Services): Router {
+export default function hmctsResultCodeDataAdminRoutes(services: Services): Router {
   const router = Router()
-  const routes = new HmctsChargeOutcomeAdminRoutesHandler(services.refDataService)
+  const routes = new HmctsResultCodeAdminRoutesHandler(services.refDataService)
   router.get('/', routes.index)
 
   router.get('/add', routes.add)

@@ -1,0 +1,108 @@
+{% extends "../../../partials/referenceDataBackLinkLayout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% set relatedChargeOutcomeItems = [{
+    value: "",
+    text: "Select related charge outcome",
+    selected: not createHmctsResultCode.outcomeUuid
+}] %}
+{% for chargeOutcome in chargeOutcomes %}
+    {% set relatedChargeOutcomeItems = relatedChargeOutcomeItems.concat({
+        value: chargeOutcome.outcomeUuid,
+        text: chargeOutcome.outcomeName,
+        selected: chargeOutcome.outcomeUuid === createHmctsResultCode.outcomeUuid
+    })%}
+{% endfor %}
+
+{% set statusItems = [] %}
+
+{% for status in statuses %}
+    {% set statusItems = statusItems.concat({
+        value: status,
+        text: status,
+        selected: status === createHmctsResultCode.status
+    })%}
+{% endfor %}
+
+{% block content %}
+{% if errors | length %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors
+        }) }}
+    </div>
+{% endif %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+            <h1 class="govuk-heading-l">Add HMCTS Result Code</h1>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {{ govukInput({
+                    label: {
+                        text: "UUID"
+                    },
+                    id: "resultUuid",
+                    name: "resultUuid",
+                    value: createHmctsResultCode.resultUuid,
+                    errorMessage: errors | findError('resultUuid')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Name"
+                    },
+                    id: "resultName",
+                    name: "resultName",
+                    value: createHmctsResultCode.resultName,
+                    errorMessage: errors | findError('resultName')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "HMCTS Code"
+                    },
+                    id: "resultCode",
+                    name: "resultCode",
+                    value: createHmctsResultCode.resultCode,
+                    errorMessage: errors | findError('resultCode')
+                }) }}
+
+                {{ govukSelect({
+                    id: "outcomeUuid",
+                    name: "outcomeUuid",
+                    label: {
+                        text: "Related charge outcome*"
+                    },
+                    items: relatedChargeOutcomeItems,
+                    errorMessage: errors | findError('outcomeUuid')
+                }) }}
+
+                {{ govukSelect({
+                    id: "status",
+                    name: "status",
+                    label: {
+                        text: "Status"
+                    },
+                    items: statusItems,
+                    errorMessage: errors | findError('status')
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Save and continue",
+                        attributes: {
+                            'data-qa': 'continue-button'
+                        }
+                    }) }}
+                    <a class="govuk-link" href="{{ backLink }}">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

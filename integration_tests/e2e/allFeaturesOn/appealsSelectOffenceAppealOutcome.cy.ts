@@ -2,6 +2,7 @@ import AppealCheckHearingAnswersPage from '../../pages/AppealCheckHearingAnswers
 import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
 import AppealOverallCaseOutcomePage from '../../pages/AppealOverallCaseOutcomePage'
+import CannotReplaceAppealOffencePage from '../../pages/CannotReplaceAppealOffencePage'
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CriminalOfficeReferencePage from '../../pages/CriminalOfficeReferencePage'
@@ -130,9 +131,24 @@ context('Appeals select offence appeal outcome page', () => {
   })
 
   it('should redirect to enter offence date if replaced by another offence is chosen while editing outcome', () => {
+    cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+      sentenceUuids: 'f327bc1d-610f-41ee-b700-410c08a9cefa',
+      hasSentenceAfterOnOtherCourtAppearance: false,
+    })
     selectOffenceAppealOutcomePage.radioLabelContains('Replaced with Another Offence').click()
     selectOffenceAppealOutcomePage.continueButton().click()
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.hintText().should('contain', 'This offence will replace PS90037 - An offence description')
+  })
+
+  it('should redirect to cannot delete sentence when replaced by a another offence and sentence has consecutive to on another appearance', () => {
+    cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+      sentenceUuids: 'f327bc1d-610f-41ee-b700-410c08a9cefa',
+      hasSentenceAfterOnOtherCourtAppearance: true,
+    })
+    selectOffenceAppealOutcomePage.radioLabelContains('Replaced with Another Offence').click()
+    selectOffenceAppealOutcomePage.continueButton().click()
+    const cannotReplaceAppealOffencePage = Page.verifyOnPage(CannotReplaceAppealOffencePage)
+    cannotReplaceAppealOffencePage.offenceDetails().should('contain.text', 'PS90037 An offence description')
   })
 })

@@ -1545,6 +1545,7 @@ export default class OffenceService {
     sentenceUuid: string
     offence: Offence
     hasSentencesAfter: boolean
+    previousOutcomeUuid: string
   }> {
     const errors = validate(
       appealOffenceOutcomeForm,
@@ -1557,9 +1558,11 @@ export default class OffenceService {
     )
     let sentenceUuid
     let offence
+    let previousOutcomeUuid
     if (errors.length === 0) {
       const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
       offence = this.getOffence(session.offences, id)
+      previousOutcomeUuid = offence.outcomeUuid
       if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID && offence.sentence) {
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
           sentenceUuidsInChain,
@@ -1571,6 +1574,7 @@ export default class OffenceService {
             sentenceUuid,
             offence,
             hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance,
+            previousOutcomeUuid,
           }
         }
       }
@@ -1584,6 +1588,6 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return { errors, sentenceUuid, offence, hasSentencesAfter: false }
+    return { errors, sentenceUuid, offence, hasSentencesAfter: false, previousOutcomeUuid }
   }
 }

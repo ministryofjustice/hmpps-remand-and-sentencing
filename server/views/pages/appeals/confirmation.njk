@@ -22,39 +22,60 @@
             }) }}
 
             <div class="govuk-!-margin-top-6">
-                <h2 class="govuk-heading-l">What you must do next</h2>
-            <div class="govuk-body govuk-!-margin-top-6">
-                {% if hasReplaceOffence %}
-                    <ul class="govuk-list govuk-!-margin-top-2">
-                        <li>
-                            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/view-court-case/{{ courtCaseReference }}/details" data-qa="goBackToCourtCaseLink">
-                                Go back to court case{{' ' + caseReference if caseReference}} at {{courtDetails.courtName}}
-                            </a>
-                        </li>
-                    </ul>
+                {% if hasReplacedOffence %}
+                    <h2 class="govuk-heading-l">What you can do next</h2>
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <ul class="govuk-list govuk-!-margin-top-2">
+                            <li>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/view-court-case/{{ courtCaseReference }}/details" data-qa="goBackToCourtCaseLink">
+                                    Go back to court case{{' ' + caseReference if caseReference}} at {{courtDetails.courtName}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
+                        <ul class="govuk-list govuk-!-margin-top-2">
+                            <li>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">
+                                    Court case information
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="govuk-!-margin-top-6">
+                        <p class="govuk-body">
+                            Or, go to the
+                            <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}">
+                                DPS homepage
+                            </a>.
+                        </p>
+                    </div>
                 {% else %}
-                    <span>
-                        If the result of this appeal outcome has impacted or changed the sentence information, you must now review these details.
-                    <span>
-                    <ul class="govuk-list govuk-!-margin-top-2">
-                        <li>
-                            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/view-court-case/{{ courtCaseReference }}/details" data-qa="reviewSentenceLink">
-                                Review the sentence information
-                            </a>
-                        </li>
-                    </ul>
+                    <h2 class="govuk-heading-l">What you must do next</h2>
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <span>
+                            If the result of this appeal outcome has impacted or changed the sentence information, you must now review these details.
+                        <span>
+                        <ul class="govuk-list govuk-!-margin-top-2">
+                            <li>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/view-court-case/{{ courtCaseReference }}/details" data-qa="reviewSentenceLink">
+                                    Review the sentence information
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
+                        <ul class="govuk-list govuk-!-margin-top-2">
+                            <li>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">
+                                    Court case information
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 {% endif %}
-            </div>
-            <div class="govuk-body govuk-!-margin-top-6">
-                <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
-                <ul class="govuk-list govuk-!-margin-top-2">
-                    <li>
-                        <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">
-                            Court case information
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 

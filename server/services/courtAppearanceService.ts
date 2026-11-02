@@ -1604,7 +1604,7 @@ export default class CourtAppearanceService {
         month: parseInt(appealDateForm['appealDate-month'], 10) - 1,
         day: appealDateForm['appealDate-day'],
       })
-      let latestSentencingAppearanceDate = null
+      let latestSentencingAppearanceDate
       const courtCaseValidationDates = await this.remandAndSentencingService.getValidationDatesForCourtCase(
         urlParameters.courtCaseReference,
         username,
@@ -1804,7 +1804,7 @@ export default class CourtAppearanceService {
         month: parseInt(breachDateForm['breachDate-month'], 10) - 1,
         day: breachDateForm['breachDate-day'],
       })
-      let latestSentencingAppearanceDate = null
+      let latestSentencingAppearanceDate
       const courtCaseValidationDates = await this.remandAndSentencingService.getValidationDatesForCourtCase(
         urlParameters.courtCaseReference,
         username,
@@ -2033,7 +2033,7 @@ export default class CourtAppearanceService {
     }
 
     let isValidOffenceEndDateRule = ''
-    let endDateString = ''
+    let endDateString
     if (
       breachOffenceDateForm['offenceEndDate-day'] &&
       breachOffenceDateForm['offenceEndDate-month'] &&

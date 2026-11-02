@@ -28,6 +28,3 @@ generic-service:
     FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'false'
     FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'false'
     FEATURES_MULTIPLE_OFFENCE_INSTANCES: 'false'
-
-generic-prometheus-alerts:
-  alertSeverity: legacy-replacement-alerts

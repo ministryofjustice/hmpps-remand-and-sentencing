@@ -2,7 +2,7 @@ import type { UrlParameters } from 'models'
 
 export default class AppealsJourneyUrls {
   static taskList = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/task-list`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/task-list`
   }
 
   static criminalOfficeReference = (
@@ -10,63 +10,63 @@ export default class AppealsJourneyUrls {
     hasErrors?: string,
     submitToCheckAnswers?: string,
   ) => {
-    return `${this.basePath(urlParameters)}/criminal-office-reference${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/criminal-office-reference${AppealsJourneyUrls.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static appealDate = (urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string) => {
-    return `${this.basePath(urlParameters)}/appeal-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/appeal-date${AppealsJourneyUrls.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static appealCourt = (urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string) => {
-    return `${this.basePath(urlParameters)}/appeal-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/appeal-court${AppealsJourneyUrls.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static overallCaseOutcome = (urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string) => {
-    return `${this.basePath(urlParameters)}/overall-case-outcome${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/overall-case-outcome${AppealsJourneyUrls.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static checkHearingAnswers = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/check-hearing-answers`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/check-hearing-answers`
   }
 
   static recordAppeal = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `${this.basePath(urlParameters)}/record-appeal${this.getQueryParameters(hasErrors)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/record-appeal${AppealsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
   static selectOffenceAppealOutcome = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/select-appeal-outcome${AppealsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
   static uploadCourtDocuments = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/upload-court-documents`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/upload-court-documents`
   }
 
   static uploadAppealsOrder = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `${this.basePath(urlParameters)}/upload-appeal-order${this.getQueryParameters(hasErrors)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/upload-appeal-order${AppealsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
   static viewAppealsOrder = (urlParameters: UrlParameters, backToUpload?: string) => {
-    return `${this.basePath(urlParameters)}/view-appeal-order${backToUpload ? '?backToUpload=true' : ''}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/view-appeal-order${backToUpload ? '?backToUpload=true' : ''}`
   }
 
   static deleteDocument = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `${this.basePath(urlParameters)}/${urlParameters.documentUuid}/delete-document${this.getQueryParameters(hasErrors)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/${urlParameters.documentUuid}/delete-document${AppealsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
   static confirmation = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/confirmation`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/confirmation`
   }
 
   static hearingDetails = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `${this.basePath(urlParameters)}/hearing-details${this.getQueryParameters(hasErrors)}`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/hearing-details${AppealsJourneyUrls.getQueryParameters(hasErrors)}`
   }
 
   static cannotDeleteConsecutiveOffence = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-consecutive-offence`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-consecutive-offence`
   }
 
   static cannotDeletePeriodLengthOffence = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-period-length-offence`
+    return `${AppealsJourneyUrls.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-period-length-offence`
   }
 
   private static basePath(urlParameters: UrlParameters): string {

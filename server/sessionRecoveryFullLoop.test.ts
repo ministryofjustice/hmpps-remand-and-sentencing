@@ -63,13 +63,13 @@ describe.each([401, 403])('full snapshot/restore loop against a real %i', authFa
 
     jest.isolateModules(() => {
       jest.doMock('./data/redisClient', () => ({ createRedisClient: jest.fn(() => mockRedisClient) }))
-      // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
       config = require('./config').default
       config.redis.enabled = true
 
-      // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
       const errorHandler = require('./errorHandler').default
-      // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
       const populateCurrentPrisoner = require('./middleware/populateCurrentPrisoner').default
 
       const authenticationClient = new AuthenticationClient(config.apis.hmppsAuth, logger, new InMemoryTokenStore())

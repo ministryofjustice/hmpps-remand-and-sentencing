@@ -22,13 +22,13 @@ describe('sessionRecoveryStore', () => {
     jest.clearAllMocks()
     jest.isolateModules(() => {
       jest.doMock('./redisClient', () => ({ createRedisClient: jest.fn(() => mockClient) }))
-      // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
       const isolatedConfig = require('../config').default
       isolatedConfig.redis.enabled = enabled
       if (recoveryTtlMinutes !== undefined) {
         isolatedConfig.session.recoveryTtlMinutes = recoveryTtlMinutes
       }
-      // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
       const store = require('./sessionRecoveryStore')
       saveSession = store.saveSession
       restoreAndClearSession = store.restoreAndClearSession

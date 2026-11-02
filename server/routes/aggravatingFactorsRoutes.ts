@@ -1,12 +1,10 @@
 import { RequestHandler } from 'express'
-import {
+import type {
   AggravatingFactorsFinishedAddingForm,
   OffenceWithAggravatingFactorsForm,
   SelectWhichAggravatingFactorsForm,
-  // eslint-disable-next-line import/no-unresolved
 } from 'forms'
-// eslint-disable-next-line import/no-unresolved
-import { Offence } from 'models'
+import type { Offence } from 'models'
 import BaseRoutes from './baseRoutes'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'

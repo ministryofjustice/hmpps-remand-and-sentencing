@@ -683,7 +683,7 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
       req.user.username,
     )
-    const hasReplaceOffence = storedAppearance.charges.some(
+    const hasReplacedOffence = storedAppearance.charges.some(
       charge => charge.outcome?.outcomeUuid === REPLACEMENT_OUTCOME_UUID,
     )
     const courtDetails = await this.courtRegisterService.findCourtById(storedAppearance.courtCode, req.user.username)
@@ -691,7 +691,7 @@ export default class AppealsRoutes extends BaseRoutes {
       ...urlParameters,
       caseReference: storedAppearance.courtCaseReference,
       courtDetails,
-      hasReplaceOffence,
+      hasReplacedOffence,
     })
   }
 
@@ -799,7 +799,11 @@ export default class AppealsRoutes extends BaseRoutes {
       .reduce(
         ([appealedList, nonAppealedList], offence) => {
           const outcome = outcomeMap[offence.outcomeUuid]
-          if (outcome?.outcomeType === 'APPEAL') {
+          if (
+            outcome?.outcomeType === 'APPEAL' ||
+            offence.sentence ||
+            offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID
+          ) {
             return [[...appealedList, offence], nonAppealedList]
           }
           return [appealedList, [...nonAppealedList, offence]]

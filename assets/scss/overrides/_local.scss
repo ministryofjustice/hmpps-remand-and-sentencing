@@ -49,6 +49,11 @@
   border-bottom: 0;
 }
 
+.govuk-summary-list__row--error .govuk-summary-list__key {
+  border-left: $govuk-border-width-form-group-error solid $govuk-error-colour;
+  padding-left: govuk-spacing(3);
+}
+
 .govuk-button--link {
   background: #1d70b8
 }

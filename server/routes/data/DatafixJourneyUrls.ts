@@ -1,6 +1,6 @@
 export default class DatafixJourneyUrls {
   static home = (success?: string) => {
-    return `/admin/data-fix${this.getQueryParameters(success)}`
+    return `/admin/data-fix${DatafixJourneyUrls.getQueryParameters(success)}`
   }
 
   private static getQueryParameters(success?: string): string {

@@ -32,7 +32,7 @@ export default class DocumentManagementApiClient extends RestClient {
         username,
       })
     } catch (error) {
-      throw new Error(`Error in Document Management API: ${error.message}`)
+      throw new Error(`Error in Document Management API: ${error.message}`, { cause: error })
     }
   }
 
@@ -49,7 +49,7 @@ export default class DocumentManagementApiClient extends RestClient {
         asSystem(username),
       )
     } catch (error) {
-      throw new Error(`Error deleting document: ${error.message}`)
+      throw new Error(`Error deleting document: ${error.message}`, { cause: error })
     }
   }
 

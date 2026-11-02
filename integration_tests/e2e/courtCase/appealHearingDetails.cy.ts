@@ -23,7 +23,28 @@ context('Appeal appearance details Page', () => {
         outcomeName: 'Sentence quashed',
         outcomeType: 'APPEAL',
       },
+      {
+        outcomeUuid: '68e56c1f-b179-43da-9d00-1272805a7ad3',
+        outcomeName: 'Replaced with another offence',
+        outcomeType: 'NON_CUSTODIAL',
+      },
+      {
+        outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      },
     ])
+    cy.task('stubGetSentenceTypesByIds', [
+      {
+        sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        description: 'SDS (Standard Determinate Sentence)',
+        classification: 'STANDARD',
+      },
+    ])
+    cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+      sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
+      hasSentenceAfterOnOtherCourtAppearance: false,
+    })
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
   })
@@ -53,6 +74,19 @@ context('Appeal appearance details Page', () => {
         .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
+          {
+            'Committed on': '15/12/2025',
+            'Consecutive or concurrent': 'Concurrent',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            offenceCardHeader: 'PS90037 An offence description',
+          },
+          {
+            'Committed on': '15/12/2025',
+            Outcome: 'Replaced with another offence',
+            offenceCardHeader: 'PS90037 An offence description',
+          },
           {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': 'Not entered',
@@ -90,6 +124,19 @@ context('Appeal appearance details Page', () => {
         .getOffenceCards()
         .should('deep.equal', [
           {
+            'Committed on': '15/12/2025',
+            'Consecutive or concurrent': 'Concurrent',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            offenceCardHeader: 'PS90037 An offence description',
+          },
+          {
+            'Committed on': '15/12/2025',
+            Outcome: 'Replaced with another offence',
+            offenceCardHeader: 'PS90037 An offence description',
+          },
+          {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': 'Not entered',
             Outcome: 'Sentence varied',
@@ -120,6 +167,19 @@ context('Appeal appearance details Page', () => {
         .updatedOffences()
         .getOffenceCards()
         .should('deep.equal', [
+          {
+            'Committed on': '15/12/2025',
+            'Consecutive or concurrent': 'Concurrent',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            offenceCardHeader: 'PS90037 An offence description',
+          },
+          {
+            'Committed on': '15/12/2025',
+            Outcome: 'Replaced with another offence',
+            offenceCardHeader: 'PS90037 An offence description',
+          },
           {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': '15/12/2025',

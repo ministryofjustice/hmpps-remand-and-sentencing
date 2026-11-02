@@ -2883,11 +2883,7 @@ export interface components {
       appearanceOutcomeUuid: string
       /** @enum {string} */
       immigrationDetentionRecordType:
-        | 'IS91'
-        | 'DEPORTATION_ORDER'
-        | 'NO_LONGER_OF_INTEREST'
-        | 'IMMIGRATION_BAIL'
-        | 'UNKNOWN'
+        'IS91' | 'DEPORTATION_ORDER' | 'NO_LONGER_OF_INTEREST' | 'IMMIGRATION_BAIL' | 'UNKNOWN'
       /** Format: date */
       recordDate: string
       homeOfficeReferenceNumber?: string | null
@@ -3100,13 +3096,22 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
       dispositionCode: string
-      /**
-       * @deprecated
-       * @description HMCTS Code no longer required, remove after frontend update
-       */
       hmctsCode?: string | null
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE' | 'LEGACY'
+      status: 'ACTIVE' | 'INACTIVE'
+    }
+    ChargeOutcome: {
+      /** Format: uuid */
+      outcomeUuid: string
+      outcomeName: string
+      nomisCode: string
+      outcomeType: string
+      /** Format: int32 */
+      displayOrder: number
+      dispositionCode: string
+      hmctsCode?: string | null
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
     }
     CreateAppearanceOutcome: {
       /** Format: uuid */
@@ -4591,11 +4596,7 @@ export interface components {
       prisonerId: string
       /** @enum {string} */
       immigrationDetentionRecordType:
-        | 'IS91'
-        | 'DEPORTATION_ORDER'
-        | 'NO_LONGER_OF_INTEREST'
-        | 'IMMIGRATION_BAIL'
-        | 'UNKNOWN'
+        'IS91' | 'DEPORTATION_ORDER' | 'NO_LONGER_OF_INTEREST' | 'IMMIGRATION_BAIL' | 'UNKNOWN'
       /** Format: date */
       recordDate: string
       homeOfficeReferenceNumber?: string | null

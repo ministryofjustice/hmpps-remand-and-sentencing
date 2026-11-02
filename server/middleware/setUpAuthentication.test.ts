@@ -2,6 +2,9 @@ import express from 'express'
 import session from 'express-session'
 import request from 'supertest'
 
+import setupAuthentication from './setUpAuthentication'
+import { snapshotSessionForRecovery } from '../errorHandler'
+
 type SessionWithPassport = Express.Request['session'] & { passport?: { user: unknown } }
 const verifyToken = jest.fn()
 jest.mock('@ministryofjustice/hmpps-auth-clients', () => ({
@@ -12,11 +15,6 @@ jest.mock('@ministryofjustice/hmpps-auth-clients', () => ({
 jest.mock('../errorHandler', () => ({
   snapshotSessionForRecovery: jest.fn(),
 }))
-
-// eslint-disable-next-line import/first
-import setupAuthentication from './setUpAuthentication'
-// eslint-disable-next-line import/first
-import { snapshotSessionForRecovery } from '../errorHandler'
 
 function init() {
   const app = express()

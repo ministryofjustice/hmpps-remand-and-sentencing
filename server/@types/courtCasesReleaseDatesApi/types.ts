@@ -1,3 +1,3 @@
-import { components } from './index'
+import { components } from './index.d'
 
 export type CcrdServiceDefinitions = components['schemas']['CcrdServiceDefinitions']

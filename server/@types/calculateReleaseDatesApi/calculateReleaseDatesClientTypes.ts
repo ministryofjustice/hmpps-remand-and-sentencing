@@ -1,4 +1,4 @@
-import { components } from './index'
+import { components } from './index.d'
 
 export type OverallSentenceLengthRequest = components['schemas']['OverallSentenceLengthRequest']
 export type OverallSentenceLengthSentence = components['schemas']['OverallSentenceLengthSentence']

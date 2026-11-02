@@ -74,11 +74,12 @@ context('Select which aggravating factors apply Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
+    // eslint-disable-next-line no-new
+    new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3')
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     cy.visit(

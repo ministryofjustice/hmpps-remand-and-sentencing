@@ -23,6 +23,7 @@ import datafixAdminRoutes from './datafixAdminRoutes'
 import JudicialFindingsRoutes from './judicialFindingsRoutes'
 import DocumentGeneratorRoutes from './documentGeneratorRoutes'
 import AutomaticSentenceFixRoutes from './automaticSentenceFixRoutes'
+import hmctsResultCodeDataAdminRoutes from './hmctsResultCodeDataAdminRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -33,6 +34,7 @@ export default function routes(services: Services): Router {
   router.use('/admin/appearance-outcomes', appearanceOutcomeDataAdminRoutes(services))
   router.use('/admin/sentence-type', sentenceTypeDataAdminRoutes(services))
   router.use('/admin/data-fix', datafixAdminRoutes(services))
+  router.use('/admin/hmcts-result-codes', hmctsResultCodeDataAdminRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.offenceService,
@@ -822,6 +824,21 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/duplicate-offence',
+    offenceRoutes.loadDuplicateOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/duplicate-offence',
+    offenceRoutes.getDuplicateOffence,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/duplicate-offence',
+    offenceRoutes.submitDuplicateOffence,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/edit-offence',
     offenceRoutes.getEditOffence,
   )
@@ -1250,7 +1267,12 @@ export default function routes(services: Services): Router {
 
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/select-appeal-outcome',
-    appealsRoutes.subtmitSelectOffenceAppealOutcome,
+    appealsRoutes.submitSelectOffenceAppealOutcome,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-replace-offence',
+    appealsRoutes.getCannotReplaceOffence,
   )
 
   router.get(

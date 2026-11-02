@@ -539,21 +539,37 @@ export default class AppealsRoutes extends BaseRoutes {
     })
   }
 
-  public subtmitSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
+  public submitSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const appealOffenceOutcomeForm = trimForm<AppealOffenceOutcomeForm>(req.body)
-    const { errors, sentenceUuid, offence } = this.offenceService.setOffenceAppealOutcome(
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
       req.session,
-      urlParameters,
-      appealOffenceOutcomeForm,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+      urlParameters.chargeUuid,
     )
+    const { errors, sentenceUuid, offence, hasSentencesAfter, previousOutcomeUuid } =
+      await this.offenceService.setOffenceAppealOutcome(
+        req.session,
+        urlParameters,
+        appealOffenceOutcomeForm,
+        sentenceUuidsInChain,
+        req.user.username,
+      )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('appealOffenceOutcomeForm', { ...appealOffenceOutcomeForm })
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
 
-    if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
+    if (hasSentencesAfter) {
+      return res.redirect(AppealsJourneyUrls.cannotReplaceOffence(urlParameters))
+    }
+
+    if (
+      appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID &&
+      previousOutcomeUuid !== appealOffenceOutcomeForm.offenceOutcome
+    ) {
       return this.initiateOffenceReplacement(
         req,
         urlParameters.nomsId,
@@ -580,6 +596,32 @@ export default class AppealsRoutes extends BaseRoutes {
     }
 
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
+  }
+
+  public getCannotReplaceOffence: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const offence = this.offenceService.getSessionOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.courtCaseReference,
+      urlParameters.chargeUuid,
+    )
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
+    let backLink = AppealsJourneyUrls.recordAppeal(urlParameters)
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    }
+    const backToCourtCasesLink = JourneyUrls.courtCases(urlParameters.nomsId)
+    return res.render('pages/appeals/cannot-replace-offence', {
+      backLink,
+      backToCourtCasesLink,
+      offence,
+      offenceDetails,
+    })
   }
 
   public getUploadAppealOrder: RequestHandler = async (req, res) => {
@@ -679,7 +721,20 @@ export default class AppealsRoutes extends BaseRoutes {
 
   public getConfirmation: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
-    return res.render('pages/appeals/confirmation', urlParameters)
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      urlParameters.appearanceReference,
+      req.user.username,
+    )
+    const hasReplacedOffence = storedAppearance.charges.some(
+      charge => charge.outcome?.outcomeUuid === REPLACEMENT_OUTCOME_UUID,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(storedAppearance.courtCode, req.user.username)
+    return res.render('pages/appeals/confirmation', {
+      ...urlParameters,
+      caseReference: storedAppearance.courtCaseReference,
+      courtDetails,
+      hasReplacedOffence,
+    })
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {
@@ -786,7 +841,11 @@ export default class AppealsRoutes extends BaseRoutes {
       .reduce(
         ([appealedList, nonAppealedList], offence) => {
           const outcome = outcomeMap[offence.outcomeUuid]
-          if (outcome?.outcomeType === 'APPEAL') {
+          if (
+            outcome?.outcomeType === 'APPEAL' ||
+            offence.sentence ||
+            offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID
+          ) {
             return [[...appealedList, offence], nonAppealedList]
           }
           return [appealedList, [...nonAppealedList, offence]]

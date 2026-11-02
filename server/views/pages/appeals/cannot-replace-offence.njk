@@ -1,0 +1,37 @@
+{% extends "../../partials/goToCourtHearingLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
+
+{% set pageTitle = "offence - cannot replace offence" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "The offence you are trying to replace is a part of a consecutive chain.",
+                primaryAction: {
+                    text: "Back to court cases",
+                    href:backToCourtCasesLink,
+                    attributes: {
+                        "data-qa": "continue-button"
+                    }
+                }
+            })%}
+                <p class="govuk-body">The appealed offence is:</p>
+                <p class="govuk-body govuk-!-width-three-quarters" data-qa="offenceDetails">
+                    {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
+                    {% if countDescription %}
+                        {{ countDescription }}<br>
+                    {% endif %}
+                    <strong>{{ offence.offenceCode }} {{ offenceDetails.description}}</strong><br>
+                    {{ offence | offenceDatesText }}
+                </p>
+                <p class="govuk-body">If you replace it, the chain will be broken and the offence information may no longer reflect the warrant correctly.</p>
+                <p class="govuk-body"><span class="govuk-!-font-weight-bold">Before you can continue, you must:</span></p>
+                <ol class="govuk-list govuk-list--number">
+                    <li>Make sure the appealed offence is not linked to another sentence as part of a consecutive chain.</li>
+                    <li>Come back and record the appeal again. </li>
+                </ol>
+            {%- endcall %}
+        </div>
+    </div>
+{% endblock %}

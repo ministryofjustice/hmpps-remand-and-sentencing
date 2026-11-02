@@ -60,6 +60,7 @@ declare module 'models' {
     replacesSentenceUuid?: string
     createChargeOrder?: number
     replicatedFromUuid?: string
+    duplicatedFromUuid?: string
     offenceDateIsSame?: string
     isGeneratedBreachOffence?: string
     findingOfDomesticAbuse?: boolean

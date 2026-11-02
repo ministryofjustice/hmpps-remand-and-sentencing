@@ -6,18 +6,21 @@
 <span data-qa="custodialOffences">
     {% for offence in custodialOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {% set duplicateOffenceActions = [{
-            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/duplicate-offence",
-            text: "Duplicate this offence",
-            attributes: {
-                'data-qa': 'duplicate-offence-link-' + offence.chargeUuid
-            }
-        }] if showDuplicateOffenceLink else [] %}
+        {% set duplicateOffenceLinkHtml %}
+            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offence.chargeUuid }}/duplicate-offence" data-qa="duplicate-offence-link-{{ offence.chargeUuid }}">Duplicate this offence</a>
+        {% endset %}
+
         {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
             consecutiveConcurrentLink: {
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or concurrent'
             },
+            listItems: {
+                classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
+                items: [{
+                    html: duplicateOffenceLinkHtml
+                }]
+            } if showDuplicateOffenceLink,
             actions: {
                 items: [
                     {
@@ -33,7 +36,7 @@
                         text: "Delete",
                         visuallyHiddenText: "delete offence"
                     }
-                ].concat(duplicateOffenceActions)
+                ]
             }
         })) }}
     {% else %}

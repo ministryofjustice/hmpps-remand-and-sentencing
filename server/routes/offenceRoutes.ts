@@ -228,6 +228,15 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      } else if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
+        backLink = AppealsJourneyUrls.selectOffenceAppealOutcome({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid: offence.replacesOffenceUuid,
+        })
       } else {
         backLink = JourneyUrls.sentencingHearing(
           nomsId,

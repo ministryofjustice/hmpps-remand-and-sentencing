@@ -96,6 +96,7 @@ describe('Duplicate offence', () => {
     expect(summary).toContain('PS90037 An offence description')
     expect(summary).toContain('10/05/2023')
     expect(summary).toContain('12/05/2023')
+    expect(summary).not.toContain('Aggravating factors')
 
     // Values come from setUpCurrentCourtAppearance middleware, which the test app doesn't run
     expect($('h2:contains("Hearing details")').length).toBe(1)

@@ -2656,16 +2656,22 @@ export default class OffenceRoutes extends BaseRoutes {
         ),
       )
     }
-    return this.renderEditOffence(req, res, duplicatedOffence.chargeUuid, 'pages/offence/add-offence-details', {
-      showHearingDetails: true,
-      backLink: JourneyUrls.checkOffenceAnswers(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-      ),
-    })
+    return this.renderEditOffence(
+      req,
+      res,
+      duplicatedOffence.chargeUuid,
+      'pages/offence/add-duplicated-offence-details',
+      {
+        showHearingDetails: true,
+        backLink: JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      },
+    )
   }
 
   public submitDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {

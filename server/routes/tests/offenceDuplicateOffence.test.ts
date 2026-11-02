@@ -128,7 +128,7 @@ describe('Duplicate offence', () => {
 
     const html = await new Promise<string>((resolve, reject) => {
       app.render(
-        'pages/offence/add-offence-details',
+        'pages/offence/add-duplicated-offence-details',
         {
           nomsId: 'A1234AB',
           courtCaseReference: '0',

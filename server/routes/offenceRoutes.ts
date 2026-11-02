@@ -886,12 +886,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     let offenceValueForm = (req.flash('offenceValueForm')[0] || {}) as OffenceValueForm
 
-    const offence = this.offenceService.getSessionOffence(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-    )
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
     if (Object.keys(offenceValueForm).length === 0) {
       const { offenceValue, hasOffenceValue } = offence || {}
@@ -920,7 +915,6 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     })
   }
-
 
   public submitOffenceValue: RequestHandler = async (req, res): Promise<void> => {
     const {

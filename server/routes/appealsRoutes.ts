@@ -548,13 +548,14 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
       urlParameters.chargeUuid,
     )
-    const { errors, sentenceUuid, offence, hasSentencesAfter } = await this.offenceService.setOffenceAppealOutcome(
-      req.session,
-      urlParameters,
-      appealOffenceOutcomeForm,
-      sentenceUuidsInChain,
-      req.user.username,
-    )
+    const { errors, sentenceUuid, offence, hasSentencesAfter, previousOutcomeUuid } =
+      await this.offenceService.setOffenceAppealOutcome(
+        req.session,
+        urlParameters,
+        appealOffenceOutcomeForm,
+        sentenceUuidsInChain,
+        req.user.username,
+      )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('appealOffenceOutcomeForm', { ...appealOffenceOutcomeForm })
@@ -565,7 +566,10 @@ export default class AppealsRoutes extends BaseRoutes {
       return res.redirect(AppealsJourneyUrls.cannotReplaceOffence(urlParameters))
     }
 
-    if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
+    if (
+      appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID &&
+      previousOutcomeUuid !== appealOffenceOutcomeForm.offenceOutcome
+    ) {
       return this.initiateOffenceReplacement(
         req,
         urlParameters.nomsId,

@@ -13,7 +13,6 @@ import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
 import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
-import OffenceValuePage from '../pages/offenceValuePage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -377,7 +376,7 @@ Cypress.Commands.add(
     offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
     offenceOffenceOutcomePage.continueButton().click()
 
-    //Passed with feature toggle. Comments to be removed once feature toggle is removed
+    // Passed with feature toggle. Comments to be removed once feature toggle is removed
     // const offenceValuePage = Page.verifyOnPage(OffenceValuePage)
     // offenceValuePage.radioLabelSelector('true').click()
     // offenceValuePage.input().clear()
@@ -527,7 +526,7 @@ Cypress.Commands.add(
     offenceCountNumberPage.input().type(countNumber)
     offenceCountNumberPage.continueButton().click()
 
-    //Passed with feature toggle. Comments to be removed once feature toggle is removed
+    // Passed with feature toggle. Comments to be removed once feature toggle is removed
     // const offenceValuePage = Page.verifyOnPage(OffenceValuePage)
     // offenceValuePage.radioLabelSelector('true').click()
     // offenceValuePage.input().clear()

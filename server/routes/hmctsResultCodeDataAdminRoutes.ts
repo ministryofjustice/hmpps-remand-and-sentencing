@@ -10,7 +10,7 @@ export default function hmctsResultCodeDataAdminRoutes(services: Services): Rout
   router.get('/add', routes.add)
   router.post('/add', routes.submitAdd)
 
-  router.get('/edit/:chargeOutcomeUuid', routes.edit)
-  router.post('/edit/:chargeOutcomeUuid', routes.submitEdit)
+  router.get('/edit/:resultUuid', routes.edit)
+  router.post('/edit/:resultUuid', routes.submitEdit)
   return router
 }

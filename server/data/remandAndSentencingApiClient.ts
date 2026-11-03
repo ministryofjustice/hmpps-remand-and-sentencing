@@ -856,6 +856,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )) as unknown as Promise<HmctsResultCode[]>
   }
 
+  async getHmctsResultCodeById(resultUuid: string, username: string): Promise<HmctsResultCode> {
+    return (await this.get(
+      {
+        path: `/hmcts-result-code/${resultUuid}`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<HmctsResultCode>
+  }
+
   async createHmctsResultCode(
     createHmctsResultCode: CreateHmctsResultCode,
     username: string,
@@ -864,6 +873,20 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: '/hmcts-result-code',
         data: createHmctsResultCode,
+      },
+      asSystem(username),
+    )
+  }
+
+  async updateHmctsResultCode(
+    resultUuid: string,
+    updateHmctsResultCode: CreateHmctsResultCode,
+    username: string,
+  ): Promise<HmctsResultCode> {
+    return this.put(
+      {
+        path: `/hmcts-result-code/${resultUuid}`,
+        data: updateHmctsResultCode,
       },
       asSystem(username),
     )

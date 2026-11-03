@@ -6685,4 +6685,122 @@ export default {
         base64Body: Buffer.from('%PDF-1.4').toString('base64'),
       },
     }),
+
+  stubGetAllHmctsResultCodes: (customResponseBody?): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/hmcts-result-code/status',
+        queryParameters: {
+          statuses: {
+            or: [
+              {
+                equalTo: 'ACTIVE',
+              },
+              {
+                equalTo: 'ACTIVE,INACTIVE',
+              },
+            ],
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: customResponseBody ?? [
+          {
+            resultUuid: 'bff8834a-bb17-4e2b-8336-32505be88c3a',
+            resultName: 'Remanded in custody',
+            resultCode: '3452',
+            outcome: {
+              outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+              outcomeName: 'Remanded in custody',
+              nomisCode: '3452',
+              outcomeType: 'REMAND',
+              displayOrder: 10,
+              dispositionCode: 'INTERIM',
+              status: 'ACTIVE',
+            },
+            status: 'ACTIVE',
+          },
+          {
+            resultUuid: 'd50a4db1-47f8-4fbd-9f7f-be7a4f0eb267',
+            resultName: 'Lie on file',
+            resultCode: '7863',
+            outcome: {
+              outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+              outcomeName: 'Lie on file',
+              nomisCode: '7863',
+              outcomeType: 'NON_CUSTODIAL',
+              displayOrder: 20,
+              dispositionCode: 'INTERIM',
+              status: 'ACTIVE',
+            },
+            status: 'ACTIVE',
+          },
+          {
+            resultUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+            resultName: 'Imprisonment',
+            resultCode: '09753',
+            outcome: {
+              outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+              outcomeName: 'Imprisonment',
+              nomisCode: '09753',
+              outcomeType: 'SENTENCING',
+              displayOrder: 10,
+              dispositionCode: 'FINAL',
+              status: 'ACTIVE',
+            },
+            status: 'ACTIVE',
+          },
+        ],
+      },
+    })
+  },
+
+  stubBadRequestCreateHmctsResultCode: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/remand-and-sentencing-api/hmcts-result-code',
+      },
+      response: {
+        status: 400,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 400,
+          userMessage: 'Failed validation',
+          fieldErrors: [
+            {
+              field: 'resultCode',
+              message: 'resultCode HMCTS result code is already mapped',
+            },
+          ],
+        },
+      },
+    })
+  },
+
+  stubBadRequestUpdateHmctsResultCode: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: '/remand-and-sentencing-api/hmcts-result-code/bff8834a-bb17-4e2b-8336-32505be88c3a',
+      },
+      response: {
+        status: 400,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 400,
+          userMessage: 'Failed validation',
+          fieldErrors: [
+            {
+              field: 'resultCode',
+              message: 'resultCode HMCTS result code is already mapped',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

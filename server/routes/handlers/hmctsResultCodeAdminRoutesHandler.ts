@@ -3,7 +3,6 @@ import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import RefDataService from '../../services/refDataService'
 import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'
 import {
-  CreateChargeOutcome,
   CreateHmctsResultCode,
   FieldErrorErrorResponse,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -79,35 +78,29 @@ export default class HmctsResultCodeAdminRoutesHandler {
     }
   }
 
-  // TODO (CDIA-490): port this logic for HMCTS ResultCode (use ChargeOutcomeAdminRoutesHandler.edit as reference)
   edit = async (req: Request, res: Response) => {
-    const chargeOutcomes = await this.refDataService.getAllUncachedChargeOutcomes(req.user.username)
-    const { chargeOutcomeUuid } = req.params as { chargeOutcomeUuid: string }
-    const existingChargeOutcome = chargeOutcomes.find(chargeOutcome => chargeOutcome.outcomeUuid === chargeOutcomeUuid)
-    const types = new Set(chargeOutcomes.map(outcome => outcome.outcomeType))
-    const dispositionCodes = new Set(chargeOutcomes.map(outcome => outcome.dispositionCode))
-    const statuses: CreateChargeOutcome['status'][] = ['ACTIVE', 'INACTIVE']
-    const updateChargeOutcome = (req.flash('updateHmctsResultCode')[0] || {
-      ...existingChargeOutcome,
-    }) as CreateChargeOutcome
+    const chargeOutcomes = await this.getRelatedChargeOutcomes(req)
+    const statuses: CreateHmctsResultCode['status'][] = ['ACTIVE', 'INACTIVE']
+    const existingHmctsResultCode = await this.getExistingHmctsResultCodeById(req)
+    const updateHmctsResultCode = (req.flash('updateHmctsResultCode')[0] || {
+      ...existingHmctsResultCode,
+    }) as CreateHmctsResultCode
     return res.render('pages/referenceData/hmctsResultCode/edit', {
-      types,
-      dispositionCodes,
+      chargeOutcomes,
       statuses,
-      updateChargeOutcome,
+      updateHmctsResultCode,
       errors: req.flash('errors') || [],
       backLink: ReferenceDataJourneyUrls.viewHmctsResultCodes(),
     })
   }
 
-  // TODO (CDIA-490): port this logic for HMCTS ResultCode (use ChargeOutcomeAdminRoutesHandler.submitEdit as reference)
   submitEdit = async (req: Request, res: Response) => {
-    const { chargeOutcomeUuid } = req.params as { chargeOutcomeUuid: string }
-    const updateChargeOutcome = trimForm<CreateChargeOutcome>(req.body)
+    const { resultUuid } = req.params as { resultUuid: string }
+    const updateHmctsResultCode = trimForm<CreateHmctsResultCode>(req.body)
     try {
-      // await this.refDataService.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, req.user.username)
-      // await this.refDataService.clearChargeOutcomeCache()
-      req.flash('successMessage', 'charge outcome successfully updated')
+      await this.refDataService.updateHmctsResultCode(resultUuid, updateHmctsResultCode, req.user.username)
+      await this.refDataService.clearHmctsResultCodeCache()
+      req.flash('successMessage', 'HMCTS result code successfully updated')
       return res.redirect(ReferenceDataJourneyUrls.viewHmctsResultCodes())
     } catch (e) {
       if (e instanceof SanitisedError) {
@@ -120,8 +113,25 @@ export default class HmctsResultCodeAdminRoutesHandler {
               return { href: `#${fieldError.field}`, text: fieldError.message ?? '' }
             }) ?? [],
           )
-          req.flash('updateHmctsResultCode', { ...updateChargeOutcome })
-          return res.redirect(`/admin/charge-outcomes/edit/${chargeOutcomeUuid}`)
+          req.flash('updateHmctsResultCode', { ...updateHmctsResultCode })
+          return res.redirect(`/admin/hmcts-result-codes/edit/${resultUuid}`)
+        }
+
+        if (this.isRelatedOutComeInputError(sanitisedError)) {
+          req.flash('errors', [
+            {
+              href: '#outcomeUuid',
+              text: 'Related Charge Outcome must be selected. Other inputs might still need to be checked',
+            },
+          ])
+          req.flash('updateHmctsResultCode', { ...updateHmctsResultCode })
+          return res.redirect(`/admin/hmcts-result-codes/edit/${resultUuid}`)
+        }
+
+        if (this.isResultCodeUuidError(sanitisedError)) {
+          req.flash('errors', [{ href: '#resultUuid', text: 'Result Code Uuid already exists' }])
+          req.flash('updateHmctsResultCode', { ...updateHmctsResultCode })
+          return res.redirect(`/admin/hmcts-result-codes/edit/${resultUuid}`)
         }
       }
       throw e
@@ -131,6 +141,15 @@ export default class HmctsResultCodeAdminRoutesHandler {
   private async getRelatedChargeOutcomes(req: Request) {
     const chargeOutcomes = await this.refDataService.getAllUncachedChargeOutcomes(req.user.username)
     return chargeOutcomes.sort((a, b) => a.outcomeName.localeCompare(b.outcomeName))
+  }
+
+  private async getExistingHmctsResultCodeById(req: Request): Promise<CreateHmctsResultCode> {
+    const { resultUuid } = req.params as { resultUuid: string }
+    const existingHmctsResultCode = await this.refDataService.getHmctsResultCodeById(resultUuid, req.user.username)
+    return {
+      ...existingHmctsResultCode,
+      outcomeUuid: existingHmctsResultCode.outcome.outcomeUuid,
+    } as CreateHmctsResultCode
   }
 
   private isRelatedOutComeInputError(e: SanitisedError): boolean {

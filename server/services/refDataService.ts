@@ -274,11 +274,34 @@ export default class RefDataService {
     return this.remandAndSentencingApiClient.getAllHmctsResultCodes(username, 'ACTIVE,INACTIVE')
   }
 
+  async getAllHmctsResultCodes(username: string): Promise<HmctsResultCode[]> {
+    return getOrSetRefDataInCache(this.hmctsResultCodeCacheKey, () =>
+      this.remandAndSentencingApiClient.getAllHmctsResultCodes(username),
+    )
+  }
+
+  async getHmctsResultCodeById(resultUuid: string, username: string): Promise<HmctsResultCode> {
+    const allActiveOutcomes = await this.getAllHmctsResultCodes(username)
+    const resultCode = allActiveOutcomes.find(o => o.resultUuid === resultUuid)
+    if (resultCode) {
+      return resultCode
+    }
+    return this.remandAndSentencingApiClient.getHmctsResultCodeById(resultUuid, username)
+  }
+
   async createHmctsResultCode(
     createHmctsResultCode: CreateHmctsResultCode,
     username: string,
   ): Promise<HmctsResultCode> {
     return this.remandAndSentencingApiClient.createHmctsResultCode(createHmctsResultCode, username)
+  }
+
+  async updateHmctsResultCode(
+    resultUuid: string,
+    updateHmctsResultCode: CreateHmctsResultCode,
+    username: string,
+  ): Promise<HmctsResultCode> {
+    return this.remandAndSentencingApiClient.updateHmctsResultCode(resultUuid, updateHmctsResultCode, username)
   }
 
   async clearHmctsResultCodeCache(): Promise<number | `${number}`> {

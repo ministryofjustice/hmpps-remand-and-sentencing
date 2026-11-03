@@ -1992,6 +1992,10 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
 
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    if (warrantType === 'APPEAL') {
+      offence.updatedOutcome = true
+    }
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-serve-type?invalidatedFrom=${InvalidatedFrom.DELETE_CHAIN}`,
@@ -2029,8 +2033,8 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`
     if (invalidatedFrom) {
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-        const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
         if (warrantType === 'SENTENCING') {
           backLink = JourneyUrls.sentencingHearing(
             nomsId,
@@ -2042,6 +2046,8 @@ export default class OffenceRoutes extends BaseRoutes {
         } else {
           backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
         }
+      } else if (warrantType === 'APPEAL') {
+        backLink = AppealsJourneyUrls.recordAppeal(urlParameters)
       } else {
         backLink = JourneyUrls.checkOffenceAnswers(
           nomsId,

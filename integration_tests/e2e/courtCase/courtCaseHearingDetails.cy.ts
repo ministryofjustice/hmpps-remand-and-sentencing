@@ -12,6 +12,7 @@ import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
 import ErrorPage from '../../pages/error'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
+import OffenceValuePage from '../../pages/offenceValuePage'
 
 context('Court Case Hearing details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -234,6 +235,12 @@ context('Court Case Hearing details Page', () => {
 
       const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
       offenceOffenceCodeConfirmPage.continueButton().click()
+
+      const offenceValuePage = Page.verifyOnPage(OffenceValuePage)
+      offenceValuePage.radioLabelSelector('true').click()
+      offenceValuePage.input().clear()
+      offenceValuePage.input().type('1000')
+      offenceValuePage.continueButton().click()
 
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,

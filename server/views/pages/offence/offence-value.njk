@@ -12,6 +12,8 @@
   {{ govukInput({
     id: "offenceValue",
     name: "offenceValue",
+    value: offenceValueForm.offenceValue,
+    errorMessage: errors | findError('offenceValue'),
     label: {
       text: "Value"
     },

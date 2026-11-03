@@ -375,7 +375,7 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       sentence.hasCountNumber = countNumberForm.hasCountNumber
-      if (countNumberForm.hasCountNumber === 'true') {
+      if (sentence.hasCountNumber === 'true') {
         sentence.countNumber = countNumberForm.countNumber
       } else {
         sentence.countNumber = '-1'
@@ -410,6 +410,7 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
+      offence.hasOffenceValue = offenceValueForm.hasOffenceValue
       offence.offenceValue = offenceValueForm.offenceValue
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

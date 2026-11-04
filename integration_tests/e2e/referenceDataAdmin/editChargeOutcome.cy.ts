@@ -19,7 +19,6 @@ context('Edit charge outcome page', () => {
     editChargeOutcomePage.outcomeNameInput().clear().type('Outcome name')
     editChargeOutcomePage.nomisCodeInput().clear().type('1234')
     editChargeOutcomePage.displayOrderInput().clear().type('50')
-    editChargeOutcomePage.hmctsCodeInput().clear().type('CODE123')
     editChargeOutcomePage.continueButton().click()
     editChargeOutcomePage = Page.verifyOnPage(EditChargeOutcomePage)
     editChargeOutcomePage

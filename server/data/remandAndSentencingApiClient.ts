@@ -51,6 +51,8 @@ import {
   F986EligibleCourtAppearance,
   UnconfirmedCourtCases,
   ConfirmConsecutiveToSentenceFixes,
+  HmctsResultCode,
+  CreateHmctsResultCode,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import logger from '../../logger'
@@ -837,6 +839,54 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: '/sentence/confirm-consecutive-to-sentence-fix',
         data: confirmConsecutiveToSentenceFixes,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getAllHmctsResultCodes(username: string, statuses: string = 'ACTIVE'): Promise<HmctsResultCode[]> {
+    return (await this.get(
+      {
+        path: `/hmcts-result-code/status`,
+        query: {
+          statuses,
+        },
+      },
+      asSystem(username),
+    )) as unknown as Promise<HmctsResultCode[]>
+  }
+
+  async getHmctsResultCodeById(resultUuid: string, username: string): Promise<HmctsResultCode> {
+    return (await this.get(
+      {
+        path: `/hmcts-result-code/${resultUuid}`,
+      },
+      asSystem(username),
+    )) as unknown as Promise<HmctsResultCode>
+  }
+
+  async createHmctsResultCode(
+    createHmctsResultCode: CreateHmctsResultCode,
+    username: string,
+  ): Promise<HmctsResultCode> {
+    return this.post(
+      {
+        path: '/hmcts-result-code',
+        data: createHmctsResultCode,
+      },
+      asSystem(username),
+    )
+  }
+
+  async updateHmctsResultCode(
+    resultUuid: string,
+    updateHmctsResultCode: CreateHmctsResultCode,
+    username: string,
+  ): Promise<HmctsResultCode> {
+    return this.put(
+      {
+        path: `/hmcts-result-code/${resultUuid}`,
+        data: updateHmctsResultCode,
       },
       asSystem(username),
     )

@@ -36,6 +36,10 @@ export type AppearanceOutcome = components['schemas']['CourtAppearanceOutcome']
 
 export type OffenceOutcome = components['schemas']['ChargeOutcome']
 
+export type HmctsResultCode = components['schemas']['HmctsResultCode']
+
+export type CreateHmctsResultCode = components['schemas']['CreateHmctsResultCode']
+
 export type AppearanceType = components['schemas']['AppearanceType']
 
 export type CourtCaseLegacyData = components['schemas']['CourtCaseLegacyData']

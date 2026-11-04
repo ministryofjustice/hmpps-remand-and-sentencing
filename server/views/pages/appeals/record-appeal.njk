@@ -22,6 +22,10 @@
                 {% set offenceId = 'offences.' + offence.index %}
                 {% set recordAppealHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
                 {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+                    consecutiveConcurrentLink: {
+                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
+                            text: 'Select consecutive or concurrent'
+                        },
                     listItems: {
                         classes: 'govuk-!-margin-top-4',
                         items: [

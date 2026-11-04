@@ -123,19 +123,6 @@
   "overrides": {
     "cypress-axe": {
       "cypress": "$cypress"
-    },
-    "js-yaml": "^4.3.2",
-    "moment": "^2.31.0",
-    "proxy-addr": "^2.0.8",
-    "bunyan": {
-      "mv": {
-        "rimraf": {
-          "glob": {
-            "minimatch": "^10.2.6",
-            "brace-expansion": "^5.0.12"
-          }
-        }
-      }
     }
   }
 }

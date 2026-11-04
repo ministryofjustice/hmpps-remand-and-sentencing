@@ -15,6 +15,7 @@ import documentTypes from '../resources/documentTypes'
 import CourtDataIngestionService from '../services/courtDataIngestionService'
 import trimForm from '../utils/trim'
 import CourtDataJourneyUrls from './data/CourtDataJourneyUrls'
+import { NIL_UUID } from '../utils/constants'
 
 export default class CourtDataIngestionRoutes extends BaseRoutes {
   constructor(
@@ -169,6 +170,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       nextCourtAppearanceAccepted: undefined,
       isCommonPlatformJourney: true,
       overallConvictionDateAppliedAll: 'false',
+      courtCode: appearance.courtCode === NIL_UUID ? null : appearance.courtCode,
     } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
     if (req.params.caseId) {

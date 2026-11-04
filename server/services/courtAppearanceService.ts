@@ -1714,6 +1714,9 @@ export default class CourtAppearanceService {
         href: '#withoutAppealHeading',
       })
     }
+    errors.push(
+      ...this.checkOffencesHaveMandatoryFields(session, urlParameters.nomsId, urlParameters.appearanceReference),
+    )
     if (errors.length === 0) {
       courtAppearance.offenceSentenceAccepted = finishedRecordingAppealsForm.finishedRecordAppeal === 'true'
       // eslint-disable-next-line no-param-reassign

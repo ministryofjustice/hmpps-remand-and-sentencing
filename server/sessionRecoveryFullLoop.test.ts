@@ -137,6 +137,16 @@ describe.each([401, 403])('full snapshot/restore loop against a real %i', authFa
     nock.cleanAll()
   })
 
+  beforeAll(() => {
+    if (!nock.isActive()) {
+      nock.activate()
+    }
+  })
+
+  afterAll(() => {
+    nock.restore()
+  })
+
   function nockSystemToken() {
     nock(config.apis.hmppsAuth.url)
       .post('/oauth/token')

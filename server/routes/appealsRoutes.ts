@@ -483,6 +483,7 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters,
       finishedRecordingAppealsForm,
     )
+
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('finishedRecordingAppealsForm', { ...finishedRecordingAppealsForm })

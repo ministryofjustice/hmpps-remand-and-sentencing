@@ -72,6 +72,16 @@ describe('errorHandler.ts vs a real SanitisedError from an API client', () => {
     nock.cleanAll()
   })
 
+  beforeAll(() => {
+    if (!nock.isActive()) {
+      nock.activate()
+    }
+  })
+
+  afterAll(() => {
+    nock.restore()
+  })
+
   function nockSystemToken() {
     nock(config.apis.hmppsAuth.url)
       .post('/oauth/token')

@@ -221,4 +221,46 @@ describe('courtAppearanceService', () => {
       expect(errors.length).toBe(0)
     })
   })
+  describe('validate finish recording appeals', () => {
+    it('cannot submit when offence needs consecutive concurrent selecting', () => {
+      const nomsId = 'P123'
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'APPEAL',
+        offences: [
+          {
+            chargeUuid: '1',
+            updatedOutcome: true,
+          },
+          {
+            chargeUuid: '2',
+            sentence: {
+              sentenceUuid: '2',
+            },
+          },
+        ],
+      } as CourtAppearance
+      const session = {
+        courtAppearances: {
+          [nomsId]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+      const errors = service.finishRecordingAppeals(
+        session,
+        {
+          nomsId,
+          appearanceReference: courtAppearance.appearanceUuid,
+          addOrEditCourtCase: 'edit-court-case',
+          addOrEditCourtAppearance: 'add-court-appearance',
+          courtCaseReference: '1',
+        },
+        { finishedRecordAppeal: 'true' },
+      )
+      expect(errors.length).toBe(1)
+      expect(errors[0]).toStrictEqual({
+        href: '#offences.1',
+        text: 'Select consecutive or concurrent',
+      })
+    })
+  })
 })

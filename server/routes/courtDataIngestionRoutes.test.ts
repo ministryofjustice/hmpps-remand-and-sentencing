@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from './testutils/appSetup'
+import { NIL_UUID } from '../utils/constants'
 
 let app: Express
 
@@ -137,6 +138,46 @@ describe('GET review new documents start', () => {
         expect(defaultServices.courtAppearanceService.clearSessionCourtAppearance).toHaveBeenCalled()
         expect(defaultServices.offenceService.clearAllOffences).toHaveBeenCalled()
         expect(defaultServices.courtAppearanceService.setSessionCourtAppearance).toHaveBeenCalled()
+      })
+  })
+
+  it('sets courtCode to null when appearance courtCode is NIL_UUID', () => {
+    defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue({
+      ...appearance,
+      courtCode: NIL_UUID,
+    } as never)
+
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/start')
+      .expect(302)
+      .expect(() => {
+        expect(defaultServices.courtAppearanceService.setSessionCourtAppearance).toHaveBeenCalledWith(
+          expect.anything(),
+          'A1234AB',
+          expect.objectContaining({
+            courtCode: null,
+          }),
+        )
+      })
+  })
+
+  it('retains courtCode when appearance courtCode is not NIL_UUID', () => {
+    defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue({
+      ...appearance,
+      courtCode: '9b583616-049b-30f9-a14f-028a53b7cfe8',
+    } as never)
+
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/start')
+      .expect(302)
+      .expect(() => {
+        expect(defaultServices.courtAppearanceService.setSessionCourtAppearance).toHaveBeenCalledWith(
+          expect.anything(),
+          'A1234AB',
+          expect.objectContaining({
+            courtCode: '9b583616-049b-30f9-a14f-028a53b7cfe8',
+          }),
+        )
       })
   })
 })

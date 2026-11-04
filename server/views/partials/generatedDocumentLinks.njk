@@ -7,14 +7,12 @@
   }
 ] %}
 
-{% if showGeneratedDocuments %}
-  {% for document in generatedDocuments %}
-    {% if document.eligible %}
-      <li>
-        <a href="/person/{{ nomsId }}/view-generated-documents/type/{{ document.type }}"
-           class="govuk-link govuk-link--no-visited-state"
-           data-qa="view-{{ document.type }}-form-link">{{ document.text }}</a>
-      </li>
-    {% endif %}
-  {% endfor %}
-{% endif %}
+{% for document in generatedDocuments %}
+  {% if document.eligible %}
+    <li>
+      <a href="/person/{{ nomsId }}/view-generated-documents/type/{{ document.type }}"
+         class="govuk-link govuk-link--no-visited-state"
+         data-qa="view-{{ document.type }}-form-link">{{ document.text }}</a>
+    </li>
+  {% endif %}
+{% endfor %}

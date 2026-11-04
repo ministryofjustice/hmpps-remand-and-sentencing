@@ -1312,8 +1312,13 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     if (outcomeAutoApplied) {
       if (outcome.outcomeType === 'SENTENCING') {
+        if (config.featureToggles.chargeValue) {
+          return res.redirect(
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
+          )
+        }
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
         )
       }
       return this.saveSessionOffenceInAppearance(

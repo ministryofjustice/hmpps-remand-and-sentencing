@@ -43,7 +43,7 @@ import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSenten
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
-import { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
+import REPLACEMENT_OUTCOME_UUID, { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
 
 export default class OffenceService {
   constructor(
@@ -1188,6 +1188,30 @@ export default class OffenceService {
     return replicatedOffence
   }
 
+  setSessionDuplicatedOffence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    originalOffence: Offence,
+  ): Offence {
+    const duplicatedOffence: Offence = structuredClone(originalOffence)
+    duplicatedOffence.chargeUuid = crypto.randomUUID()
+    duplicatedOffence.duplicatedFromUuid = originalOffence.chargeUuid
+    delete duplicatedOffence.offenceStartDate
+    delete duplicatedOffence.offenceEndDate
+    if (duplicatedOffence.sentence) {
+      duplicatedOffence.sentence.sentenceUuid = crypto.randomUUID()
+      delete duplicatedOffence.sentence.sentenceServeType
+      delete duplicatedOffence.sentence.consecutiveToSentenceUuid
+      duplicatedOffence.sentence.periodLengths = duplicatedOffence.sentence.periodLengths?.map(periodLength => ({
+        ...periodLength,
+        uuid: crypto.randomUUID(),
+      }))
+    }
+    this.setSessionOffence(session, nomsId, courtCaseReference, duplicatedOffence)
+    return duplicatedOffence
+  }
+
   invalidateFromOffenceDate(
     session: Partial<SessionData>,
     nomsId: string,
@@ -1384,7 +1408,18 @@ export default class OffenceService {
     }
   }
 
-  validateOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
+  validateDuplicatedOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
+    const errors: { text: string; href: string }[] = []
+    if (offence.sentence && !offence.sentence.sentenceServeType) {
+      errors.push({ text: 'You must enter whether this offence is consecutive or concurrent', href: '#' })
+    }
+    return errors.concat(this.validateOffenceMandatoryFields(offence, 'You must enter a committed on date'))
+  }
+
+  validateOffenceMandatoryFields(
+    offence: Offence,
+    offenceDateErrorText: string = 'You must enter the offence date',
+  ): { text: string; href: string }[] {
     const errors: { text: string; href: string }[] = []
     if (!offence.sentence) {
       return errors
@@ -1421,7 +1456,7 @@ export default class OffenceService {
 
     if (!offence.offenceStartDate) {
       errors.push({
-        text: `You must enter the offence date`,
+        text: offenceDateErrorText,
         href: '#',
       })
     }
@@ -1530,11 +1565,13 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  setOffenceAppealOutcome(
+  async setOffenceAppealOutcome(
     session: Partial<SessionData>,
     urlParameters: UrlParameters,
     appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
-  ): {
+    sentenceUuidsInChain: string[],
+    username: string,
+  ): Promise<{
     errors: {
       text?: string
       html?: string
@@ -1542,7 +1579,9 @@ export default class OffenceService {
     }[]
     sentenceUuid: string
     offence: Offence
-  } {
+    hasSentencesAfter: boolean
+    previousOutcomeUuid: string
+  }> {
     const errors = validate(
       appealOffenceOutcomeForm,
       {
@@ -1554,9 +1593,27 @@ export default class OffenceService {
     )
     let sentenceUuid
     let offence
+    let previousOutcomeUuid
     if (errors.length === 0) {
       const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
       offence = this.getOffence(session.offences, id)
+      previousOutcomeUuid = offence.outcomeUuid
+      if (appealOffenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID && offence.sentence) {
+        const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
+          sentenceUuidsInChain,
+          username,
+        )
+        if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
+          return {
+            errors,
+            sentenceUuid,
+            offence,
+            hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance,
+            previousOutcomeUuid,
+          }
+        }
+      }
+
       offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
       offence.updatedOutcome = true
       sentenceUuid = offence.sentence?.sentenceUuid
@@ -1566,6 +1623,6 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return { errors, sentenceUuid, offence }
+    return { errors, sentenceUuid, offence, hasSentencesAfter: false, previousOutcomeUuid }
   }
 }

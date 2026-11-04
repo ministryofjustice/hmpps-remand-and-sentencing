@@ -194,7 +194,6 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'NON_SENTENCING') {
-        // eslint-disable-next-line no-useless-assignment -- always overwritten below; likely missing `else if`
         backLink = JourneyUrls.reviewOffences(
           nomsId,
           addOrEditCourtCase,
@@ -202,8 +201,7 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
-      }
-      if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
+      } else if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
         backLink = AppealsJourneyUrls.selectOffenceAppealOutcome({
           nomsId,
           addOrEditCourtCase,
@@ -230,6 +228,15 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      } else if (warrantType === 'APPEAL' && offence.replacesOffenceUuid) {
+        backLink = AppealsJourneyUrls.selectOffenceAppealOutcome({
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid: offence.replacesOffenceUuid,
+        })
       } else {
         backLink = JourneyUrls.sentencingHearing(
           nomsId,
@@ -1857,6 +1864,10 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
 
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    if (warrantType === 'APPEAL') {
+      offence.updatedOutcome = true
+    }
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-serve-type?invalidatedFrom=${InvalidatedFrom.DELETE_CHAIN}`,
@@ -1894,8 +1905,8 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`
     if (invalidatedFrom) {
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-        const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
         if (warrantType === 'SENTENCING') {
           backLink = JourneyUrls.sentencingHearing(
             nomsId,
@@ -1907,6 +1918,8 @@ export default class OffenceRoutes extends BaseRoutes {
         } else {
           backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
         }
+      } else if (warrantType === 'APPEAL') {
+        backLink = AppealsJourneyUrls.recordAppeal(urlParameters)
       } else {
         backLink = JourneyUrls.checkOffenceAnswers(
           nomsId,
@@ -2617,6 +2630,90 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
+  public loadDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const checkOffenceAnswersUrl = JourneyUrls.checkOffenceAnswers(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+    const originalOffence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    if (!config.featureToggles.multipleOffenceInstances || !originalOffence) {
+      return res.redirect(checkOffenceAnswersUrl)
+    }
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
+    this.offenceService.setSessionDuplicatedOffence(req.session, nomsId, courtCaseReference, originalOffence)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence`,
+    )
+  }
+
+  public getDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const [duplicatedOffence] = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+    if (!config.featureToggles.multipleOffenceInstances || !duplicatedOffence) {
+      return res.redirect(
+        JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+    return this.renderEditOffence(
+      req,
+      res,
+      duplicatedOffence.chargeUuid,
+      'pages/offence/add-duplicated-offence-details',
+      {
+        showHearingDetails: true,
+        backLink: JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      },
+    )
+  }
+
+  public submitDuplicateOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const [duplicatedOffence] = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+    if (config.featureToggles.multipleOffenceInstances && duplicatedOffence) {
+      const errors = this.offenceService.validateDuplicatedOffenceMandatoryFields(duplicatedOffence)
+      if (errors.length > 0) {
+        req.flash('errors', errors)
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence?hasErrors=true`,
+        )
+      }
+      delete duplicatedOffence.duplicatedFromUuid
+      this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+    }
+    return res.redirect(
+      JourneyUrls.checkOffenceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
+  }
+
   public getEditOffence: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -2626,6 +2723,23 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (offence.duplicatedFromUuid) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/duplicate-offence`,
+      )
+    }
+    return this.renderEditOffence(req, res, req.params.chargeUuid)
+  }
+
+  private async renderEditOffence(
+    req,
+    res,
+    chargeUuid: string,
+    template: string = 'pages/offence/edit-offence',
+    overrides: Record<string, unknown> = {},
+  ): Promise<void> {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
@@ -2707,7 +2821,7 @@ export default class OffenceRoutes extends BaseRoutes {
         consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
       }
     }
-    return res.render('pages/offence/edit-offence', {
+    return res.render(template, {
       nomsId,
       courtCaseReference,
       offence,
@@ -2733,10 +2847,11 @@ export default class OffenceRoutes extends BaseRoutes {
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
       isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
       showJudicialFindingsRow: config.featureToggles.judicialFindings,
+      ...overrides,
     })
   }
 
-  public submitEditOffence: RequestHandler = async (req, res): Promise<void> => {
+  public submitEditOffence: RequestHandler = async (req, res, next): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,
@@ -2746,6 +2861,10 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (offence.duplicatedFromUuid) {
+      await this.submitDuplicateOffence(req, res, next)
+      return undefined
+    }
     const errors = this.offenceService.validateOffenceMandatoryFields(offence)
     if (errors.length > 0) {
       req.flash('errors', errors)

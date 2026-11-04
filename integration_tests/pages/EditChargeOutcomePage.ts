@@ -10,6 +10,4 @@ export default class EditChargeOutcome extends Page {
   nomisCodeInput = (): PageElement => cy.get('#nomisCode')
 
   displayOrderInput = (): PageElement => cy.get('#displayOrder')
-
-  hmctsCodeInput = (): PageElement => cy.get('#hmctsCode')
 }

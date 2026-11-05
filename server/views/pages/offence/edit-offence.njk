@@ -288,6 +288,36 @@ outcomeRow] %}
       }
     })) %}
   {% endif %}
+  {% if showOffenceValuesRow %}
+  {% set offenceValueHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-value?submitToEditOffence=true" %}
+
+  {% if offence.hasOffenceValue == 'true' %}
+    {% set offenceValueRow = {
+      key: { text: "Value" },
+      value: {
+        text: "£" + offence.offenceValue
+      },
+      actions: {
+        items: [{
+          href: offenceValueHref,
+          text: "Edit",
+          visuallyHiddenText: "value",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-offence-value-' + chargeUuid
+          }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set offenceValueRow = {
+      key: { text: "Value" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceValueHref + '" data-qa="add-offence-value-' + chargeUuid + '">Add value</a>'
+      }
+    } %}
+  {% endif %}
+  {% endif %}
   {% set aggravatingFactorsList = offence.aggravatingFactors or [] %}
   {% if aggravatingFactorsList.length > 0 %}
     {% set aggHtml %}
@@ -349,10 +379,14 @@ outcomeRow] %}
   {% if isBreachGeneratedOffence %}
     {% set summaryRows = (summaryRows.concat([sentenceTypeRow], periodLengthRows, consecutiveOrConcurrentRows)) %}
   {% else %}
-    {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow], periodLengthRows, [fineAmountRow], consecutiveOrConcurrentRows, [aggravatingFactorsRow])) %}
-    {% if judicialFindingsRow %}
-      {% set summaryRows = (summaryRows.concat(judicialFindingsRow)) %}
-    {% endif %}
+    {% if offenceValueRow %}
+      {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow], periodLengthRows, [fineAmountRow], [offenceValueRow], consecutiveOrConcurrentRows, [aggravatingFactorsRow])) %}
+    {% else %}
+      {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow], periodLengthRows, [fineAmountRow], consecutiveOrConcurrentRows, [aggravatingFactorsRow])) %}
+  {% endif %}
+  {% if judicialFindingsRow %}
+    {% set summaryRows = (summaryRows.concat(judicialFindingsRow)) %}
+  {% endif %}
   {% endif %}
 
 

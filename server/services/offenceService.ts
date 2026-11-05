@@ -24,6 +24,7 @@ import type {
   UpdateOffenceOutcomesForm,
   SelectJudicialFindingsForm,
   AppealOffenceOutcomeForm,
+  OffenceValueForm,
 } from 'forms'
 import type { CourtAppearance, Offence, Sentence, SentenceLength, UrlParameters } from 'models'
 import dayjs from 'dayjs'
@@ -374,7 +375,7 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       sentence.hasCountNumber = countNumberForm.hasCountNumber
-      if (countNumberForm.hasCountNumber === 'true') {
+      if (sentence.hasCountNumber === 'true') {
         sentence.countNumber = countNumberForm.countNumber
       } else {
         sentence.countNumber = '-1'
@@ -384,6 +385,48 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
+    return errors
+  }
+
+  setOffenceValue(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    offenceValueForm: OffenceValueForm,
+  ) {
+    if (!offenceValueForm.hasOffenceValue) {
+      return [
+        {
+          href: '#hasOffenceValue',
+          text: 'You must select an option.',
+        },
+      ]
+    }
+
+    const errors = validate(
+      offenceValueForm,
+      {
+        offenceValue: 'required_if:hasOffenceValue,true|minCurrency|min:0',
+      },
+      {
+        'required_if.offenceValue': 'You must enter a value.',
+        'minCurrency.offenceValue': 'The value must be entered in a valid format, such as £21.34',
+      },
+    )
+
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
+
+      offence.hasOffenceValue = offenceValueForm.hasOffenceValue
+      offence.offenceValue =
+        offenceValueForm.hasOffenceValue === 'true' ? Number(offenceValueForm.offenceValue) : undefined
+
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+
     return errors
   }
 

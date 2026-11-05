@@ -376,6 +376,13 @@ Cypress.Commands.add(
     offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
     offenceOffenceOutcomePage.continueButton().click()
 
+    // Passed with feature toggle. Comments to be removed once feature toggle is removed
+    // const offenceValuePage = Page.verifyOnPage(OffenceValuePage)
+    // offenceValuePage.radioLabelSelector('true').click()
+    // offenceValuePage.input().clear()
+    // offenceValuePage.input().type('1000')
+    // offenceValuePage.continueButton().click()
+
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
@@ -518,6 +525,13 @@ Cypress.Commands.add(
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type(countNumber)
     offenceCountNumberPage.continueButton().click()
+
+    // Passed with feature toggle. Comments to be removed once feature toggle is removed
+    // const offenceValuePage = Page.verifyOnPage(OffenceValuePage)
+    // offenceValuePage.radioLabelSelector('true').click()
+    // offenceValuePage.input().clear()
+    // offenceValuePage.input().type('1000')
+    // offenceValuePage.continueButton().click()
 
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage.dayDateInput('convictionDate').clear()

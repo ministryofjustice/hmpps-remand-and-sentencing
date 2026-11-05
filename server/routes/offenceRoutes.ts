@@ -1358,7 +1358,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
       offenceValueForm = {
         hasOffenceValue,
-        ...(offenceValue ? { offenceValue } : {}),
+        offenceValue,
       }
     }
 

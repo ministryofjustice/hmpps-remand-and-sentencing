@@ -291,7 +291,7 @@ outcomeRow] %}
   {% if showOffenceValuesRow %}
   {% set offenceValueHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-value?submitToEditOffence=true" %}
 
-  {% if offence.hasOffenceValue == 'true' and offence.offenceValue %}
+  {% if offence.hasOffenceValue == 'true' %}
     {% set offenceValueRow = {
       key: { text: "Value" },
       value: {

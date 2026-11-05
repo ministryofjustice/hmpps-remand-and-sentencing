@@ -672,4 +672,33 @@ describe('offenceService', () => {
       ])
     })
   })
+
+  describe('setOffenceValue', () => {
+    it('clears offence value when no is selected', () => {
+      const nomsId = 'P123'
+      const courtCaseReference = '1'
+      const chargeUuid = '1'
+
+      const offence = {
+        chargeUuid,
+        hasOffenceValue: 'true',
+        offenceValue: 1000,
+      } as Offence
+
+      const session = {
+        offences: {
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
+        },
+      } as unknown as Partial<SessionData>
+
+      const errors = service.setOffenceValue(session, nomsId, courtCaseReference, chargeUuid, {
+        hasOffenceValue: 'false',
+        offenceValue: 1000,
+      })
+
+      expect(errors).toEqual([])
+      expect(offence.hasOffenceValue).toBe('false')
+      expect(offence.offenceValue).toBeUndefined()
+    })
+  })
 })

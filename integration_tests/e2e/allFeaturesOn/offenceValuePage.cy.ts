@@ -20,7 +20,7 @@ context('Add Offence Value Page', () => {
 
     offenceValuePage = Page.verifyOnPage(OffenceValuePage)
 
-    offenceValuePage.errorSummary().trimTextContent().should('equal', 'There is a problem You must enter a value.')
+    offenceValuePage.errorSummary().trimTextContent().should('equal', 'There is a problem You must select an option.')
   })
 
   it('selecting yes without entering a value results in error', () => {

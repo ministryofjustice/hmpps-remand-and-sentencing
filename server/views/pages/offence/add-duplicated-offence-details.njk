@@ -228,7 +228,7 @@ outcomeRow] %}
     {% if offence.sentence.fineAmount %}
       {% set fineAmountRow = {
       key: { text: "Fine Amount" },
-      value: { text: "£" + offence.sentence.fineAmount },
+      value: { text: "£" + (offence.sentence.fineAmount | formatDecimal) },
       actions: {
         items: [{
           href: fineAmountHref,

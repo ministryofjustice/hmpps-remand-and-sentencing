@@ -4036,6 +4036,8 @@ export interface components {
       sentenceUuid: string
       countNumber?: string | null
       chargeLegacyData?: components['schemas']['ChargeLegacyData'] | null
+      value?: number | null
+      offenceValue?: number | null
     }
     SentencesToChainToResponse: {
       appearances: components['schemas']['AppearanceToChainTo'][]

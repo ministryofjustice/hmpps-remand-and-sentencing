@@ -23,6 +23,7 @@ import {
   formatDate,
   formatDateLong,
   formatDateTime,
+  formatDecimal,
   formatLengthsWithoutPeriodOrder,
   getAggravatingFactors,
   initialiseName,
@@ -105,6 +106,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('formatDateLong', formatDateLong)
+  njkEnv.addFilter('formatDecimal', formatDecimal)
 
   njkEnv.addFilter('formatDateTime', formatDateTime)
 
@@ -309,7 +311,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
           sentenceTypeMap[offence.sentence?.sentenceTypeId],
           offence.sentence?.legacyData,
         ),
-        fineAmount: offence.sentence?.fineAmount,
+        fineAmount: formatDecimal(offence.sentence?.fineAmount),
+        value: config.featureToggles.chargeValue && offence.sentence ? formatDecimal(offence.offenceValue) : undefined,
         mergedFromCase: offence.mergedFromCase,
         courtDetails: courtMap,
         id: offenceId,

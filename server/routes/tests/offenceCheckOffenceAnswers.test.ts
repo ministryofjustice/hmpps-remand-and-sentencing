@@ -6,6 +6,7 @@ import config from '../../config'
 
 let app: Express
 const originalMultipleOffenceInstances = config.featureToggles.multipleOffenceInstances
+const originalChargeValue = config.featureToggles.chargeValue
 
 const setup = (sentencing = false) => {
   defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
@@ -47,6 +48,7 @@ beforeEach(() => {
 
 afterEach(() => {
   config.featureToggles.multipleOffenceInstances = originalMultipleOffenceInstances
+  config.featureToggles.chargeValue = originalChargeValue
   jest.resetAllMocks()
 })
 
@@ -97,5 +99,97 @@ describe('GET Check offence answers page', () => {
     const $ = cheerio.load(res.text)
     const offenceCardList = $('[data-qa="offenceCardList"]').text()
     expect(offenceCardList).toContain('Add multiple counts')
+  })
+
+  it.each([true, false])(
+    'renders value in offence card only when chargeValue flag is enabled (%s) and offence is sentenced with offenceValue',
+    async enabled => {
+      config.featureToggles.chargeValue = enabled
+      setup(true)
+      defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+        appearanceUuid: '1',
+        warrantType: 'SENTENCING',
+        courtCode: 'CRT',
+        offences: [
+          {
+            chargeUuid: '2',
+            offenceCode: 'O1',
+            outcomeUuid: '3',
+            offenceValue: 1250,
+            hasOffenceValue: 'true',
+            sentence: {
+              sentenceUuid: 's1',
+            },
+          },
+        ],
+      })
+      const res = await request(app)
+        .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+        .expect(200)
+      const $ = cheerio.load(res.text)
+      const valueRow = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row').filter(
+        (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
+      )
+      expect(valueRow.length).toBe(enabled ? 1 : 0)
+      if (enabled) {
+        expect(valueRow.find('.govuk-summary-list__value').text().trim()).toBe('£1250')
+      }
+    },
+  )
+
+  it('should not render value in offence card when sentenced offence has no offenceValue', async () => {
+    config.featureToggles.chargeValue = true
+    setup(true)
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      courtCode: 'CRT',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'O1',
+          outcomeUuid: '3',
+          hasOffenceValue: 'false',
+          sentence: {
+            sentenceUuid: 's1',
+          },
+        },
+      ],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    const valueRow = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row').filter(
+      (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
+    )
+    expect(valueRow.length).toBe(0)
+  })
+
+  it('should not render value in offence card for non-sentencing offence', async () => {
+    config.featureToggles.chargeValue = true
+    setup()
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'NON_SENTENCING',
+      courtCode: 'CRT',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'O1',
+          outcomeUuid: '3',
+          offenceValue: 1250,
+          hasOffenceValue: 'true',
+        },
+      ],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    const valueRow = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row').filter(
+      (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
+    )
+    expect(valueRow.length).toBe(0)
   })
 })

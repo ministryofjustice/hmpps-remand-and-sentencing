@@ -46,9 +46,15 @@
                                                 Count {{sentence.countNumber}}<br>
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
-                                            {% if sentence.offenceStartDate %}
+                                            {% set sentenceValue = (sentence.offenceValue | formatDecimal or sentence.value | formatDecimal) if showOffenceValuesRow %}
+                                            {% if sentence.offenceStartDate or sentenceValue %}
                                                 <br><span class="govuk-hint">
-                                                    {{sentence | offenceDatesText }}
+                                                    {% if sentence.offenceStartDate %}
+                                                        {{sentence | offenceDatesText }}{% if sentenceValue %}<br>{% endif %}
+                                                    {% endif %}
+                                                    {% if sentenceValue %}
+                                                        Value £{{ sentenceValue }}
+                                                    {% endif %}
                                                 </span>
                                             {% endif %}
                                         </label>

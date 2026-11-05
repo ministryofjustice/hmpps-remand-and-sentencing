@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import dayjs from 'dayjs'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import config from '../../config'
 
 let app: Express
 
@@ -145,6 +146,111 @@ describe('GET Sentence consecutive to', () => {
         expect(otherCasesSection.find('input[type="radio"][value="3"]').length).toBe(0)
 
         expect(otherCasesSection.find('input[type="radio"][value="4"]').length).toBe(0)
+      })
+  })
+
+  it('should display recorded monetary value in hint text when chargeValue toggle is enabled', () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'BB6557',
+          offenceStartDate: dayjs('2023-01-12').toDate(),
+          offenceValue: 150.5,
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+          },
+        },
+        {
+          chargeUuid: '4',
+          offenceCode: 'CC12345',
+          offenceStartDate: dayjs('2023-01-15').toDate(),
+          sentence: {
+            sentenceUuid: '5',
+            countNumber: '2',
+          },
+        },
+      ],
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'CC12345',
+      sentence: {
+        sentenceUuid: '2',
+      },
+    })
+    defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({
+      id: 0,
+      code: 'CC12345',
+      description: 'An offence description',
+      offenceType: 'A',
+      revisionId: 0,
+      startDate: dayjs().subtract(10, 'days').format('YYYY-MM-DD'),
+      endDate: dayjs().add(2, 'days').format('YYYY-MM-DD'),
+      changedDate: dayjs().subtract(2, 'days').format('YYYY-MM-DD'),
+      isChild: false,
+    })
+    defaultServices.remandAndSentencingService.getSentencesToChainTo.mockResolvedValue({
+      appearances: [
+        {
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C123',
+          appearanceDate: '2023-03-12',
+          appearanceUuid: '99',
+          sentences: [
+            {
+              offenceCode: 'CC12345',
+              offenceStartDate: '2023-01-12',
+              chargeUuid: '10',
+              sentenceUuid: '10',
+              countNumber: '1',
+              value: 200,
+            },
+            {
+              offenceCode: 'BB6557',
+              offenceStartDate: '2023-01-14',
+              chargeUuid: '11',
+              sentenceUuid: '11',
+              countNumber: '2',
+            },
+          ],
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      CC12345: 'An offence description',
+      BB6557: 'Another offence description',
+    })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+      ACCRYC: 'A court name',
+    })
+    defaultServices.offenceService.getAllOffences.mockReturnValue([])
+
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/sentence-consecutive-to')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const sentence3Hint = $('input[type="radio"][value="3"]').next('label').find('.govuk-hint').text()
+        expect(sentence3Hint).toContain('Committed on 12/01/2023')
+        expect(sentence3Hint).toContain('Value £150.50')
+
+        const sentence5Hint = $('input[type="radio"][value="5"]').next('label').find('.govuk-hint').text()
+        expect(sentence5Hint).toContain('Committed on 15/01/2023')
+        expect(sentence5Hint).not.toContain('Value')
+
+        const sentence10Hint = $('input[type="radio"][value="10"]').next('label').find('.govuk-hint').text()
+        expect(sentence10Hint).toContain('Committed on 12/01/2023')
+        expect(sentence10Hint).toContain('Value £200')
+
+        const sentence11Hint = $('input[type="radio"][value="11"]').next('label').find('.govuk-hint').text()
+        expect(sentence11Hint).toContain('Committed on 14/01/2023')
+        expect(sentence11Hint).not.toContain('Value')
+        config.featureToggles.chargeValue = false
       })
   })
 })

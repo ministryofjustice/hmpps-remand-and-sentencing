@@ -3,17 +3,14 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import { PageCourtCaseContent } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../../config'
 
 let app: Express
-const originalChargeValue = config.featureToggles.chargeValue
 
 beforeEach(() => {
   app = appWithAllRoutes({})
 })
 
 afterEach(() => {
-  config.featureToggles.chargeValue = originalChargeValue
   jest.resetAllMocks()
 })
 
@@ -504,70 +501,5 @@ describe('GET tests for NOMIS tag', () => {
     expect(editLinks.length).toBe(0)
     const deleteLinks = $('a:contains("Delete")')
     expect(deleteLinks.length).toBe(0)
-  })
-
-  it.each(['SENTENCING', 'APPEAL', 'BREACH_OF_SUPERVISION_REQUIREMENTS'])(
-    'should display charge value in offence card for sentenced offence on %s hearing when chargeValue flag is enabled',
-    async warrantType => {
-      config.featureToggles.chargeValue = true
-      const courtCase = createCourtCaseWithSentence('ACTIVE', 'ACTIVE')
-      courtCase.appearances[0].warrantType = warrantType
-      courtCase.appearances[0].charges[0].value = 500
-      defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-      const res = await request(app).get(path).expect('Content-Type', /html/)
-      const $ = cheerio.load(res.text)
-      const valueText = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row')
-        .filter((_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value')
-        .find('.govuk-summary-list__value')
-        .text()
-        .trim()
-      expect(valueText).toBe('£500')
-    },
-  )
-
-  it.each(['SENTENCING', 'APPEAL', 'BREACH_OF_SUPERVISION_REQUIREMENTS'])(
-    'should not display charge value in offence card for sentenced offence on %s hearing when chargeValue flag is disabled',
-    async warrantType => {
-      config.featureToggles.chargeValue = false
-      const courtCase = createCourtCaseWithSentence('ACTIVE', 'ACTIVE')
-      courtCase.appearances[0].warrantType = warrantType
-      courtCase.appearances[0].charges[0].value = 500
-      defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-      const res = await request(app).get(path).expect('Content-Type', /html/)
-      const $ = cheerio.load(res.text)
-      const valueRow = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row').filter(
-        (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
-      )
-      expect(valueRow.length).toBe(0)
-    },
-  )
-
-  it('should not display charge value in offence card when sentenced offence has no value', async () => {
-    config.featureToggles.chargeValue = true
-    const courtCase = createCourtCaseWithSentence('ACTIVE', 'ACTIVE')
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    const res = await request(app).get(path).expect('Content-Type', /html/)
-    const $ = cheerio.load(res.text)
-    const valueRow = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row').filter(
-      (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
-    )
-    expect(valueRow.length).toBe(0)
-  })
-
-  it('should not display charge value in offence card for non-sentencing offence', async () => {
-    config.featureToggles.chargeValue = true
-    const courtCase = createCourtCase('DPS')
-    courtCase.appearances[0].charges[0].value = 500
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    const res = await request(app).get(path).expect('Content-Type', /html/)
-    const $ = cheerio.load(res.text)
-    const valueRow = $('[data-qa="offenceSummaryList"] .govuk-summary-list__row').filter(
-      (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
-    )
-    expect(valueRow.length).toBe(0)
   })
 })

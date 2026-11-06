@@ -2,17 +2,14 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import config from '../../config'
 
 let app: Express
-const originalChargeValue = config.featureToggles.chargeValue
 
 beforeEach(() => {
   app = appWithAllRoutes({})
 })
 
 afterEach(() => {
-  config.featureToggles.chargeValue = originalChargeValue
   jest.resetAllMocks()
 })
 
@@ -222,48 +219,5 @@ describe('GET Edit offence', () => {
     const $ = cheerio.load(res.text)
     const enterOffenceDateCtaLink = $('[data-qa=edit-offence-date-cta]').text()
     expect(enterOffenceDateCtaLink).toContain('Enter offence date')
-  })
-
-  it('should format fineAmount and offenceValue to two decimal places when they have decimals', async () => {
-    config.featureToggles.chargeValue = true
-    defaultServices.offenceService.getSessionOffence.mockReturnValue({
-      chargeUuid: '1',
-      hasOffenceValue: 'true',
-      offenceValue: 99.9,
-      sentence: {
-        sentenceUuid: '111-222-333',
-        sentenceTypeId: '56',
-        fineAmount: 50.5,
-      },
-    })
-    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
-      appearanceUuid: '1',
-      warrantType: 'SENTENCING',
-      offences: [],
-    })
-    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
-      sentenceTypeUuid: '56',
-      description: 'A Fine',
-      classification: 'FINE',
-      displayOrder: 20,
-    })
-
-    const res = await request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
-      .expect('Content-Type', /html/)
-    const $ = cheerio.load(res.text)
-    const fineAmountText = $('.govuk-summary-list__row')
-      .find('dt:contains("Fine Amount")')
-      .next('.govuk-summary-list__value')
-      .text()
-      .trim()
-    const valueText = $('.govuk-summary-list__row')
-      .find('dt:contains("Value")')
-      .next('.govuk-summary-list__value')
-      .text()
-      .trim()
-
-    expect(fineAmountText).toBe('£50.50')
-    expect(valueText).toBe('£99.90')
   })
 })

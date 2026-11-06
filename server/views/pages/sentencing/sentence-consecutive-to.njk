@@ -53,7 +53,7 @@
                                         Count {{ sentence.countNumber }}<br>
                                     {% endif %}
                                     {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
-                                    {% set sentenceValue = (sentence.offenceValue | formatDecimal or sentence.value | formatDecimal) if showOffenceValuesRow %}
+                                    {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
                                     {% if sentence.offenceStartDate or sentenceValue %}
                                         <br><span class="govuk-hint">
                                                 {% if sentence.offenceStartDate %}
@@ -90,7 +90,7 @@
                                                 Count {{ sentence.countNumber }}<br>
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
-                                            {% set sentenceValue = (sentence.offenceValue | formatDecimal or sentence.value | formatDecimal) if showOffenceValuesRow %}
+                                            {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
                                             {% if sentence.offenceStartDate or sentenceValue %}
                                                 <br><span class="govuk-hint">
                                                         {% if sentence.offenceStartDate %}

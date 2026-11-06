@@ -20,6 +20,7 @@ import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
+import OffenceValuePage from '../../pages/offenceValuePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -246,6 +247,10 @@ context('New Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceValuePage = Page.verifyOnPage(OffenceValuePage)
+    offenceValuePage.radioLabelSelector('false').click()
+    offenceValuePage.continueButton().click()
 
     const offenceCountNumber = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumber.radioLabelSelector('true').click()

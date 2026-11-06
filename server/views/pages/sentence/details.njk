@@ -23,7 +23,7 @@
                       sentenceStatus: sentenceDetails.status,
                       consecutiveTo: consecutiveToDetails,
                       sentenceType: sentenceDetails.sentenceType.description | sentenceTypeValueOrLegacy(sentenceDetails.legacyData),
-                      fineAmount: sentenceDetails.fineAmount,
+                      fineAmount: sentenceDetails.fineAmount | formatDecimal,
                       mergedFromCase: sentenceDetails.charge.mergedFromCase,
                       courtDetails: courtMap
                   }) }}

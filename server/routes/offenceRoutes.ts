@@ -915,6 +915,8 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
+    } else if (config.featureToggles.chargeValue) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`
     } else if (offence.sentence?.returnUrlKey) {
       backLink = buildReturnUrlFromKey(
         offence.sentence.returnUrlKey,
@@ -927,8 +929,6 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
-    } else if (config.featureToggles.chargeValue) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`
     }
 
     const offenceHint = await this.getOffenceHint(offence, req.user.username)

@@ -51,8 +51,8 @@ context('Select offence with judicial findings Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
 
-    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1')
-    cy.createSentencedConcurrentOffence('A1234AB', '0', '0', '0', '2')
+    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1')
+    cy.createSentencedConcurrentOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '2')
     const offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
       OffenceCheckOffenceAnswersPage,
       'You have added 2 offence',

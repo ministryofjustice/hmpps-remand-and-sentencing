@@ -12,7 +12,7 @@
   {{ govukInput({
     id: "offenceValue",
     name: "offenceValue",
-    value: offenceValueForm.offenceValue,
+    value: offenceValueForm.offenceValue | formatDecimal,
     errorMessage: errors | findError('offenceValue'),
     label: {
       text: "Value"

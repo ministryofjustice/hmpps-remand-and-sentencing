@@ -98,4 +98,37 @@ describe('GET Check offence answers page', () => {
     const offenceCardList = $('[data-qa="offenceCardList"]').text()
     expect(offenceCardList).toContain('Add multiple counts')
   })
+
+  it.each([
+    [99.9, '£99.90'],
+    [50, '£50'],
+  ])('should format fine amount (%s -> %s) on offence card', async (fineAmount, expectedText) => {
+    setup(true)
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      courtCode: 'CRT',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'O1',
+          outcomeUuid: '3',
+          sentence: {
+            sentenceUuid: 's1',
+            fineAmount,
+          },
+        },
+      ],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    const fineAmountValue = $('[data-qa="custodialOffences"] .govuk-summary-list__row')
+      .filter((_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Fine amount')
+      .find('.govuk-summary-list__value')
+      .text()
+      .trim()
+    expect(fineAmountValue).toEqual(expectedText)
+  })
 })

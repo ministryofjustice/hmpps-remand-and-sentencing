@@ -35,4 +35,38 @@ describe('GET Offence fine amount', () => {
         expect(continueButton).toContain('Continue')
       })
   })
+
+  it('should format decimal fine amount to 2 decimal places in input value', () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceUuid: '2',
+        fineAmount: 99.9,
+      },
+    })
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/fine-amount')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('#fineAmount').val()).toEqual('99.90')
+      })
+  })
+
+  it('should format whole number fine amount without trailing decimals in input value', () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceUuid: '2',
+        fineAmount: 50,
+      },
+    })
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/fine-amount')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('#fineAmount').val()).toEqual('50')
+      })
+  })
 })

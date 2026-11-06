@@ -2,6 +2,7 @@ import type { Sentence, Offence } from 'models'
 import trimForm from './trim'
 import {
   convertToTitleCase,
+  formatDecimal,
   getNextPeriodLengthType,
   initialiseName,
   outcomeValueOrLegacy,
@@ -554,5 +555,22 @@ describe('getSortedDocumentsWithUiDocumentType', () => {
 
     const docOrder = getSortedDocumentsWithUiDocumentType([a, b, c], 'NON_SENTENCING').map(doc => doc.documentUUID)
     expect(docOrder).toEqual([c.documentUUID, b.documentUUID, a.documentUUID])
+  })
+})
+
+describe('formatDecimal', () => {
+  it.each([
+    ['undefined', undefined, undefined],
+    ['null', null, undefined],
+    ['empty string', '', undefined],
+    ['whole number', 50, '50'],
+    ['whole number string', '50', '50'],
+    ['single decimal place number', 99.9, '99.90'],
+    ['single decimal place string', '99.9', '99.90'],
+    ['two decimal places number', 99.95, '99.95'],
+    ['two decimal places string with trailing zero', '99.90', '99.90'],
+    ['non-numeric string', 'bazinga', 'bazinga'],
+  ])('formats %s (%s -> %s)', (_: string, input: number | string | null | undefined, expected: string | undefined) => {
+    expect(formatDecimal(input)).toEqual(expected)
   })
 })

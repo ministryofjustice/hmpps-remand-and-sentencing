@@ -594,6 +594,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink: JourneyUrls.courtCases(nomsId),
       successMessage,
       courtCaseStatusChangeSuccessMessage,
+      showOffenceValuesRow: config.featureToggles.chargeValue,
     })
   }
 

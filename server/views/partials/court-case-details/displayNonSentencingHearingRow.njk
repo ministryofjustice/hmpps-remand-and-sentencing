@@ -126,7 +126,7 @@
                       sentenceStatus: charge.sentence.status if charge.sentence,
                       consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
                       sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
-                      fineAmount: charge.sentence.fineAmount.fineAmount,
+                      fineAmount: charge.sentence.fineAmount.fineAmount | formatDecimal,
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
                       courtDetails: courtMap,

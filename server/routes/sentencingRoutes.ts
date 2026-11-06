@@ -485,6 +485,7 @@ export default class SentencingRoutes extends BaseRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       submitToEditOffence,
       backLink,
+      showOffenceValuesRow: config.featureToggles.chargeValue,
     })
   }
 
@@ -623,6 +624,7 @@ export default class SentencingRoutes extends BaseRoutes {
           offenceEndDate: sessionOffence.offenceEndDate,
           offenceCode: sessionOffence.offenceCode,
           sentenceUuid: sessionOffence.sentence.sentenceUuid,
+          value: sessionOffence.offenceValue,
         } as unknown as SentenceToChainTo
       })
     const sentencedAppearancesOnOtherCases = this.getAppearancesToChainToOnOtherCases(
@@ -651,6 +653,7 @@ export default class SentencingRoutes extends BaseRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       submitQuery,
       backLink,
+      showOffenceValuesRow: config.featureToggles.chargeValue,
     })
   }
 

@@ -4062,6 +4062,7 @@ export interface components {
       countNumber?: string | null
       chargeLegacyData?: components['schemas']['ChargeLegacyData'] | null
       value?: number | null
+      periodLengths?: components['schemas']['PeriodLength'][]
     }
     SentencesToChainToResponse: {
       appearances: components['schemas']['AppearanceToChainTo'][]

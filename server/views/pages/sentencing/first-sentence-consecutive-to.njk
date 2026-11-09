@@ -47,13 +47,20 @@
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
                                             {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
-                                            {% if sentence.offenceStartDate or sentenceValue %}
+                                            {% set periodLengths = sentence.periodLengths | periodLengthsToSentenceLengths %}
+                                            {% set hasPeriodLengths = periodLengths and periodLengths.length %}
+                                            {% if sentence.offenceStartDate or sentenceValue or hasPeriodLengths %}
                                                 <br><span class="govuk-hint">
                                                     {% if sentence.offenceStartDate %}
-                                                        {{sentence | offenceDatesText }}{% if sentenceValue %}<br>{% endif %}
+                                                        {{sentence | offenceDatesText }}{% if sentenceValue or hasPeriodLengths %}<br>{% endif %}
                                                     {% endif %}
                                                     {% if sentenceValue %}
-                                                        Value £{{ sentenceValue }}
+                                                        Value £{{ sentenceValue }}{% if hasPeriodLengths %}<br>{% endif %}
+                                                    {% endif %}
+                                                    {% if hasPeriodLengths %}
+                                                        {% for periodLength in periodLengths %}
+                                                            {{ periodLength | formatLengths }}{% if not loop.last %}<br>{% endif %}
+                                                        {% endfor %}
                                                     {% endif %}
                                                 </span>
                                             {% endif %}

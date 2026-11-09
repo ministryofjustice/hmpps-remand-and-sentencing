@@ -54,6 +54,17 @@ describe('GET First sentence consecutive to', () => {
               sentenceUuid: '1',
               countNumber: '1',
               offenceEndDate: '2023-03-12',
+              periodLengths: [
+                {
+                  years: 3,
+                  months: 0,
+                  weeks: 0,
+                  days: 0,
+                  periodOrder: 'years,months,weeks,days',
+                  periodLengthType: 'SENTENCE_LENGTH',
+                  periodLengthUuid: 'pl-1',
+                },
+              ],
             },
           ],
         },
@@ -79,6 +90,9 @@ describe('GET First sentence consecutive to', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
+        const radioHint = $('input[type="radio"][value="1"]').next('label').find('.govuk-hint').text()
+        expect(radioHint).toContain('Committed on 12/01/2023 to 12/03/2023')
+        expect(radioHint).toContain('3 years 0 months 0 weeks 0 days')
       })
   })
 })

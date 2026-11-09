@@ -1369,13 +1369,23 @@ export default {
                 // eslint-disable-next-line no-template-curly-in-string
                 appearanceUuid: '${json-unit.any-string}',
                 offenceCode: 'PS90037',
-                outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+                outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
                 prisonId: 'MDI',
                 createChargeOrder: 0,
                 aggravatingFactors: [],
                 offenceStartDate: '2022-07-04',
+                chargeUuid: 'afa047e8-cbcd-4f57-ae7f-88cffca94fae',
+              },
+              {
                 // eslint-disable-next-line no-template-curly-in-string
-                chargeUuid: '${json-unit.any-string}',
+                appearanceUuid: '${json-unit.any-string}',
+                offenceCode: 'PS90037',
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+                prisonId: 'MDI',
+                createChargeOrder: 1,
+                aggravatingFactors: [],
+                offenceStartDate: '2022-07-04',
+                chargeUuid: '1dd5a6cf-0594-44b8-bc99-7e45ccf1d1c0',
                 sentence: {
                   chargeNumber: null,
                   periodLengths: [
@@ -5861,7 +5871,7 @@ export default {
               offenceStartDate: '2022-07-04',
               offenceEndDate: null,
               outcome: {
-                outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
                 outcomeName: 'Imprisonment',
                 nomisCode: '1002',
                 outcomeType: 'SENTENCING',
@@ -5901,6 +5911,15 @@ export default {
                 hasRecall: false,
                 status: 'ACTIVE',
               },
+            },
+            {
+              chargeUuid: 'afa047e8-cbcd-4f57-ae7f-88cffca94fae',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2022-07-04',
+              offenceEndDate: null,
+              outcome: null,
+              aggravatingFactors: [],
+              sentence: null,
             },
           ],
           overallConvictionDate: '2023-12-15',

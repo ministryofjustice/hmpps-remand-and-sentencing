@@ -125,28 +125,16 @@ context('Court Case Warrant Date Page', () => {
     it('Run validation and check for appropriate error messages', () => {
       // Latest offence date has been mocked to return 01-01-2000
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('01')
-      courtCaseWarrantDatePage.monthDateInput('warrantDate').type('12')
-      courtCaseWarrantDatePage.yearDateInput('warrantDate').type('1999')
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('31')
+      courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('12')
+      courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('1999')
       courtCaseWarrantDatePage.continueButton().click()
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The hearing date must be after any existing offence dates in the court case',
-        )
-
-      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
-      courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
-      courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2000')
-      courtCaseWarrantDatePage.continueButton().click()
-      courtCaseWarrantDatePage
-        .errorSummary()
-        .trimTextContent()
-        .should(
-          'equal',
-          'There is a problem The hearing date must be after any existing offence dates in the court case',
+          'There is a problem The hearing date must be on or after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
@@ -158,7 +146,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
 
-      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('02')
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2000')
       courtCaseWarrantDatePage.continueButton().click()
@@ -217,7 +205,7 @@ context('Court Case Warrant Date Page', () => {
       editWarrantDate(courtCaseHearingDetailsPage)
 
       const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
-      enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2023')
+      enterWarrantDate(courtCaseWarrantDatePage, '14', '12', '2023')
       expectWarrantDateError(courtCaseWarrantDatePage)
     })
 
@@ -342,7 +330,10 @@ function expectWarrantDateError(page) {
   page
     .errorSummary()
     .trimTextContent()
-    .should('equal', 'There is a problem The hearing date must be after any existing offence dates in the court case')
+    .should(
+      'equal',
+      'There is a problem The hearing date must be on or after any existing offence dates in the court case',
+    )
 }
 
 function expectHearingDateError(page) {

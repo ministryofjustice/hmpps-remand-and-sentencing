@@ -53,6 +53,13 @@ export const formatDateLong = (date?: string | Date): string | null => {
   return dayjs(date).format('D MMMM YYYY')
 }
 
+export const formatDecimal = (value?: number | string | null): string | undefined => {
+  if (value === undefined || value === null || value === '') return undefined
+  const num = Number(value)
+  if (Number.isNaN(num)) return String(value)
+  return Number.isInteger(num) ? String(num) : num.toFixed(2)
+}
+
 export const getAsStringOrDefault = (value: unknown, defaultValue: string): string | null => {
   if (typeof value === 'string') return value
   return defaultValue

@@ -204,6 +204,41 @@ describe('GET Edit offence', () => {
     expect(enterFineAmountCtaLink).toContain('Enter fine amount')
   })
 
+  it.each([
+    [99.9, '£99.90'],
+    [50, '£50'],
+  ])('should render formatted fine amount (%s -> %s) when fine amount is present', async (fineAmount, expectedText) => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceUuid: '111-222-333',
+        sentenceTypeId: '56',
+        fineAmount,
+      },
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      offences: [],
+    })
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
+      sentenceTypeUuid: '56',
+      description: 'A Fine',
+      classification: 'FINE',
+      displayOrder: 20,
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const fineAmountText = $('.govuk-summary-list__row')
+      .filter((_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Fine Amount')
+      .find('.govuk-summary-list__value')
+      .text()
+      .trim()
+    expect(fineAmountText).toEqual(expectedText)
+  })
+
   it('should render offence date cta when no offence dates', async () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',

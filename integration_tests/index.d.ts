@@ -48,5 +48,30 @@ declare namespace Cypress {
       countNumber?: string,
       consecutiveToSelect?: number,
     ): Chainable<AUTWindow>
+    createSentencedOffenceAllFeaturesOn(
+      personId: string,
+      courtCaseReference: string,
+      appearanceReference: string,
+      offenceReference: string,
+      countNumber?: string,
+      offenceValue?: string,
+    ): Chainable<AUTWindow>
+    createSentencedConcurrentOffenceAllFeaturesOn(
+      personId: string,
+      courtCaseReference: string,
+      appearanceReference: string,
+      offenceReference: string,
+      countNumber?: string,
+      offenceValue?: string,
+    ): Chainable<AUTWindow>
+    createSentencedOffenceConsecutiveToAllFeaturesOn(
+      personId: string,
+      courtCaseReference: string,
+      appearanceReference: string,
+      offenceReference: string,
+      countNumber?: string,
+      consecutiveToSelect?: number,
+      offenceValue?: string,
+    ): Chainable<AUTWindow>
   }
 }

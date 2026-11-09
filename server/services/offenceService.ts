@@ -471,6 +471,8 @@ export default class OffenceService {
         }
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
+        delete offence.offenceValue
+        delete offence.hasOffenceValue
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -508,6 +510,8 @@ export default class OffenceService {
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
         delete offence.findingOfDomesticAbuse
+        delete offence.offenceValue
+        delete offence.hasOffenceValue
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -1663,6 +1667,8 @@ export default class OffenceService {
       delete offence.sentence
       delete offence.aggravatingFactors
       delete offence.findingOfDomesticAbuse
+      delete offence.offenceValue
+      delete offence.hasOffenceValue
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

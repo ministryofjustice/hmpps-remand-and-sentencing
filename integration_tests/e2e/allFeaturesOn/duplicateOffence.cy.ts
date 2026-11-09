@@ -65,14 +65,14 @@ context('Duplicate offence with multiple offence instances enabled', () => {
   })
 
   it('displays Duplicate this offence on each custodial offence card when the feature flag is on', () => {
-    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1')
+    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1')
     Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
 
     cy.task('stubSearchSentenceTypes', {
       convictionDate: '2023-05-12',
       offenceDate: '2023-05-10',
     })
-    cy.createSentencedConcurrentOffence('A1234AB', '0', '0', '1', '2')
+    cy.createSentencedConcurrentOffenceAllFeaturesOn('A1234AB', '0', '0', '1', '2')
     const checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 2 offences')
 
     checkOffenceAnswersPage

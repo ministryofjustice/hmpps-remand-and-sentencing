@@ -11,6 +11,7 @@ import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
+import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 
 context('New Sentencing Court Case from hmcts data journey', () => {
   const hearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
@@ -44,13 +45,6 @@ context('New Sentencing Court Case from hmcts data journey', () => {
         sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
         description: 'SDS (Standard Determinate Sentence)',
         classification: 'STANDARD',
-      },
-    ])
-    cy.task('stubGetChargeOutcomesByIds', [
-      {
-        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
-        outcomeName: 'Imprisonment',
-        outcomeType: 'SENTENCING',
       },
     ])
     cy.task('stubGetChargeOutcomeById', {
@@ -194,7 +188,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       ])
     courtCaseTaskListPage.offencesLink().click()
 
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
 
     const expectedSummary: Record<string, string> = {
       'Committed on': '04/07/2022',
@@ -205,6 +199,23 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       'Consecutive or concurrent': 'Forthwith',
     }
     offenceCheckOffenceAnswersPage.custodialOffences().getSummaryList().should('deep.equal', expectedSummary)
+    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    offenceCheckOffenceAnswersPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Update the offence outcome')
+
+    offenceCheckOffenceAnswersPage.updateOutomeLink('afa047e8-cbcd-4f57-ae7f-88cffca94fae').click()
+
+    const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+      OffenceOffenceOutcomePage,
+      'Select the outcome for this offence',
+    )
+    offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
+    offenceOffenceOutcomePage.continueButton().click()
+
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

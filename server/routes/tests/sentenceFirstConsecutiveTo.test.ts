@@ -64,6 +64,15 @@ describe('GET First sentence consecutive to', () => {
                   periodLengthType: 'SENTENCE_LENGTH',
                   periodLengthUuid: 'pl-1',
                 },
+                {
+                  years: 1,
+                  months: 6,
+                  weeks: 0,
+                  days: 0,
+                  periodOrder: 'years,months,weeks,days',
+                  periodLengthType: 'LICENCE_PERIOD',
+                  periodLengthUuid: 'pl-2',
+                },
               ],
             },
           ],
@@ -93,6 +102,7 @@ describe('GET First sentence consecutive to', () => {
         const radioHint = $('input[type="radio"][value="1"]').next('label').find('.govuk-hint').text()
         expect(radioHint).toContain('Committed on 12/01/2023 to 12/03/2023')
         expect(radioHint).toContain('3 years 0 months 0 weeks 0 days')
+        expect(radioHint).not.toContain('1 years 6 months 0 weeks 0 days')
       })
   })
 })

@@ -172,6 +172,17 @@ describe('GET Sentence consecutive to', () => {
                 uuid: 'pl-1',
                 isAlternative: false,
               },
+              {
+                years: '1',
+                months: '0',
+                weeks: '0',
+                days: '0',
+                periodOrder: ['years', 'months', 'weeks', 'days'],
+                periodLengthType: 'LICENCE_PERIOD',
+                description: 'Licence period',
+                uuid: 'pl-2',
+                isAlternative: false,
+              },
             ],
           },
         },
@@ -217,7 +228,16 @@ describe('GET Sentence consecutive to', () => {
                   days: 0,
                   periodOrder: 'years,months,weeks,days',
                   periodLengthType: 'SENTENCE_LENGTH',
-                  periodLengthUuid: 'pl-2',
+                  periodLengthUuid: 'pl-3',
+                },
+                {
+                  years: 1,
+                  months: 2,
+                  weeks: 0,
+                  days: 0,
+                  periodOrder: 'years,months,weeks,days',
+                  periodLengthType: 'LICENCE_PERIOD',
+                  periodLengthUuid: 'pl-4',
                 },
               ],
             },
@@ -256,10 +276,12 @@ describe('GET Sentence consecutive to', () => {
         const sameCaseHint = $('input[type="radio"][value="3"]').next('label').find('.govuk-hint').text()
         expect(sameCaseHint).toContain('Committed on 12/01/2023')
         expect(sameCaseHint).toContain('4 years 5 months 0 weeks 0 days')
+        expect(sameCaseHint).not.toContain('1 years 0 months 0 weeks 0 days')
 
         const otherCaseHint = $('input[type="radio"][value="10"]').next('label').find('.govuk-hint').text()
         expect(otherCaseHint).toContain('Committed on 10/01/2023')
         expect(otherCaseHint).toContain('2 years 6 months 0 weeks 0 days')
+        expect(otherCaseHint).not.toContain('1 years 2 months 0 weeks 0 days')
       })
   })
 })

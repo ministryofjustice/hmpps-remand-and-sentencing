@@ -47,20 +47,17 @@
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
                                             {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
-                                            {% set periodLengths = sentence.periodLengths | periodLengthsToSentenceLengths %}
-                                            {% set hasPeriodLengths = periodLengths and periodLengths.length %}
-                                            {% if sentence.offenceStartDate or sentenceValue or hasPeriodLengths %}
+                                            {% set sentenceLength = sentence.periodLengths | periodLengthsToSentenceLengths | findPeriodLengthByType('SENTENCE_LENGTH') | formatLengths %}
+                                            {% if sentence.offenceStartDate or sentenceValue or sentenceLength %}
                                                 <br><span class="govuk-hint">
                                                     {% if sentence.offenceStartDate %}
-                                                        {{sentence | offenceDatesText }}{% if sentenceValue or hasPeriodLengths %}<br>{% endif %}
+                                                        {{sentence | offenceDatesText }}{% if sentenceValue or sentenceLength %}<br>{% endif %}
                                                     {% endif %}
                                                     {% if sentenceValue %}
-                                                        Value £{{ sentenceValue }}{% if hasPeriodLengths %}<br>{% endif %}
+                                                        Value £{{ sentenceValue }}{% if sentenceLength %}<br>{% endif %}
                                                     {% endif %}
-                                                    {% if hasPeriodLengths %}
-                                                        {% for periodLength in periodLengths %}
-                                                            {{ periodLength | formatLengths }}{% if not loop.last %}<br>{% endif %}
-                                                        {% endfor %}
+                                                    {% if sentenceLength %}
+                                                        {{ sentenceLength }}
                                                     {% endif %}
                                                 </span>
                                             {% endif %}

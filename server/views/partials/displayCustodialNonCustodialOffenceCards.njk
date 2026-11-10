@@ -53,19 +53,50 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-7">Offences with non-custodial outcomes</h2>
 <span data-qa="nonCustodialOffences">
     {% for offence in nonCustodialOffences %}
-        {% if not offence.outcomeId %}
+        {% set offenceId = 'offences.' + offence.index %}
+        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/load-edit-offence",
+                        text: "Edit",
+                        visuallyHiddenText: "edit offence",
+                        attributes: {
+                            'data-qa': 'edit-offence-link-' + offence.chargeUuid
+                        }
+                    },
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
+                        text: "Delete",
+                        visuallyHiddenText: "delete offence"
+                    }
+                ]
+            }
+        })) }}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with non-custodial outcomes.",
+                    classes: "govuk-!-margin-top-2",
+                    attributes: {
+                        'data-qa': 'noNonCustodialOutcomeInset'
+                    }
+        }) }}
+    {% endfor %}
+</span>
+
+{% if nonOutcomeOffences.length %}
+<h2 class="govuk-heading-m govuk-!-margin-top-7">Review offences</h2>
+<span data-qa="nonOutcomeOffences">
+    {% for offence in nonOutcomeOffences %}
         {% set updateOutcomeLink %}
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference}}/offences/{{offence.chargeUuid}}/offence-outcome" data-qa="update-outcome-link-{{offence.chargeUuid}}">Update outcome</a>
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference}}/offences/{{offence.chargeUuid}}/load-edit-offence?updateOutcome=true" data-qa="update-outcome-link-{{offence.chargeUuid}}">Update outcome</a>
         {% endset %}
         {% set listItems = {
-            
-                classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
-                items: [{
-                    html: updateOutcomeLink
-                }]
-            
+            classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
+            items: [{
+                html: updateOutcomeLink
+            }]
         } %}
-        {% endif %}
         {% set offenceId = 'offences.' + offence.index %}
         {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
             actions: {
@@ -87,13 +118,7 @@
             },
             listItems: listItems
         })) }}
-    {% else %}
-        {{ govukInsetText({
-                    text: "There are no offences with non-custodial outcomes.",
-                    classes: "govuk-!-margin-top-2",
-                    attributes: {
-                        'data-qa': 'noNonCustodialOutcomeInset'
-                    }
-        }) }}
     {% endfor %}
 </span>
+{% endif %}
+

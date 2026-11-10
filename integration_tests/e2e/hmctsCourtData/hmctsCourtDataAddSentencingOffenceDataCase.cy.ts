@@ -190,7 +190,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
 
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
 
-    const expectedSummary: Record<string, string> = {
+    const expectedCustodialSummary: Record<string, string> = {
       'Committed on': '04/07/2022',
       'Conviction date': '15/12/2023',
       Outcome: 'Imprisonment',
@@ -198,7 +198,14 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       'Sentence length': '0 years 2 months 0 weeks 0 days',
       'Consecutive or concurrent': 'Forthwith',
     }
-    offenceCheckOffenceAnswersPage.custodialOffences().getSummaryList().should('deep.equal', expectedSummary)
+    offenceCheckOffenceAnswersPage.custodialOffences().getSummaryList().should('deep.equal', expectedCustodialSummary)
+
+    const expectedNonOutcomeSummary: Record<string, string> = {
+      'Committed on': '04/07/2022',
+      Outcome: 'Not entered',
+    }
+    offenceCheckOffenceAnswersPage.nonOutcomeOffences().getSummaryList().should('deep.equal', expectedNonOutcomeSummary)
+
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     offenceCheckOffenceAnswersPage
@@ -216,6 +223,14 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     offenceOffenceOutcomePage.continueButton().click()
 
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
+    const expectedNonCustodialSummary: Record<string, string> = {
+      'Committed on': '04/07/2022',
+      Outcome: 'Lie on file',
+    }
+    offenceCheckOffenceAnswersPage
+      .nonCustodialOffences()
+      .getSummaryList()
+      .should('deep.equal', expectedNonCustodialSummary)
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

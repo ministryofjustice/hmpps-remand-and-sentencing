@@ -2337,13 +2337,18 @@ export default class OffenceRoutes extends BaseRoutes {
       return { ...offence, index }
     })
 
-    const [custodialOffences, nonCustodialOffences] = offences.reduce(
-      ([custodialList, nonCustodialList], offence, index) => {
-        return outcomeMap[offence.outcomeUuid]?.outcomeType === 'SENTENCING'
-          ? [[...custodialList, { ...offence, index }], nonCustodialList]
-          : [custodialList, [...nonCustodialList, { ...offence, index }]]
+    const [custodialOffences, nonCustodialOffences, nonOutcomeOffences] = offences.reduce(
+      ([custodialList, nonCustodialList, nonOutcomeList], offence, index) => {
+        if (!offence.outcomeUuid) {
+          return [custodialList, nonCustodialList, [...nonOutcomeList, { ...offence, index }]]
+        }
+        const outcomeType = outcomeMap[offence.outcomeUuid]?.outcomeType
+        if (outcomeType === 'SENTENCING') {
+          return [[...custodialList, { ...offence, index }], nonCustodialList, nonOutcomeList]
+        }
+        return [custodialList, [...nonCustodialList, { ...offence, index }], nonOutcomeList]
       },
-      [[], []],
+      [[], [], []],
     )
 
     const consecutiveToSentenceMap = this.getConsecutiveToSentenceDetailsMap(
@@ -2370,6 +2375,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offences,
       custodialOffences,
       nonCustodialOffences,
+      nonOutcomeOffences,
       consecutiveToSentenceMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
@@ -2711,6 +2717,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { updateOutcome } = req.query
     this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
@@ -2757,6 +2764,11 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length-interrupt`,
         )
       }
+    }
+    if (updateOutcome) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`,
+      )
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,

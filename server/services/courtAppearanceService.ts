@@ -277,13 +277,12 @@ export default class CourtAppearanceService {
 
     const sessionOffenceDateRaw = this.getLatestOffenceDateInSession(session, nomsId, appearanceUuid)
     const sessionOffenceDate = sessionOffenceDateRaw ? dayjs(sessionOffenceDateRaw) : null
-
     if (
-      (latestOffenceDate && !warrantDate.isAfter(latestOffenceDate)) ||
-      (sessionOffenceDate && !warrantDate.isAfter(sessionOffenceDate))
+      (latestOffenceDate && warrantDate.isBefore(latestOffenceDate)) ||
+      (sessionOffenceDate && warrantDate.isBefore(sessionOffenceDate))
     ) {
       errors.push({
-        text: `The ${warrantOrHearing} date must be after any existing offence dates in the court case`,
+        text: `The ${warrantOrHearing} date must be on or after any existing offence dates in the court case`,
         href: '#warrantDate',
       })
     }

@@ -173,6 +173,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       courtCode: appearance.courtCode === NIL_UUID ? null : appearance.courtCode,
     } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
+    this.offenceService.setSessionOffences(req.session, nomsId, caseId, sessionAppearance.offences)
     if (req.params.caseId) {
       this.courtAppearanceService.addChargesFromPreviousAppearance(
         req.session,

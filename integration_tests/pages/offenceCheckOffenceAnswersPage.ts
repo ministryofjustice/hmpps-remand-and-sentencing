@@ -28,6 +28,8 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
   addMultipleCountsLink = (offenceIndex: string): PageElement =>
     cy.get(`[data-qa="add-multiple-count-link-${offenceIndex}"]`)
 
+  updateOutomeLink = (offenceIndex: string): PageElement => cy.get(`[data-qa="update-outcome-link-${offenceIndex}"]`)
+
   editOffenceLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="edit-offence-link-${chargeUuid}"]`)
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')

@@ -105,4 +105,80 @@ describe('GET First sentence consecutive to', () => {
         expect(radioHint).not.toContain('1 years 6 months 0 weeks 0 days')
       })
   })
+
+  it('should not display imprisonment term hint text when offence does not have a SENTENCE_LENGTH period length', () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
+      offences: [],
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'CC12345',
+      sentence: {
+        sentenceUuid: '2',
+      },
+    })
+    defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({
+      id: 0,
+      code: 'CC12345',
+      description: 'An offence description',
+      offenceType: 'A',
+      revisionId: 0,
+      startDate: dayjs().subtract(10, 'days').format('YYYY-MM-DD'),
+      endDate: dayjs().add(2, 'days').format('YYYY-MM-DD'),
+      changedDate: dayjs().subtract(2, 'days').format('YYYY-MM-DD'),
+      isChild: false,
+    })
+    defaultServices.remandAndSentencingService.getSentencesToChainTo.mockResolvedValue({
+      appearances: [
+        {
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C123',
+          appearanceDate: '2023-03-12',
+          appearanceUuid: '1',
+          sentences: [
+            {
+              offenceCode: 'CC12345',
+              offenceStartDate: '2023-01-12',
+              chargeUuid: '1',
+              sentenceUuid: '1',
+              countNumber: '1',
+              offenceEndDate: '2023-03-12',
+              periodLengths: [
+                {
+                  years: 5,
+                  months: 0,
+                  weeks: 0,
+                  days: 0,
+                  periodOrder: 'years,months,weeks,days',
+                  periodLengthType: 'TARIFF_LENGTH',
+                  periodLengthUuid: 'pl-1',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      CC12345: 'An offence description',
+    })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+      ACCRYC: 'A court name',
+    })
+    return request(app)
+      .get(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/first-sentence-consecutive-to',
+      )
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const radio = $('input[type="radio"][value="1"]')
+        expect(radio.length).toBe(1)
+        const radioHint = radio.next('label').find('.govuk-hint').text().trim()
+        expect(radioHint).toBe('Committed on 12/01/2023 to 12/03/2023')
+        expect(radioHint).not.toContain('5 years')
+      })
+  })
 })

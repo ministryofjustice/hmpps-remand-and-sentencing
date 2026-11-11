@@ -68,6 +68,7 @@ describe('GET Sentence consecutive to', () => {
               chargeUuid: '1',
               sentenceUuid: '1',
               countNumber: '1',
+              periodLengths: [],
             },
             {
               offenceCode: 'BB6557',
@@ -75,6 +76,7 @@ describe('GET Sentence consecutive to', () => {
               chargeUuid: '3',
               sentenceUuid: '4',
               countNumber: '2',
+              periodLengths: [],
             },
           ],
         },
@@ -90,6 +92,7 @@ describe('GET Sentence consecutive to', () => {
               chargeUuid: '2',
               sentenceUuid: '3',
               countNumber: '1',
+              periodLengths: [],
             },
           ],
         },
@@ -282,6 +285,125 @@ describe('GET Sentence consecutive to', () => {
         expect(otherCaseHint).toContain('Committed on 10/01/2023')
         expect(otherCaseHint).toContain('2 years 6 months 0 weeks 0 days')
         expect(otherCaseHint).not.toContain('1 years 2 months 0 weeks 0 days')
+      })
+  })
+
+  it('should not display imprisonment term hint text when offence does not have a SENTENCE_LENGTH period length', () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'BB6557',
+          offenceStartDate: dayjs('2023-01-12').toDate(),
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            periodLengths: [
+              {
+                years: '5',
+                months: '0',
+                weeks: '0',
+                days: '0',
+                periodOrder: ['years', 'months', 'weeks', 'days'],
+                periodLengthType: 'TARIFF_LENGTH',
+                description: 'Tariff length',
+                uuid: 'pl-1',
+                isAlternative: false,
+              },
+            ],
+          },
+        },
+      ],
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'CC12345',
+      sentence: {
+        sentenceUuid: '2',
+      },
+    })
+    defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({
+      id: 0,
+      code: 'CC12345',
+      description: 'An offence description',
+      offenceType: 'A',
+      revisionId: 0,
+      startDate: dayjs().subtract(10, 'days').format('YYYY-MM-DD'),
+      endDate: dayjs().add(2, 'days').format('YYYY-MM-DD'),
+      changedDate: dayjs().subtract(2, 'days').format('YYYY-MM-DD'),
+      isChild: false,
+    })
+    defaultServices.remandAndSentencingService.getSentencesToChainTo.mockResolvedValue({
+      appearances: [
+        {
+          courtCode: 'GHEUTY',
+          courtCaseReference: 'G123',
+          appearanceDate: '2023-03-12',
+          appearanceUuid: '2',
+          sentences: [
+            {
+              offenceCode: 'CC12345',
+              offenceStartDate: '2023-01-10',
+              chargeUuid: '10',
+              sentenceUuid: '10',
+              countNumber: '1',
+              periodLengths: [
+                {
+                  years: 3,
+                  months: 0,
+                  weeks: 0,
+                  days: 0,
+                  periodOrder: 'years,months,weeks,days',
+                  periodLengthType: 'TARIFF_LENGTH',
+                  periodLengthUuid: 'pl-3',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      CC12345: 'An offence description',
+      BB6557: 'Another offence description',
+    })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+      GHEUTY: 'Another court name',
+    })
+    defaultServices.offenceService.getAllOffences.mockReturnValue([
+      {
+        chargeUuid: '1',
+        offenceCode: 'CC12345',
+        sentence: {
+          sentenceUuid: '2',
+        },
+      },
+      {
+        chargeUuid: '2',
+        offenceCode: 'BB6557',
+        sentence: {
+          sentenceUuid: '3',
+        },
+      },
+    ])
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/1/sentence-consecutive-to')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const sameCaseRadio = $('input[type="radio"][value="3"]')
+        expect(sameCaseRadio.length).toBe(1)
+        const sameCaseHint = sameCaseRadio.next('label').find('.govuk-hint').text().trim()
+        expect(sameCaseHint).toBe('Committed on 12/01/2023')
+        expect(sameCaseHint).not.toContain('5 years')
+
+        const otherCaseRadio = $('input[type="radio"][value="10"]')
+        expect(otherCaseRadio.length).toBe(1)
+        const otherCaseHint = otherCaseRadio.next('label').find('.govuk-hint').text().trim()
+        expect(otherCaseHint).toBe('Committed on 10/01/2023')
+        expect(otherCaseHint).not.toContain('3 years')
       })
   })
 })

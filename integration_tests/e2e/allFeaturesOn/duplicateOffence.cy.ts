@@ -197,7 +197,7 @@ context('Duplicate offence with multiple offence instances enabled', () => {
 
     addDuplicatedOffenceDetailsPage.editOffenceDateCta().click()
     const offenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceDatePage.dayDateInput('offenceStartDate').clear().type('15')
+    offenceDatePage.dayDateInput('offenceStartDate').clear().type('13')
     offenceDatePage.monthDateInput('offenceStartDate').clear().type('5')
     offenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
     offenceDatePage.continueButton().click()
@@ -205,7 +205,7 @@ context('Duplicate offence with multiple offence instances enabled', () => {
     Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
     addDuplicatedOffenceDetailsPage.editSummaryList().getSummaryList().should('deep.equal', {
       Offence: 'PS90037 An offence description',
-      'Committed on': '15/05/2023',
+      'Committed on': '13/05/2023',
       Outcome: 'Lie on file',
     })
     addDuplicatedOffenceDetailsPage.editOffenceDateLink().should('be.visible')
@@ -223,7 +223,7 @@ context('Duplicate offence with multiple offence instances enabled', () => {
         },
         {
           offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '15/05/2023',
+          'Committed on': '13/05/2023',
           Outcome: 'Lie on file',
         },
       ])

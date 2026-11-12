@@ -54,7 +54,16 @@
 <span data-qa="nonCustodialOffences">
     {% for offence in nonCustodialOffences %}
         {% set offenceId = 'offences.' + offence.index %}
+        {% set duplicateOffenceLinkHtml %}
+            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offence.chargeUuid }}/duplicate-offence" data-qa="duplicate-offence-link-{{ offence.chargeUuid }}">Duplicate this offence</a>
+        {% endset %}
         {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
+            listItems: {
+                classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
+                items: [{
+                    html: duplicateOffenceLinkHtml
+                }]
+            } if showDuplicateOffenceLink,
             actions: {
                 items: [
                     {

@@ -1456,11 +1456,15 @@ export default class OffenceService {
   }
 
   validateDuplicatedOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
+    const offenceDateErrorText = 'You must enter a committed on date'
+    if (!offence.sentence) {
+      return offence.offenceStartDate ? [] : [{ text: offenceDateErrorText, href: '#' }]
+    }
     const errors: { text: string; href: string }[] = []
-    if (offence.sentence && !offence.sentence.sentenceServeType) {
+    if (!offence.sentence.sentenceServeType) {
       errors.push({ text: 'You must enter whether this offence is consecutive or concurrent', href: '#' })
     }
-    return errors.concat(this.validateOffenceMandatoryFields(offence, 'You must enter a committed on date'))
+    return errors.concat(this.validateOffenceMandatoryFields(offence, offenceDateErrorText))
   }
 
   validateOffenceMandatoryFields(

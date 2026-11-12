@@ -12,6 +12,11 @@ import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
+import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
+import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
+import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
+import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
+import SentenceConsecutiveToPage from '../../pages/sentenceSentenceConsecutiveToPage'
 
 context('New Sentencing Court Case from hmcts data journey', () => {
   const hearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
@@ -33,6 +38,8 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     cy.task('stubUploadDocument')
     cy.task('stubOverallSentenceLengthFail')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-12-15' })
+    cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-12-15' })
+    cy.task('stubHasLoopInChain')
     cy.task('stubGetCourtHearing')
     cy.task('stubDocumentViewed')
     cy.signIn()
@@ -53,6 +60,11 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       outcomeType: 'SENTENCING',
     })
     cy.task('stubGetAppearanceTypeByUuid')
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-12-15',
+      offenceDate: '2022-07-04',
+      age: '58',
+    })
     const landingPage = Page.verifyOnPageTitle(HmctsCourtDataLandingPage, 'Review new documents and add a court case')
     landingPage
       .commonPlatformText()
@@ -188,7 +200,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       ])
     courtCaseTaskListPage.offencesLink().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
 
     const expectedCustodialSummary: Record<string, string> = {
       'Committed on': '04/07/2022',
@@ -200,20 +212,28 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     }
     offenceCheckOffenceAnswersPage.custodialOffences().getSummaryList().should('deep.equal', expectedCustodialSummary)
 
-    const expectedNonOutcomeSummary: Record<string, string> = {
+    const expectedOffencesToReviewSummary: Record<string, string> = {
       'Committed on': '04/07/2022',
-      Outcome: 'Not entered',
+      'Consecutive or concurrent': 'Consecutive',
+      Outcome: 'Imprisonment',
     }
-    offenceCheckOffenceAnswersPage.nonOutcomeOffences().getSummaryList().should('deep.equal', expectedNonOutcomeSummary)
+    offenceCheckOffenceAnswersPage
+      .offencesToReview()
+      .getSummaryList()
+      .should('deep.equal', expectedOffencesToReviewSummary)
 
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     offenceCheckOffenceAnswersPage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Update the offence outcome')
+      .should('equal', 'There is a problem You must update offences with missing information')
 
-    offenceCheckOffenceAnswersPage.updateOutomeLink('afa047e8-cbcd-4f57-ae7f-88cffca94fae').click()
+    const missingOutcomeChargeId = 'afa047e8-cbcd-4f57-ae7f-88cffca94fae'
+    offenceCheckOffenceAnswersPage.missingInformationLink(missingOutcomeChargeId).click()
+
+    let editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    editOffencePage.editFieldLink(missingOutcomeChargeId, 'offence-outcome').click()
 
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,
@@ -222,7 +242,10 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
     offenceOffenceOutcomePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
+    editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    editOffencePage.continueButton().click()
+
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
     const expectedNonCustodialSummary: Record<string, string> = {
       'Committed on': '04/07/2022',
       Outcome: 'Lie on file',
@@ -231,6 +254,42 @@ context('New Sentencing Court Case from hmcts data journey', () => {
       .nonCustodialOffences()
       .getSummaryList()
       .should('deep.equal', expectedNonCustodialSummary)
+
+    const missingSentenceInfoChargeId = 'e15b62d4-1ae9-417d-b442-5c7b768d4d6d'
+    offenceCheckOffenceAnswersPage.missingInformationLink(missingSentenceInfoChargeId).click()
+
+    editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    editOffencePage.editFieldLink(missingSentenceInfoChargeId, 'conviction-date').click()
+
+    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('15')
+    offenceConvictionDatePage.monthDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+    offenceConvictionDatePage.continueButton().click()
+
+    editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    editOffencePage.updateSentencetypeCta().click()
+
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
+    offenceSentenceTypePage.continueButton().click()
+
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+    offencePeriodLengthPage.yearsInput().type('1')
+    offencePeriodLengthPage.monthsInput().type('2')
+    offencePeriodLengthPage.weeksInput().type('3')
+    offencePeriodLengthPage.daysInput().type('4')
+    offencePeriodLengthPage.continueButton().click()
+
+    editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    editOffencePage.editFieldLink(missingSentenceInfoChargeId, 'consecutive-to').click()
+
+    const sentenceConsecutiveToPage = Page.verifyOnPageTitle(SentenceConsecutiveToPage, 'sentence length')
+    sentenceConsecutiveToPage.radioSelector('f092b4ee-80dc-4acf-9813-43f45665119e').click()
+    sentenceConsecutiveToPage.continueButton().click()
+    editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    editOffencePage.continueButton().click()
+
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

@@ -116,10 +116,12 @@ function appSetup(
   production: boolean,
   userSupplier: () => HmppsUser,
   prisoner: PrisonerSearchApiPrisoner,
+  flashImplementation: (message: string) => Array<Record<string, string>>,
 ): Express {
   const app = express()
   const flashProvider = jest.fn()
-  flashProvider.mockReturnValue([])
+  flashProvider.mockImplementation(flashImplementation)
+  // flashProvider.mockReturnValue([])
   app.set('view engine', 'njk')
 
   nunjucksSetup(app, services.applicationInfo)
@@ -158,11 +160,13 @@ export function appWithAllRoutes({
   services = defaultServices,
   userSupplier = () => user,
   prisoner = defaultPrisoner,
+  flashImplementation = () => [],
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => HmppsUser
   prisoner?: PrisonerSearchApiPrisoner
+  flashImplementation?: (message: string) => Array<Record<string, string>>
 }): Express {
-  return appSetup(services as Services, production, userSupplier, prisoner)
+  return appSetup(services as Services, production, userSupplier, prisoner, flashImplementation)
 }

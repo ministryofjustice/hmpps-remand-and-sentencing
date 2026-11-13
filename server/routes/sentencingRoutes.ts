@@ -625,6 +625,7 @@ export default class SentencingRoutes extends BaseRoutes {
           offenceCode: sessionOffence.offenceCode,
           sentenceUuid: sessionOffence.sentence.sentenceUuid,
           value: sessionOffence.offenceValue,
+          periodLengths: sessionOffence.sentence.periodLengths,
         } as unknown as SentenceToChainTo
       })
     const sentencedAppearancesOnOtherCases = this.getAppearancesToChainToOnOtherCases(

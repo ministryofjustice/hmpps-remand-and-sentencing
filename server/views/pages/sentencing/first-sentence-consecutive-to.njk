@@ -47,13 +47,17 @@
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
                                             {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
-                                            {% if sentence.offenceStartDate or sentenceValue %}
+                                            {% set sentenceLength = sentence.periodLengths | periodLengthsToSentenceLengths | findPeriodLengthByType('SENTENCE_LENGTH') | formatLengths %}
+                                            {% if sentence.offenceStartDate or sentenceValue or sentenceLength %}
                                                 <br><span class="govuk-hint">
                                                     {% if sentence.offenceStartDate %}
-                                                        {{sentence | offenceDatesText }}{% if sentenceValue %}<br>{% endif %}
+                                                        {{sentence | offenceDatesText }}{% if sentenceValue or sentenceLength %}<br>{% endif %}
                                                     {% endif %}
                                                     {% if sentenceValue %}
-                                                        Value £{{ sentenceValue }}
+                                                        Value £{{ sentenceValue }}{% if sentenceLength %}<br>{% endif %}
+                                                    {% endif %}
+                                                    {% if sentenceLength %}
+                                                        {{ sentenceLength }}
                                                     {% endif %}
                                                 </span>
                                             {% endif %}

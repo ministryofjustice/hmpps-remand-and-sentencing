@@ -73,6 +73,41 @@ describe('GET Check offence answers page', () => {
     }
   })
 
+  it.each([true, false])(
+    'renders the non-custodial duplicate link only when the flag is enabled: %s',
+    async enabled => {
+      config.featureToggles.multipleOffenceInstances = enabled
+      setup(true)
+      defaultServices.refDataService.getChargeOutcomeMap.mockResolvedValue({
+        '3': {
+          outcomeUuid: '3',
+          outcomeName: 'Fine',
+          displayOrder: 1,
+          dispositionCode: 'FINAL',
+          nomisCode: '1002',
+          outcomeType: 'NON_SENTENCING',
+          status: 'ACTIVE',
+        },
+      })
+
+      const res = await request(app)
+        .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+        .expect(200)
+      const $ = cheerio.load(res.text)
+      const duplicateLink = $('[data-qa="nonCustodialOffences"] [data-qa="duplicate-offence-link-2"]')
+
+      expect($('[data-qa="custodialOffences"] [data-qa="duplicate-offence-link-2"]').length).toBe(0)
+      expect(duplicateLink.length).toBe(enabled ? 1 : 0)
+      if (enabled) {
+        expect(duplicateLink.closest('[data-qa="offenceCardList"]').length).toBe(1)
+        expect(duplicateLink.text().trim()).toBe('Duplicate this offence')
+        expect(duplicateLink.attr('href')).toBe(
+          '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/2/duplicate-offence',
+        )
+      }
+    },
+  )
+
   it('should render page on new journey', async () => {
     setup()
     const res = await request(app)

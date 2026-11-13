@@ -144,6 +144,33 @@ describe('offenceService', () => {
     )
   })
 
+  describe('setSessionDuplicatedOffence for a non-custodial offence', () => {
+    it('copies everything except the offence dates', () => {
+      const originalOffence = {
+        chargeUuid: 'original-charge',
+        offenceCode: 'PS90037',
+        offenceStartDate: new Date('2023-05-10'),
+        offenceEndDate: new Date('2023-05-11'),
+        outcomeUuid: 'non-custodial-outcome',
+      } as Offence
+      const session = { offences: {} } as unknown as Partial<SessionData>
+
+      const duplicate = service.setSessionDuplicatedOffence(session, 'P123', '1', originalOffence)
+
+      expect(duplicate.chargeUuid).not.toBe(originalOffence.chargeUuid)
+      expect(duplicate.duplicatedFromUuid).toBe(originalOffence.chargeUuid)
+      expect(duplicate.offenceCode).toBe('PS90037')
+      expect(duplicate.outcomeUuid).toBe('non-custodial-outcome')
+      expect(duplicate.offenceStartDate).toBeUndefined()
+      expect(duplicate.offenceEndDate).toBeUndefined()
+      expect(duplicate.sentence).toBeUndefined()
+      expect(originalOffence.offenceStartDate).toEqual(new Date('2023-05-10'))
+      expect(service.validateDuplicatedOffenceMandatoryFields(duplicate)).toEqual([
+        { text: 'You must enter a committed on date', href: '#' },
+      ])
+    })
+  })
+
   describe('markSentenceAsActive', () => {
     it('sets the sentence status to ACTIVE and clears any previously stored reason', () => {
       const offence = {
@@ -188,6 +215,18 @@ describe('offenceService', () => {
 
     it('returns no errors when committed on and consecutive or concurrent are entered', () => {
       const offence = { offenceStartDate: new Date(), sentence: completeSentence } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([])
+    })
+
+    it('requires only the committed on date for a non-custodial offence', () => {
+      const offence = { offenceCode: 'PS90037', outcomeUuid: 'outcome' } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
+        { text: 'You must enter a committed on date', href: '#' },
+      ])
+    })
+
+    it('returns no errors for a non-custodial offence with an offence date', () => {
+      const offence = { offenceCode: 'PS90037', outcomeUuid: 'outcome', offenceStartDate: new Date() } as Offence
       expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([])
     })
 

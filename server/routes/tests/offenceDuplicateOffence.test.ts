@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import config from '../../config'
+import type { OffenceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 let app: Express
 const originalMultipleOffenceInstances = config.featureToggles.multipleOffenceInstances
@@ -25,6 +26,43 @@ const originalOffence = {
 } as Offence
 
 const duplicatedOffence = { ...originalOffence, chargeUuid: '5' } as Offence
+
+const nonCustodialOriginalOffence = {
+  chargeUuid: '6',
+  offenceCode: 'PS90037',
+  offenceStartDate: new Date('2023-05-10'),
+  outcomeUuid: '7',
+} as Offence
+
+const nonCustodialDuplicatedOffence = {
+  chargeUuid: '8',
+  offenceCode: 'PS90037',
+  outcomeUuid: '7',
+  duplicatedFromUuid: '6',
+} as Offence
+
+const nonCustodialOutcome: OffenceOutcome = {
+  outcomeUuid: '7',
+  outcomeName: 'Fine',
+  outcomeType: 'NON_SENTENCING',
+  displayOrder: 1,
+  dispositionCode: 'F',
+  nomisCode: '1002',
+  status: 'ACTIVE',
+}
+
+const setUpNonCustodialDuplicatePage = (offence: Offence) => {
+  defaultServices.offenceService.getAllOffences.mockReturnValue([offence])
+  defaultServices.offenceService.getSessionOffence.mockReturnValue(offence)
+  defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+    appearanceUuid: '0',
+    warrantType: 'SENTENCING',
+    offences: [nonCustodialOriginalOffence],
+  })
+  defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ PS90037: 'An offence description' })
+  defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
+  defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue(nonCustodialOutcome)
+}
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -296,5 +334,190 @@ describe('Duplicate offence', () => {
       '0',
     )
     expect(draft.duplicatedFromUuid).toBeUndefined()
+  })
+})
+
+describe('Duplicate offence with a non-custodial outcome', () => {
+  it('creates a draft copy of a non-custodial offence and redirects to the duplicate offence page', async () => {
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(nonCustodialOriginalOffence)
+
+    await request(app)
+      .get(`${baseUrl}/6/duplicate-offence`)
+      .expect(302)
+      .expect('Location', `${baseUrl}/duplicate-offence`)
+
+    expect(defaultServices.offenceService.setSessionDuplicatedOffence).toHaveBeenCalledWith(
+      expect.anything(),
+      'A1234AB',
+      '0',
+      nonCustodialOriginalOffence,
+    )
+  })
+
+  it('pre-enters the offence and outcome but not the committed on date', async () => {
+    setUpNonCustodialDuplicatePage(nonCustodialDuplicatedOffence)
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+    const rowKeys = $('[data-qa="edit-summary-list"] .govuk-summary-list__key')
+      .map((_index, key) => $(key).text().trim())
+      .get()
+    const summary = $('[data-qa="edit-summary-list"]').text()
+
+    expect($('h1').text()).toContain('Add the details for this offence')
+    expect(rowKeys).toEqual(['Offence', 'Committed on', 'Outcome'])
+    expect(summary).toContain('PS90037 An offence description')
+    expect(summary).toContain('Fine')
+    expect(summary).not.toContain('10/05/2023')
+  })
+
+  it('shows an Enter committed on date link that navigates to the offence date page', async () => {
+    setUpNonCustodialDuplicatePage(nonCustodialDuplicatedOffence)
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+    const offenceDateLink = $('[data-qa="edit-offence-date-cta"]')
+
+    expect(offenceDateLink.text().trim()).toBe('Enter committed on date')
+    expect(offenceDateLink.attr('href')).toBe(`${baseUrl}/8/offence-date?submitToEditOffence=true`)
+  })
+
+  it('displays the offence date once entered', async () => {
+    setUpNonCustodialDuplicatePage({ ...nonCustodialDuplicatedOffence, offenceStartDate: new Date('2023-05-11') })
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+
+    expect($('[data-qa="edit-offence-date-cta"]').length).toBe(0)
+    expect($('[data-qa="edit-summary-list"]').text()).toContain('11/05/2023')
+    expect($('[data-qa="edit-offence-date-8"]').attr('href')).toBe(`${baseUrl}/8/offence-date?submitToEditOffence=true`)
+  })
+
+  it('links Edit against the offence and outcome to their pages', async () => {
+    setUpNonCustodialDuplicatePage(nonCustodialDuplicatedOffence)
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+
+    expect($('[data-qa="edit-offence-code-8"]').attr('href')).toBe(`${baseUrl}/8/offence-code?submitToEditOffence=true`)
+    expect($('[data-qa="edit-offence-outcome-8"]').attr('href')).toBe(
+      `${baseUrl}/8/offence-outcome?submitToEditOffence=true`,
+    )
+  })
+
+  it('shows a back link to the previous page and a cancel button to the cancel court case page', async () => {
+    setUpNonCustodialDuplicatePage(nonCustodialDuplicatedOffence)
+
+    const res = await request(app).get(`${baseUrl}/duplicate-offence`).expect(200)
+    const $ = cheerio.load(res.text)
+    const cancelButton = $('[data-qa="cancel-button"]')
+
+    expect($('.govuk-back-link').attr('href')).toBe(`${baseUrl}/check-offence-answers`)
+    expect(cancelButton.text().trim()).toBe('Cancel')
+    expect(cancelButton.attr('href')).toBe(
+      `/person/A1234AB/add-court-case/0/add-court-appearance/0/confirm-cancel-court-case?isHearing=true&returnUrl=${encodeURIComponent(`${baseUrl}/duplicate-offence`)}`,
+    )
+  })
+
+  it('does not save when the offence date has not been entered', async () => {
+    defaultServices.offenceService.getAllOffences.mockReturnValue([nonCustodialDuplicatedOffence])
+    defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([
+      { text: 'You must enter a committed on date', href: '#' },
+    ])
+
+    await request(app)
+      .post(`${baseUrl}/duplicate-offence`)
+      .expect(302)
+      .expect('Location', `${baseUrl}/duplicate-offence?hasErrors=true`)
+
+    expect(defaultServices.courtAppearanceService.addOffence).not.toHaveBeenCalled()
+  })
+
+  it('saves the duplicated non-custodial offence to the appearance', async () => {
+    const draft = { ...nonCustodialDuplicatedOffence, offenceStartDate: new Date('2023-05-11') }
+    defaultServices.offenceService.getAllOffences.mockReturnValue([draft])
+    defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([])
+
+    await request(app)
+      .post(`${baseUrl}/duplicate-offence`)
+      .expect(302)
+      .expect('Location', `${baseUrl}/check-offence-answers`)
+
+    expect(defaultServices.courtAppearanceService.addOffence).toHaveBeenCalledWith(
+      expect.anything(),
+      'A1234AB',
+      '8',
+      { chargeUuid: '8', offenceCode: 'PS90037', outcomeUuid: '7', offenceStartDate: new Date('2023-05-11') },
+      '0',
+    )
+    expect(draft.duplicatedFromUuid).toBeUndefined()
+  })
+
+  it('returns to the duplicate page after changing to another non-custodial outcome', async () => {
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: nonCustodialOutcome,
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue(nonCustodialDuplicatedOffence)
+
+    await request(app)
+      .post(`${baseUrl}/8/offence-outcome?submitToEditOffence=true`)
+      .send({ offenceOutcome: '7' })
+      .expect(302)
+      .expect('Location', `${baseUrl}/8/edit-offence?submitToEditOffence=true`)
+
+    expect(defaultServices.offenceService.setOnFinishGoToEdit).not.toHaveBeenCalled()
+  })
+
+  it('collects the sentence details when the outcome is changed to a custodial outcome', async () => {
+    const originalChargeValue = config.featureToggles.chargeValue
+    config.featureToggles.chargeValue = false
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: { ...nonCustodialOutcome, outcomeUuid: '3', outcomeName: 'Imprisonment', outcomeType: 'SENTENCING' },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue(nonCustodialDuplicatedOffence)
+
+    await request(app)
+      .post(`${baseUrl}/8/offence-outcome?submitToEditOffence=true`)
+      .send({ offenceOutcome: '3' })
+      .expect(302)
+      .expect('Location', `${baseUrl}/8/count-number`)
+
+    expect(defaultServices.offenceService.setOnFinishGoToEdit).toHaveBeenCalledWith(
+      expect.anything(),
+      'A1234AB',
+      '0',
+      '8',
+    )
+    config.featureToggles.chargeValue = originalChargeValue
+  })
+
+  it('does not re-collect sentence details when a custodial duplicate keeps a custodial outcome', async () => {
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: { ...nonCustodialOutcome, outcomeUuid: '3', outcomeName: 'Imprisonment', outcomeType: 'SENTENCING' },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      ...duplicatedOffence,
+      duplicatedFromUuid: originalOffence.chargeUuid,
+    })
+
+    await request(app)
+      .post(`${baseUrl}/5/offence-outcome?submitToEditOffence=true`)
+      .send({ offenceOutcome: '3' })
+      .expect(302)
+      .expect('Location', `${baseUrl}/5/edit-offence?submitToEditOffence=true`)
+
+    expect(defaultServices.offenceService.setOnFinishGoToEdit).not.toHaveBeenCalled()
   })
 })

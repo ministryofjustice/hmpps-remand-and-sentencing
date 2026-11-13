@@ -1385,9 +1385,43 @@ export default {
                 createChargeOrder: 1,
                 aggravatingFactors: [],
                 offenceStartDate: '2022-07-04',
+                chargeUuid: 'e15b62d4-1ae9-417d-b442-5c7b768d4d6d',
+                sentence: {
+                  chargeNumber: '-1',
+                  periodLengths: [
+                    {
+                      days: 4,
+                      weeks: 3,
+                      months: 2,
+                      years: 1,
+                      periodOrder: 'years,months,weeks,days',
+                      type: 'SENTENCE_LENGTH',
+                      // eslint-disable-next-line no-template-curly-in-string
+                      periodLengthUuid: '${json-unit.any-string}',
+                      prisonId: 'MDI',
+                    },
+                  ],
+                  sentenceServeType: 'CONSECUTIVE',
+                  sentenceTypeId: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  prisonId: 'MDI',
+                  sentenceUuid: 'c7099dc3-67e2-4adc-bc50-eb38a9a75f31',
+                  consecutiveToSentenceUuid: 'f092b4ee-80dc-4acf-9813-43f45665119e',
+                  convictionDate: '2023-12-15',
+                  status: 'ACTIVE',
+                },
+              },
+              {
+                // eslint-disable-next-line no-template-curly-in-string
+                appearanceUuid: '${json-unit.any-string}',
+                offenceCode: 'PS90037',
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+                prisonId: 'MDI',
+                createChargeOrder: 2,
+                aggravatingFactors: [],
+                offenceStartDate: '2022-07-04',
                 chargeUuid: '1dd5a6cf-0594-44b8-bc99-7e45ccf1d1c0',
                 sentence: {
-                  chargeNumber: null,
+                  chargeNumber: '-1',
                   periodLengths: [
                     {
                       months: 2,
@@ -5883,7 +5917,7 @@ export default {
               aggravatingFactors: [],
               sentence: {
                 sentenceUuid: 'f092b4ee-80dc-4acf-9813-43f45665119e',
-                chargeNumber: null,
+                chargeNumber: '-1',
                 periodLengths: [
                   {
                     years: null,
@@ -5905,6 +5939,36 @@ export default {
                   displayOrder: 10,
                 },
                 convictionDate: '2023-12-15',
+                fineAmount: null,
+                legacyData: null,
+                consecutiveToSentenceUuid: null,
+                hasRecall: false,
+                status: 'ACTIVE',
+              },
+            },
+            {
+              chargeUuid: 'e15b62d4-1ae9-417d-b442-5c7b768d4d6d',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2022-07-04',
+              offenceEndDate: null,
+              outcome: {
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+                outcomeName: 'Imprisonment',
+                nomisCode: '1002',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+                hmctsCode: 'IMP',
+                status: 'ACTIVE',
+              },
+              aggravatingFactors: [],
+              sentence: {
+                sentenceUuid: 'c7099dc3-67e2-4adc-bc50-eb38a9a75f31',
+                chargeNumber: '-1',
+                periodLengths: [],
+                sentenceServeType: 'CONSECUTIVE',
+                sentenceType: null,
+                convictionDate: null,
                 fineAmount: null,
                 legacyData: null,
                 consecutiveToSentenceUuid: null,

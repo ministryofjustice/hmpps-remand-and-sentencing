@@ -28,7 +28,8 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
   addMultipleCountsLink = (offenceIndex: string): PageElement =>
     cy.get(`[data-qa="add-multiple-count-link-${offenceIndex}"]`)
 
-  updateOutomeLink = (offenceIndex: string): PageElement => cy.get(`[data-qa="update-outcome-link-${offenceIndex}"]`)
+  missingInformationLink = (offenceIndex: string): PageElement =>
+    cy.get(`[data-qa="missing-information-link-${offenceIndex}"]`)
 
   editOffenceLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="edit-offence-link-${chargeUuid}"]`)
 
@@ -48,7 +49,7 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
 
   custodialOffences = (): PageElement => cy.get('[data-qa="custodialOffences"]')
 
-  nonOutcomeOffences = (): PageElement => cy.get('[data-qa="nonOutcomeOffences"]')
+  offencesToReview = (): PageElement => cy.get('[data-qa="offencesToReview"]')
 
   noNonCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noNonCustodialOutcomeInset"]')
 

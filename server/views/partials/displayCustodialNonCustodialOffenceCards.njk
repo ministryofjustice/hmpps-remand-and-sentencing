@@ -1,6 +1,35 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 
+{% if offencesToReview.length %}
+<h2 class="govuk-heading-m govuk-!-margin-top-7">Review offences</h2>
+<span data-qa="offencesToReview">
+    {% for offence in offencesToReview %}
+        {% set missingInfoLink %}
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference}}/offences/{{offence.chargeUuid}}/load-edit-offence" data-qa="missing-information-link-{{offence.chargeUuid}}">Update missing information</a>
+        {% endset %}
+        {% set listItems = {
+            classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
+            items: [{
+                html: missingInfoLink
+            }]
+        } %}
+        {% set offenceId = 'offences.' + offence.index %}
+        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
+                        text: "Delete",
+                        visuallyHiddenText: "delete offence"
+                    }
+                ]
+            },
+            listItems: listItems
+        })) }}
+    {% endfor %}
+</span>
+{% endif %}
 
 <h2 class="govuk-heading-m">Offences with custodial outcomes</h2>
 <span data-qa="custodialOffences">
@@ -84,41 +113,4 @@
     {% endfor %}
 </span>
 
-{% if nonOutcomeOffences.length %}
-<h2 class="govuk-heading-m govuk-!-margin-top-7">Review offences</h2>
-<span data-qa="nonOutcomeOffences">
-    {% for offence in nonOutcomeOffences %}
-        {% set updateOutcomeLink %}
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference}}/offences/{{offence.chargeUuid}}/load-edit-offence?updateOutcome=true" data-qa="update-outcome-link-{{offence.chargeUuid}}">Update outcome</a>
-        {% endset %}
-        {% set listItems = {
-            classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
-            items: [{
-                html: updateOutcomeLink
-            }]
-        } %}
-        {% set offenceId = 'offences.' + offence.index %}
-        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, {}, errors, {
-            actions: {
-                items: [
-                    {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/load-edit-offence",
-                        text: "Edit",
-                        visuallyHiddenText: "edit offence",
-                        attributes: {
-                            'data-qa': 'edit-offence-link-' + offence.chargeUuid
-                        }
-                    },
-                    {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
-                        text: "Delete",
-                        visuallyHiddenText: "delete offence"
-                    }
-                ]
-            },
-            listItems: listItems
-        })) }}
-    {% endfor %}
-</span>
-{% endif %}
 

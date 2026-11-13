@@ -34,6 +34,8 @@ import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
+import config from '../config'
+import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -472,6 +474,7 @@ export default class AppealsRoutes extends BaseRoutes {
       courtMap,
       consecutiveToSentenceMap,
       errors: req.flash('errors') || [],
+      outcomeBanner: req.flash('outcomeBanner')[0],
     })
   }
 
@@ -549,7 +552,7 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
       urlParameters.chargeUuid,
     )
-    const { errors, sentenceUuid, offence, hasSentencesAfter, previousOutcomeUuid } =
+    const { errors, sentenceUuid, offence, hasSentencesAfter, previousOutcomeUuid, replacedOutcomeChanged, outcome } =
       await this.offenceService.setOffenceAppealOutcome(
         req.session,
         urlParameters,
@@ -584,6 +587,38 @@ export default class AppealsRoutes extends BaseRoutes {
       )
     }
 
+    if (outcome.outcomeType === 'SENTENCING') {
+      this.offenceService.setSentenceReturnUrlKey(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.courtCaseReference,
+        urlParameters.chargeUuid,
+        'selectOffenceAppealOutcome',
+      )
+      if (config.featureToggles.chargeValue) {
+        return res.redirect(
+          OffenceJourneyUrls.offenceValue(
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
+            urlParameters.chargeUuid,
+          ),
+        )
+      }
+      return res.redirect(
+        OffenceJourneyUrls.countNumber(
+          urlParameters.nomsId,
+          urlParameters.addOrEditCourtCase,
+          urlParameters.courtCaseReference,
+          urlParameters.addOrEditCourtAppearance,
+          urlParameters.appearanceReference,
+          urlParameters.chargeUuid,
+        ),
+      )
+    }
+
     this.saveAllOffencesToAppearance(
       req.session,
       urlParameters.nomsId,
@@ -591,7 +626,12 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.courtCaseReference,
       offence,
     )
-
+    if (replacedOutcomeChanged) {
+      req.flash('outcomeBanner', {
+        title: 'The outcome has been changed',
+        message: 'You must now delete the sentence that was associated with the changed outcome.',
+      })
+    }
     if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
       return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
     }
@@ -896,6 +936,7 @@ export default class AppealsRoutes extends BaseRoutes {
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
+      outcomeBanner: req.flash('outcomeBanner')[0],
       showEditHearingDate,
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
     })

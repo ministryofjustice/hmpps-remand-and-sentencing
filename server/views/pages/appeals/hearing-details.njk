@@ -126,7 +126,16 @@
           }) }}
       {% endif %}
       <h1 class="govuk-heading-l">Edit hearing</h1>
-
+      {% if outcomeBanner %}
+        {% call govukNotificationBanner({
+            type: "success"
+        }) %}
+            <h3 class="govuk-notification-banner__heading">
+                {{ outcomeBanner.title }}
+            </h3>
+            <p class="govuk-body">{{ outcomeBanner.message }}</p>
+        {% endcall %}
+      {% endif %}
       {% if mergedFromText %}
         {{ govukInsetText({
           text: mergedFromText,

@@ -46,4 +46,26 @@ export default class OffenceJourneyUrls {
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/inactive-offence${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
   }
+
+  static offenceValue = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/offence-value`
+  }
+
+  static countNumber = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/count-number`
+  }
 }

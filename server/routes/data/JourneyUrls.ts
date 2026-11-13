@@ -1,4 +1,5 @@
 import type { UrlParameters } from 'models'
+import AppealsJourneyUrls from './AppealsJourneyUrls'
 
 export default class JourneyUrls {
   static updateOffenceOutcome = (
@@ -588,6 +589,22 @@ export const urlMapByName = {
       chargeUuid,
       submitToEditOffence,
     ),
+  selectOffenceAppealOutcome: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+  ) =>
+    AppealsJourneyUrls.selectOffenceAppealOutcome({
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference: courtCaseUuid,
+      addOrEditCourtAppearance,
+      appearanceReference: courtAppearanceUuid,
+      chargeUuid,
+    }),
 }
 
 export type ReturnKey = keyof typeof urlMapByName

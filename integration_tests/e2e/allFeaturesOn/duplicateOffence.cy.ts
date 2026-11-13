@@ -235,13 +235,17 @@ context('Duplicate offence with multiple offence instances enabled', () => {
       .and('have.text', 'Duplicate this offence')
       .click()
 
-    const addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    let addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
     addDuplicatedOffenceDetailsPage.editSummaryList().getSummaryList().should('deep.equal', {
       Offence: 'PS90037 An offence description',
       'Committed on': 'Enter committed on date',
       Outcome: 'Lie on file',
     })
     addDuplicatedOffenceDetailsPage.editOffenceDateCta().should('be.visible')
+
+    addDuplicatedOffenceDetailsPage.continueButton().click()
+    addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    addDuplicatedOffenceDetailsPage.errorSummary().should('contain', 'You must enter a committed on date')
 
     addDuplicatedOffenceDetailsPage.backLink().click()
     checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')

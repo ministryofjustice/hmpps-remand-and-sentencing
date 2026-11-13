@@ -63,7 +63,7 @@ describe('GET Review offence answers page', () => {
     expect(addAnotherButton).toContain('Add an offence')
   })
 
-  it('should render add multiple counts link in offence card after updating outcome', async () => {
+  it('should render duplicate this offence link in offence card after updating outcome', async () => {
     app = appWithAllRoutes({})
     setup()
     const res = await request(app)
@@ -71,6 +71,6 @@ describe('GET Review offence answers page', () => {
       .expect('Content-Type', /html/)
     const $ = cheerio.load(res.text)
     const offenceCardList = $('[data-qa="offenceCardList"]').text()
-    expect(offenceCardList).toContain('Add multiple counts')
+    expect(offenceCardList).toContain('Duplicate this offence')
   })
 })

@@ -63,6 +63,7 @@ import DocumentManagementService from '../services/documentManagementService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
 import config from '../config'
+import { SuccessNotificationEnum } from './data/SuccessNotificationTypes'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -2692,6 +2693,19 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
       if (warrantType === 'APPEAL') {
+        if (deletedOffence.outcomeUuid === REPLACEMENT_OUTCOME_UUID) {
+          req.flash('successNotificationBanner', {
+            type: SuccessNotificationEnum.REPLACED_OUTCOME_DELETED,
+            title: 'The outcome has been deleted',
+            message: 'You must now delete the sentence that was associated with the deleted outcome.',
+          })
+        } else {
+          req.flash('successNotificationBanner', {
+            type: SuccessNotificationEnum.OFFENCE_DELETED,
+            title: 'This offence has been deleted.',
+            message: `${offenceDetails.code} ${offenceDetails.description}`,
+          })
+        }
         return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
 

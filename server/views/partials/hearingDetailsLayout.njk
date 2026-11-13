@@ -3,6 +3,7 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "../components/offenceSummaryRow/macro.njk" import offenceSummaryRow %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% set offenceDetailHtml %}
     <dl class="offences-summary-card-content">
@@ -39,6 +40,23 @@
 {% endif %}
 
 {% block hearingContent %}
+    {% if successNotificationBanner %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-full">
+            {% call govukNotificationBanner({
+            type: "success",
+            attributes: {
+                'data-qa': 'successNotificationBanner'
+            }
+        }) %}
+            <h3 class="govuk-notification-banner__heading">
+                {{ successNotificationBanner.title }}
+            </h3>
+            <p class="govuk-body">{{ successNotificationBanner.message }}</p>
+        {% endcall %}
+        </div>
+    </div>
+    {% endif %}
     <div class="govuk-grid-row govuk-!-margin-top-4" data-qa="page-content">
         <div class="govuk-grid-column-two-thirds">
             {% block pageContent %}{% endblock %}

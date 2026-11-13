@@ -36,6 +36,7 @@ import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import config from '../config'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
+import { SuccessNotificationEnum } from './data/SuccessNotificationTypes'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -474,7 +475,7 @@ export default class AppealsRoutes extends BaseRoutes {
       courtMap,
       consecutiveToSentenceMap,
       errors: req.flash('errors') || [],
-      outcomeBanner: req.flash('outcomeBanner')[0],
+      successNotificationBanner: req.flash('successNotificationBanner')[0],
     })
   }
 
@@ -627,7 +628,8 @@ export default class AppealsRoutes extends BaseRoutes {
       offence,
     )
     if (replacedOutcomeChanged) {
-      req.flash('outcomeBanner', {
+      req.flash('successNotificationBanner', {
+        type: SuccessNotificationEnum.REPLACED_OUTCOME_CHANGED,
         title: 'The outcome has been changed',
         message: 'You must now delete the sentence that was associated with the changed outcome.',
       })
@@ -935,8 +937,7 @@ export default class AppealsRoutes extends BaseRoutes {
       hasActiveSentence: hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
-      deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
-      outcomeBanner: req.flash('outcomeBanner')[0],
+      successNotificationBanner: req.flash('successNotificationBanner')[0],
       showEditHearingDate,
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
     })

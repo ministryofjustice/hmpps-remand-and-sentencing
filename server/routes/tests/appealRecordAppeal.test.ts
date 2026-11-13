@@ -91,7 +91,7 @@ describe('GET Record appeal', () => {
   it('should display when outcome change has happened', async () => {
     app = appWithAllRoutes({
       flashImplementation: message => {
-        if (message === 'outcomeBanner') {
+        if (message === 'successNotificationBanner') {
           return [
             {
               title: 'The outcome has been changed',
@@ -106,7 +106,7 @@ describe('GET Record appeal', () => {
       .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/appeals/record-appeal')
       .expect('Content-Type', /html/)
     const $ = cheerio.load(res.text)
-    const outcomeNotificationBanner = $('[data-qa="outcomeNotificationBanner"]').text()
+    const outcomeNotificationBanner = $('[data-qa="successNotificationBanner"]').text()
     expect(outcomeNotificationBanner).toContain('The outcome has been changed')
     expect(outcomeNotificationBanner).toContain(
       'You must now delete the sentence that was associated with the changed outcome.',

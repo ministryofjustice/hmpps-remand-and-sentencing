@@ -2341,16 +2341,22 @@ export default class OffenceRoutes extends BaseRoutes {
       return { ...offence, index }
     })
 
-    const [custodialOffences, nonCustodialOffences, nonOutcomeOffences] = offences.reduce(
-      ([custodialList, nonCustodialList, nonOutcomeList], offence, index) => {
-        if (!offence.outcomeUuid) {
-          return [custodialList, nonCustodialList, [...nonOutcomeList, { ...offence, index }]]
+    let chargeIdsWithMissingData = []
+    if (courtAppearance.isCommonPlatformJourney) {
+      const errors = this.courtAppearanceService.validateAllOffences(req.session, nomsId, appearanceReference)
+      chargeIdsWithMissingData = errors.map(it => it.chargeId)
+    }
+
+    const [custodialOffences, nonCustodialOffences, offencesToReview] = offences.reduce(
+      ([custodialList, nonCustodialList, reviewList], offence, index) => {
+        if (chargeIdsWithMissingData.includes(offence.chargeUuid)) {
+          return [custodialList, nonCustodialList, [...reviewList, { ...offence, index }]]
         }
         const outcomeType = outcomeMap[offence.outcomeUuid]?.outcomeType
         if (outcomeType === 'SENTENCING') {
-          return [[...custodialList, { ...offence, index }], nonCustodialList, nonOutcomeList]
+          return [[...custodialList, { ...offence, index }], nonCustodialList, reviewList]
         }
-        return [custodialList, [...nonCustodialList, { ...offence, index }], nonOutcomeList]
+        return [custodialList, [...nonCustodialList, { ...offence, index }], reviewList]
       },
       [[], [], []],
     )
@@ -2379,7 +2385,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offences,
       custodialOffences,
       nonCustodialOffences,
-      nonOutcomeOffences,
+      offencesToReview,
       consecutiveToSentenceMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
@@ -2398,20 +2404,25 @@ export default class OffenceRoutes extends BaseRoutes {
     const offenceFinishedAddingForm = trimForm<OffenceFinishedAddingForm>(req.body)
     let errors = this.courtAppearanceService.checkFinishingOffences(offenceFinishedAddingForm)
     if (offenceFinishedAddingForm.finishedAddingOffences === 'true') {
-      const mandatoryFieldErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
-        req.session,
-        nomsId,
-        appearanceReference,
-      )
-      const offenceOutcomeFields = this.courtAppearanceService.checkAllOffencesHaveUpdatedOutcomes(
-        req.session,
-        nomsId,
-        appearanceReference,
-      )
-      errors = errors.concat(mandatoryFieldErrors).concat(offenceOutcomeFields)
+      errors = this.courtAppearanceService.validateAllOffences(req.session, nomsId, appearanceReference)
     }
     if (errors.length > 0) {
-      req.flash('errors', errors)
+      const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+        req.session,
+        nomsId,
+        appearanceReference,
+      )
+      if (courtAppearance.isCommonPlatformJourney && courtAppearance.warrantType === 'SENTENCING') {
+        req.flash('errors', [
+          {
+            text: 'You must update offences with missing information',
+            href: errors[0].href,
+          },
+        ])
+      } else {
+        req.flash('errors', errors)
+      }
+
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers?hasErrors=true`,
       )
@@ -2721,7 +2732,6 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { updateOutcome } = req.query
     this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
@@ -2768,11 +2778,6 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length-interrupt`,
         )
       }
-    }
-    if (updateOutcome) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`,
-      )
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
@@ -3234,17 +3239,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     let errors = this.offenceService.validateReviewOffencesForm(reviewOffenceForm)
     if (reviewOffenceForm.changeOffence === 'true') {
-      const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
-        req.session,
-        nomsId,
-        appearanceReference,
-      )
-      const updateOutcomeErrors = this.courtAppearanceService.checkAllOffencesHaveUpdatedOutcomes(
-        req.session,
-        nomsId,
-        appearanceReference,
-      )
-      errors = errors.concat(offenceErrors, updateOutcomeErrors)
+      errors = this.courtAppearanceService.validateAllOffences(req.session, nomsId, appearanceReference)
     }
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -3389,17 +3384,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     let errors = this.offenceService.validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm)
     if (updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true') {
-      const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
-        req.session,
-        nomsId,
-        appearanceReference,
-      )
-      const updateOutcomeErrors = this.courtAppearanceService.checkAllOffencesHaveUpdatedOutcomes(
-        req.session,
-        nomsId,
-        appearanceReference,
-      )
-      errors = errors.concat(offenceErrors, updateOutcomeErrors)
+      errors = this.courtAppearanceService.validateAllOffences(req.session, nomsId, appearanceReference)
     }
     if (errors.length > 0) {
       req.flash('errors', errors)

@@ -1427,6 +1427,59 @@ export default class CourtAppearanceService {
     )
   }
 
+  validateAllOffences(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): {
+    text?: string
+    html?: string
+    href: string
+    chargeId: string
+  }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const validatorErrors = validate(
+      courtAppearance,
+      {
+        'offences.*.outcomeUuid': 'required_with:offences',
+        'offences.*.sentence.sentenceServeType': 'required_with:offences.*.sentence',
+        'offences.*.sentence.sentenceTypeId': 'required_with:offences.*.sentence',
+        'offences.*.sentence.convictionDate': 'required_with:offences.*.sentence',
+        'offences.*.sentence.periodLengths': 'required_with:offences.*.sentence',
+      },
+      {
+        'required_with.offences.*.outcomeUuid': 'Update the offence outcome',
+        'required_with.offences.*.sentence.sentenceServeType': 'Select consecutive or concurrent',
+        'required_with.offences.*.sentence.sentenceTypeId': 'Select a sentence type',
+        'required_with.offences.*.sentence.convictionDate': 'Enter a conviction date',
+        'required_with.offences.*.sentence.periodLengths': 'Enter a sentence length',
+      },
+    )
+
+    const errors = validatorErrors.map(error => {
+      const match = error.href.match(/^#offences\.(\d+)\./)
+      const offenceIndex = Number(match[1])
+      const offence = courtAppearance.offences[offenceIndex]
+      return { ...error, href: `#offences.${offenceIndex}`, chargeId: offence?.chargeUuid }
+    })
+
+    courtAppearance.offences?.forEach((offence, index) => {
+      if (offence.sentence) {
+        if (
+          offence.sentence.sentenceServeType === 'CONSECUTIVE' &&
+          offence.sentence.consecutiveToSentenceUuid == null
+        ) {
+          errors.push({
+            text: 'Consecutive to sentence is not set',
+            href: `#offences.${index}`,
+            chargeId: offence.chargeUuid,
+          })
+        }
+      }
+    })
+    return errors
+  }
+
   checkOffencesHaveMandatoryFields(
     session: Partial<SessionData>,
     nomsId: string,

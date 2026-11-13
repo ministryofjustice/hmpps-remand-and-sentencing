@@ -474,7 +474,7 @@ export default class AppealsRoutes extends BaseRoutes {
       courtMap,
       consecutiveToSentenceMap,
       errors: req.flash('errors') || [],
-      outcomeBanner: req.flash('outcomeBanner')[0],
+      successNotificationBanner: req.flash('successNotificationBanner')[0],
     })
   }
 
@@ -627,7 +627,7 @@ export default class AppealsRoutes extends BaseRoutes {
       offence,
     )
     if (replacedOutcomeChanged) {
-      req.flash('outcomeBanner', {
+      req.flash('successNotificationBanner', {
         title: 'The outcome has been changed',
         message: 'You must now delete the sentence that was associated with the changed outcome.',
       })
@@ -936,7 +936,7 @@ export default class AppealsRoutes extends BaseRoutes {
       selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters),
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
-      outcomeBanner: req.flash('outcomeBanner')[0],
+      successNotificationBanner: req.flash('successNotificationBanner')[0],
       showEditHearingDate,
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
     })

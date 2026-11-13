@@ -4,7 +4,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
-{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 
 {% set hideOffences = true %}
@@ -16,19 +15,6 @@
     <h1 class="govuk-heading-l">
         Record appeal
     </h1>
-    {% if outcomeBanner %}
-        {% call govukNotificationBanner({
-            type: "success",
-            attributes: {
-                'data-qa': 'outcomeNotificationBanner'
-            }
-        }) %}
-            <h3 class="govuk-notification-banner__heading">
-                {{ outcomeBanner.title }}
-            </h3>
-            <p class="govuk-body">{{ outcomeBanner.message }}</p>
-        {% endcall %}
-    {% endif %}
     <h2 class="govuk-heading-m" id="withoutAppealHeading">
         Offences without an appeal recorded ({{ otherOffences.length }})
     </h2>

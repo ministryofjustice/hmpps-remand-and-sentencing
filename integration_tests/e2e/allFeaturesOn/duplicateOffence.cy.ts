@@ -11,6 +11,7 @@ import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import CourtCaseCancelCourtCasePage from '../../pages/courtCaseCancelCourtCase'
+import OffenceSentenceServeTypePage from '../../pages/offenceSentenceServeTypePage'
 
 context('Duplicate offence with multiple offence instances enabled', () => {
   beforeEach(() => {
@@ -95,6 +96,84 @@ context('Duplicate offence with multiple offence instances enabled', () => {
           .and('have.text', 'Duplicate this offence')
           .and('have.attr', 'href', editHref.replace('/load-edit-offence', '/duplicate-offence'))
       })
+  })
+
+  it('duplicates a custodial offence through the full review, validation, and save journey', () => {
+    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1')
+    let checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
+
+    checkOffenceAnswersPage
+      .custodialOffences()
+      .find('[data-qa^="duplicate-offence-link-"]')
+      .should('have.length', 1)
+      .and('be.visible')
+      .and('have.text', 'Duplicate this offence')
+      .click()
+
+    let addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    addDuplicatedOffenceDetailsPage.editSummaryList().getSummaryList().should('include', {
+      'Count number': 'Count 1',
+      Offence: 'PS90037 An offence description',
+      'Committed on': 'Enter committed on date',
+      Outcome: 'Imprisonment',
+      'Conviction date': '13/05/2023',
+      'Sentence type': 'SDS (Standard Determinate Sentence)',
+      'Sentence length': '4 years 5 months 0 weeks 0 days',
+      'Consecutive or concurrent': 'Enter consecutive or concurrent',
+    })
+    addDuplicatedOffenceDetailsPage.editOffenceDateCta().should('be.visible')
+    addDuplicatedOffenceDetailsPage.editSentenceServeTypeCta().should('be.visible')
+
+    addDuplicatedOffenceDetailsPage.continueButton().click()
+    addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    addDuplicatedOffenceDetailsPage
+      .errorSummary()
+      .should('contain', 'You must enter whether this offence is consecutive or concurrent')
+      .and('contain', 'You must enter a committed on date')
+
+    addDuplicatedOffenceDetailsPage.editOffenceDateCta().click()
+    const offenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceDatePage.dayDateInput('offenceStartDate').clear().type('13')
+    offenceDatePage.monthDateInput('offenceStartDate').clear().type('5')
+    offenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
+    offenceDatePage.continueButton().click()
+
+    Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    addDuplicatedOffenceDetailsPage.editOffenceDateLink().should('be.visible')
+
+    addDuplicatedOffenceDetailsPage.editSentenceServeTypeCta().click()
+    const sentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    sentenceServeTypePage.radioLabelContains('Concurrent').click()
+    sentenceServeTypePage.continueButton().click()
+
+    Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    addDuplicatedOffenceDetailsPage.editSentenceServeTypeLink().should('be.visible')
+
+    addDuplicatedOffenceDetailsPage.continueButton().click()
+    checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 2 offences')
+    checkOffenceAnswersPage
+      .custodialOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '12/05/2023',
+          'Consecutive or concurrent': 'Forthwith',
+          'Conviction date': '13/05/2023',
+          Outcome: 'Imprisonment',
+          'Sentence length': '4 years 5 months 0 weeks 0 days',
+          'Sentence type': 'SDS (Standard Determinate Sentence)',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '13/05/2023',
+          'Consecutive or concurrent': 'Concurrent',
+          'Conviction date': '13/05/2023',
+          Outcome: 'Imprisonment',
+          'Sentence length': '4 years 5 months 0 weeks 0 days',
+          'Sentence type': 'SDS (Standard Determinate Sentence)',
+        },
+      ])
   })
 
   it('duplicates a non-custodial offence through the full review and save journey', () => {

@@ -509,6 +509,7 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
         delete offence.offenceValue
         delete offence.hasOffenceValue
@@ -1632,6 +1633,8 @@ export default class OffenceService {
     offence: Offence
     hasSentencesAfter: boolean
     previousOutcomeUuid: string
+    replacedOutcomeChanged: boolean
+    outcome: OffenceOutcome
   }> {
     const errors = validate(
       appealOffenceOutcomeForm,
@@ -1645,6 +1648,8 @@ export default class OffenceService {
     let sentenceUuid
     let offence
     let previousOutcomeUuid
+    let replacedOutcomeChanged = false
+    let outcome: OffenceOutcome
     if (errors.length === 0) {
       const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
       offence = this.getOffence(session.offences, id)
@@ -1661,21 +1666,37 @@ export default class OffenceService {
             offence,
             hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance,
             previousOutcomeUuid,
+            replacedOutcomeChanged,
+            outcome,
           }
         }
       }
-
+      replacedOutcomeChanged =
+        previousOutcomeUuid === REPLACEMENT_OUTCOME_UUID &&
+        previousOutcomeUuid !== appealOffenceOutcomeForm.offenceOutcome
+      outcome = await this.refDataService.getChargeOutcomeById(appealOffenceOutcomeForm.offenceOutcome, username)
       offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
       offence.updatedOutcome = true
       sentenceUuid = offence.sentence?.sentenceUuid
-      delete offence.sentence
-      delete offence.aggravatingFactors
-      delete offence.findingOfDomesticAbuse
-      delete offence.offenceValue
-      delete offence.hasOffenceValue
+      if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        delete offence.sentence
+        delete offence.aggravatingFactors
+        delete offence.findingOfDomesticAbuse
+        delete offence.offenceValue
+        delete offence.hasOffenceValue
+      }
+
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return { errors, sentenceUuid, offence, hasSentencesAfter: false, previousOutcomeUuid }
+    return {
+      errors,
+      sentenceUuid,
+      offence,
+      hasSentencesAfter: false,
+      previousOutcomeUuid,
+      replacedOutcomeChanged,
+      outcome,
+    }
   }
 }

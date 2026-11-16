@@ -161,4 +161,76 @@ describe('GET /sentencing/hearing-details', () => {
         expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(0)
       })
   })
+
+  it('should hide edit actions and shows the inset when the hearing has a recall', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+            hasRecall: true,
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="hasAnyRecallsInset"]')).toHaveLength(1)
+        expect($('[data-qa="hearingSummaryList"] a')).toHaveLength(0)
+        expect($('[data-qa="overallSummaryList"] a')).toHaveLength(0)
+        expect($('[data-qa="addAnotherOffence"]')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Edit")')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Delete")')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Select consecutive or concurrent")')).toHaveLength(0)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
+      })
+  })
+
+  it('should show edit actions and no inset when there is no recall', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+            hasRecall: false,
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="hasAnyRecallsInset"]')).toHaveLength(0)
+        expect($('[data-qa="hearingSummaryList"] a')).toHaveLength(3)
+        expect($('[data-qa="overallSummaryList"] a')).toHaveLength(1)
+        expect($('[data-qa="addAnotherOffence"]')).toHaveLength(1)
+        expect($('[data-qa="custodialOffences"] a:contains("Edit")')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Delete")')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Select consecutive or concurrent")')).toHaveLength(0)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
+      })
+  })
 })

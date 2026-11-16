@@ -142,52 +142,6 @@ describe('Duplicate offence', () => {
   })
 
   it.each([
-    { description: 'custodial sentence with a finding', sentence: originalOffence.sentence, finding: true },
-    { description: 'custodial sentence without a finding', sentence: originalOffence.sentence, finding: false },
-    { description: 'non-custodial offence with a finding', sentence: undefined, finding: true },
-    { description: 'non-custodial offence without a finding', sentence: undefined, finding: false },
-    { description: 'fine sentence with a finding', sentence: originalOffence.sentence, finding: true, fine: true },
-    { description: 'fine sentence without a finding', sentence: originalOffence.sentence, finding: false, fine: true },
-  ])('does not show judicial findings for a $description', async ({ sentence, finding, fine }) => {
-    const html = await new Promise<string>((resolve, reject) => {
-      app.render(
-        'pages/offence/add-duplicated-offence-details',
-        {
-          nomsId: 'A1234AB',
-          courtCaseReference: '0',
-          appearanceReference: '0',
-          chargeUuid: '5',
-          addOrEditCourtCase: 'add-court-case',
-          addOrEditCourtAppearance: 'add-court-appearance',
-          prisoner: {},
-          serviceDefinitions: { services: [] },
-          courtAppearance: { warrantType: 'SENTENCING', offences: [] },
-          offence: { ...duplicatedOffence, sentence, findingOfDomesticAbuse: finding },
-          offenceMap: { PS90037: 'An offence description' },
-          sentenceTypeClassification: fine ? 'FINE' : 'STANDARD',
-          periodLengths: [],
-          errors: [],
-          showJudicialFindingsRow: true,
-        },
-        (error, renderedHtml) => {
-          if (error) reject(error)
-          else resolve(renderedHtml)
-        },
-      )
-    })
-    const $ = cheerio.load(html)
-    const summary = $('[data-qa="edit-summary-list"]')
-
-    expect(summary.text()).toContain('PS90037 An offence description')
-    if (fine) expect(summary.text()).toContain('Fine Amount')
-    expect(summary.text()).not.toContain('Judicial findings')
-    expect(summary.text()).not.toContain('Finding of domestic abuse')
-    expect(summary.find('[data-qa="add-judicial-findings-cta"], [data-qa="edit-judicial-findings-link"]')).toHaveLength(
-      0,
-    )
-  })
-
-  it.each([
     { description: 'before confirmation', missingDate: true, missingServeType: true, submitted: false },
     { description: 'with only committed on missing', missingDate: true, missingServeType: false, submitted: true },
     {

@@ -6,7 +6,7 @@ import {
   OverallSentenceLengthComparison,
   OverallSentenceLengthRequest,
   OverallSentenceLengthSentence,
-} from '../@types/calculateReleaseDatesApi/calculateReleaseDatesClientTypes'
+} from '../@types/calculateReleaseDatesApi'
 
 export default class CalculateReleaseDatesService {
   constructor(private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiClient) {}

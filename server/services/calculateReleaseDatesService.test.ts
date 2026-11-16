@@ -51,8 +51,6 @@ describe('CalculateReleaseDatesService', () => {
       calculateReleaseDatesApiClient.compareOverallSentenceLength.mockResolvedValue({
         custodialLengthMatches: true,
         custodialLength: { years: 2, months: 6, weeks: 0, days: 0 },
-        licenseLengthMatches: false,
-        licenseLength: undefined,
       })
 
       const result = await service.compareOverallSentenceLength(multipleSupportedSentences, 'test-user')

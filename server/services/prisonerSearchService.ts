@@ -1,4 +1,4 @@
-import { PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi/prisonerSearchTypes'
+import { Prisoner as PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 
 export default class PrisonerSearchService {

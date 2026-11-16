@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { CourtDto } from '../../@types/courtRegisterApi/types'
+import { CourtDto } from '../../@types/courtRegisterApi'
 import config from '../../config'
 
 export default abstract class CancelDetailsModel {

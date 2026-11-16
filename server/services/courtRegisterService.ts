@@ -1,4 +1,4 @@
-import { CourtDto } from '../@types/courtRegisterApi/types'
+import { CourtDto } from '../@types/courtRegisterApi'
 import CourtRegisterApiClient from '../data/courtRegisterApiClient'
 
 export default class CourtRegisterService {

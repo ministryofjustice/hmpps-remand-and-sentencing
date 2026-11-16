@@ -1,5 +1,5 @@
 import logger from '../../logger'
-import type { Offence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import type { Offence } from '../@types/manageOffencesApi'
 import ManageOffencesApiClient from '../data/manageOffencesApiClient'
 
 export default class ManageOffencesService {

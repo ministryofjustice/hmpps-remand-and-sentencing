@@ -2,7 +2,7 @@ import type { Request, Response } from 'express'
 import populateCurrentPrisoner from './populateCurrentPrisoner'
 import PrisonerSearchService from '../services/prisonerSearchService'
 import { restoreAndClearSession } from '../data/sessionRecoveryStore'
-import { PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi/prisonerSearchTypes'
+import { Prisoner as PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi'
 
 jest.mock('../data/sessionRecoveryStore')
 

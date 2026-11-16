@@ -4,6 +4,7 @@ import type {
   Sentence as APISentence,
   NextCourtAppearance,
   CourtAppearance as PageCourtCaseAppearance,
+  PagedSentence,
 } from '../@types/remandAndSentencingApi'
 import {
   alternativeSentenceLengthFormToSentenceLength,

@@ -1,6 +1,6 @@
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache from '../cache/refDataCache'
-import { CourtAppearanceOutcome, ChargeOutcome } from '../@types/remandAndSentencingApi/index'
+import { CourtAppearanceOutcome, ChargeOutcome } from '../@types/remandAndSentencingApi'
 import RefDataService from './refDataService'
 
 jest.mock('../cache/refDataCache')

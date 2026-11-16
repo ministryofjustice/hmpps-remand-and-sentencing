@@ -1,4 +1,4 @@
-import { SearchCourtCasesPage } from '../../@types/remandAndSentencingApi/index'
+import { SearchCourtCasesPage } from '../../@types/remandAndSentencingApi'
 
 type PageLink = {
   href: string

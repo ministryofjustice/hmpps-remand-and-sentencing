@@ -14,7 +14,7 @@ import {
   SentenceType,
   SentenceTypeChargeOutcomes,
   SentenceTypeDetails,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache, { clearCache } from '../cache/refDataCache'
 import config from '../config'

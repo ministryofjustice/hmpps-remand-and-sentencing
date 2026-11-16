@@ -5,7 +5,7 @@ import {
   MergedToCaseDetails,
   CourtAppearance as PageCourtCaseAppearance,
   CourtCase as PageCourtCaseContent,
-} from '../../@types/remandAndSentencingApi/index'
+} from '../../@types/remandAndSentencingApi'
 import config from '../../config'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
 import { formatDate, getSortedDocumentsWithUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'

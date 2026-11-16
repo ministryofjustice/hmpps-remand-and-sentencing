@@ -4,7 +4,7 @@ import type {
   Sentence as APISentence,
   NextCourtAppearance,
   CourtAppearance as PageCourtCaseAppearance,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   apiSentenceToSentence,

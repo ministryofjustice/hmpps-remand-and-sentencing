@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import config from '../../config'
-import type { ChargeOutcome } from '../../@types/remandAndSentencingApi/index'
+import type { ChargeOutcome } from '../../@types/remandAndSentencingApi'
 
 let app: Express
 const originalMultipleOffenceInstances = config.featureToggles.multipleOffenceInstances

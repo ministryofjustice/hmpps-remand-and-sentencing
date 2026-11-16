@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 import type RemandAndSentencingService from '../../services/remandAndSentencingService'
-import { RecallType } from '../../@types/remandAndSentencingApi/index'
+import { RecallType } from '../../@types/remandAndSentencingApi'
 
 export default class SentenceTypesRoutesHandler {
   constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}

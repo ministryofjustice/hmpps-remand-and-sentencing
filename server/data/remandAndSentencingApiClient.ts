@@ -53,7 +53,7 @@ import {
   ConfirmConsecutiveToSentenceFixes,
   HmctsResultCode,
   CreateHmctsResultCode,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import config from '../config'
 import logger from '../../logger'
 

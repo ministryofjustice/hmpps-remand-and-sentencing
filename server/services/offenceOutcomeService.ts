@@ -1,4 +1,4 @@
-import type { ChargeOutcome } from '../@types/remandAndSentencingApi/index'
+import type { ChargeOutcome } from '../@types/remandAndSentencingApi'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache from '../cache/refDataCache'
 

@@ -1,6 +1,6 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
-import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi/index'
+import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi'
 import JourneyUrls from './JourneyUrls'
 
 export default class NonSentencingTaskListModel extends TaskListModel {

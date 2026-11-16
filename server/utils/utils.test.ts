@@ -15,7 +15,7 @@ import type {
   SentenceLegacyData,
   Charge,
   UploadedDocument,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 
 // utils.offences.test.ts (or add to your existing utils.test.ts)
 

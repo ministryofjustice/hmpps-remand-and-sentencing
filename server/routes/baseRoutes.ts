@@ -14,7 +14,7 @@ import {
   SentenceConsecutiveToDetailsResponse,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   UploadedDocument,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import {
   offenceToConsecutiveToDetails,
   pageCourtCaseAppearanceToCourtAppearance,

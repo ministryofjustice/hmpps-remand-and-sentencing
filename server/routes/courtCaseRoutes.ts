@@ -54,7 +54,7 @@ import {
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
   UnconfirmedCourtCases,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import SentencingTaskListModel from './data/SentencingTaskListModel'

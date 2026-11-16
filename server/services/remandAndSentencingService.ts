@@ -40,7 +40,7 @@ import {
   CreateF986,
   F986EligibleCourtAppearance,
   UnconfirmedCourtCases,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import {
   courtAppearanceToCreateCourtAppearance,

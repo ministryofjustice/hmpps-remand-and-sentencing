@@ -19,7 +19,7 @@ import {
   PagedSentencePeriodLength,
   PeriodLength,
   SentenceConsecutiveToDetails,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'

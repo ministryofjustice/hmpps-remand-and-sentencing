@@ -4,7 +4,7 @@ import request from 'supertest'
 import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import type { CourtDto } from '../../@types/courtRegisterApi/types'
-import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi/index'
+import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi'
 
 let app: Express
 

@@ -45,7 +45,7 @@ import type {
   PagedMergedFromCase,
   PagedMergedToCase,
   SentenceToChainTo,
-} from '../@types/remandAndSentencingApi/index'
+} from '../@types/remandAndSentencingApi'
 import { BREACH_WARRANT_TYPES } from './constants'
 
 type Error = {

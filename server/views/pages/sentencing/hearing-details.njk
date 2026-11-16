@@ -19,13 +19,13 @@
         visuallyHiddenText: "case reference",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   } %}
 {% else %}
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
     value: {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>'
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>' if not isReadOnly else '<span>Not entered</span>'
     }
   } %}
 {% endif %}
@@ -46,7 +46,7 @@
         visuallyHiddenText: "court name",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   },
   {
     key: { text: "Overall case outcome" },
@@ -58,7 +58,7 @@
         visuallyHiddenText: "overall case outcome",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   }
 ] %}
 
@@ -72,7 +72,7 @@
       visuallyHiddenText: "overall sentence length",
       classes: "govuk-link--no-visited-state"
     }]
-  }
+  } if not isReadOnly
 }] %}
 
 {% set documentSummaryRows = [] %}
@@ -97,6 +97,14 @@
           text: mergedFromText,
           classes: "govuk-!-margin-bottom-3",
           attributes: { "data-qa": "mergedFromText" }
+        }) }}
+      {% endif %}
+
+      {% if hasAnyRecalls %}
+        {{ govukInsetText({
+          text: "You can't edit information on a sentencing hearing that's been recalled",
+          classes: "govuk-!-margin-bottom-3",
+          attributes: { "data-qa": "hasAnyRecallsInset" }
         }) }}
       {% endif %}
 
@@ -138,12 +146,14 @@
       }) }}
 
       <div class="govuk-button-group">
-        {{ govukButton({
-          text: "Add an offence",
-          classes: "govuk-button--link",
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
-          attributes: { "data-qa": "addAnotherOffence" }
-        }) }}
+        {{
+          govukButton({
+            text: "Add an offence",
+            classes: "govuk-button--link",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
+            attributes: { "data-qa": "addAnotherOffence" }
+          }) if not isReadOnly
+        }}
 
         {% if hasActiveSentence %}
           {{ govukButton({
@@ -181,7 +191,7 @@
                     classes: "govuk-link--no-visited-state"
                   }
                 ]
-              },
+              } if not isReadOnly,
               listItems: {
                 classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
                 items: [{
@@ -204,7 +214,7 @@
               href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
               text: "Select consecutive or concurrent",
               classes: "govuk-link--no-visited-state"
-            } if offence.sentence,
+            } if offence.sentence and not isReadOnly,
             actions: {
               items: [
                 {
@@ -220,7 +230,7 @@
                   classes: "govuk-link--no-visited-state"
                 }
               ]
-            },
+            } if not isReadOnly,
             listItems: {
               classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
               items: [{

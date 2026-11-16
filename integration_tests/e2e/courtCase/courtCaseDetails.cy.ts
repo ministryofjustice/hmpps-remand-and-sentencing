@@ -169,8 +169,14 @@ context('Court Case details Page', () => {
       courtCaseDetailsPage.draftsTab().should('not.exist')
     })
 
-    it('do not show edit or delete when appearance contains a recall', () => {
-      courtCaseDetailsPage.hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933').children().should('have.length', 0)
+    it('do not show delete when appearance contains a recall', () => {
+      courtCaseDetailsPage
+        .hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
+        .should('not.contain.text', 'Delete')
+    })
+
+    it('show edit when appearance contains a recall', () => {
+      courtCaseDetailsPage.hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933').should('contain.text', 'Edit')
     })
 
     it('show edit or delete when appearance has no recalls', () => {

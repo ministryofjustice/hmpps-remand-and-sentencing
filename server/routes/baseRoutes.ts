@@ -10,11 +10,11 @@ import ManageOffencesService from '../services/manageOffencesService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   MergedFromCase,
-  OffenceOutcome,
+  ChargeOutcome,
   SentenceConsecutiveToDetailsResponse,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   UploadedDocument,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import {
   offenceToConsecutiveToDetails,
   pageCourtCaseAppearanceToCourtAppearance,
@@ -415,7 +415,7 @@ export default abstract class BaseRoutes {
     chargeUuid,
   ): Promise<{
     outcomeAutoApplied: boolean
-    outcome?: OffenceOutcome
+    outcome?: ChargeOutcome
   }> {
     const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(
       req.session,

@@ -2,10 +2,7 @@ import type { Request, Response } from 'express'
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import RefDataService from '../../services/refDataService'
 import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'
-import {
-  CreateHmctsResultCode,
-  FieldErrorErrorResponse,
-} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CreateHmctsResultCode, FieldErrorErrorResponse } from '../../@types/remandAndSentencingApi'
 import trimForm from '../../utils/trim'
 
 export default class HmctsResultCodeAdminRoutesHandler {

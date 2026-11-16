@@ -45,7 +45,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import RefDataService from './refDataService'
 import { BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE, DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
-import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CourtAppearance as PageCourtCaseAppearance } from '../@types/remandAndSentencingApi'
 
 export default class CourtAppearanceService {
   constructor(

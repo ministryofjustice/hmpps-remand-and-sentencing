@@ -1,10 +1,7 @@
 import type { Request, Response } from 'express'
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import RefDataService from '../../services/refDataService'
-import {
-  CreateAppearanceOutcome,
-  FieldErrorErrorResponse,
-} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CreateAppearanceOutcome, FieldErrorErrorResponse } from '../../@types/remandAndSentencingApi'
 import trimForm from '../../utils/trim'
 import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'
 

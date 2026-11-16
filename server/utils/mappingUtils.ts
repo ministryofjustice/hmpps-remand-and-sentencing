@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import type { CorrectManyPeriodLengthsForm, SentenceLengthForm } from 'forms'
 import type { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
-  APISentence,
+  Sentence as APISentence,
   Charge,
   CreateCharge,
   CreateCourtAppearance,
@@ -12,14 +12,14 @@ import {
   CreatePeriodLength,
   CreateSentence,
   NextCourtAppearance,
-  PageCourtCaseAppearance,
+  CourtAppearance as PageCourtCaseAppearance,
   PagedAppearancePeriodLength,
   PagedCharge,
   PagedSentence,
   PagedSentencePeriodLength,
   PeriodLength,
   SentenceConsecutiveToDetails,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'

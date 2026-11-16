@@ -1,6 +1,6 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
-import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi'
 import JourneyUrls from './JourneyUrls'
 
 export default class NonSentencingTaskListModel extends TaskListModel {
@@ -12,7 +12,7 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     appearanceReference: string,
     courtAppearance: CourtAppearance,
     caseReferenceSet: boolean,
-    appearanceOutcome: AppearanceOutcome,
+    appearanceOutcome: CourtAppearanceOutcome,
   ) {
     super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
     this.items = [

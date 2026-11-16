@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs'
 import {
   AggravatingFactor,
   AllSentenceTypes,
-  AppearanceOutcome,
+  CourtAppearanceOutcome,
   AppearanceType,
   CourtAppearanceSubtype,
   CreateAppearanceOutcome,
@@ -10,11 +10,11 @@ import {
   CreateHmctsResultCode,
   CreateSentenceType,
   HmctsResultCode,
-  OffenceOutcome,
+  ChargeOutcome,
   SentenceType,
   SentenceTypeChargeOutcomes,
   SentenceTypeDetails,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache, { clearCache } from '../cache/refDataCache'
 import config from '../config'
@@ -31,17 +31,17 @@ export default class RefDataService {
 
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
-  async getAllChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
+  async getAllChargeOutcomes(username: string): Promise<ChargeOutcome[]> {
     return getOrSetRefDataInCache(this.chargeOutcomeCacheKey, () =>
       this.remandAndSentencingApiClient.getAllChargeOutcomes(username),
     )
   }
 
-  async getAllUncachedChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
+  async getAllUncachedChargeOutcomes(username: string): Promise<ChargeOutcome[]> {
     return this.remandAndSentencingApiClient.getAllChargeOutcomes(username, 'ACTIVE,INACTIVE')
   }
 
-  async createChargeOutcome(createChargeOutcome: CreateChargeOutcome, username: string): Promise<OffenceOutcome> {
+  async createChargeOutcome(createChargeOutcome: CreateChargeOutcome, username: string): Promise<ChargeOutcome> {
     return this.remandAndSentencingApiClient.createChargeOutcome(createChargeOutcome, username)
   }
 
@@ -53,11 +53,11 @@ export default class RefDataService {
     chargeOutcomeUuid: string,
     updateChargeOutcome: CreateChargeOutcome,
     username: string,
-  ): Promise<OffenceOutcome> {
+  ): Promise<ChargeOutcome> {
     return this.remandAndSentencingApiClient.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, username)
   }
 
-  async getChargeOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: OffenceOutcome }> {
+  async getChargeOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: ChargeOutcome }> {
     const outcomeIdsToSearch = outcomeIds.filter(outcomeId => outcomeId)
     if (!outcomeIdsToSearch.length) return {}
 
@@ -74,7 +74,7 @@ export default class RefDataService {
     return Object.fromEntries(outcomes.map(outcome => [outcome.outcomeUuid, outcome]))
   }
 
-  async getChargeOutcomeById(outcomeId: string, username: string): Promise<OffenceOutcome> {
+  async getChargeOutcomeById(outcomeId: string, username: string): Promise<ChargeOutcome> {
     const allActiveOutcomes = await this.getAllChargeOutcomes(username)
     const outcome = allActiveOutcomes.find(o => o.outcomeUuid === outcomeId)
     if (outcome) {
@@ -83,20 +83,20 @@ export default class RefDataService {
     return this.remandAndSentencingApiClient.getChargeOutcomeById(outcomeId, username)
   }
 
-  async getAllAppearanceOutcomes(username: string): Promise<AppearanceOutcome[]> {
+  async getAllAppearanceOutcomes(username: string): Promise<CourtAppearanceOutcome[]> {
     return getOrSetRefDataInCache(this.appearanceOutcomeCacheKey, () =>
       this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username),
     )
   }
 
-  async getAllUncachedAppearanceOutcomes(username: string): Promise<AppearanceOutcome[]> {
+  async getAllUncachedAppearanceOutcomes(username: string): Promise<CourtAppearanceOutcome[]> {
     return this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username, 'ACTIVE,INACTIVE')
   }
 
   async createAppearanceOutcome(
     createAppearanceOutcome: CreateAppearanceOutcome,
     username: string,
-  ): Promise<AppearanceOutcome> {
+  ): Promise<CourtAppearanceOutcome> {
     return this.remandAndSentencingApiClient.createAppearanceOutcome(createAppearanceOutcome, username)
   }
 
@@ -104,7 +104,7 @@ export default class RefDataService {
     appearanceOutcomeUuid: string,
     updateAppearanceOutcome: CreateAppearanceOutcome,
     username: string,
-  ): Promise<AppearanceOutcome> {
+  ): Promise<CourtAppearanceOutcome> {
     return this.remandAndSentencingApiClient.updateAppearanceOutcome(
       appearanceOutcomeUuid,
       updateAppearanceOutcome,
@@ -116,7 +116,7 @@ export default class RefDataService {
     return clearCache(this.appearanceOutcomeCacheKey)
   }
 
-  async getAppearanceOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
+  async getAppearanceOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<CourtAppearanceOutcome> {
     const allActiveOutcomes = await this.getAllAppearanceOutcomes(username)
     const outcome = allActiveOutcomes.find(o => o.outcomeUuid === appearanceOutcomeUuid)
     if (outcome) {
@@ -132,11 +132,11 @@ export default class RefDataService {
     username: string,
     isReplacingOffence: boolean,
   ): Promise<{
-    primaryOutcomes: OffenceOutcome[]
-    nonCustodialOutcomes: OffenceOutcome[]
-    allOutcomes: OffenceOutcome[]
+    primaryOutcomes: ChargeOutcome[]
+    nonCustodialOutcomes: ChargeOutcome[]
+    allOutcomes: ChargeOutcome[]
   }> {
-    const appearanceOutcomePromise: Promise<AppearanceOutcome> = appearanceOutcomeUuid
+    const appearanceOutcomePromise: Promise<CourtAppearanceOutcome> = appearanceOutcomeUuid
       ? this.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
       : Promise.resolve({
           outcomeUuid: '-1',

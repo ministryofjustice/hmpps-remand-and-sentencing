@@ -8,7 +8,7 @@ import {
   SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
   UploadedDocument,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import { getDocumentTypeNameMap } from '../resources/documentTypes'
 
 const properCase = (word: string): string =>

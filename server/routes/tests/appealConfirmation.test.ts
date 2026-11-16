@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import REPLACEMENT_OUTCOME_UUID from '../../utils/constants'
-import { PageCourtCaseAppearance } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CourtAppearance as PageCourtCaseAppearance } from '../../@types/remandAndSentencingApi'
 
 let app: Express
 

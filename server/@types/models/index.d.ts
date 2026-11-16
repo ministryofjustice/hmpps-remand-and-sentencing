@@ -1,4 +1,4 @@
-import { PagedMergedFromCase } from '../remandAndSentencingApi/index'
+import { PagedMergedFromCase } from '../remandAndSentencingApi'
 
 declare module 'models' {
   export interface CourtCase {

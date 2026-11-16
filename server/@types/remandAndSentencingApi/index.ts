@@ -926,4 +926,4 @@ export type {
   UpdateSentenceTypesResponse,
   UpdateSentenceTypesResponses,
   UploadedDocument,
-} from './types.gen'
+} from './types.gen.js'

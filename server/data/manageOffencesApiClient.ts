@@ -2,7 +2,7 @@ import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
-import type { Offence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import type { Offence } from '../@types/manageOffencesApi'
 
 export default class ManageOffencesApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {

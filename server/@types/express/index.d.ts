@@ -1,5 +1,5 @@
 import type { CourtAppearance, CourtCase, Offence } from 'models'
-import { PrisonerSearchApiPrisoner } from '../prisonerSearchApi/prisonerSearchTypes'
+import { Prisoner as PrisonerSearchApiPrisoner } from '../prisonerSearchApi'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 
 export declare module 'express-session' {

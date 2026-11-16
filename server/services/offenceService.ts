@@ -39,7 +39,7 @@ import {
 import ManageOffencesService from './manageOffencesService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
-import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import type { Offence as ApiOffence } from '../@types/manageOffencesApi'
 import { ChargeOutcome } from '../@types/remandAndSentencingApi'
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'

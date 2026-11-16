@@ -1,5 +1,5 @@
 import type { CourtDataLandingForm, CourtDataSelectCaseForm } from 'forms'
-import { CourtDocumentView, CourtHearing } from '../@types/courtDataIngestionApi/types'
+import { CourtDocumentView, CourtHearing } from '../@types/courtDataIngestionApi'
 import CourtDataIngestionApiClient from '../data/courtDataIngestionApiClient'
 import validate from '../validation/validation'
 

@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import type { CourtDto } from '../../@types/courtRegisterApi/types'
+import type { CourtDto } from '../../@types/courtRegisterApi'
 import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi'
 
 let app: Express

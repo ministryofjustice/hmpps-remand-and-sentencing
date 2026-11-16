@@ -156,11 +156,14 @@ describe('Duplicate offence', () => {
     const errors = []
     const expectedRows = []
     if (submitted && missingDate) {
-      errors.push({ text: 'You must enter a committed on date', href: '#' })
+      errors.push({ text: 'You must enter a committed on date', href: '#edit-offence-date-cta' })
       expectedRows.push('Committed on')
     }
     if (submitted && missingServeType) {
-      errors.push({ text: 'You must enter whether this offence is consecutive or concurrent', href: '#' })
+      errors.push({
+        text: 'You must enter whether this offence is consecutive or concurrent',
+        href: '#edit-sentence-serve-type-cta',
+      })
       expectedRows.push('Consecutive or concurrent')
     }
 
@@ -203,7 +206,11 @@ describe('Duplicate offence', () => {
 
     expect(highlightedRows).toEqual(expectedRows)
     expect($('.govuk-error-summary').length).toBe(errors.length ? 1 : 0)
-    errors.forEach(error => expect($('.govuk-error-summary').text()).toContain(error.text))
+    errors.forEach(error => {
+      expect($('.govuk-error-summary').text()).toContain(error.text)
+      expect($(`.govuk-error-summary a[href="${error.href}"]`).length).toBe(1)
+      expect($(error.href).length).toBe(1)
+    })
   })
 
   it('shows an Enter committed on date link when the offence has no committed on date', async () => {
@@ -267,8 +274,11 @@ describe('Duplicate offence', () => {
   it('does not save and redirects back when required details are missing', async () => {
     defaultServices.offenceService.getAllOffences.mockReturnValue([duplicatedOffence])
     defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([
-      { text: 'You must enter whether this offence is consecutive or concurrent', href: '#' },
-      { text: 'You must enter a committed on date', href: '#' },
+      {
+        text: 'You must enter whether this offence is consecutive or concurrent',
+        href: '#edit-sentence-serve-type-cta',
+      },
+      { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
     ])
 
     await request(app)
@@ -422,7 +432,7 @@ describe('Duplicate offence with a non-custodial outcome', () => {
   it('does not save when the offence date has not been entered', async () => {
     defaultServices.offenceService.getAllOffences.mockReturnValue([nonCustodialDuplicatedOffence])
     defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([
-      { text: 'You must enter a committed on date', href: '#' },
+      { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
     ])
 
     await request(app)

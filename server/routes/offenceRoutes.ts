@@ -49,15 +49,12 @@ import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import InvalidatedFrom from '../resources/invalidatedFromTypes'
 import OutcomeFlow from '../resources/outcomeFlowTypes'
-import {
-  SentenceConsecutiveToDetails,
-  SentenceType,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { SentenceConsecutiveToDetails, SentenceType } from '../@types/remandAndSentencingApi'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID, { BREACH_WARRANT_TYPES } from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
-import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import { Offence as APIOffence } from '../@types/manageOffencesApi'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 import DocumentManagementService from '../services/documentManagementService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'

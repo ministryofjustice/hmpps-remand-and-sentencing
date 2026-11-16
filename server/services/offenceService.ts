@@ -39,8 +39,8 @@ import {
 import ManageOffencesService from './manageOffencesService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
-import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
-import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import type { Offence as ApiOffence } from '../@types/manageOffencesApi'
+import { ChargeOutcome } from '../@types/remandAndSentencingApi'
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
@@ -444,7 +444,7 @@ export default class OffenceService {
       html?: string
       href: string
     }[]
-    outcome: OffenceOutcome
+    outcome: ChargeOutcome
     hasSentencesAfter: boolean
   }> {
     const errors = validate(
@@ -452,7 +452,7 @@ export default class OffenceService {
       { offenceOutcome: 'required' },
       { 'required.offenceOutcome': 'You must select the offence outcome' },
     )
-    let outcome: OffenceOutcome
+    let outcome: ChargeOutcome
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
@@ -496,14 +496,14 @@ export default class OffenceService {
       html?: string
       href: string
     }[]
-    outcome: OffenceOutcome
+    outcome: ChargeOutcome
   }> {
     const errors = validate(
       offenceOutcomeForm,
       { offenceOutcome: 'required' },
       { 'required.offenceOutcome': 'You must select the new outcome for this offence' },
     )
-    let outcome: OffenceOutcome
+    let outcome: ChargeOutcome
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
@@ -1638,7 +1638,7 @@ export default class OffenceService {
     hasSentencesAfter: boolean
     previousOutcomeUuid: string
     replacedOutcomeChanged: boolean
-    outcome: OffenceOutcome
+    outcome: ChargeOutcome
   }> {
     const errors = validate(
       appealOffenceOutcomeForm,
@@ -1653,7 +1653,7 @@ export default class OffenceService {
     let offence
     let previousOutcomeUuid
     let replacedOutcomeChanged = false
-    let outcome: OffenceOutcome
+    let outcome: ChargeOutcome
     if (errors.length === 0) {
       const id = this.getOffenceId(urlParameters.nomsId, urlParameters.courtCaseReference, urlParameters.chargeUuid)
       offence = this.getOffence(session.offences, id)

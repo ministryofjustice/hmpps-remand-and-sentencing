@@ -4,7 +4,7 @@ import { UUID } from 'crypto'
 import { convertToTitleCase } from '../utils/utils'
 import logger from '../../logger'
 import UserService from '../services/userService'
-import { CaseLoad } from '../@types/prisonApi/types'
+import { CaseLoad } from '../@types/prisonApi'
 import { AuthSource } from '../interfaces/hmppsUser'
 import { Role, Roles } from '../@types/roles'
 

@@ -4,11 +4,7 @@ import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import type { SentenceTypeSearchForm } from 'forms'
 import RefDataService from '../../services/refDataService'
 import config from '../../config'
-import {
-  CreateSentenceType,
-  FieldErrorErrorResponse,
-  SentenceType,
-} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CreateSentenceType, FieldErrorErrorResponse, SentenceType } from '../../@types/remandAndSentencingApi'
 import trimForm from '../../utils/trim'
 import validate from '../../validation/validation'
 import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'

@@ -3,8 +3,8 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import type { CourtDto } from '../../@types/courtRegisterApi/types'
-import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import type { CourtDto } from '../../@types/courtRegisterApi'
+import { CourtAppearanceOutcome } from '../../@types/remandAndSentencingApi'
 
 let app: Express
 
@@ -24,7 +24,7 @@ describe('GET Court Case Check Answers', () => {
       outcomeUuid,
       outcomeName: 'Appearance outcome',
       outcomeType: 'REMAND',
-    } as AppearanceOutcome
+    } as CourtAppearanceOutcome
     const courtAppearance = {
       warrantType: 'NON_SENTENCING',
       caseReferenceNumber: 'T12345678',

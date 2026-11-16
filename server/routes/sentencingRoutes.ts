@@ -38,7 +38,7 @@ import {
   SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
   SentenceToChainTo,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
@@ -241,6 +241,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
     const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const hasAnyRecalls = hearing.offences.some(offence => offence.sentence?.hasRecall)
     const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     const chargeCodes = hearing.offences
       .map(offences => offences.offenceCode)
@@ -331,6 +332,7 @@ export default class SentencingRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+    const isReadOnly = hasAnyRecalls
     return res.render('pages/sentencing/hearing-details', {
       nomsId,
       courtCaseReference,
@@ -358,6 +360,8 @@ export default class SentencingRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
       overallSentenceLength,
+      hasAnyRecalls,
+      isReadOnly,
     })
   }
 

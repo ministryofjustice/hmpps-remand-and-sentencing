@@ -1,4 +1,4 @@
-import { CourtDto } from '../../@types/courtRegisterApi/types'
+import { CourtDto } from '../../@types/courtRegisterApi'
 import CancelDetailsModel from './CancelDetailsModel'
 
 export default class EditJourneyCancelDetailsModel extends CancelDetailsModel {

@@ -1,6 +1,6 @@
 import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
-import { PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi/prisonerSearchTypes'
+import { Prisoner as PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi'
 import config from '../config'
 import logger from '../../logger'
 

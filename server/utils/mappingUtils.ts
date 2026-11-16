@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import type { CorrectManyPeriodLengthsForm, SentenceLengthForm } from 'forms'
 import type { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
-  APISentence,
+  Sentence as APISentence,
   Charge,
   CreateCharge,
   CreateCourtAppearance,
@@ -12,14 +12,14 @@ import {
   CreatePeriodLength,
   CreateSentence,
   NextCourtAppearance,
-  PageCourtCaseAppearance,
+  CourtAppearance as PageCourtCaseAppearance,
   PagedAppearancePeriodLength,
   PagedCharge,
   PagedSentence,
   PagedSentencePeriodLength,
   PeriodLength,
   SentenceConsecutiveToDetails,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
@@ -222,6 +222,7 @@ export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
     consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: apiSentence.fineAmount?.fineAmount,
+    hasRecall: apiSentence.hasRecall,
     status: apiSentence.status,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
@@ -283,6 +284,7 @@ export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence 
     sentenceTypeClassification: pagedSentence.sentenceType?.classification,
     consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: pagedSentence.fineAmount,
+    hasRecall: pagedSentence.hasRecall,
     status: pagedSentence.status,
     ...(pagedSentence.convictionDate && { convictionDate: dayjs(pagedSentence.convictionDate).toDate() }),
     ...(pagedSentence.legacyData && { legacyData: { ...pagedSentence.legacyData } }),

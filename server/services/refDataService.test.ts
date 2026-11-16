@@ -1,6 +1,6 @@
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache from '../cache/refDataCache'
-import { AppearanceOutcome, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CourtAppearanceOutcome, ChargeOutcome } from '../@types/remandAndSentencingApi'
 import RefDataService from './refDataService'
 
 jest.mock('../cache/refDataCache')
@@ -31,7 +31,7 @@ describe('RefDataService', () => {
         const apiResult = {
           outcomeUuid: inactiveOutcomeUuid,
           outcomeName: 'Inactive appearance outcome',
-        } as AppearanceOutcome
+        } as CourtAppearanceOutcome
         getOrSetRefDataInCacheMock.mockResolvedValue([
           { outcomeUuid: 'active-1', outcomeName: 'Active 1' },
           { outcomeUuid: 'active-2', outcomeName: 'Active 2' },
@@ -51,7 +51,7 @@ describe('RefDataService', () => {
       const apiResult = {
         outcomeUuid: inactiveOutcomeUuid,
         outcomeName: 'Inactive outcome',
-      } as OffenceOutcome
+      } as ChargeOutcome
       getOrSetRefDataInCacheMock.mockResolvedValue([
         { outcomeUuid: 'active-1', outcomeName: 'Active 1' },
         { outcomeUuid: 'active-2', outcomeName: 'Active 2' },
@@ -66,9 +66,9 @@ describe('RefDataService', () => {
     it('returns mapped outcomes from cache when all IDs are present', async () => {
       const username = 'user'
       const outcomeIds = ['id-1', 'id-2']
-      const cachedOutcomes: OffenceOutcome[] = [
-        { outcomeUuid: 'id-1', outcomeName: 'Outcome 1' } as OffenceOutcome,
-        { outcomeUuid: 'id-2', outcomeName: 'Outcome 2' } as OffenceOutcome,
+      const cachedOutcomes: ChargeOutcome[] = [
+        { outcomeUuid: 'id-1', outcomeName: 'Outcome 1' } as ChargeOutcome,
+        { outcomeUuid: 'id-2', outcomeName: 'Outcome 2' } as ChargeOutcome,
       ]
 
       getOrSetRefDataInCacheMock.mockResolvedValue(cachedOutcomes)
@@ -86,12 +86,12 @@ describe('RefDataService', () => {
     it('returns mapped outcomes from api when IDs are not in cache', async () => {
       const username = 'user'
       const outcomeIds = ['id-3']
-      const cachedOutcomes: OffenceOutcome[] = [
-        { outcomeUuid: 'id-1', outcomeName: 'Outcome 1' } as OffenceOutcome,
-        { outcomeUuid: 'id-2', outcomeName: 'Outcome 2' } as OffenceOutcome,
+      const cachedOutcomes: ChargeOutcome[] = [
+        { outcomeUuid: 'id-1', outcomeName: 'Outcome 1' } as ChargeOutcome,
+        { outcomeUuid: 'id-2', outcomeName: 'Outcome 2' } as ChargeOutcome,
       ]
 
-      const apiOutcomes: OffenceOutcome[] = [{ outcomeUuid: 'id-3', outcomeName: 'Outcome 3' } as OffenceOutcome]
+      const apiOutcomes: ChargeOutcome[] = [{ outcomeUuid: 'id-3', outcomeName: 'Outcome 3' } as ChargeOutcome]
 
       getOrSetRefDataInCacheMock.mockResolvedValue(cachedOutcomes)
       remandAndSentencingApiClient.getChargeOutcomesByIds.mockResolvedValue(apiOutcomes)

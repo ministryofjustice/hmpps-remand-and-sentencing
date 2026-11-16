@@ -12,7 +12,7 @@ import { getSortedDocumentsWithUiDocumentType, offencesToOffenceDescriptions, or
 import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
-import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi'
 import DocumentManagementService from '../services/documentManagementService'
 import NonSentencingJourneyUrls from './data/NonSentencingJourneyUrls'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'

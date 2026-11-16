@@ -2,10 +2,7 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import {
-  PagedCourtCase,
-  SearchCourtCasesPage,
-} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { PagedCourtCase, SearchCourtCasesPage } from '../../@types/remandAndSentencingApi'
 import config from '../../config'
 
 let app: Express
@@ -376,6 +373,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -457,6 +455,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -501,6 +500,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -573,6 +573,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -617,6 +618,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -689,6 +691,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -727,6 +730,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -799,6 +803,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },
@@ -843,6 +848,7 @@ describe('GET Start', () => {
                 buttonText: 'Review remand warrant',
                 buttonHref: 'http://localhost:3007/person/A1234AB/review',
                 type: 'HMCTS_API_DOCUMENT_RECEIVED',
+                messageIsHtml: false,
               },
             ],
           },

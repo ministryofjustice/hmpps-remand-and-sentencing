@@ -1,14 +1,16 @@
 import type { Sentence } from 'models'
 import type { CourtCaseAlternativeSentenceLengthForm, SentenceLengthForm } from 'forms'
 import type {
-  APISentence,
+  Sentence as APISentence,
   NextCourtAppearance,
-  PageCourtCaseAppearance,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+  CourtAppearance as PageCourtCaseAppearance,
+  PagedSentence,
+} from '../@types/remandAndSentencingApi'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   apiSentenceToSentence,
   nextCourtAppearanceToCourtAppearance,
+  pagedSentenceToSentence,
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthFormToSentenceLength,
   sentenceToCreateSentence,
@@ -69,6 +71,18 @@ describe('mapping API to session util tests', () => {
     } as APISentence
     const result = apiSentenceToSentence(apiSentence)
     expect(result.fineAmount).toEqual(apiSentence.fineAmount.fineAmount)
+  })
+
+  it.each([true, false])('should carry hasRecall=%s through to the session sentence', hasRecall => {
+    const apiSentence = { hasRecall, periodLengths: [] } as APISentence
+    expect(apiSentenceToSentence(apiSentence).hasRecall).toEqual(hasRecall)
+  })
+})
+
+describe('mapping Paged API to session util tests', () => {
+  it.each([true, false])('should carry hasRecall=%s through to the paged session sentence', hasRecall => {
+    const pagedSentence = { hasRecall, periodLengths: [] } as PagedSentence
+    expect(pagedSentenceToSentence(pagedSentence).hasRecall).toEqual(hasRecall)
   })
 })
 

@@ -38,14 +38,14 @@ import config from '../config'
 import logger from '../../logger'
 import { periodLengthsToSentenceLengths } from './mappingUtils'
 import type {
-  AppearanceOutcome,
+  CourtAppearanceOutcome,
   AppearanceToChainTo,
   NextCourtAppearance,
-  OffenceOutcome,
+  ChargeOutcome,
   PagedMergedFromCase,
   PagedMergedToCase,
   SentenceToChainTo,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import { BREACH_WARRANT_TYPES } from './constants'
 
 type Error = {
@@ -143,7 +143,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter(
     'appearanceOutcomeOrLegacy',
-    (appearanceOutcome: AppearanceOutcome, legacyData: Record<string, never>) => {
+    (appearanceOutcome: CourtAppearanceOutcome, legacyData: Record<string, never>) => {
       if (appearanceOutcome) {
         return appearanceOutcome.outcomeName
       }
@@ -154,7 +154,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     },
   )
 
-  njkEnv.addFilter('chargeOutcomeOrLegacy', (offenceOutcome: OffenceOutcome, legacyData: Record<string, never>) => {
+  njkEnv.addFilter('chargeOutcomeOrLegacy', (offenceOutcome: ChargeOutcome, legacyData: Record<string, never>) => {
     if (offenceOutcome) {
       return offenceOutcome.outcomeName
     }
@@ -280,7 +280,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       offence: Offence,
       offenceId: string,
       offenceMap: { [offenceCode: string]: string },
-      outcomeMap: { [key: string]: OffenceOutcome },
+      outcomeMap: { [key: string]: ChargeOutcome },
       consecutiveToSentenceMap: { [key: string]: ConsecutiveToDetails },
       sentenceTypeMap: { [sentenceTypeUuid: string]: string },
       courtMap: { [courtId: string]: string },

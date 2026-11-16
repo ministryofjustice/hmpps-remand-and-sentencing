@@ -10,11 +10,11 @@ import ManageOffencesService from '../services/manageOffencesService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   MergedFromCase,
-  OffenceOutcome,
+  ChargeOutcome,
   SentenceConsecutiveToDetailsResponse,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   UploadedDocument,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi'
 import {
   offenceToConsecutiveToDetails,
   pageCourtCaseAppearanceToCourtAppearance,
@@ -30,7 +30,7 @@ import FullPageError from '../model/FullPageError'
 import trimForm from '../utils/trim'
 import DocumentManagementService from '../services/documentManagementService'
 import logger from '../../logger'
-import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import type { Offence as ApiOffence } from '../@types/manageOffencesApi'
 import CourtRegisterService from '../services/courtRegisterService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
@@ -415,7 +415,7 @@ export default abstract class BaseRoutes {
     chargeUuid,
   ): Promise<{
     outcomeAutoApplied: boolean
-    outcome?: OffenceOutcome
+    outcome?: ChargeOutcome
   }> {
     const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(
       req.session,

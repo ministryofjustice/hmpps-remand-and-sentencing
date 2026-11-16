@@ -2,7 +2,7 @@ import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
-import { CourtDto, CourtDtoPage } from '../@types/courtRegisterApi/types'
+import { CourtDto, CourtDtoPage } from '../@types/courtRegisterApi'
 
 export default class CourtRegisterApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {

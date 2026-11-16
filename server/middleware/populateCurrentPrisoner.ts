@@ -3,7 +3,7 @@ import logger from '../../logger'
 import PrisonerSearchService from '../services/prisonerSearchService'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import FullPageError from '../model/FullPageError'
-import { PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi/prisonerSearchTypes'
+import { Prisoner as PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi'
 import { restoreRecoveredJourneySession } from './setUpJourneySession'
 
 export default function populateCurrentPrisoner(prisonerSearchService: PrisonerSearchService): RequestHandler {

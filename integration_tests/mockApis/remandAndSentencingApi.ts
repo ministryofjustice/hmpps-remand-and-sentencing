@@ -2056,7 +2056,9 @@ export default {
     })
   },
 
-  stubGetSentenceAppearanceDetails: (): SuperAgentRequest => {
+  stubGetSentenceAppearanceDetails: ({
+    firstChargeHasRecall = false,
+  }: { firstChargeHasRecall?: boolean } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -2106,6 +2108,7 @@ export default {
                   },
                 ],
                 sentenceServeType: 'FORTHWITH',
+                hasRecall: firstChargeHasRecall,
                 sentenceType: {
                   sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
                   description: 'SDS (Standard Determinate Sentence)',
@@ -2140,6 +2143,7 @@ export default {
                   },
                 ],
                 sentenceServeType: 'CONSECUTIVE',
+                hasRecall: false,
                 consecutiveToSentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
                 sentenceType: null,
                 legacyData: {
@@ -2189,6 +2193,7 @@ export default {
                   },
                 ],
                 sentenceServeType: 'CONSECUTIVE',
+                hasRecall: false,
                 consecutiveToSentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
                 sentenceType: {
                   sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
@@ -2227,6 +2232,7 @@ export default {
                   },
                 ],
                 sentenceServeType: 'CONCURRENT',
+                hasRecall: false,
                 consecutiveToSentenceUuid: null,
                 sentenceType: {
                   sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',

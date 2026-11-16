@@ -1,4 +1,4 @@
-import { PagedMergedFromCase } from '../remandAndSentencingApi/remandAndSentencingClientTypes'
+import { PagedMergedFromCase } from '../remandAndSentencingApi'
 
 declare module 'models' {
   export interface CourtCase {
@@ -85,6 +85,7 @@ declare module 'models' {
     returnUrlKey?: string
     status?: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MANY_CHARGES_DATA_FIX' | 'INACTIVE'
     reason?: string
+    hasRecall?: boolean
   }
 
   export interface SentenceLength {

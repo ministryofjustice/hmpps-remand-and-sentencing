@@ -774,4 +774,61 @@ context('Sentencing appearance details Page', () => {
         .should('equal', 'There is a problem You must enter the conviction date before editing a sentence type')
     })
   })
+
+  context('DPS sentence hearing with a recall', () => {
+    beforeEach(() => {
+      cy.task('stubGetSentenceAppearanceDetails', { firstChargeHasRecall: true })
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+          description: 'Imprisonment in Default of Fine',
+          classification: 'FINE',
+        },
+        {
+          sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+          description: 'EDS (Extended Determinate Sentence)',
+          classification: 'EXTENDED',
+        },
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Imprisonment',
+          outcomeType: 'SENTENCING',
+        },
+      ])
+      cy.task('stubOverallSentenceLengthPass')
+      cy.task('stubGetAllAppearanceOutcomes')
+      cy.signIn()
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
+      )
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    })
+
+    it('shows the inset and hides edit links', () => {
+      courtCaseHearingDetailsPage
+        .hasAnyRecallsInset()
+        .should('exist')
+        .contains("You can't edit information on a sentencing hearing that's been recalled")
+      courtCaseHearingDetailsPage.hearingSummaryList().find('a').should('not.exist')
+      courtCaseHearingDetailsPage.overallSummaryList().find('a').should('not.exist')
+      cy.get('[data-qa=addAnotherOffence]').should('not.exist')
+      courtCaseHearingDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '71bb9f7e-971c-4c34-9a33-43478baee74f',
+        )
+        .should('not.exist')
+      courtCaseHearingDetailsPage.confirmButton().should('exist')
+      courtCaseHearingDetailsPage.markAsActiveLink('71bb9f7e-971c-4c34-9a33-43478baee74f').should('exist')
+    })
+  })
 })

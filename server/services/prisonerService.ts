@@ -1,6 +1,6 @@
 import { Readable } from 'stream'
 import PrisonApiClient from '../data/prisonApiClient'
-import { Agency, CaseLoad, InmateDetail } from '../@types/prisonApi/types'
+import { Agency, CaseLoad, InmateDetail } from '../@types/prisonApi'
 
 export default class PrisonerService {
   constructor(private readonly prisonApiClient: PrisonApiClient) {}

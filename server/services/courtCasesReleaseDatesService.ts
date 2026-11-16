@@ -1,5 +1,5 @@
 import CourtCasesReleaseDatesApiClient from '../data/courtCasesReleaseDatesApiClient'
-import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi'
 
 export default class CourtCasesReleaseDatesService {
   constructor(private readonly courtCasesReleaseDatesApiClient: CourtCasesReleaseDatesApiClient) {}

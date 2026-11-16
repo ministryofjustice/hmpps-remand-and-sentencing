@@ -1,4 +1,4 @@
-import type { CaseLoad } from '../@types/prisonApi/types'
+import type { CaseLoad } from '../@types/prisonApi'
 import PrisonerService from './prisonerService'
 
 export default class UserService {

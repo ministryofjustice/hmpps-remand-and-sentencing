@@ -38,7 +38,7 @@ import {
   SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
   SentenceToChainTo,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi/index'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'

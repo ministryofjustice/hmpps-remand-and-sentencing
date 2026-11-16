@@ -22,8 +22,8 @@ import {
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   MissingSentenceAppearance,
-  PageCourtCaseAppearance,
-  PageCourtCaseContent,
+  CourtAppearance as PageCourtCaseAppearance,
+  CourtCase as PageCourtCaseContent,
   PersonCourtCaseCount,
   PrisonerDocuments,
   PrisonerSentenceEnvelopes,
@@ -40,7 +40,7 @@ import {
   CreateF986,
   F986EligibleCourtAppearance,
   UnconfirmedCourtCases,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi/index'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import {
   courtAppearanceToCreateCourtAppearance,

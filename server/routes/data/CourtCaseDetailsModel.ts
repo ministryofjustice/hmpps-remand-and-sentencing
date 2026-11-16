@@ -3,9 +3,9 @@ import { formatLengths } from '@ministryofjustice/hmpps-court-cases-release-date
 import {
   MergedFromCase,
   MergedToCaseDetails,
-  PageCourtCaseAppearance,
-  PageCourtCaseContent,
-} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+  CourtAppearance as PageCourtCaseAppearance,
+  CourtCase as PageCourtCaseContent,
+} from '../../@types/remandAndSentencingApi/index'
 import config from '../../config'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
 import { formatDate, getSortedDocumentsWithUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'

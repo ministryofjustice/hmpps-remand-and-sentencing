@@ -49,12 +49,12 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import {
-  PageCourtCaseContent,
+  CourtCase as PageCourtCaseContent,
   SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
   UnconfirmedCourtCases,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi/index'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import SentencingTaskListModel from './data/SentencingTaskListModel'

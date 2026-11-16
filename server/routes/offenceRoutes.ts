@@ -49,10 +49,7 @@ import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import InvalidatedFrom from '../resources/invalidatedFromTypes'
 import OutcomeFlow from '../resources/outcomeFlowTypes'
-import {
-  SentenceConsecutiveToDetails,
-  SentenceType,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { SentenceConsecutiveToDetails, SentenceType } from '../@types/remandAndSentencingApi/index'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID, { BREACH_WARRANT_TYPES } from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'

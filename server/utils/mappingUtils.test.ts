@@ -1,10 +1,10 @@
 import type { Sentence } from 'models'
 import type { CourtCaseAlternativeSentenceLengthForm, SentenceLengthForm } from 'forms'
 import type {
-  APISentence,
+  Sentence as APISentence,
   NextCourtAppearance,
-  PageCourtCaseAppearance,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+  CourtAppearance as PageCourtCaseAppearance,
+} from '../@types/remandAndSentencingApi/index'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   apiSentenceToSentence,

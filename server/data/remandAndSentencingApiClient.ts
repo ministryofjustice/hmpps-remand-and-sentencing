@@ -4,7 +4,7 @@ import type { FileDownload } from 'models'
 import {
   AggravatingFactor,
   AllSentenceTypes,
-  AppearanceOutcome,
+  CourtAppearanceOutcome,
   AppearanceType,
   ConsecutiveChainValidationRequest,
   CourtAppearanceSubtype,
@@ -27,9 +27,9 @@ import {
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   MissingSentenceAppearance,
-  OffenceOutcome,
-  PageCourtCaseAppearance,
-  PageCourtCaseContent,
+  ChargeOutcome,
+  CourtAppearance as PageCourtCaseAppearance,
+  CourtCase as PageCourtCaseContent,
   PersonCourtCaseCount,
   PrisonerDocuments,
   PrisonerSentenceEnvelopes,
@@ -53,7 +53,7 @@ import {
   ConfirmConsecutiveToSentenceFixes,
   HmctsResultCode,
   CreateHmctsResultCode,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../@types/remandAndSentencingApi/index'
 import config from '../config'
 import logger from '../../logger'
 
@@ -67,13 +67,13 @@ export default class RemandAndSentencingApiClient extends RestClient {
     courtCaseUuid: string,
     username: string,
   ): Promise<CreateCourtCaseResponse> {
-    return (await this.put(
+    return this.put(
       {
         data: createCourtCase,
         path: `/court-case/${courtCaseUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<CreateCourtCaseResponse>
+    )
   }
 
   async updateCourtCaseStatus(
@@ -116,21 +116,21 @@ export default class RemandAndSentencingApiClient extends RestClient {
   }
 
   async getF986EligibleAppearances(prisonerId: string, username: string): Promise<F986EligibleCourtAppearance[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/document-generator/f986/person/${prisonerId}/eligible-appearances`,
       },
       asSystem(username),
-    )) as unknown as Promise<F986EligibleCourtAppearance[]>
+    )
   }
 
   async hasF986EligibleAppearances(prisonerId: string, username: string): Promise<boolean> {
-    return (await this.get(
+    return this.get(
       {
         path: `/document-generator/f986/person/${prisonerId}/eligible-appearances/exists`,
       },
       asSystem(username),
-    )) as unknown as Promise<boolean>
+    )
   }
 
   async putCourtAppearance(
@@ -138,49 +138,49 @@ export default class RemandAndSentencingApiClient extends RestClient {
     createCourtAppearance: CreateCourtAppearance,
     username: string,
   ): Promise<CreateCourtAppearanceResponse> {
-    return (await this.put(
+    return this.put(
       {
         data: createCourtAppearance,
         path: `/court-appearance/${appearanceUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<CreateCourtAppearanceResponse>
+    )
   }
 
   async getLatestAppearanceByCourtCaseUuid(courtCaseUuid: string, username: string): Promise<PageCourtCaseAppearance> {
-    return (await this.get(
+    return this.get(
       {
         path: `/court-case/${courtCaseUuid}/latest-appearance`,
       },
       asSystem(username),
-    )) as unknown as Promise<PageCourtCaseAppearance>
+    )
   }
 
   async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, username: string): Promise<PageCourtCaseAppearance> {
-    return (await this.get(
+    return this.get(
       {
         path: `/court-appearance/${appearanceUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<PageCourtCaseAppearance>
+    )
   }
 
   async deleteCourtAppearance(appearanceUuid: string, username: string): Promise<void> {
-    return (await this.delete(
+    return this.delete(
       {
         path: `/court-appearance/${appearanceUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<void>
+    )
   }
 
   async getCourtCaseByUuid(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {
-    return (await this.get(
+    return this.get(
       {
         path: `/court-case/${courtCaseUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<PageCourtCaseContent>
+    )
   }
 
   async searchSentenceTypes(
@@ -206,16 +206,16 @@ export default class RemandAndSentencingApiClient extends RestClient {
   }
 
   async getSentenceTypeById(sentenceTypeId: string, username: string): Promise<SentenceType> {
-    return (await this.get(
+    return this.get(
       {
         path: `/sentence-type/${sentenceTypeId}`,
       },
       asSystem(username),
-    )) as unknown as Promise<SentenceType>
+    )
   }
 
   async getSentenceTypesByIds(sentenceTypeIds: string[], username: string): Promise<SentenceType[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/sentence-type/uuid/multiple`,
         query: {
@@ -223,11 +223,11 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentenceType[]>
+    )
   }
 
-  async getAllAppearanceOutcomes(username: string, statuses: string = 'ACTIVE'): Promise<AppearanceOutcome[]> {
-    return (await this.get(
+  async getAllAppearanceOutcomes(username: string, statuses: string = 'ACTIVE'): Promise<CourtAppearanceOutcome[]> {
+    return this.get(
       {
         path: `/appearance-outcome/status`,
         query: {
@@ -235,20 +235,20 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<AppearanceOutcome[]>
+    )
   }
 
-  async getAppearanceOutcomeByUuid(uuid: string, username: string): Promise<AppearanceOutcome> {
-    return (await this.get(
+  async getAppearanceOutcomeByUuid(uuid: string, username: string): Promise<CourtAppearanceOutcome> {
+    return this.get(
       {
         path: `/appearance-outcome/${uuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<AppearanceOutcome>
+    )
   }
 
-  async getAllChargeOutcomes(username: string, statuses: string = 'ACTIVE'): Promise<OffenceOutcome[]> {
-    return (await this.get(
+  async getAllChargeOutcomes(username: string, statuses: string = 'ACTIVE'): Promise<ChargeOutcome[]> {
+    return this.get(
       {
         path: `/charge-outcome/status`,
         query: {
@@ -256,11 +256,11 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<OffenceOutcome[]>
+    )
   }
 
-  async getChargeOutcomesByIds(outcomeIds: string[], username: string): Promise<OffenceOutcome[]> {
-    return (await this.get(
+  async getChargeOutcomesByIds(outcomeIds: string[], username: string): Promise<ChargeOutcome[]> {
+    return this.get(
       {
         path: `/charge-outcome/uuid/multiple`,
         query: {
@@ -268,20 +268,20 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<OffenceOutcome[]>
+    )
   }
 
-  async getChargeOutcomeById(outcomeId: string, username: string): Promise<OffenceOutcome> {
-    return (await this.get(
+  async getChargeOutcomeById(outcomeId: string, username: string): Promise<ChargeOutcome> {
+    return this.get(
       {
         path: `/charge-outcome/${outcomeId}`,
       },
       asSystem(username),
-    )) as unknown as Promise<OffenceOutcome>
+    )
   }
 
   async getAppearanceTypes(username: string): Promise<AppearanceType[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/appearance-type/status`,
         query: {
@@ -289,34 +289,34 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<AppearanceType[]>
+    )
   }
 
   async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
-    return (await this.get(
+    return this.get(
       {
         path: `/appearance-type/${appearanceTypeUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<AppearanceType>
+    )
   }
 
   async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/legacy/sentence-type/all/summary`,
       },
       asSystem(username),
-    )) as unknown as Promise<LegacySentenceTypeGroupingSummary[]>
+    )
   }
 
   async getLegacySentenceTypesAll(username: string): Promise<LegacySentenceType[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/legacy/sentence-type/all`,
       },
       asSystem(username),
-    )) as unknown as Promise<LegacySentenceType[]>
+    )
   }
 
   async getLegacySentenceTypesDetail(
@@ -325,12 +325,12 @@ export default class RemandAndSentencingApiClient extends RestClient {
   ): Promise<LegacySentenceType[]> {
     const encodedReference = encodeURIComponent(nomisSentenceTypeReference)
 
-    return (await this.get(
+    return this.get(
       {
         path: `/legacy/sentence-type/?nomisSentenceTypeReference=${encodedReference}`,
       },
       asSystem(username),
-    )) as unknown as Promise<LegacySentenceType[]>
+    )
   }
 
   async getLegacySentenceTypesSummary(
@@ -339,12 +339,12 @@ export default class RemandAndSentencingApiClient extends RestClient {
   ): Promise<LegacySentenceTypeGroupingSummary> {
     const encodedReference = encodeURIComponent(nomisSentenceTypeReference)
 
-    return (await this.get(
+    return this.get(
       {
         path: `/legacy/sentence-type/summary/?nomisSentenceTypeReference=${encodedReference}`,
       },
       asSystem(username),
-    )) as unknown as Promise<LegacySentenceTypeGroupingSummary>
+    )
   }
 
   async hasSentenceToChainTo(
@@ -353,7 +353,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     bookingId: string,
     username: string,
   ): Promise<HasSentenceToChainToResponse> {
-    return (await this.get(
+    return this.get(
       {
         path: `/person/${prisonerId}/has-sentence-to-chain-to`,
         query: {
@@ -362,7 +362,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<HasSentenceToChainToResponse>
+    )
   }
 
   async sentencesToChainTo(
@@ -371,7 +371,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     bookingId: string,
     username: string,
   ): Promise<SentencesToChainToResponse> {
-    return (await this.get(
+    return this.get(
       {
         path: `/person/${prisonerId}/sentences-to-chain-to`,
         query: {
@@ -380,11 +380,11 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentencesToChainToResponse>
+    )
   }
 
   async consecutiveToDetails(sentenceUuids: string[], username: string): Promise<SentenceConsecutiveToDetailsResponse> {
-    return (await this.get(
+    return this.get(
       {
         path: '/sentence/consecutive-to-details',
         query: {
@@ -392,16 +392,16 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentenceConsecutiveToDetailsResponse>
+    )
   }
 
   async courtCaseCountNumbers(courtCaseUuid: string, username: string): Promise<CourtCaseCountNumbers> {
-    return (await this.get(
+    return this.get(
       {
         path: `/court-case/${courtCaseUuid}/count-numbers`,
       },
       asSystem(username),
-    )) as unknown as Promise<CourtCaseCountNumbers>
+    )
   }
 
   async isSentenceTypeStillValid(
@@ -411,7 +411,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     offenceDate: string,
     username: string,
   ): Promise<SentenceTypeIsValid> {
-    return (await this.get(
+    return this.get(
       {
         path: `/sentence-type/${sentenceTypeId}/is-still-valid`,
         query: {
@@ -422,11 +422,11 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentenceTypeIsValid>
+    )
   }
 
   async createUploadedDocument(documents: UploadedDocument[], username: string): Promise<void> {
-    return (await this.post(
+    return this.post(
       {
         path: `/uploaded-documents`,
         data: {
@@ -434,7 +434,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<void>
+    )
   }
 
   async getLatestOffenceDateForCourtCase(
@@ -471,7 +471,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     sentenceUuids: string[],
     username: string,
   ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
-    return (await this.get(
+    return this.get(
       {
         path: `/sentence/has-sentences-after-on-other-court-appearance`,
         query: {
@@ -479,7 +479,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<HasSentenceAfterOnOtherCourtAppearanceResponse>
+    )
   }
 
   async getSentenceUuidsWithActiveSentencesAfter(
@@ -501,7 +501,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     sentenceUuids: string[],
     username: string,
   ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
-    return (await this.get(
+    return this.get(
       {
         path: `/sentence/sentences-after-on-other-court-appearance-details`,
         query: {
@@ -509,7 +509,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse>
+    )
   }
 
   async hasLoopInChain(
@@ -584,7 +584,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )
   }
 
-  async createChargeOutcome(createChargeOutcome: CreateChargeOutcome, username: string): Promise<OffenceOutcome> {
+  async createChargeOutcome(createChargeOutcome: CreateChargeOutcome, username: string): Promise<ChargeOutcome> {
     return this.post(
       {
         path: '/charge-outcome',
@@ -598,7 +598,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     chargeOutcomeUuid: string,
     updateChargeOutcome: CreateChargeOutcome,
     username: string,
-  ): Promise<OffenceOutcome> {
+  ): Promise<ChargeOutcome> {
     return this.put(
       {
         path: `/charge-outcome/${chargeOutcomeUuid}`,
@@ -611,7 +611,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   async createAppearanceOutcome(
     createAppearanceOutcome: CreateAppearanceOutcome,
     username: string,
-  ): Promise<AppearanceOutcome> {
+  ): Promise<CourtAppearanceOutcome> {
     return this.post(
       {
         path: '/appearance-outcome',
@@ -625,7 +625,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     appearanceOutcomeUuid: string,
     updateAppearanceOutcome: CreateAppearanceOutcome,
     username: string,
-  ): Promise<AppearanceOutcome> {
+  ): Promise<CourtAppearanceOutcome> {
     return this.put(
       {
         path: `/appearance-outcome/${appearanceOutcomeUuid}`,
@@ -845,7 +845,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   }
 
   async getAllHmctsResultCodes(username: string, statuses: string = 'ACTIVE'): Promise<HmctsResultCode[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/hmcts-result-code/status`,
         query: {
@@ -853,16 +853,16 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<HmctsResultCode[]>
+    )
   }
 
   async getHmctsResultCodeById(resultUuid: string, username: string): Promise<HmctsResultCode> {
-    return (await this.get(
+    return this.get(
       {
         path: `/hmcts-result-code/${resultUuid}`,
       },
       asSystem(username),
-    )) as unknown as Promise<HmctsResultCode>
+    )
   }
 
   async createHmctsResultCode(

@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import { PageCourtCaseContent } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { CourtCase as PageCourtCaseContent } from '../../@types/remandAndSentencingApi/index'
 
 let app: Express
 

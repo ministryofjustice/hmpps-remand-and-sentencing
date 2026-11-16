@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import config from '../../config'
-import type { OffenceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import type { ChargeOutcome } from '../../@types/remandAndSentencingApi/index'
 
 let app: Express
 const originalMultipleOffenceInstances = config.featureToggles.multipleOffenceInstances
@@ -41,7 +41,7 @@ const nonCustodialDuplicatedOffence = {
   duplicatedFromUuid: '6',
 } as Offence
 
-const nonCustodialOutcome: OffenceOutcome = {
+const nonCustodialOutcome: ChargeOutcome = {
   outcomeUuid: '7',
   outcomeName: 'Fine',
   outcomeType: 'NON_SENTENCING',

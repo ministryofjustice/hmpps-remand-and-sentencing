@@ -6,7 +6,7 @@ import {
   PagedLatestCourtAppearance,
   PagedMergedFromCase,
   PagedMergedToCase,
-} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+} from '../../@types/remandAndSentencingApi/index'
 import config from '../../config'
 import { pagedAppearancePeriodLengthToSentenceLength, pagedChargeToOffence } from '../../utils/mappingUtils'
 import { orderOffences, sortByDateDesc } from '../../utils/utils'

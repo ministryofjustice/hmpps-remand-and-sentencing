@@ -1,4 +1,4 @@
-import { SearchCourtCasesPage } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { SearchCourtCasesPage } from '../../@types/remandAndSentencingApi/index'
 import { govukPaginationFromPagePagedCourtCase, getPaginationResults } from './pagination'
 
 describe('pagination tests', () => {

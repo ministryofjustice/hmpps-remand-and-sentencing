@@ -130,6 +130,14 @@ context('Duplicate offence with multiple offence instances enabled', () => {
       .errorSummary()
       .should('contain', 'You must enter whether this offence is consecutive or concurrent')
       .and('contain', 'You must enter a committed on date')
+    addDuplicatedOffenceDetailsPage
+      .errorSummary()
+      .find('a[href="#edit-sentence-serve-type-cta"]')
+      .should('have.text', 'You must enter whether this offence is consecutive or concurrent')
+    addDuplicatedOffenceDetailsPage
+      .errorSummary()
+      .find('a[href="#edit-offence-date-cta"]')
+      .should('have.text', 'You must enter a committed on date')
 
     addDuplicatedOffenceDetailsPage.editOffenceDateCta().click()
     const offenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
@@ -246,6 +254,10 @@ context('Duplicate offence with multiple offence instances enabled', () => {
     addDuplicatedOffenceDetailsPage.continueButton().click()
     addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
     addDuplicatedOffenceDetailsPage.errorSummary().should('contain', 'You must enter a committed on date')
+    addDuplicatedOffenceDetailsPage
+      .errorSummary()
+      .find('a[href="#edit-offence-date-cta"]')
+      .should('have.text', 'You must enter a committed on date')
 
     addDuplicatedOffenceDetailsPage.backLink().click()
     checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')

@@ -29,7 +29,7 @@
 {% set offenceDateRow = {
       key: { text: "Committed on" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter committed on date</a>'
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta" id="edit-offence-date-cta">Enter committed on date</a>'
       },
       classes: "govuk-summary-list__row--error" if errors | length
     }%}
@@ -273,7 +273,7 @@ outcomeRow] %}
     {% set consecutiveOrConcurrentRow = {
       key: { text: "Consecutive or concurrent" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceServeTypeHref + '" data-qa="edit-sentence-serve-type-cta">Enter consecutive or concurrent</a>'
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceServeTypeHref + '" data-qa="edit-sentence-serve-type-cta" id="edit-sentence-serve-type-cta">Enter consecutive or concurrent</a>'
       },
       classes: "govuk-summary-list__row--error" if errors | length
     } %}

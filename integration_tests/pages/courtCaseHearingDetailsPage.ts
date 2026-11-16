@@ -17,6 +17,8 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
 
   mergedCaseInset = (): PageElement => cy.get(`[data-qa=mergedFromText]`)
 
+  hasAnyRecallsInset = (): PageElement => cy.get('[data-qa=hasAnyRecallsInset]')
+
   editFieldLink = (
     personId: string,
     courtCaseReference: string,

@@ -1,6 +1,6 @@
-import Page from '../../../pages/page'
-import StartPage from '../../../pages/startPage'
-import ViewF986DocumentsPage from '../../../pages/viewF986DocumentsPage'
+import Page from '../../pages/page'
+import StartPage from '../../pages/startPage'
+import ViewF986DocumentsPage from '../../pages/viewF986DocumentsPage'
 
 interface CourtHearingWithFine {
   appearanceUuid: string

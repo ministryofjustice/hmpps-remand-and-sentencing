@@ -838,21 +838,13 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
-    const isExistingOffenceGainingSentence =
-      (existingOffence.outcomeUuid || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
-      (!existingOffence.sentence || !potentialOffence.sentence)
-    const isDuplicatedOffenceGainingSentence =
-      Boolean(potentialOffence.duplicatedFromUuid) && !potentialOffence.sentence
-    if (
-      (isExistingOffenceGainingSentence || isDuplicatedOffenceGainingSentence) &&
-      outcome.outcomeType === 'SENTENCING'
-    ) {
-      this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference, chargeUuid)
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
-      )
-    }
     if (submitToEditOffence) {
+      if (outcome.outcomeType === 'SENTENCING' && !existingOffence.sentence && !potentialOffence.sentence) {
+        this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference, chargeUuid)
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )

@@ -51,7 +51,7 @@ import InvalidatedFrom from '../resources/invalidatedFromTypes'
 import OutcomeFlow from '../resources/outcomeFlowTypes'
 import { SentenceConsecutiveToDetails, SentenceType } from '../@types/remandAndSentencingApi'
 import RefDataService from '../services/refDataService'
-import REPLACEMENT_OUTCOME_UUID, { BREACH_WARRANT_TYPES } from '../utils/constants'
+import REPLACEMENT_OUTCOME_UUID, { BREACH_WARRANT_TYPES, NO_OFFENCE_VALUE } from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi'
@@ -1351,8 +1351,10 @@ export default class OffenceRoutes extends BaseRoutes {
       const { offenceValue, hasOffenceValue } = offence || {}
 
       offenceValueForm = {
-        hasOffenceValue: offenceValue === -1 ? 'false' : hasOffenceValue,
-        ...(offenceValue !== undefined && offenceValue !== null && offenceValue !== -1 ? { offenceValue } : {}),
+        hasOffenceValue: offenceValue === NO_OFFENCE_VALUE ? 'false' : hasOffenceValue,
+        ...(offenceValue !== undefined && offenceValue !== null && offenceValue !== NO_OFFENCE_VALUE
+          ? { offenceValue }
+          : {}),
       }
     }
 

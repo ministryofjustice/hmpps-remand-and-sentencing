@@ -1,9 +1,6 @@
 import dayjs from 'dayjs'
 import Page from '../../pages/page'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
-import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
-import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
-import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
@@ -121,18 +118,6 @@ context('New Remand Court Case from hmcts data journey with offence data', () =>
         },
       ])
     courtCaseTaskListPage.hearingInformationLink().click()
-
-    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
-    courtCaseReferencePage.input().should('have.value', 'C894623')
-    courtCaseReferencePage.continueButton().click()
-    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').should('have.value', '5')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').should('have.value', '7')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').should('have.value', '2026')
-    courtCaseWarrantDatePage.continueButton().click()
-    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
-    courtCaseCourtNamePage.autoCompleteInput().should('have.value', 'Accrington Youth Court')
-    courtCaseCourtNamePage.continueButton().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {

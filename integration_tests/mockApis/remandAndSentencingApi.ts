@@ -5864,6 +5864,74 @@ export default {
     })
   },
 
+  stubHmctsRemandMinimalCourtData() {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath:
+          '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/prisoner/A1234AB/appearance',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
+          hmctsCourtHearingId: '2f29211a-3938-46ad-8a22-53d1b5819bbf',
+          outcome: null,
+          courtCode: null,
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: null,
+          appearanceDate: '2026-07-05',
+          warrantType: 'NON_SENTENCING',
+          nextCourtAppearance: {
+            appearanceDate: null,
+            appearanceTime: null,
+            courtCode: null,
+            appearanceType: {
+              appearanceTypeUuid: '00000000-0000-0000-0000-000000000000',
+              description: 'Unknown appearance type',
+              displayOrder: 1,
+              hasSubtypes: false,
+            },
+            futureSkeletonAppearanceUuid: '00000000-0000-0000-0000-000000000000',
+            courtAppearanceSubType: null,
+            hmctsCourtHearingId: 'effc137e-7f66-441d-99ee-6bec9551eb0c',
+          },
+          charges: [
+            {
+              chargeUuid: '3f0dd738-91e4-4557-bb33-0abd317b940f',
+              hmctsChargeId: '58f3bc60-e9a3-4700-a272-4b34350ceccb',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2026-06-06',
+              offenceEndDate: null,
+              outcome: null,
+              aggravatingFactors: [],
+              sentence: null,
+              legacyData: null,
+              mergedFromCase: null,
+              createdAt: '2026-09-04T14:44:35.886682554+01:00',
+            },
+          ],
+          documents: [
+            {
+              documentUUID: 'doc-uuid-1',
+              fileName: 'court-document.pdf',
+              documentType: 'HMCTS_WARRANT',
+              uploadedAt: '2024-06-01T10:00:00Z',
+              uploadedBy: 'user1',
+              courtDataIngested: false,
+            },
+          ],
+          overallConvictionDate: null,
+          legacyData: null,
+          periodLengths: [],
+          source: 'DPS',
+          deleteStatus: 'SUPPORTED',
+        },
+      },
+    })
+  },
+
   stubHmctsSentencingCourtData: (): SuperAgentRequest => {
     return stubFor({
       request: {

@@ -229,11 +229,8 @@ export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   } as Sentence
 }
 
-const getHasOffenceValue = (value?: number | null, hasSentence?: boolean): string | undefined => {
-  if (value !== undefined && value !== null) {
-    return 'true'
-  }
-  return hasSentence ? 'false' : undefined
+const getHasOffenceValue = (value?: number | null): string => {
+  return value !== undefined && value !== null && value >= 0 ? 'true' : 'false'
 }
 
 export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offence => {
@@ -244,7 +241,7 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
     hmctsChargeId: charge.hmctsChargeId,
     aggravatingFactors: charge.aggravatingFactors,
     offenceValue: charge.value,
-    hasOffenceValue: getHasOffenceValue(charge.value, Boolean(charge.sentence)),
+    hasOffenceValue: getHasOffenceValue(charge.value),
     createChargeOrder,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
@@ -262,7 +259,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, createChargeOrder
     aggravatingFactors: pagedCharge.aggravatingFactors,
     createChargeOrder,
     offenceValue: pagedCharge.value,
-    hasOffenceValue: getHasOffenceValue(pagedCharge.value, Boolean(pagedCharge.sentence)),
+    hasOffenceValue: getHasOffenceValue(pagedCharge.value),
     ...(pagedCharge.offenceStartDate && { offenceStartDate: dayjs(pagedCharge.offenceStartDate).toDate() }),
     ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),

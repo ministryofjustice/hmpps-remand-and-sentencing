@@ -4,14 +4,17 @@ import request from 'supertest'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import config from '../../config'
 
 let app: Express
+const originalChargeValue = config.featureToggles.chargeValue
 
 beforeEach(() => {
   app = appWithAllRoutes({})
 })
 
 afterEach(() => {
+  config.featureToggles.chargeValue = originalChargeValue
   jest.resetAllMocks()
 })
 
@@ -85,5 +88,209 @@ describe('GET Offence outcome', () => {
         expect(offenceParagraph).toContain('CC12345 - An offence description')
         expect($('[data-qa=legendParagraph]').length).toBe(0)
       })
+  })
+})
+
+describe('POST Offence outcome & Offence value routing', () => {
+  it('redirects to offence-value when adding a non-custodial offence and chargeValue is enabled', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: {
+        outcomeUuid: '1',
+        outcomeType: 'REMAND',
+        displayOrder: 10,
+        nomisCode: '10',
+        outcomeName: 'Remanded in custody',
+        dispositionCode: 'I',
+        status: 'ACTIVE',
+      },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '1',
+    })
+
+    await request(app)
+      .post('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
+      .send({ offenceOutcome: '1' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-value')
+  })
+
+  it('does not force revisiting offence-value when switching a non-custodial offence with existing offenceValue to sentencing', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '1',
+      offenceValue: 150,
+      hasOffenceValue: 'true',
+    })
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: {
+        outcomeUuid: '2',
+        outcomeType: 'SENTENCING',
+        displayOrder: 10,
+        nomisCode: '20',
+        outcomeName: 'Imprisonment',
+        dispositionCode: 'F',
+        status: 'ACTIVE',
+      },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '2',
+      offenceValue: 150,
+      hasOffenceValue: 'true',
+    })
+
+    await request(app)
+      .post(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome?submitToEditOffence=true',
+      )
+      .send({ offenceOutcome: '2' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
+  })
+
+  it('does not redirect to offence-value when switching a non-custodial offence without offenceValue (null/undefined) to sentencing', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '1',
+    })
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: {
+        outcomeUuid: '2',
+        outcomeType: 'SENTENCING',
+        displayOrder: 10,
+        nomisCode: '20',
+        outcomeName: 'Imprisonment',
+        dispositionCode: 'F',
+        status: 'ACTIVE',
+      },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '2',
+    })
+
+    await request(app)
+      .post(
+        '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome?submitToEditOffence=true',
+      )
+      .send({ offenceOutcome: '2' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
+  })
+
+  it('does not redirect to offence-value when updating outcome via update-offence-outcome to sentencing', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.offenceService.getOutcomeUpdateChargeUuids.mockReturnValue([])
+    defaultServices.offenceService.updateOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: {
+        outcomeUuid: '2',
+        outcomeType: 'SENTENCING',
+        displayOrder: 10,
+        nomisCode: '20',
+        outcomeName: 'Imprisonment',
+        dispositionCode: 'F',
+        status: 'ACTIVE',
+      },
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '2',
+      offenceValue: null,
+    })
+
+    await request(app)
+      .post('/person/A1234AB/edit-court-case/0/add-court-appearance/0/offences/0/update-offence-outcome')
+      .send({ offenceOutcome: '2' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/edit-court-case/0/add-court-appearance/0/offences/0/count-number')
+  })
+
+  it('treats offenceValue === -1 as hasOffenceValue = false and empty value when loading offence-value page', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      offenceValue: -1,
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      warrantType: 'NON_SENTENCING',
+      caseOutcomeAppliedAll: 'false',
+    } as CourtAppearance)
+    defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({
+      id: 0,
+      code: 'CC12345',
+      description: 'An offence description',
+      offenceType: 'A',
+      revisionId: 0,
+      startDate: '2020-01-01',
+      endDate: '2030-01-01',
+      changedDate: '2020-01-01',
+      isChild: false,
+    })
+
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-value')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    expect($('input[name="hasOffenceValue"][value="false"]').is(':checked')).toBe(true)
+    expect($('#offenceValue').val()).toBeUndefined()
+  })
+
+  it('saves non-custodial offence to appearance after submitting offence-value', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.offenceService.setOffenceValue.mockReturnValue([])
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '1',
+      offenceValue: 50,
+      hasOffenceValue: 'true',
+    })
+    defaultServices.offenceService.getAllOffences.mockReturnValue([
+      {
+        chargeUuid: '0',
+        offenceCode: 'CC12345',
+        outcomeUuid: '1',
+        offenceValue: 50,
+        hasOffenceValue: 'true',
+      },
+    ])
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
+      outcomeUuid: '1',
+      outcomeType: 'REMAND',
+      displayOrder: 10,
+      nomisCode: '10',
+      outcomeName: 'Remanded in custody',
+      dispositionCode: 'I',
+      status: 'ACTIVE',
+    })
+
+    await request(app)
+      .post('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-value')
+      .send({ hasOffenceValue: 'true', offenceValue: '50' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
   })
 })

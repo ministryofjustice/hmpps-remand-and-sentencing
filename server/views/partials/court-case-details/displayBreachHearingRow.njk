@@ -135,7 +135,7 @@
                       consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
                       sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
                       fineAmount: charge.sentence.fineAmount.fineAmount | formatDecimal,
-                      value: (charge.value | formatDecimal) if (showOffenceValuesRow and charge.sentence),
+                      value: (charge.value | formatDecimal) if showOffenceValuesRow,
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
                       courtDetails: courtMap,

@@ -10,6 +10,7 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
+import OffenceValuePage from '../../pages/offenceValuePage'
 import CourtCaseCancelCourtCasePage from '../../pages/courtCaseCancelCourtCase'
 import OffenceSentenceServeTypePage from '../../pages/offenceSentenceServeTypePage'
 
@@ -222,6 +223,10 @@ context('Duplicate offence with multiple offence instances enabled', () => {
     )
     initialOffenceOutcomePage.radioLabelContains('Lie on file').click()
     initialOffenceOutcomePage.continueButton().click()
+
+    const initialOffenceValuePage = Page.verifyOnPage(OffenceValuePage)
+    initialOffenceValuePage.radioLabelSelector('false').click()
+    initialOffenceValuePage.continueButton().click()
 
     let checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
     checkOffenceAnswersPage

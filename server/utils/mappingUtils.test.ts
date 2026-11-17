@@ -1,15 +1,20 @@
-import type { Sentence } from 'models'
+import type { Offence, Sentence } from 'models'
 import type { CourtCaseAlternativeSentenceLengthForm, SentenceLengthForm } from 'forms'
 import type {
+  Charge,
   Sentence as APISentence,
   NextCourtAppearance,
   CourtAppearance as PageCourtCaseAppearance,
+  PagedCharge,
   PagedSentence,
 } from '../@types/remandAndSentencingApi'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   apiSentenceToSentence,
+  chargeToOffence,
   nextCourtAppearanceToCourtAppearance,
+  offenceToCreateCharge,
+  pagedChargeToOffence,
   pagedSentenceToSentence,
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthFormToSentenceLength,
@@ -77,6 +82,39 @@ describe('mapping API to session util tests', () => {
     const apiSentence = { hasRecall, periodLengths: [] } as APISentence
     expect(apiSentenceToSentence(apiSentence).hasRecall).toEqual(hasRecall)
   })
+
+  it('maps offence value and hasOffenceValue for non-custodial charge with value', () => {
+    const charge = {
+      chargeUuid: '123',
+      offenceCode: 'PS90037',
+      value: 150.5,
+    } as Charge
+    const result = chargeToOffence(charge, 0)
+    expect(result.offenceValue).toEqual(150.5)
+    expect(result.hasOffenceValue).toEqual('true')
+  })
+
+  it('maps offence value and hasOffenceValue for non-custodial charge without value', () => {
+    const charge = {
+      chargeUuid: '123',
+      offenceCode: 'PS90037',
+      value: undefined,
+    } as Charge
+    const result = chargeToOffence(charge, 0)
+    expect(result.offenceValue).toBeUndefined()
+    expect(result.hasOffenceValue).toEqual('false')
+  })
+
+  it('maps hasOffenceValue to false when charge value is -1', () => {
+    const charge = {
+      chargeUuid: '123',
+      offenceCode: 'PS90037',
+      value: -1,
+    } as Charge
+    const result = chargeToOffence(charge, 0)
+    expect(result.offenceValue).toEqual(-1)
+    expect(result.hasOffenceValue).toEqual('false')
+  })
 })
 
 describe('mapping Paged API to session util tests', () => {
@@ -84,9 +122,27 @@ describe('mapping Paged API to session util tests', () => {
     const pagedSentence = { hasRecall, periodLengths: [] } as PagedSentence
     expect(pagedSentenceToSentence(pagedSentence).hasRecall).toEqual(hasRecall)
   })
+
+  it('maps offence value and hasOffenceValue for paged non-custodial charge with value', () => {
+    const pagedCharge = {
+      offenceCode: 'PS90037',
+      value: 200,
+    } as PagedCharge
+    const result = pagedChargeToOffence(pagedCharge, 0)
+    expect(result.offenceValue).toEqual(200)
+    expect(result.hasOffenceValue).toEqual('true')
+  })
 })
 
 describe('mapping session to API util tests', () => {
+  it.each([100, -1, undefined])('maps offenceValue=%s to CreateCharge.value', offenceValue => {
+    const offence = {
+      offenceCode: 'PS90037',
+      offenceValue,
+    } as Offence
+    const result = offenceToCreateCharge(offence, 'PR123', 'app-123')
+    expect(result.value).toEqual(offenceValue)
+  })
   it('correctly map fine amount', () => {
     const sentence = {
       fineAmount: 150,

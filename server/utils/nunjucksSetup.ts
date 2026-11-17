@@ -312,7 +312,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
           offence.sentence?.legacyData,
         ),
         fineAmount: formatDecimal(offence.sentence?.fineAmount),
-        value: config.featureToggles.chargeValue && offence.sentence ? formatDecimal(offence.offenceValue) : undefined,
+        value: config.featureToggles.chargeValue ? formatDecimal(offence.offenceValue) : undefined,
         mergedFromCase: offence.mergedFromCase,
         courtDetails: courtMap,
         id: offenceId,

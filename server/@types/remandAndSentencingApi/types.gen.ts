@@ -204,7 +204,7 @@ export type EventMetadata = {
   previousSentenceIds?: Array<string> | null
   originalSentenceId?: string | null
   isOnFutureAppearance?: boolean | null
-  isBreach: boolean | null
+  isBreach?: boolean | null
   courtAppearanceIds?: Array<string> | null
   chargeIds?: Array<string> | null
   periodLengthIds?: Array<string> | null
@@ -650,6 +650,7 @@ export type MigrationCreateCharge = {
   sentence?: MigrationCreateSentence | null
   mergedFromCaseId?: number | null
   mergedFromDate?: string | null
+  value?: number | null
 }
 
 export type MigrationCreateCourtAppearance = {
@@ -759,6 +760,7 @@ export type MergeCreateCharge = {
   sentence?: MergeCreateSentence | null
   mergedFromCaseId?: number | null
   mergedFromDate?: string | null
+  value?: number | null
 }
 
 export type MergeCreateCourtAppearance = {
@@ -855,6 +857,7 @@ export type BookingCreateCharge = {
   sentence?: BookingCreateSentence | null
   mergedFromCaseId?: number | null
   mergedFromDate?: string | null
+  value?: number | null
 }
 
 export type BookingCreateCourtAppearance = {

@@ -44,7 +44,7 @@ import { ChargeOutcome } from '../@types/remandAndSentencingApi'
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
-import REPLACEMENT_OUTCOME_UUID, { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
+import REPLACEMENT_OUTCOME_UUID, { NO_OFFENCE_VALUE, SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
 
 export default class OffenceService {
   constructor(
@@ -421,7 +421,7 @@ export default class OffenceService {
 
       offence.hasOffenceValue = offenceValueForm.hasOffenceValue
       offence.offenceValue =
-        offenceValueForm.hasOffenceValue === 'true' ? Number(offenceValueForm.offenceValue) : undefined
+        offenceValueForm.hasOffenceValue === 'true' ? Number(offenceValueForm.offenceValue) : NO_OFFENCE_VALUE
 
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -471,8 +471,6 @@ export default class OffenceService {
         }
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
-        delete offence.offenceValue
-        delete offence.hasOffenceValue
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -511,8 +509,6 @@ export default class OffenceService {
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
-        delete offence.offenceValue
-        delete offence.hasOffenceValue
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -1686,8 +1682,6 @@ export default class OffenceService {
         delete offence.sentence
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
-        delete offence.offenceValue
-        delete offence.hasOffenceValue
       }
 
       // eslint-disable-next-line no-param-reassign

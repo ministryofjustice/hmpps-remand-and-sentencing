@@ -725,7 +725,7 @@ describe('offenceService', () => {
   })
 
   describe('setOffenceValue', () => {
-    it('clears offence value when no is selected', () => {
+    it('sets offence value to -1 when no is selected', () => {
       const nomsId = 'P123'
       const courtCaseReference = '1'
       const chargeUuid = '1'
@@ -749,7 +749,191 @@ describe('offenceService', () => {
 
       expect(errors).toEqual([])
       expect(offence.hasOffenceValue).toBe('false')
-      expect(offence.offenceValue).toBeUndefined()
+      expect(offence.offenceValue).toBe(-1)
+    })
+
+    it('sets numeric offence value when yes is selected', () => {
+      const nomsId = 'P123'
+      const courtCaseReference = '1'
+      const chargeUuid = '1'
+
+      const offence = {
+        chargeUuid,
+      } as Offence
+
+      const session = {
+        offences: {
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
+        },
+      } as unknown as Partial<SessionData>
+
+      const errors = service.setOffenceValue(session, nomsId, courtCaseReference, chargeUuid, {
+        hasOffenceValue: 'true',
+        offenceValue: 250.5,
+      })
+
+      expect(errors).toEqual([])
+      expect(offence.hasOffenceValue).toBe('true')
+      expect(offence.offenceValue).toBe(250.5)
+    })
+  })
+
+  describe('outcome changes retain offenceValue and hasOffenceValue', () => {
+    it('retains offenceValue and hasOffenceValue in setOffenceOutcome when changing to non-sentencing outcome', async () => {
+      const nomsId = 'P123'
+      const courtCaseReference = '1'
+      const chargeUuid = '1'
+
+      const offence = {
+        chargeUuid,
+        hasOffenceValue: 'true',
+        offenceValue: 500,
+        findingOfDomesticAbuse: true,
+        aggravatingFactors: [{ code: 'AF1' }],
+        sentence: {
+          sentenceUuid: 's1',
+        },
+      } as unknown as Offence
+
+      const session = {
+        offences: {
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
+        },
+      } as unknown as Partial<SessionData>
+
+      refDataService.getChargeOutcomeById.mockResolvedValue({
+        outcomeUuid: 'non-sentencing-uuid',
+        outcomeName: 'Remanded in custody',
+        outcomeType: 'REMAND',
+        displayOrder: 1,
+        dispositionCode: 'I',
+        nomisCode: '10',
+        status: 'ACTIVE',
+      })
+      remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance.mockResolvedValue({
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
+
+      const { errors } = await service.setOffenceOutcome(
+        session,
+        nomsId,
+        courtCaseReference,
+        { offenceOutcome: 'non-sentencing-uuid' },
+        [],
+        'user1',
+        chargeUuid,
+      )
+
+      expect(errors).toEqual([])
+      expect(offence.sentence).toBeUndefined()
+      expect(offence.findingOfDomesticAbuse).toBeUndefined()
+      expect(offence.aggravatingFactors).toBeUndefined()
+      expect(offence.offenceValue).toBe(500)
+      expect(offence.hasOffenceValue).toBe('true')
+    })
+
+    it('retains offenceValue and hasOffenceValue in updateOffenceOutcome when changing to non-sentencing outcome', async () => {
+      const nomsId = 'P123'
+      const courtCaseReference = '1'
+      const chargeUuid = '1'
+
+      const offence = {
+        chargeUuid,
+        hasOffenceValue: 'true',
+        offenceValue: 750,
+        findingOfDomesticAbuse: true,
+        aggravatingFactors: [{ code: 'AF1' }],
+        sentence: {
+          sentenceUuid: 's1',
+        },
+      } as unknown as Offence
+
+      const session = {
+        offences: {
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
+        },
+      } as unknown as Partial<SessionData>
+
+      refDataService.getChargeOutcomeById.mockResolvedValue({
+        outcomeUuid: 'non-sentencing-uuid',
+        outcomeName: 'Dismissed',
+        outcomeType: 'NON_CUSTODIAL',
+        displayOrder: 1,
+        dispositionCode: 'F',
+        nomisCode: '20',
+        status: 'ACTIVE',
+      })
+
+      const { errors } = await service.updateOffenceOutcome(
+        session,
+        nomsId,
+        courtCaseReference,
+        { offenceOutcome: 'non-sentencing-uuid' },
+        chargeUuid,
+        'user1',
+      )
+
+      expect(errors).toEqual([])
+      expect(offence.sentence).toBeUndefined()
+      expect(offence.findingOfDomesticAbuse).toBeUndefined()
+      expect(offence.aggravatingFactors).toBeUndefined()
+      expect(offence.offenceValue).toBe(750)
+      expect(offence.hasOffenceValue).toBe('true')
+    })
+
+    it('retains offenceValue and hasOffenceValue in setOffenceAppealOutcome when changing to non-sentencing outcome', async () => {
+      const nomsId = 'P123'
+      const courtCaseReference = '1'
+      const chargeUuid = '1'
+
+      const offence = {
+        chargeUuid,
+        hasOffenceValue: 'true',
+        offenceValue: 300,
+        findingOfDomesticAbuse: true,
+        aggravatingFactors: [{ code: 'AF1' }],
+        sentence: {
+          sentenceUuid: 's1',
+        },
+      } as unknown as Offence
+
+      const session = {
+        offences: {
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
+        },
+      } as unknown as Partial<SessionData>
+
+      refDataService.getChargeOutcomeById.mockResolvedValue({
+        outcomeUuid: 'non-sentencing-uuid',
+        outcomeName: 'Quashed',
+        outcomeType: 'NON_CUSTODIAL',
+        displayOrder: 1,
+        dispositionCode: 'F',
+        nomisCode: '30',
+        status: 'ACTIVE',
+      })
+
+      const { errors } = await service.setOffenceAppealOutcome(
+        session,
+        {
+          nomsId,
+          courtCaseReference,
+          chargeUuid,
+          addOrEditCourtCase: 'edit-court-case',
+          addOrEditCourtAppearance: 'add-court-appearance',
+          appearanceReference: '1',
+        },
+        { offenceOutcome: 'non-sentencing-uuid' },
+        [],
+        'user1',
+      )
+
+      expect(errors).toEqual([])
+      expect(offence.sentence).toBeUndefined()
+      expect(offence.findingOfDomesticAbuse).toBeUndefined()
+      expect(offence.aggravatingFactors).toBeUndefined()
+      expect(offence.offenceValue).toBe(300)
+      expect(offence.hasOffenceValue).toBe('true')
     })
   })
 })

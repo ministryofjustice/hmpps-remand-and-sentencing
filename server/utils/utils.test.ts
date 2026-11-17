@@ -563,6 +563,7 @@ describe('formatDecimal', () => {
     ['undefined', undefined, undefined],
     ['null', null, undefined],
     ['empty string', '', undefined],
+    ['negative sentinel (-1)', -1, undefined],
     ['whole number', 50, '50'],
     ['whole number string', '50', '50'],
     ['single decimal place number', 99.9, '99.90'],

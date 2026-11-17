@@ -310,7 +310,7 @@ context('New Court Case journey', () => {
 
     courtCaseTaskListPage.continueButton().click()
 
-    cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
+    cy.task('verifyCreateSentenceCourtCaseRequest', { value: -1 }).should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 })

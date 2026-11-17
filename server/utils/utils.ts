@@ -57,6 +57,7 @@ export const formatDecimal = (value?: number | string | null): string | undefine
   if (value === undefined || value === null || value === '') return undefined
   const num = Number(value)
   if (Number.isNaN(num)) return String(value)
+  if (num < 0) return undefined
   return Number.isInteger(num) ? String(num) : num.toFixed(2)
 }
 

@@ -2,14 +2,17 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import config from '../../config'
 
 let app: Express
+const originalChargeValue = config.featureToggles.chargeValue
 
 beforeEach(() => {
   app = appWithAllRoutes({})
 })
 
 afterEach(() => {
+  config.featureToggles.chargeValue = originalChargeValue
   jest.resetAllMocks()
 })
 
@@ -254,5 +257,52 @@ describe('GET Edit offence', () => {
     const $ = cheerio.load(res.text)
     const enterOffenceDateCtaLink = $('[data-qa=edit-offence-date-cta]').text()
     expect(enterOffenceDateCtaLink).toContain('Enter offence date')
+  })
+
+  it('should render offence value row with Edit link for non-custodial offence when value is present', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'O1',
+      hasOffenceValue: 'true',
+      offenceValue: 125.5,
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'NON_SENTENCING',
+      offences: [],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const valueRow = $('.govuk-summary-list__row').filter(
+      (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
+    )
+    expect(valueRow.find('.govuk-summary-list__value').text().trim()).toBe('£125.50')
+    expect($('[data-qa=edit-offence-value-1]').attr('href')).toBe(
+      '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/offence-value?submitToEditOffence=true',
+    )
+  })
+
+  it('should render Add value link for non-custodial offence when offenceValue is -1 or not set', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'O1',
+      hasOffenceValue: 'false',
+      offenceValue: -1,
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'NON_SENTENCING',
+      offences: [],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    expect($('[data-qa=add-offence-value-1]').text().trim()).toBe('Add value')
+    expect(res.text).not.toContain('£-1')
   })
 })

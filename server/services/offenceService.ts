@@ -420,8 +420,7 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
 
       offence.hasOffenceValue = offenceValueForm.hasOffenceValue
-      offence.offenceValue =
-        offenceValueForm.hasOffenceValue === 'true' ? Number(offenceValueForm.offenceValue) : undefined
+      offence.offenceValue = offenceValueForm.hasOffenceValue === 'true' ? Number(offenceValueForm.offenceValue) : -1
 
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -471,8 +470,6 @@ export default class OffenceService {
         }
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
-        delete offence.offenceValue
-        delete offence.hasOffenceValue
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -511,8 +508,6 @@ export default class OffenceService {
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
-        delete offence.offenceValue
-        delete offence.hasOffenceValue
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -1686,8 +1681,6 @@ export default class OffenceService {
         delete offence.sentence
         delete offence.aggravatingFactors
         delete offence.findingOfDomesticAbuse
-        delete offence.offenceValue
-        delete offence.hasOffenceValue
       }
 
       // eslint-disable-next-line no-param-reassign

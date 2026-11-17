@@ -6,6 +6,7 @@ import config from '../../config'
 
 let app: Express
 const originalMultipleOffenceInstances = config.featureToggles.multipleOffenceInstances
+const originalChargeValue = config.featureToggles.chargeValue
 
 const setup = (sentencing = false) => {
   defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
@@ -47,6 +48,7 @@ beforeEach(() => {
 
 afterEach(() => {
   config.featureToggles.multipleOffenceInstances = originalMultipleOffenceInstances
+  config.featureToggles.chargeValue = originalChargeValue
   jest.resetAllMocks()
 })
 
@@ -165,5 +167,62 @@ describe('GET Check offence answers page', () => {
       .text()
       .trim()
     expect(fineAmountValue).toEqual(expectedText)
+  })
+
+  it('should display offence value on offence card for non-custodial charges when chargeValue is enabled', async () => {
+    config.featureToggles.chargeValue = true
+    setup(false)
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'NON_SENTENCING',
+      courtCode: 'CRT',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'O1',
+          outcomeUuid: '3',
+          offenceValue: 75.5,
+          hasOffenceValue: 'true',
+        },
+      ],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    const offenceValueText = $('.govuk-summary-list__row')
+      .filter((_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value')
+      .find('.govuk-summary-list__value')
+      .text()
+      .trim()
+    expect(offenceValueText).toEqual('£75.50')
+  })
+
+  it('should not display offence value on offence card when offenceValue is -1', async () => {
+    config.featureToggles.chargeValue = true
+    setup(false)
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'NON_SENTENCING',
+      courtCode: 'CRT',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'O1',
+          outcomeUuid: '3',
+          offenceValue: -1,
+          hasOffenceValue: 'false',
+        },
+      ],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+      .expect(200)
+    const $ = cheerio.load(res.text)
+    const valueRow = $('.govuk-summary-list__row').filter(
+      (_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Value',
+    )
+    expect(valueRow.length).toBe(0)
+    expect(res.text).not.toContain('£-1')
   })
 })

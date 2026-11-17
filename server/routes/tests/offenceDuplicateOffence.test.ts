@@ -483,8 +483,6 @@ describe('Duplicate offence with a non-custodial outcome', () => {
   })
 
   it('collects the sentence details when the outcome is changed to a custodial outcome', async () => {
-    const originalChargeValue = config.featureToggles.chargeValue
-    config.featureToggles.chargeValue = false
     defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
     defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
     defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
@@ -506,7 +504,6 @@ describe('Duplicate offence with a non-custodial outcome', () => {
       '0',
       '8',
     )
-    config.featureToggles.chargeValue = originalChargeValue
   })
 
   it('does not re-collect sentence details when a custodial duplicate keeps a custodial outcome', async () => {

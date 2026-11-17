@@ -664,11 +664,6 @@ export default class OffenceRoutes extends BaseRoutes {
         chargeUuid,
         'updateOffenceOutcome',
       )
-      if (config.featureToggles.chargeValue) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
-        )
-      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
@@ -853,11 +848,6 @@ export default class OffenceRoutes extends BaseRoutes {
       outcome.outcomeType === 'SENTENCING'
     ) {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference, chargeUuid)
-      if (config.featureToggles.chargeValue) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
-        )
-      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
@@ -867,12 +857,12 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
+    if (config.featureToggles.chargeValue) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
+      )
+    }
     if (outcome.outcomeType === 'SENTENCING') {
-      if (config.featureToggles.chargeValue) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
-        )
-      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
@@ -917,8 +907,6 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
-    } else if (config.featureToggles.chargeValue) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`
     } else if (offence.sentence?.returnUrlKey) {
       backLink = buildReturnUrlFromKey(
         offence.sentence.returnUrlKey,
@@ -929,7 +917,11 @@ export default class OffenceRoutes extends BaseRoutes {
         appearanceReference,
         chargeUuid,
       )
-    } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
+    } else if (offence.onFinishGoToEdit) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
+    } else if (config.featureToggles.chargeValue) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`
+    } else if (courtAppearance.caseOutcomeAppliedAll !== 'true') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
 
@@ -1313,12 +1305,12 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
     if (outcomeAutoApplied) {
+      if (config.featureToggles.chargeValue) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
+        )
+      }
       if (outcome.outcomeType === 'SENTENCING') {
-        if (config.featureToggles.chargeValue) {
-          return res.redirect(
-            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
-          )
-        }
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
         )
@@ -1359,8 +1351,8 @@ export default class OffenceRoutes extends BaseRoutes {
       const { offenceValue, hasOffenceValue } = offence || {}
 
       offenceValueForm = {
-        hasOffenceValue,
-        offenceValue,
+        hasOffenceValue: offenceValue === -1 ? 'false' : hasOffenceValue,
+        ...(offenceValue !== undefined && offenceValue !== null && offenceValue !== -1 ? { offenceValue } : {}),
       }
     }
 
@@ -1441,6 +1433,23 @@ export default class OffenceRoutes extends BaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
+    }
+
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (offence.outcomeUuid) {
+      const outcome = await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username)
+      if (outcome && outcome.outcomeType !== 'SENTENCING') {
+        return this.saveSessionOffenceInAppearance(
+          req,
+          res,
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid,
+        )
+      }
     }
 
     return res.redirect(

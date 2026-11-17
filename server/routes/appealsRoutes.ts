@@ -34,7 +34,6 @@ import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
 import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
-import config from '../config'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 import { SuccessNotificationEnum } from './data/SuccessNotificationTypes'
 
@@ -596,18 +595,6 @@ export default class AppealsRoutes extends BaseRoutes {
         urlParameters.chargeUuid,
         'selectOffenceAppealOutcome',
       )
-      if (config.featureToggles.chargeValue) {
-        return res.redirect(
-          OffenceJourneyUrls.offenceValue(
-            urlParameters.nomsId,
-            urlParameters.addOrEditCourtCase,
-            urlParameters.courtCaseReference,
-            urlParameters.addOrEditCourtAppearance,
-            urlParameters.appearanceReference,
-            urlParameters.chargeUuid,
-          ),
-        )
-      }
       return res.redirect(
         OffenceJourneyUrls.countNumber(
           urlParameters.nomsId,

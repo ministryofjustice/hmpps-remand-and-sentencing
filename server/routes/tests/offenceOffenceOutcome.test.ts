@@ -293,4 +293,64 @@ describe('POST Offence outcome & Offence value routing', () => {
       .expect(302)
       .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
   })
+
+  it('redirects to offence-value when adding a custodial offence in add-court-case journey and chargeValue is enabled', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: {
+        outcomeUuid: '2',
+        outcomeType: 'SENTENCING',
+        displayOrder: 10,
+        nomisCode: '20',
+        outcomeName: 'Imprisonment',
+        dispositionCode: 'F',
+        status: 'ACTIVE',
+      },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '0',
+      offenceCode: 'CC12345',
+      outcomeUuid: '2',
+    })
+
+    await request(app)
+      .post('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
+      .send({ offenceOutcome: '2' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-value')
+  })
+
+  it('redirects to offence-value when adding a custodial offence in edit-court-case journey and chargeValue is enabled', async () => {
+    config.featureToggles.chargeValue = true
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
+    defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
+    defaultServices.offenceService.setOffenceOutcome.mockResolvedValue({
+      errors: [],
+      outcome: {
+        outcomeUuid: '2',
+        outcomeType: 'SENTENCING',
+        displayOrder: 10,
+        nomisCode: '20',
+        outcomeName: 'Imprisonment',
+        dispositionCode: 'F',
+        status: 'ACTIVE',
+      },
+      hasSentencesAfter: false,
+    })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'CC12345',
+      outcomeUuid: '2',
+    })
+
+    await request(app)
+      .post('/person/A1234AB/edit-court-case/1/edit-court-appearance/1/offences/1/offence-outcome')
+      .send({ offenceOutcome: '2' })
+      .expect(302)
+      .expect('Location', '/person/A1234AB/edit-court-case/1/edit-court-appearance/1/offences/1/offence-value')
+  })
 })

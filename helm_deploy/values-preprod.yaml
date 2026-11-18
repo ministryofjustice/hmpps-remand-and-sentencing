@@ -31,7 +31,7 @@ generic-service:
     FEATURES_CHECK_AUTOMATIC_SENTENCE_FIX: 'true'
     FEATURES_REPLACED_WITH_ANOTHER_APPEALS: 'true'
     FEATURES_MULTIPLE_OFFENCE_INSTANCES: 'false'
-    FEATURES_CHARGE_VALUE: 'false'
+    FEATURES_CHARGE_VALUE: 'true'
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30

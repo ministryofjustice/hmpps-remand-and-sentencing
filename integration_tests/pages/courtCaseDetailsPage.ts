@@ -19,6 +19,8 @@ export default class CourtCaseDetailsPage extends Page {
   deleteAppearanceLink = (courtCaseReference: string, appearanceReference: string): PageElement =>
     cy.get(`a[href*="/person/A1234AB/edit-court-case/${courtCaseReference}/${appearanceReference}/confirm-delete"]`)
 
+  deleteRestrictionText = (): PageElement => cy.get('[data-qa=deleteRestrictionText]')
+
   mergedCaseInset = (): PageElement => cy.get(`[data-qa=mergedFromText]`)
 
   notificationBannerHeading = (): PageElement => cy.get('[data-qa=notification-banner-heading]')

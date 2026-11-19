@@ -45,12 +45,13 @@
       }) }}
     {% endif %}
 
-    {% if not hearing.canDelete %}
+    {% for restriction in hearing.deleteRestrictionMessages %}
       {{ govukInsetText({
-        text: "You cannot delete a hearing that includes sentences.",
-        classes: "govuk-!-margin-0"
+        text: restriction,
+        classes: "govuk-!-margin-0",
+        attributes: { "data-qa": "deleteRestrictionText" }
       }) }}
-    {% endif %}
+    {% endfor %}
 
 
 

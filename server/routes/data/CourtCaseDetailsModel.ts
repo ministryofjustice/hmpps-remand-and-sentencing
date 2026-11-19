@@ -75,6 +75,10 @@ export default class CourtCaseDetailsModel {
     )
     this.overallCaseStatus = pageCourtCaseContent.status
     this.hearingTotal = pageCourtCaseContent.appearances.length
+    const isMergedToAnotherCase = pageCourtCaseContent.status === 'MERGED'
+    const hasMergedFromCases = pageCourtCaseContent.appearances.some(
+      hearing => this.getMergedFromCases(hearing).length > 0,
+    )
     this.hearings = pageCourtCaseContent.appearances
       .map(hearing => {
         const sortedCharges = orderCharges(hearing.charges)
@@ -93,15 +97,20 @@ export default class CourtCaseDetailsModel {
             ),
           ),
         )
+        const canDelete = hearing.deleteStatus === 'SUPPORTED'
+        const deleteRestrictionMessages = this.getDeleteRestrictionMessages(
+          hearing,
+          canDelete,
+          isMergedToAnotherCase,
+          hasMergedFromCases,
+        )
         return {
           ...hearing,
           charges: sortedCharges,
           hasAnyRecalls,
-          canDelete: hearing.deleteStatus === 'SUPPORTED',
-          mergedFromCases: this.offenceGetMergedFromText(
-            hearing.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
-            courtMap,
-          ),
+          canDelete,
+          deleteRestrictionMessages,
+          mergedFromCases: this.offenceGetMergedFromText(this.getMergedFromCases(hearing), courtMap),
           documentsWithUiType: getSortedDocumentsWithUiDocumentType(hearing.documents, hearing.warrantType),
           breachOfSupervisionLength,
           breachOfImprisonableOffence,
@@ -123,6 +132,36 @@ export default class CourtCaseDetailsModel {
     this.hasActiveSentence = pageCourtCaseContent.appearances.some(appearance =>
       appearance.charges.some(charge => charge.sentence?.status === 'ACTIVE'),
     )
+  }
+
+  private getDeleteRestrictionMessages(
+    hearing: PageCourtCaseAppearance,
+    canDelete: boolean,
+    isMergedToAnotherCase: boolean,
+    hasMergedFromCases: boolean,
+  ): string[] {
+    if (canDelete) {
+      return []
+    }
+
+    const hasSentences = hearing.charges.some(charge => charge.sentence != null)
+    const deleteRestrictions: string[] = []
+
+    if (isMergedToAnotherCase) {
+      deleteRestrictions.push('You cannot delete a hearing because this court case is merged with another court case.')
+    }
+    if (hasMergedFromCases) {
+      deleteRestrictions.push('You cannot delete a hearing because another court case is merged with this court case.')
+    }
+    if (hasSentences || deleteRestrictions.length === 0) {
+      deleteRestrictions.push('You cannot delete a hearing that includes sentences.')
+    }
+
+    return deleteRestrictions
+  }
+
+  private getMergedFromCases(hearing: PageCourtCaseAppearance): MergedFromCase[] {
+    return hearing.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase)
   }
 
   private static buildMergedToInsetText(merged: MergedToCaseDetails, courtMap: { [key: string]: string }): string {

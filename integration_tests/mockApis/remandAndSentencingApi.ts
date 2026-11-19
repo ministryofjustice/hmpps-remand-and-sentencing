@@ -5883,20 +5883,7 @@ export default {
           criminalAppealOfficeReference: null,
           appearanceDate: '2026-07-05',
           warrantType: 'NON_SENTENCING',
-          nextCourtAppearance: {
-            appearanceDate: null,
-            appearanceTime: null,
-            courtCode: null,
-            appearanceType: {
-              appearanceTypeUuid: '00000000-0000-0000-0000-000000000000',
-              description: 'Unknown appearance type',
-              displayOrder: 1,
-              hasSubtypes: false,
-            },
-            futureSkeletonAppearanceUuid: '00000000-0000-0000-0000-000000000000',
-            courtAppearanceSubType: null,
-            hmctsCourtHearingId: 'effc137e-7f66-441d-99ee-6bec9551eb0c',
-          },
+          nextCourtAppearance: null,
           charges: [
             {
               chargeUuid: '3f0dd738-91e4-4557-bb33-0abd317b940f',

@@ -6,6 +6,8 @@ import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
+import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
+import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
 
 context('New Remand Court Case from hmcts data journey with minimal data', () => {
   const remandWarrantHearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
@@ -154,5 +156,17 @@ context('New Remand Court Case from hmcts data journey with minimal data', () =>
           status: '1 document uploaded',
         },
       ])
+    courtCaseTaskListPage.nextCourtAppearanceLink().click()
+
+    const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
+    courtCaseNextAppearanceSetPage.radioSelector('true').should('not.be.checked')
+    courtCaseNextAppearanceSetPage.radioSelector('false').should('be.checked')
+    courtCaseNextAppearanceSetPage.continueButton().click()
+
+    const courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
+    courtCaseNextAppearanceAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Next appearance set': 'Date to be fixed',
+    })
+    courtCaseNextAppearanceAnswersPage.continueButton().click()
   })
 })

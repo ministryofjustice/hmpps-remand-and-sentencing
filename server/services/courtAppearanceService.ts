@@ -761,7 +761,6 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      const previousNextHearingSelect = courtAppearance.nextAppearanceSelect
       courtAppearance.nextAppearanceSelect = nextAppearanceSelectForm.nextAppearanceSelect === 'true'
       if (!courtAppearance.nextAppearanceSelect) {
         delete courtAppearance.nextAppearanceCourtCode
@@ -769,8 +768,9 @@ export default class CourtAppearanceService {
         delete courtAppearance.nextAppearanceTimeSet
         delete courtAppearance.nextAppearanceTypeUuid
       }
-      if (previousNextHearingSelect !== courtAppearance.nextAppearanceSelect) {
-        courtAppearance.nextCourtAppearanceAccepted = !courtAppearance.nextAppearanceSelect
+
+      if (!courtAppearance.nextAppearanceSelect) {
+        courtAppearance.nextCourtAppearanceAccepted = true
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance

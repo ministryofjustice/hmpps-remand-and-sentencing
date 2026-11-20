@@ -27,6 +27,7 @@ import {
   formatLengthsWithoutPeriodOrder,
   getAggravatingFactors,
   initialiseName,
+  notEnteredIfSentenced,
   outcomeValueOrLegacy,
   periodLengthValueOrLegacy,
   pluraliseName,
@@ -297,7 +298,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         offenceStartDate: formatDate(offence.offenceStartDate) ?? 'Not entered',
         offenceEndDate: formatDate(offence.offenceEndDate),
         outcome: outcomeValueOrLegacy(outcomeMap[offence.outcomeUuid]?.outcomeName, offence.legacyData),
-        countNumber: offence.sentence?.countNumber,
+        countNumber: offence.sentence?.countNumber ?? notEnteredIfSentenced(offence),
         lineNumber: offence.sentence?.legacyData?.nomisLineReference,
         convictionDate: formatDate(offence.sentence?.convictionDate),
         aggravatingFactors: getAggravatingFactors(offence),
@@ -307,10 +308,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
         sentenceServeType: offence.sentence?.sentenceServeType,
         sentenceStatus: offence.sentence?.status,
         consecutiveTo: consecutiveToSentenceMap[offence.sentence?.consecutiveToSentenceUuid],
-        sentenceType: sentenceTypeValueOrLegacy(
-          sentenceTypeMap[offence.sentence?.sentenceTypeId],
-          offence.sentence?.legacyData,
-        ),
+        sentenceType:
+          sentenceTypeValueOrLegacy(sentenceTypeMap[offence.sentence?.sentenceTypeId], offence.sentence?.legacyData) ??
+          notEnteredIfSentenced(offence),
         fineAmount: formatDecimal(offence.sentence?.fineAmount),
         value: config.featureToggles.chargeValue ? formatDecimal(offence.offenceValue) : undefined,
         mergedFromCase: offence.mergedFromCase,

@@ -1457,14 +1457,15 @@ export default class OffenceService {
     if (!offence.sentence) {
       return offence.offenceStartDate ? [] : [{ text: offenceDateErrorText, href: '#edit-offence-date-cta' }]
     }
-    const errors: { text: string; href: string }[] = []
+    const errors = this.validateOffenceMandatoryFields(offence, offenceDateErrorText, '#edit-offence-date-cta')
     if (!offence.sentence.sentenceServeType) {
-      errors.push({
+      const offenceDateErrorIndex = errors.findIndex(error => error.href === '#edit-offence-date-cta')
+      errors.splice(offenceDateErrorIndex + 1, 0, {
         text: 'You must enter whether this offence is consecutive or concurrent',
         href: '#edit-sentence-serve-type-cta',
       })
     }
-    return errors.concat(this.validateOffenceMandatoryFields(offence, offenceDateErrorText, '#edit-offence-date-cta'))
+    return errors
   }
 
   validateOffenceMandatoryFields(

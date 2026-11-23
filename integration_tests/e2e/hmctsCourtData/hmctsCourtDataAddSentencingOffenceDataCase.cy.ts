@@ -199,9 +199,16 @@ context('New Sentencing Court Case from hmcts data journey', () => {
 
     const expectedOffencesToReviewSummary: Record<string, string> = {
       'Committed on': '04/07/2022',
-      'Consecutive or concurrent': 'Consecutive',
+      'Consecutive or concurrent': 'Consecutive information not entered',
       Outcome: 'Imprisonment',
+      'Sentence type': 'Not entered',
     }
+
+    offenceCheckOffenceAnswersPage
+      .offencesToReview()
+      .find('[data-qa=offence-count]')
+      .should('have.text', 'No count entered')
+
     offenceCheckOffenceAnswersPage
       .offencesToReview()
       .getSummaryList()

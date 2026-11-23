@@ -96,6 +96,12 @@ export const allPeriodLengthTypesEntered = (sentence: Sentence): boolean => {
   const enteredPeriodLengthTypes = sentence.periodLengths.map(periodLength => periodLength.periodLengthType)
   return expectedPeriodLengthTypes.every(expectedType => enteredPeriodLengthTypes.includes(expectedType))
 }
+export const notEnteredIfSentenced = (offence: Offence) => {
+  if (offence.sentence) {
+    return 'Not entered'
+  }
+  return undefined
+}
 
 export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<string, never>) => {
   if (outcomeValue) {

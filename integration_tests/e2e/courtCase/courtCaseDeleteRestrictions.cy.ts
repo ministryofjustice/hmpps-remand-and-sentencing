@@ -5,8 +5,10 @@ context('Court case hearing delete restrictions', () => {
   const courtCaseUuid = '83517113-5c14-4628-9133-1e3cb12e31fa'
   const appearanceUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
   const detailsUrl = `/person/A1234AB/edit-court-case/${courtCaseUuid}/details`
-  const mergedToMessage = 'You cannot delete a hearing because this court case is merged with another court case.'
-  const mergedFromMessage = 'You cannot delete a hearing because another court case is merged with this court case.'
+  const mergedToMessage =
+    'You cannot delete this hearing because this court case has been merged with another court case.'
+  const mergedFromMessage =
+    'You cannot delete this hearing because another court case has been merged with this court case.'
   const sentencesMessage = 'You cannot delete a hearing that includes sentences.'
 
   const appearance = (deleteStatus: string, chargeOverrides: object = {}) => ({

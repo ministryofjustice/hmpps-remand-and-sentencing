@@ -506,8 +506,10 @@ describe('GET tests for NOMIS tag', () => {
 
 describe('Delete restriction messages', () => {
   const path = '/person/A1234AB/edit-court-case/1/details'
-  const mergedToMessage = 'You cannot delete a hearing because this court case is merged with another court case.'
-  const mergedFromMessage = 'You cannot delete a hearing because another court case is merged with this court case.'
+  const mergedToMessage =
+    'You cannot delete this hearing because this court case has been merged with another court case.'
+  const mergedFromMessage =
+    'You cannot delete this hearing because another court case has been merged with this court case.'
   const sentencesMessage = 'You cannot delete a hearing that includes sentences.'
 
   const withChargeFields = (courtCase: PageCourtCaseContent, chargeFields: object): PageCourtCaseContent => {

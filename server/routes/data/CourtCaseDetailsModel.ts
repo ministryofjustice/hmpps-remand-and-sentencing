@@ -148,10 +148,14 @@ export default class CourtCaseDetailsModel {
     const deleteRestrictions: string[] = []
 
     if (isMergedToAnotherCase) {
-      deleteRestrictions.push('You cannot delete a hearing because this court case is merged with another court case.')
+      deleteRestrictions.push(
+        'You cannot delete this hearing because this court case has been merged with another court case.',
+      )
     }
     if (hasMergedFromCases) {
-      deleteRestrictions.push('You cannot delete a hearing because another court case is merged with this court case.')
+      deleteRestrictions.push(
+        'You cannot delete this hearing because another court case has been merged with this court case.',
+      )
     }
     if (hasSentences || deleteRestrictions.length === 0) {
       deleteRestrictions.push('You cannot delete a hearing that includes sentences.')

@@ -206,6 +206,11 @@ describe('Duplicate offence', () => {
 
     expect(highlightedRows).toEqual(expectedRows)
     expect($('.govuk-error-summary').length).toBe(errors.length ? 1 : 0)
+    expect(
+      $('.govuk-error-summary a')
+        .map((_index, link) => $(link).text().trim())
+        .get(),
+    ).toEqual(errors.map(error => error.text))
     errors.forEach(error => {
       expect($('.govuk-error-summary').text()).toContain(error.text)
       expect($(`.govuk-error-summary a[href="${error.href}"]`).length).toBe(1)
@@ -274,11 +279,11 @@ describe('Duplicate offence', () => {
   it('does not save and redirects back when required details are missing', async () => {
     defaultServices.offenceService.getAllOffences.mockReturnValue([duplicatedOffence])
     defaultServices.offenceService.validateDuplicatedOffenceMandatoryFields.mockReturnValue([
+      { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
       {
         text: 'You must enter whether this offence is consecutive or concurrent',
         href: '#edit-sentence-serve-type-cta',
       },
-      { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
     ])
 
     await request(app)

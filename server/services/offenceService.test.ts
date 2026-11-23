@@ -113,11 +113,11 @@ describe('offenceService', () => {
           sentenceServeType === 'CONSECUTIVE' ? 'previous-sentence' : undefined,
         )
         expect(service.validateDuplicatedOffenceMandatoryFields(duplicate)).toEqual([
+          { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
           {
             text: 'You must enter whether this offence is consecutive or concurrent',
             href: '#edit-sentence-serve-type-cta',
           },
-          { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
         ])
 
         const errors = service.setOffenceDates(
@@ -256,14 +256,26 @@ describe('offenceService', () => {
       ])
     })
 
-    it('requires both consecutive or concurrent and committed on, in that order', () => {
+    it('requires committed on before consecutive or concurrent', () => {
       const offence = { sentence: { ...completeSentence, sentenceServeType: undefined } } as Offence
       expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
+        { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
         {
           text: 'You must enter whether this offence is consecutive or concurrent',
           href: '#edit-sentence-serve-type-cta',
         },
+      ])
+    })
+
+    it('keeps other sentence errors when committed on and consecutive or concurrent are missing', () => {
+      const offence = { sentence: {} } as Offence
+      expect(service.validateDuplicatedOffenceMandatoryFields(offence)).toEqual([
+        { text: 'You must enter the sentence type', href: '#' },
         { text: 'You must enter a committed on date', href: '#edit-offence-date-cta' },
+        {
+          text: 'You must enter whether this offence is consecutive or concurrent',
+          href: '#edit-sentence-serve-type-cta',
+        },
       ])
     })
   })

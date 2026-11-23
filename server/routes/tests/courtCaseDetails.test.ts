@@ -503,3 +503,76 @@ describe('GET tests for NOMIS tag', () => {
     expect(deleteLinks.length).toBe(0)
   })
 })
+
+describe('Delete restriction messages', () => {
+  const path = '/person/A1234AB/edit-court-case/1/details'
+  const mergedToMessage =
+    'You cannot delete this hearing because this court case has been merged with another court case.'
+  const mergedFromMessage =
+    'You cannot delete this hearing because another court case has been merged with this court case.'
+  const sentencesMessage = 'You cannot delete a hearing that includes sentences.'
+
+  const withChargeFields = (courtCase: PageCourtCaseContent, chargeFields: object): PageCourtCaseContent => {
+    const originalAppearance = courtCase.appearances[0]
+    const originalCharge = originalAppearance.charges[0]
+
+    const updatedCharge = { ...originalCharge, ...chargeFields }
+    const updatedAppearance = { ...originalAppearance, charges: [updatedCharge] }
+
+    return {
+      ...courtCase,
+      latestAppearance: updatedAppearance,
+      appearances: [updatedAppearance],
+    } as PageCourtCaseContent
+  }
+
+  const getMessages = async (courtCase: PageCourtCaseContent) => {
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    setupDefaultMocks()
+    const res = await request(app).get(path)
+    const $ = cheerio.load(res.text)
+    return {
+      messages: $('[data-qa="deleteRestrictionText"]')
+        .map((_, el) => $(el).text().trim())
+        .get(),
+      deleteLinks: $('a:contains("Delete")').length,
+    }
+  }
+
+  it('should show the merged to message for a merged (child) case', async () => {
+    const { messages, deleteLinks } = await getMessages(createCourtCase('DPS', 'MERGED', 'NOT_SUPPORTED'))
+    expect(messages).toEqual([mergedToMessage])
+    expect(deleteLinks).toBe(0)
+  })
+
+  it('should show the merged from message for a case with merged cases (parent)', async () => {
+    const courtCase = withChargeFields(createCourtCase('DPS', 'ACTIVE', 'NOT_SUPPORTED'), {
+      mergedFromCase: { caseReference: 'T123', courtCode: 'ACCRYC', mergedFromDate: '2024-08-12' },
+    })
+    const { messages, deleteLinks } = await getMessages(courtCase)
+    expect(messages).toEqual([mergedFromMessage])
+    expect(deleteLinks).toBe(0)
+  })
+
+  it('should keep the sentences message for a hearing with sentences', async () => {
+    const courtCase = withChargeFields(createCourtCase('DPS', 'ACTIVE', 'NOT_SUPPORTED'), {
+      sentence: { sentenceUuid: '1' },
+    })
+    const { messages } = await getMessages(courtCase)
+    expect(messages).toEqual([sentencesMessage])
+  })
+
+  it('should show both messages when merged and sentenced', async () => {
+    const courtCase = withChargeFields(createCourtCase('DPS', 'MERGED', 'NOT_SUPPORTED'), {
+      sentence: { sentenceUuid: '1' },
+    })
+    const { messages } = await getMessages(courtCase)
+    expect(messages).toEqual([mergedToMessage, sentencesMessage])
+  })
+
+  it('should show no message when the hearing can be deleted', async () => {
+    const { messages, deleteLinks } = await getMessages(createCourtCase('DPS', 'ACTIVE', 'SUPPORTED'))
+    expect(messages).toEqual([])
+    expect(deleteLinks).toBe(1)
+  })
+})

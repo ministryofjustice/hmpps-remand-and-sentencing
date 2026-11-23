@@ -241,7 +241,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
     const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const hasAnyRecalls = hearing.offences.some(offence => offence.sentence?.hasRecall)
+    const hasAnyRecalls = super.hasAnyRecalls(hearing)
     const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     const chargeCodes = hearing.offences
       .map(offences => offences.offenceCode)

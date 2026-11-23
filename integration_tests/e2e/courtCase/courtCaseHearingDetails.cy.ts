@@ -426,4 +426,72 @@ context('Court Case Hearing details Page', () => {
       Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
   })
+
+  context('non-sentencing hearing with a recall', () => {
+    const loadHearing = (firstChargeSentenceStatus: 'ACTIVE' | 'INACTIVE') => {
+      cy.task('stubGetRemandAppearanceDetailsWithRecall', { sentenceStatus: firstChargeSentenceStatus })
+      cy.signIn()
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/hearing-details',
+      )
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    }
+
+    beforeEach(() => {
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
+      cy.task('stubGetAppearanceTypeByUuid')
+      cy.task('stubGetAllAppearanceOutcomes')
+    })
+
+    it('should show the inset and hide edit links', () => {
+      loadHearing('ACTIVE')
+      courtCaseHearingDetailsPage
+        .hasAnyRecallsInset()
+        .should('exist')
+        .contains("You can't edit information on a hearing that's been recalled")
+      courtCaseHearingDetailsPage.hearingSummaryList().find('a').should('not.exist')
+      courtCaseHearingDetailsPage.nextAppearanceSummaryList().find('a').should('not.exist')
+      cy.contains('a', 'Manage court documents').should('exist')
+      cy.get('[data-qa=cancel-button]').should('exist')
+      cy.get('[data-qa=addAnotherOffence]').should('not.exist')
+      courtCaseHearingDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '71bb9f7e-971c-4c34-9a33-43478baee74f',
+        )
+        .should('not.exist')
+      courtCaseHearingDetailsPage.confirmButton().should('exist')
+      courtCaseHearingDetailsPage.markSentencesAsInactiveLink().should('exist')
+    })
+
+    it('shows mark as active for an inactive sentence', () => {
+      loadHearing('INACTIVE')
+      courtCaseHearingDetailsPage.markAsActiveLink('71bb9f7e-971c-4c34-9a33-43478baee74f').should('exist')
+      courtCaseHearingDetailsPage.markSentencesAsInactiveLink().should('not.exist')
+    })
+  })
 })

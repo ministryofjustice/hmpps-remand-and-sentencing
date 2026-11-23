@@ -214,6 +214,47 @@ context('Appeal appearance details Page', () => {
     })
   })
 
+  context('DPS data - appeal hearing with a recall', () => {
+    const loadHearing = (firstChargeSentenceStatus: 'ACTIVE' | 'INACTIVE') => {
+      cy.task('stubGetAppealAppearanceDetails', { firstChargeHasRecall: true, firstChargeSentenceStatus })
+      cy.signIn()
+      cy.visit(
+        '/person/A1234AB/edit-court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633/edit-court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb/appeals/hearing-details',
+      )
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    }
+
+    beforeEach(() => {})
+
+    it('should show the inset and hide edit links', () => {
+      loadHearing('ACTIVE')
+      courtCaseHearingDetailsPage
+        .hasAnyRecallsInset()
+        .should('exist')
+        .contains("You can't edit information on a hearing that's been recalled")
+      courtCaseHearingDetailsPage.hearingSummaryList().find('a').should('not.exist')
+      cy.contains('a', 'Manage court documents').should('exist')
+      cy.get('[data-qa=cancel-button]').should('exist')
+      cy.get('[data-qa=addAnotherOffence]').should('not.exist')
+      courtCaseHearingDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          '94608b2e-c532-4cea-bae7-57bfff4566cb',
+          'd67f6e1d-b0d4-4bbf-8ba3-8330d270ad51',
+        )
+        .should('not.exist')
+      courtCaseHearingDetailsPage.confirmButton().should('exist')
+      courtCaseHearingDetailsPage.markSentencesAsInactiveLink().should('exist')
+    })
+
+    it('shows mark as active for an inactive sentence', () => {
+      loadHearing('INACTIVE')
+      courtCaseHearingDetailsPage.markAsActiveLink('d67f6e1d-b0d4-4bbf-8ba3-8330d270ad51').should('exist')
+      courtCaseHearingDetailsPage.markSentencesAsInactiveLink().should('not.exist')
+    })
+  })
+
   context('NOMIS data', () => {
     beforeEach(() => {
       cy.task('stubGetLegacyAppealAppearanceDetails')

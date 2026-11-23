@@ -150,7 +150,10 @@ export default class RemandRoutes extends BaseRoutes {
       appearanceSubtypeDescription = appearanceSubtype.description
     }
 
+    const hasAnyRecalls = super.hasAnyRecalls(hearing)
     return res.render('pages/courtAppearance/hearing-details', {
+      hasAnyRecalls,
+      isReadOnly: hasAnyRecalls,
       nomsId,
       courtCaseReference,
       appearanceReference,

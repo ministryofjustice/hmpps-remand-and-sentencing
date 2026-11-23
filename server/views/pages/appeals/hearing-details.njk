@@ -20,13 +20,13 @@
         visuallyHiddenText: "case reference",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   } %}
 {% else %}
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
     value: {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>'
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>' if not isReadOnly else '<span>Not entered</span>'
     }
   } %}
 {% endif %}
@@ -44,13 +44,13 @@
         visuallyHiddenText: "criminal appeal office reference",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   } %}
 {% else %}
   {% set criminalOfficeReferenceRow = {
     key: { text: "Criminal Appeal Office reference" },
     value: {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + criminalOfficeReferenceHref + '">Enter criminal appeal office reference</a>'
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + criminalOfficeReferenceHref + '">Enter criminal appeal office reference</a>' if not isReadOnly else '<span>Not entered</span>'
     }
   } %}
 {% endif %}
@@ -68,7 +68,7 @@
         visuallyHiddenText: "hearing date",
         classes: "govuk-link--no-visited-state"
       }]
-    } if showEditHearingDate
+    } if showEditHearingDate and not isReadOnly
   },
   {
     key: { text: "Court name" },
@@ -80,7 +80,7 @@
         visuallyHiddenText: "court name",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   },
   {
     key: { text: "Overall case outcome" },
@@ -92,7 +92,7 @@
         visuallyHiddenText: "overall case outcome",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   }
 ] %}
 
@@ -147,6 +147,14 @@
           text: mergedFromText,
           classes: "govuk-!-margin-bottom-3",
           attributes: { "data-qa": "mergedFromText" }
+        }) }}
+      {% endif %}
+
+      {% if hasAnyRecalls %}
+        {{ govukInsetText({
+          text: "You can't edit information on a hearing that's been recalled",
+          classes: "govuk-!-margin-bottom-3",
+          attributes: { "data-qa": "hasAnyRecallsInset" }
         }) }}
       {% endif %}
 
@@ -220,7 +228,7 @@
                     items: [{ html: markAsActiveHtml }]
                 } %}
             {% endif %}
-          {% else %}
+          {% elif not isReadOnly %}
             {% set updateOutcomeHtml %}
               <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
             {% endset %}
@@ -239,10 +247,10 @@
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: "Select consecutive or concurrent",
                 classes: "govuk-link--no-visited-state"
-              } if offence.sentence,
+              } if offence.sentence and not isReadOnly,
               actions: {
                 items: actionItems
-              },
+              } if not isReadOnly,
               listItems: listItems
           })) }}
         {% else %}
@@ -278,7 +286,7 @@
                   items: [{ html: markAsActiveHtml }]
               } %}
           {% endif %}
-        {% else %}
+        {% elif not isReadOnly %}
           {% set updateOutcomeHtml %}
             <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
           {% endset %}
@@ -297,10 +305,10 @@
               href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
               text: "Select consecutive or concurrent",
               classes: "govuk-link--no-visited-state"
-            } if offence.sentence,
+            } if offence.sentence and not isReadOnly,
             actions: {
               items: actionItems
-            },
+            } if not isReadOnly,
             listItems: listItems
         })) }}
       {% else %}

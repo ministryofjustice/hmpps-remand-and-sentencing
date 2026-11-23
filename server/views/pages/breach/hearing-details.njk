@@ -19,13 +19,13 @@
         visuallyHiddenText: "case reference",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   } %}
 {% else %}
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
     value: {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>'
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>' if not isReadOnly else '<span>Not entered</span>'
     }
   } %}
 {% endif %}
@@ -46,7 +46,7 @@
         visuallyHiddenText: "court name",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   }
 ] %}
 
@@ -61,7 +61,7 @@
         visuallyHiddenText: "breach of supervision requirements" if hearing.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' else 'breach due to imprisonable offence',
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   }) %}
 {% endif %}
 
@@ -88,6 +88,14 @@
           text: mergedFromText,
           classes: "govuk-!-margin-bottom-3",
           attributes: { "data-qa": "mergedFromText" }
+        }) }}
+      {% endif %}
+
+      {% if hasAnyRecalls %}
+        {{ govukInsetText({
+          text: "You can't edit information on a hearing that's been recalled",
+          classes: "govuk-!-margin-bottom-3",
+          attributes: { "data-qa": "hasAnyRecallsInset" }
         }) }}
       {% endif %}
 
@@ -145,7 +153,7 @@
                 }]
               } if (offence.sentence and offence.sentence.status === 'INACTIVE') %}
           {% set extraParams = undefined %}
-          {% if offence.isGeneratedBreachOffence === 'true' %}
+          {% if offence.isGeneratedBreachOffence === 'true' and not isReadOnly %}
             {% set extraParams = {
                 actions: {
                   items: [{

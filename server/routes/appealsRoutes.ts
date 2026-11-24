@@ -905,7 +905,7 @@ export default class AppealsRoutes extends BaseRoutes {
 
     const showEditHearingDate = !hearing.offences?.some(offence => offence.sentence)
 
-    const hasAnyRecalls = super.hasAnyRecalls(hearing)
+    const hasAnyRecalls = this.hasAnyRecalls(hearing)
     return res.render('pages/appeals/hearing-details', {
       ...urlParameters,
       hasAnyRecalls,

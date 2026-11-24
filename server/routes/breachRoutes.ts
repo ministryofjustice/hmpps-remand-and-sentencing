@@ -725,7 +725,7 @@ export default class BreachRoutes extends BaseRoutes {
 
     const breachTerm = this.courtAppearanceService.getBreachTerm(req.session, urlParameters)
 
-    const hasAnyRecalls = super.hasAnyRecalls(hearing)
+    const hasAnyRecalls = this.hasAnyRecalls(hearing)
     return res.render('pages/breach/hearing-details', {
       ...urlParameters,
       hasAnyRecalls,

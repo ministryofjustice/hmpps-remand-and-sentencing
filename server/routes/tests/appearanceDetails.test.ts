@@ -162,7 +162,43 @@ describe('GET /sentencing/hearing-details', () => {
       })
   })
 
-  it('should hide edit actions and shows the inset when the hearing has a recall', async () => {
+  it('should show the edit actions and no recall inset when the hearing has no recalled sentence', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+            hasRecall: false,
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="hasAnyRecallsInset"]')).toHaveLength(0)
+        expect($('[data-qa="hearingSummaryList"] a')).toHaveLength(3)
+        expect($('[data-qa="overallSummaryList"] a')).toHaveLength(1)
+        expect($('[data-qa="addAnotherOffence"]')).toHaveLength(1)
+        expect($('[data-qa="custodialOffences"] a:contains("Edit")')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Delete")')).toHaveLength(0)
+        expect($('[data-qa="custodialOffences"] a:contains("Select consecutive or concurrent")')).toHaveLength(0)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
+      })
+  })
+
+  it('should show the recall inset and hide edit actions when the hearing has a recalled sentence', async () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: 'appearance-uuid',
       offences: [
@@ -197,40 +233,47 @@ describe('GET /sentencing/hearing-details', () => {
         expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
       })
   })
+})
 
-  it('should show edit actions and no inset when there is no recall', async () => {
+describe.each(['non-sentencing', 'appeals', 'breach'])('GET /%s/hearing-details', journey => {
+  beforeEach(() => {
+    defaultServices.courtAppearanceService.sessionCourtAppearanceExists.mockReturnValue(true)
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: 'appearance-uuid',
+      caseReferenceNumber: 'REF1',
       offences: [
         {
           chargeUuid: '2',
           offenceCode: 'CC12345',
           outcomeUuid: '123',
-          sentence: {
-            sentenceUuid: '3',
-            countNumber: '1',
-            sentenceServeType: 'FORTHWITH',
-            sentenceTypeClassification: 'STANDARD',
-            status: 'ACTIVE',
-            hasRecall: false,
-          },
+          sentence: { sentenceUuid: '3', countNumber: '1', sentenceServeType: 'FORTHWITH', hasRecall: true },
         },
       ],
     })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({})
+    defaultServices.refDataService.getSentenceTypeMap.mockResolvedValue({})
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
+    defaultServices.courtAppearanceService.getUploadedDocuments.mockReturnValue([])
+    defaultServices.refDataService.getChargeOutcomeMap.mockResolvedValue({})
+    defaultServices.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance.mockResolvedValue({
+      hasSentenceAfterOnOtherCourtAppearance: false,
+    })
+  })
 
+  it('should show the recall inset and hides edit actions when the hearing has a recalled sentence', async () => {
     await request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .get(`/person/A1234AB/add-court-case/0/add-court-appearance/0/${journey}/hearing-details`)
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa="hasAnyRecallsInset"]')).toHaveLength(0)
-        expect($('[data-qa="hearingSummaryList"] a')).toHaveLength(3)
-        expect($('[data-qa="overallSummaryList"] a')).toHaveLength(1)
-        expect($('[data-qa="addAnotherOffence"]')).toHaveLength(1)
-        expect($('[data-qa="custodialOffences"] a:contains("Edit")')).toHaveLength(0)
-        expect($('[data-qa="custodialOffences"] a:contains("Delete")')).toHaveLength(0)
-        expect($('[data-qa="custodialOffences"] a:contains("Select consecutive or concurrent")')).toHaveLength(0)
-        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
+        expect($('[data-qa="hasAnyRecallsInset"]')).toHaveLength(1)
+        expect($('[data-qa="hearingSummaryList"] a')).toHaveLength(0)
+        expect($('main a:contains("Edit")')).toHaveLength(0)
+        expect($('main a:contains("Delete")')).toHaveLength(0)
+        expect($('[data-qa="nextAppearanceSummaryList"] a')).toHaveLength(0)
+        expect($('main a:contains("Manage court documents")')).toHaveLength(1)
+        expect($('[data-qa="cancel-button"]')).toHaveLength(1)
       })
   })
 })

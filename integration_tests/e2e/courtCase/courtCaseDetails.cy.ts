@@ -236,4 +236,79 @@ context('Court Case details Page', () => {
         .and('contain.text', 'Delete')
     })
   })
+
+  context('Non-sentencing hearing with a recall', () => {
+    beforeEach(() => {
+      cy.task('happyPathStubs')
+      cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetCourtCaseRemandLatest', { firstChargeHasRecall: true })
+      cy.task('stubGetCourtsByIds')
+      cy.signIn()
+      cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
+      courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Hearings for C894623 at Accrington Youth Court',
+      )
+    })
+
+    it('should not show delete when appearance contains a recall', () => {
+      courtCaseDetailsPage
+        .hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
+        .should('not.contain.text', 'Delete')
+    })
+
+    it('should show edit when appearance contains a recall', () => {
+      courtCaseDetailsPage.hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933').should('contain.text', 'Edit')
+    })
+  })
+
+  context('Appeal hearing with a recall', () => {
+    beforeEach(() => {
+      cy.task('happyPathStubs')
+      cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetCourtCaseAppealLatest', { firstChargeHasRecall: true })
+      cy.task('stubGetCourtsByIds')
+      cy.signIn()
+      cy.visit('/person/A1234AB/edit-court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633/details')
+      courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Hearings for C894623 at Accrington Youth Court',
+      )
+    })
+
+    it('should not show delete when appearance contains a recall', () => {
+      courtCaseDetailsPage
+        .hearingActionList('94608b2e-c532-4cea-bae7-57bfff4566cb')
+        .should('not.contain.text', 'Delete')
+    })
+
+    it('should show edit when appearance contains a recall', () => {
+      courtCaseDetailsPage.hearingActionList('94608b2e-c532-4cea-bae7-57bfff4566cb').should('contain.text', 'Edit')
+    })
+  })
+
+  context('Breach hearing with a recall', () => {
+    beforeEach(() => {
+      cy.task('happyPathStubs')
+      cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetCourtCaseBreachLatest', { firstChargeHasRecall: true })
+      cy.task('stubGetCourtsByIds')
+      cy.signIn()
+      cy.visit('/person/A1234AB/edit-court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633/details')
+      courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Hearings for C894623 at Accrington Youth Court',
+      )
+    })
+
+    it('should not show delete when appearance contains a recall', () => {
+      courtCaseDetailsPage
+        .hearingActionList('94608b2e-c532-4cea-bae7-57bfff4566cb')
+        .should('not.contain.text', 'Delete')
+    })
+
+    it('should show edit when appearance contains a recall', () => {
+      courtCaseDetailsPage.hearingActionList('94608b2e-c532-4cea-bae7-57bfff4566cb').should('contain.text', 'Edit')
+    })
+  })
 })

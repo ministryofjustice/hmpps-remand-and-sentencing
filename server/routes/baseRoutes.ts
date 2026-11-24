@@ -82,6 +82,10 @@ export default abstract class BaseRoutes {
     return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
   }
 
+  protected hasAnyRecalls(courtAppearance: CourtAppearance): boolean {
+    return courtAppearance.offences.some(offence => offence.sentence?.hasRecall)
+  }
+
   protected saveAllOffencesToAppearance(
     session: Partial<SessionData>,
     nomsId: string,

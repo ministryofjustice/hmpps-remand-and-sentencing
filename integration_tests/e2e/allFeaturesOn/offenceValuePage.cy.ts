@@ -8,14 +8,24 @@ import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseC
 import Page from '../../pages/page'
 
 import OffenceValuePage from '../../pages/offenceValuePage'
+import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
+import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 
 context('Add Offence Value Page', () => {
   let offenceValuePage: OffenceValuePage
 
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetOffenceByCode', {
+      offenceCode: 'TH68010',
+      offenceDescription: 'A theft offence',
+    })
     cy.signIn()
-
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('TH68010')
+    offenceOffenceCodePage.continueButton().click()
+    Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-value')
 
     offenceValuePage = Page.verifyOnPage(OffenceValuePage)
@@ -23,18 +33,12 @@ context('Add Offence Value Page', () => {
 
   it('submitting without selecting yes or no results in error', () => {
     offenceValuePage.continueButton().click()
-
-    offenceValuePage = Page.verifyOnPage(OffenceValuePage)
-
     offenceValuePage.errorSummary().trimTextContent().should('equal', 'There is a problem You must select an option.')
   })
 
   it('selecting yes without entering a value results in error', () => {
     offenceValuePage.radioLabelSelector('true').click()
-
     offenceValuePage.continueButton().click()
-
-    offenceValuePage = Page.verifyOnPage(OffenceValuePage)
 
     offenceValuePage.errorSummary().trimTextContent().should('equal', 'There is a problem You must enter a value.')
   })
@@ -63,9 +67,6 @@ context('Add Offence Value Page', () => {
     offenceValuePage.input().clear()
     offenceValuePage.input().type('-100')
     offenceValuePage.continueButton().click()
-
-    offenceValuePage = Page.verifyOnPage(OffenceValuePage)
-
     offenceValuePage
       .errorSummary()
       .trimTextContent()
@@ -77,9 +78,6 @@ context('Add Offence Value Page', () => {
     offenceValuePage.input().clear()
     offenceValuePage.input().type('abc')
     offenceValuePage.continueButton().click()
-
-    offenceValuePage = Page.verifyOnPage(OffenceValuePage)
-
     offenceValuePage
       .errorSummary()
       .trimTextContent()
@@ -100,8 +98,11 @@ context('Add Offence Value Page', () => {
   })
 
   it('displays formatted offence value on offence card and consecutive-to radio hint', () => {
-    cy.task('stubGetOffenceByCode', {})
-    cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetOffencesByCodes', {
+      offenceCode: 'TH68010',
+      offenceDescription: 'A theft offence',
+      legacyOffenceCode: 'PS90037',
+    })
     cy.task('stubGetAllChargeOutcomes')
     cy.task('stubGetSentenceTypesByIds', [
       {
@@ -148,7 +149,7 @@ context('Add Offence Value Page', () => {
     outcomeAppliedAllPage.radioLabelSelector('false').click()
     outcomeAppliedAllPage.continueButton().click()
 
-    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1', '99.90')
+    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1', true, '99.90')
 
     const checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
     checkOffenceAnswersPage
@@ -156,7 +157,7 @@ context('Add Offence Value Page', () => {
       .getOffenceCards()
       .should('deep.equal', [
         {
-          offenceCardHeader: 'PS90037 An offence description',
+          offenceCardHeader: 'TH68010 A theft offence',
           'Committed on': '12/05/2023',
           Outcome: 'Imprisonment',
           'Sentence length': '4 years 5 months 0 weeks 0 days',

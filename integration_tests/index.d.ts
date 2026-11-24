@@ -25,6 +25,7 @@ declare namespace Cypress {
       courtCaseReference: string,
       appearanceReference: string,
       offenceReference: string,
+      isMonetaryValueOffence?: boolean,
     ): Chainable<AUTWindow>
     createSentencedOffence(
       personId: string,
@@ -32,6 +33,8 @@ declare namespace Cypress {
       appearanceReference: string,
       offenceReference: string,
       countNumber?: string,
+      isMonetaryValueOffence?: boolean,
+      offenceValue?: string,
     ): Chainable<AUTWindow>
     createSentencedConcurrentOffence(
       personId: string,
@@ -47,31 +50,6 @@ declare namespace Cypress {
       offenceReference: string,
       countNumber?: string,
       consecutiveToSelect?: number,
-    ): Chainable<AUTWindow>
-    createSentencedOffenceAllFeaturesOn(
-      personId: string,
-      courtCaseReference: string,
-      appearanceReference: string,
-      offenceReference: string,
-      countNumber?: string,
-      offenceValue?: string,
-    ): Chainable<AUTWindow>
-    createSentencedConcurrentOffenceAllFeaturesOn(
-      personId: string,
-      courtCaseReference: string,
-      appearanceReference: string,
-      offenceReference: string,
-      countNumber?: string,
-      offenceValue?: string,
-    ): Chainable<AUTWindow>
-    createSentencedOffenceConsecutiveToAllFeaturesOn(
-      personId: string,
-      courtCaseReference: string,
-      appearanceReference: string,
-      offenceReference: string,
-      countNumber?: string,
-      consecutiveToSelect?: number,
-      offenceValue?: string,
     ): Chainable<AUTWindow>
   }
 }

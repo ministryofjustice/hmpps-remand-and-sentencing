@@ -54,8 +54,10 @@ export default class OffenceJourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     chargeUuid: string,
+    hasErrors?: string,
+    submitToEditOffence?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/offence-value`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/offence-value${OffenceJourneyUrls.getQueryParameters(hasErrors, submitToEditOffence)}`
   }
 
   static countNumber = (
@@ -67,5 +69,16 @@ export default class OffenceJourneyUrls {
     chargeUuid: string,
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/count-number`
+  }
+
+  private static getQueryParameters(hasErrors?: string, submitToEditOffence?: string): string {
+    const queryParameters = []
+    if (hasErrors) {
+      queryParameters.push('hasErrors=true')
+    }
+    if (submitToEditOffence) {
+      queryParameters.push('submitToEditOffence=true')
+    }
+    return queryParameters.length ? `?${queryParameters.join('&')}` : ''
   }
 }

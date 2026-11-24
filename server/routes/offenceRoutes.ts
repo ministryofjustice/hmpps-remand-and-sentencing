@@ -21,6 +21,7 @@ import type {
 import type { Offence, UrlParameters } from 'models'
 import dayjs from 'dayjs'
 import { PERIOD_TYPE_PRIORITY } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import { isMonetaryValueOffence } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import trimForm, { normaliseToArray } from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -849,9 +850,16 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
-    if (config.featureToggles.chargeValue) {
+    if (config.featureToggles.chargeValue && isMonetaryValueOffence(potentialOffence.offenceCode)) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
+        OffenceJourneyUrls.offenceValue(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid,
+        ),
       )
     }
     if (outcome.outcomeType === 'SENTENCING') {
@@ -911,8 +919,15 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     } else if (offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
-    } else if (config.featureToggles.chargeValue) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`
+    } else if (config.featureToggles.chargeValue && isMonetaryValueOffence(offence.offenceCode)) {
+      backLink = OffenceJourneyUrls.offenceValue(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
@@ -1291,15 +1306,24 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
     )
 
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     if (outcomeAutoApplied) {
-      if (config.featureToggles.chargeValue) {
+      if (config.featureToggles.chargeValue && isMonetaryValueOffence(offence.offenceCode)) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value`,
+          OffenceJourneyUrls.offenceValue(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+            chargeUuid,
+          ),
         )
       }
       if (outcome.outcomeType === 'SENTENCING') {
@@ -1419,7 +1443,16 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('offenceValueForm', { ...offenceValueForm })
 
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-value?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+        OffenceJourneyUrls.offenceValue(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid,
+          'true',
+          'true',
+        ),
       )
     }
 
@@ -3015,7 +3048,7 @@ export default class OffenceRoutes extends BaseRoutes {
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
       isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
       showJudicialFindingsRow: config.featureToggles.judicialFindings,
-      showOffenceValuesRow: config.featureToggles.chargeValue,
+      showOffenceValuesRow: config.featureToggles.chargeValue && isMonetaryValueOffence(offence.offenceCode),
       ...overrides,
     })
   }

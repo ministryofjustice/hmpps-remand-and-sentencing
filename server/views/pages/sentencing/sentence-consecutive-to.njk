@@ -53,7 +53,7 @@
                                         Count {{ sentence.countNumber }}<br>
                                     {% endif %}
                                     {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
-                                    {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
+                                    {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow and sentence.offenceCode | isMonetaryValueOffence %}
                                     {% set sentenceLength = sentence.periodLengths | findPeriodLengthByType('SENTENCE_LENGTH') | formatLengths %}
                                     {% if sentence.offenceStartDate or sentenceValue or sentenceLength %}
                                         <br><span class="govuk-hint">
@@ -94,7 +94,7 @@
                                                 Count {{ sentence.countNumber }}<br>
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
-                                            {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow %}
+                                            {% set sentenceValue = (sentence.value | formatDecimal) if showOffenceValuesRow and sentence.offenceCode | isMonetaryValueOffence %}
                                             {% set sentenceLength = sentence.periodLengths | periodLengthsToSentenceLengths | findPeriodLengthByType('SENTENCE_LENGTH') | formatLengths %}
                                             {% if sentence.offenceStartDate or sentenceValue or sentenceLength %}
                                                 <br><span class="govuk-hint">

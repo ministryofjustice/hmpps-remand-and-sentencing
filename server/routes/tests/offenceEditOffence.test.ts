@@ -259,11 +259,11 @@ describe('GET Edit offence', () => {
     expect(enterOffenceDateCtaLink).toContain('Enter offence date')
   })
 
-  it('should render offence value row with Edit link for non-custodial offence when value is present', async () => {
+  it('should render offence value row with Edit link for non-custodial monetary value offence when value is present', async () => {
     config.featureToggles.chargeValue = true
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
-      offenceCode: 'O1',
+      offenceCode: 'TH68010',
       hasOffenceValue: 'true',
       offenceValue: 125.5,
     })
@@ -285,11 +285,11 @@ describe('GET Edit offence', () => {
     )
   })
 
-  it('should render Add value link for non-custodial offence when offenceValue is -1 or not set', async () => {
+  it('should render Add value link for non-custodial monetary value offence when offenceValue is -1 or not set', async () => {
     config.featureToggles.chargeValue = true
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
-      offenceCode: 'O1',
+      offenceCode: 'TH68010',
       hasOffenceValue: 'false',
       offenceValue: -1,
     })

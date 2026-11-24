@@ -212,6 +212,9 @@ export default {
               {
                 equalTo: `${offenceCode},${legacyOffenceCode}`,
               },
+              {
+                equalTo: `${legacyOffenceCode},${offenceCode}`,
+              },
             ],
           },
         },

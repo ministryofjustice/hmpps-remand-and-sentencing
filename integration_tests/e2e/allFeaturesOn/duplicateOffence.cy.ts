@@ -10,7 +10,6 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
-import OffenceValuePage from '../../pages/offenceValuePage'
 import CourtCaseCancelCourtCasePage from '../../pages/courtCaseCancelCourtCase'
 import OffenceSentenceServeTypePage from '../../pages/offenceSentenceServeTypePage'
 
@@ -73,14 +72,14 @@ context('Duplicate offence with multiple offence instances enabled', () => {
   })
 
   it('displays Duplicate this offence on each custodial offence card when the feature flag is on', () => {
-    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1')
+    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1')
     Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
 
     cy.task('stubSearchSentenceTypes', {
       convictionDate: '2023-05-12',
       offenceDate: '2023-05-10',
     })
-    cy.createSentencedConcurrentOffenceAllFeaturesOn('A1234AB', '0', '0', '1', '2')
+    cy.createSentencedConcurrentOffence('A1234AB', '0', '0', '1', '2')
     const checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 2 offences')
 
     checkOffenceAnswersPage
@@ -100,7 +99,7 @@ context('Duplicate offence with multiple offence instances enabled', () => {
   })
 
   it('duplicates a custodial offence through the full review, validation, and save journey', () => {
-    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1')
+    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1')
     let checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
 
     checkOffenceAnswersPage
@@ -224,10 +223,6 @@ context('Duplicate offence with multiple offence instances enabled', () => {
     initialOffenceOutcomePage.radioLabelContains('Lie on file').click()
     initialOffenceOutcomePage.continueButton().click()
 
-    const initialOffenceValuePage = Page.verifyOnPage(OffenceValuePage)
-    initialOffenceValuePage.radioLabelSelector('false').click()
-    initialOffenceValuePage.continueButton().click()
-
     let checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
     checkOffenceAnswersPage
       .nonCustodialOffences()
@@ -248,7 +243,7 @@ context('Duplicate offence with multiple offence instances enabled', () => {
       .and('have.text', 'Duplicate this offence')
       .click()
 
-    let addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
+    const addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
     addDuplicatedOffenceDetailsPage.editSummaryList().getSummaryList().should('deep.equal', {
       Offence: 'PS90037 An offence description',
       'Committed on': 'Enter committed on date',
@@ -257,7 +252,6 @@ context('Duplicate offence with multiple offence instances enabled', () => {
     addDuplicatedOffenceDetailsPage.editOffenceDateCta().should('be.visible')
 
     addDuplicatedOffenceDetailsPage.continueButton().click()
-    addDuplicatedOffenceDetailsPage = Page.verifyOnPage(OffenceAddDuplicatedOffenceDetailsPage)
     addDuplicatedOffenceDetailsPage.errorSummary().should('contain', 'You must enter a committed on date')
     addDuplicatedOffenceDetailsPage
       .errorSummary()

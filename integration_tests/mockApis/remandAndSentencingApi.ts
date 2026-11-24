@@ -1119,7 +1119,7 @@ export default {
     })
   },
 
-  verifyCreateSentenceCourtCaseRequest: ({ value }: { value?: number } = {}): Promise<number> => {
+  verifyCreateSentenceCourtCaseRequest: (): Promise<number> => {
     return verifyRequest({
       requestUrlPattern:
         '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
@@ -1147,7 +1147,6 @@ export default {
                 outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
                 prisonId: 'MDI',
                 createChargeOrder: 0,
-                ...(value !== undefined ? { value } : {}),
                 sentence: {
                   // eslint-disable-next-line no-template-curly-in-string
                   sentenceUuid: '${json-unit.any-string}',

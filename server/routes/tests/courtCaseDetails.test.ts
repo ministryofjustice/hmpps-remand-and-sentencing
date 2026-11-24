@@ -562,12 +562,12 @@ describe('Delete restriction messages', () => {
     expect(messages).toEqual([sentencesMessage])
   })
 
-  it('should show both messages when merged and sentenced', async () => {
+  it('should not show both messages when merged and sentenced', async () => {
     const courtCase = withChargeFields(createCourtCase('DPS', 'MERGED', 'NOT_SUPPORTED'), {
       sentence: { sentenceUuid: '1' },
     })
     const { messages } = await getMessages(courtCase)
-    expect(messages).toEqual([mergedToMessage, sentencesMessage])
+    expect(messages).toEqual([mergedToMessage])
   })
 
   it('should show no message when the hearing can be deleted', async () => {

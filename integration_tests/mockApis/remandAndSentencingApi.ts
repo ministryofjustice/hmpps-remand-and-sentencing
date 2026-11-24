@@ -1670,6 +1670,81 @@ export default {
       },
     })
   },
+  stubGetRemandAppearanceDetailsWithRecall: ({
+    sentenceStatus,
+  }: { sentenceStatus?: 'ACTIVE' | 'INACTIVE' } = {}): SuperAgentRequest => {
+    const appearanceUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/remand-and-sentencing-api/court-appearance/${appearanceUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid,
+          outcome: {
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+            outcomeName: 'Remanded in custody',
+            nomisCode: '3452',
+            outcomeType: 'REMAND',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          },
+          warrantType: 'NON_SENTENCING',
+          courtCode: 'STHHPM',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          nextCourtAppearance: {
+            appearanceDate: '2024-12-15',
+            appearanceTime: null,
+            courtCode: 'STHHPM',
+            appearanceType: {
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              description: 'Court appearance',
+              displayOrder: 10,
+            },
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Remanded in custody',
+                nomisCode: '3452',
+                outcomeType: 'REMAND',
+                displayOrder: 10,
+                dispositionCode: 'INTERIM',
+              },
+              mergedFromCase: {
+                caseReference: 'C894623',
+                courtCode: 'STHHPM',
+                warrantDate: '2023-12-15',
+                mergedFromDate: '2023-12-15',
+              },
+              sentence: {
+                sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                countNumber: '1',
+                periodLengths: [],
+                sentenceServeType: 'FORTHWITH',
+                hasRecall: true,
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+                status: sentenceStatus,
+              },
+            },
+          ],
+          periodLengths: [],
+        },
+      },
+    })
+  },
   stubGetUnknownRecallSentenceAppearanceDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2671,7 +2746,9 @@ export default {
     })
   },
 
-  stubGetCourtCaseRemandLatest: (): SuperAgentRequest => {
+  stubGetCourtCaseRemandLatest: ({
+    firstChargeHasRecall = false,
+  }: { firstChargeHasRecall?: boolean } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -2718,6 +2795,15 @@ export default {
                   displayOrder: 10,
                   dispositionCode: 'INTERIM',
                 },
+                ...(firstChargeHasRecall && {
+                  sentence: {
+                    sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                    chargeNumber: '1',
+                    periodLengths: [],
+                    sentenceServeType: 'FORTHWITH',
+                    hasRecall: true,
+                  },
+                }),
               },
               {
                 chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
@@ -2817,6 +2903,15 @@ export default {
                     displayOrder: 10,
                     dispositionCode: 'INTERIM',
                   },
+                  ...(firstChargeHasRecall && {
+                    sentence: {
+                      sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                      chargeNumber: '1',
+                      periodLengths: [],
+                      sentenceServeType: 'FORTHWITH',
+                      hasRecall: true,
+                    },
+                  }),
                 },
                 {
                   chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
@@ -5211,7 +5306,9 @@ export default {
     })
   },
 
-  stubGetCourtCaseAppealLatest: (): SuperAgentRequest => {
+  stubGetCourtCaseAppealLatest: ({
+    firstChargeHasRecall = false,
+  }: { firstChargeHasRecall?: boolean } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -5243,6 +5340,15 @@ export default {
             charges: [
               {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                ...(firstChargeHasRecall && {
+                  sentence: {
+                    sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                    chargeNumber: '1',
+                    periodLengths: [],
+                    sentenceServeType: 'FORTHWITH',
+                    hasRecall: true,
+                  },
+                }),
                 offenceCode: 'PS90037',
                 offenceStartDate: '2025-12-15',
                 outcome: {
@@ -5292,6 +5398,15 @@ export default {
               charges: [
                 {
                   chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                  ...(firstChargeHasRecall && {
+                    sentence: {
+                      sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                      chargeNumber: '1',
+                      periodLengths: [],
+                      sentenceServeType: 'FORTHWITH',
+                      hasRecall: true,
+                    },
+                  }),
                   offenceCode: 'PS90037',
                   offenceStartDate: '2025-12-15',
                   outcome: {
@@ -5327,7 +5442,10 @@ export default {
     })
   },
 
-  stubGetAppealAppearanceDetails: (): SuperAgentRequest => {
+  stubGetAppealAppearanceDetails: ({
+    firstChargeHasRecall = false,
+    firstChargeSentenceStatus,
+  }: { firstChargeHasRecall?: boolean; firstChargeSentenceStatus?: 'ACTIVE' | 'INACTIVE' } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -5419,11 +5537,13 @@ export default {
                   },
                 ],
                 sentenceServeType: 'CONCURRENT',
+                hasRecall: firstChargeHasRecall,
                 sentenceType: {
                   sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
                   description: 'SDS (Standard Determinate Sentence)',
                   classification: 'STANDARD',
                 },
+                ...(firstChargeSentenceStatus && { status: firstChargeSentenceStatus }),
                 legacyData: {
                   nomisLineReference: '1',
                 },
@@ -6200,7 +6320,9 @@ export default {
     })
   },
 
-  stubGetCourtCaseBreachLatest: (): SuperAgentRequest => {
+  stubGetCourtCaseBreachLatest: ({
+    firstChargeHasRecall = false,
+  }: { firstChargeHasRecall?: boolean } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -6238,6 +6360,15 @@ export default {
             charges: [
               {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                ...(firstChargeHasRecall && {
+                  sentence: {
+                    sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                    chargeNumber: '1',
+                    periodLengths: [],
+                    sentenceServeType: 'FORTHWITH',
+                    hasRecall: true,
+                  },
+                }),
                 offenceCode: 'PS90037',
                 offenceStartDate: '2025-12-15',
                 outcome: {
@@ -6304,6 +6435,15 @@ export default {
               charges: [
                 {
                   chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                  ...(firstChargeHasRecall && {
+                    sentence: {
+                      sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                      chargeNumber: '1',
+                      periodLengths: [],
+                      sentenceServeType: 'FORTHWITH',
+                      hasRecall: true,
+                    },
+                  }),
                   offenceCode: 'PS90037',
                   offenceStartDate: '2025-12-15',
                   outcome: {
@@ -6420,7 +6560,10 @@ export default {
     })
   },
 
-  stubGetBreachAppearanceDetails: (): SuperAgentRequest => {
+  stubGetBreachAppearanceDetails: ({
+    firstChargeHasRecall = false,
+    firstChargeSentenceStatus,
+  }: { firstChargeHasRecall?: boolean; firstChargeSentenceStatus?: 'ACTIVE' | 'INACTIVE' } = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -6459,6 +6602,21 @@ export default {
                 dispositionCode: 'FINAL',
                 status: 'ACTIVE',
               },
+              ...(firstChargeHasRecall && {
+                sentence: {
+                  sentenceUuid: '317d1108-6b2a-4aa2-8091-79f0e190542c',
+                  countNumber: '1',
+                  periodLengths: [],
+                  sentenceServeType: 'FORTHWITH',
+                  hasRecall: true,
+                  sentenceType: {
+                    sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                    description: 'SDS (Standard Determinate Sentence)',
+                    classification: 'STANDARD',
+                  },
+                  ...(firstChargeSentenceStatus && { status: firstChargeSentenceStatus }),
+                },
+              }),
             },
             {
               chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',

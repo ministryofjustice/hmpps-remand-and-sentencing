@@ -19,13 +19,13 @@
         visuallyHiddenText: "case reference",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   } %}
 {% else %}
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
     value: {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>'
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>' if not isReadOnly else '<span>Not entered</span>'
     }
   } %}
 {% endif %}
@@ -42,7 +42,7 @@
         visuallyHiddenText: "warrant date",
         classes: "govuk-link--no-visited-state"
       }]
-    }
+    } if not isReadOnly
   }
 ] %}
 
@@ -56,7 +56,7 @@
       visuallyHiddenText: "court name",
       classes: "govuk-link--no-visited-state"
     }]
-  }
+  } if not isReadOnly
 }) %}
 
 {% set hearingSummaryRows = hearingSummaryRows.concat({
@@ -69,7 +69,7 @@
       visuallyHiddenText: "overall case outcome",
       classes: "govuk-link--no-visited-state"
     }]
-  }
+  } if not isReadOnly
 }) %}
 
 {% set nextAppearanceSummaryRows = [{
@@ -82,7 +82,7 @@
       visuallyHiddenText: "Next appearance set",
       classes: "govuk-link--no-visited-state"
     }]
-  }
+  } if not isReadOnly
 }] %}
 
 {% if hearing.nextAppearanceSelect %}
@@ -97,7 +97,7 @@
           visuallyHiddenText: "Next appearance court name",
           classes: "govuk-link--no-visited-state"
         }]
-      }
+      } if not isReadOnly
     },
     {
       key: { text: "Appearance type" },
@@ -109,7 +109,7 @@
           visuallyHiddenText: "Next appearance type",
           classes: "govuk-link--no-visited-state"
         }]
-      }
+      } if not isReadOnly
     }]) %}
   {% if appearanceSubtypeDescription %}
     {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
@@ -123,7 +123,7 @@
           visuallyHiddenText: "discharge type",
           classes: "govuk-link--no-visited-state"
         }]
-      }
+      } if not isReadOnly
     }
     ]) %}
   {% endif %}
@@ -138,7 +138,7 @@
           visuallyHiddenText: "next appearance date",
           classes: "govuk-link--no-visited-state"
         }]
-      }
+      } if not isReadOnly
     }
   ]) %}
 {% endif %}
@@ -170,6 +170,14 @@
           text: mergedFromText,
           classes: "govuk-!-margin-bottom-3",
           attributes: { "data-qa": "mergedFromText" }
+        }) }}
+      {% endif %}
+
+      {% if hasAnyRecalls %}
+        {{ govukInsetText({
+          text: "You can't edit information on a hearing that's been recalled",
+          classes: "govuk-!-margin-bottom-3",
+          attributes: { "data-qa": "hasAnyRecallsInset" }
         }) }}
       {% endif %}
 
@@ -212,12 +220,14 @@
       <h2 class="govuk-heading-m">Offences ({{ hearing.offences | length }})</h2>
 
       <div class="govuk-button-group">
-        {{ govukButton({
-          text: "Add an offence",
-          classes: "govuk-button--link",
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
-          attributes: { "data-qa": "addAnotherOffence" }
-        }) }}
+        {{
+          govukButton({
+            text: "Add an offence",
+            classes: "govuk-button--link",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
+            attributes: { "data-qa": "addAnotherOffence" }
+          }) if not isReadOnly
+        }}
 
         {% if hasActiveSentence %}
           {{ govukButton({
@@ -238,7 +248,7 @@
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or concurrent',
                 classes: "govuk-link--no-visited-state"
-              } if offence.sentence,
+              } if offence.sentence and not isReadOnly,
               actions: {
                 items: [
                   {
@@ -254,7 +264,7 @@
                     classes: "govuk-link--no-visited-state"
                   }
                 ]
-              },
+              } if not isReadOnly,
               listItems: {
                 classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
                 items: [{

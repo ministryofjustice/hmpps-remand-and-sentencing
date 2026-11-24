@@ -576,3 +576,33 @@ describe('Delete restriction messages', () => {
     expect(deleteLinks).toBe(1)
   })
 })
+
+describe.each([
+  ['non-sentencing', 'NON_SENTENCING'],
+  ['appeal', 'APPEAL'],
+  ['breach', 'BREACH_OF_SUPERVISION_REQUIREMENTS'],
+  ['sentencing', 'SENTENCING'],
+])('Hearing action links for a %s hearing with a recalled sentence', (_, warrantType) => {
+  const path = '/person/A1234AB/edit-court-case/1/details'
+
+  it('should show the Edit link and hide the Delete link', async () => {
+    const courtCase = createCourtCase('DPS')
+    const appearance = {
+      ...courtCase.appearances[0],
+      warrantType,
+      charges: [{ ...courtCase.appearances[0].charges[0], sentence: { sentenceUuid: '1', hasRecall: true } }],
+    }
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue({
+      ...courtCase,
+      latestAppearance: appearance,
+      appearances: [appearance],
+    } as PageCourtCaseContent)
+    setupDefaultMocks()
+
+    const res = await request(app).get(path)
+    const $ = cheerio.load(res.text)
+    const actions = $('[data-qa="hearingActionList-1"]')
+    expect(actions.find('a:contains("Edit")')).toHaveLength(1)
+    expect(actions.find('a:contains("Delete")')).toHaveLength(0)
+  })
+})

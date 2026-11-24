@@ -224,8 +224,6 @@ context('Appeal appearance details Page', () => {
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     }
 
-    beforeEach(() => {})
-
     it('should show the inset and hide edit links', () => {
       loadHearing('ACTIVE')
       courtCaseHearingDetailsPage

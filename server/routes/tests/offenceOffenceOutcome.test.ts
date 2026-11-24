@@ -92,7 +92,7 @@ describe('GET Offence outcome', () => {
 })
 
 describe('POST Offence outcome & Offence value routing', () => {
-  it('redirects to offence-value when adding a non-custodial offence and chargeValue is enabled', async () => {
+  it('redirects to offence-value when adding a non-custodial monetary value offence and chargeValue is enabled', async () => {
     config.featureToggles.chargeValue = true
     defaultServices.courtAppearanceService.getOffence.mockReturnValue(undefined)
     defaultServices.courtAppearanceService.getSentenceUuidsInChain.mockReturnValue([])
@@ -111,7 +111,7 @@ describe('POST Offence outcome & Offence value routing', () => {
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '0',
-      offenceCode: 'CC12345',
+      offenceCode: 'TH68010',
       outcomeUuid: '1',
     })
 
@@ -313,7 +313,7 @@ describe('POST Offence outcome & Offence value routing', () => {
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '0',
-      offenceCode: 'CC12345',
+      offenceCode: 'TH68010',
       outcomeUuid: '2',
     })
 
@@ -343,7 +343,7 @@ describe('POST Offence outcome & Offence value routing', () => {
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
-      offenceCode: 'CC12345',
+      offenceCode: 'TH68010',
       outcomeUuid: '2',
     })
 

@@ -82,12 +82,11 @@ context('Court case hearing delete restrictions', () => {
     page.hearingActionList(appearanceUuid).should('not.contain.text', 'Delete')
   })
 
-  it('should show both messages when the hearing is merged and has sentences', () => {
+  it('should not show both messages when the hearing is merged and has sentences', () => {
     const page = visitDetails('MERGED', appearance('NOT_SUPPORTED', { sentence }))
 
-    page.deleteRestrictionText().should('have.length', 2)
+    page.deleteRestrictionText().should('have.length', 1)
     page.deleteRestrictionText().eq(0).should('contain.text', mergedToMessage)
-    page.deleteRestrictionText().eq(1).should('contain.text', sentencesMessage)
   })
 
   it('should show no restriction message and a delete link when the hearing can be deleted', () => {

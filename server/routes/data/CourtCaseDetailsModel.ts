@@ -151,13 +151,11 @@ export default class CourtCaseDetailsModel {
       deleteRestrictions.push(
         'You cannot delete this hearing because this court case has been merged with another court case.',
       )
-    }
-    if (hasMergedFromCases) {
+    } else if (hasMergedFromCases) {
       deleteRestrictions.push(
         'You cannot delete this hearing because another court case has been merged with this court case.',
       )
-    }
-    if (hasSentences || deleteRestrictions.length === 0) {
+    } else if (hasSentences) {
       deleteRestrictions.push('You cannot delete a hearing that includes sentences.')
     }
 

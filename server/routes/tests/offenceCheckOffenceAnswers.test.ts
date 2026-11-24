@@ -169,7 +169,7 @@ describe('GET Check offence answers page', () => {
     expect(fineAmountValue).toEqual(expectedText)
   })
 
-  it('should display offence value on offence card for non-custodial charges when chargeValue is enabled', async () => {
+  it('should display offence value on offence card for monetary value offence charges when chargeValue is enabled', async () => {
     config.featureToggles.chargeValue = true
     setup(false)
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
@@ -179,7 +179,7 @@ describe('GET Check offence answers page', () => {
       offences: [
         {
           chargeUuid: '2',
-          offenceCode: 'O1',
+          offenceCode: 'TH68010',
           outcomeUuid: '3',
           offenceValue: 75.5,
           hasOffenceValue: 'true',
@@ -208,7 +208,7 @@ describe('GET Check offence answers page', () => {
       offences: [
         {
           chargeUuid: '2',
-          offenceCode: 'O1',
+          offenceCode: 'TH68010',
           outcomeUuid: '3',
           offenceValue: -1,
           hasOffenceValue: 'false',

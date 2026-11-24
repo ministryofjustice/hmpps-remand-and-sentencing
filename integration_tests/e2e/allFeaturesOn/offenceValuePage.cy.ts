@@ -148,7 +148,7 @@ context('Add Offence Value Page', () => {
     outcomeAppliedAllPage.radioLabelSelector('false').click()
     outcomeAppliedAllPage.continueButton().click()
 
-    cy.createSentencedOffenceAllFeaturesOn('A1234AB', '0', '0', '0', '1', '99.90')
+    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1', true, '99.90')
 
     const checkOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
     checkOffenceAnswersPage

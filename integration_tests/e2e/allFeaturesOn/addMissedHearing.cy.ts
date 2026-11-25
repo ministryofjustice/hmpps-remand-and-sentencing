@@ -47,11 +47,25 @@ context('Add missed hearing', () => {
 
     detailsPage.addMissedHearingButton().click()
 
-    const taskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case')
-    taskListPage.hearingInformationLink().should('exist')
-    taskListPage.reviewOffencesLink().should('not.exist')
-    taskListPage.uploadCourtDocumentsLink().should('not.exist')
-    taskListPage.nextCourtAppearanceLink().should('not.exist')
-    cy.get('[data-qa=continue-button]').should('be.disabled')
+    const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Review offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Cannot start yet',
+        },
+      ])
+
+    courtCaseTaskListPage.continueButton().should('be.disabled')
   })
 })

@@ -595,6 +595,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       successMessage,
       courtCaseStatusChangeSuccessMessage,
       showOffenceValuesRow: config.featureToggles.chargeValue,
+      showAddMissedHearing: config.featureToggles.missedHearing,
     })
   }
 

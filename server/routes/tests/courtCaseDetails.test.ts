@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import config from '../../config'
 import { CourtCase as PageCourtCaseContent } from '../../@types/remandAndSentencingApi'
 
 let app: Express
@@ -74,6 +75,33 @@ describe('GET court case details', () => {
     expect(editLink.length).toEqual(1)
     const deleteLink = $('a[href*="confirm-delete"]')
     expect(deleteLink.length).toEqual(1)
+  })
+})
+
+describe('Add missed hearing button', () => {
+  const original = config.featureToggles.missedHearing
+  afterEach(() => {
+    config.featureToggles.missedHearing = original
+  })
+
+  it('should show the button linking to the missed hearing journey when the feature toggle is on', async () => {
+    config.featureToggles.missedHearing = true
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(createCourtCase('DPS'))
+    setupDefaultMocks()
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const href = $('[data-qa=add-missed-hearing-button]').attr('href')
+    expect(href).toMatch(
+      /^\/person\/A1234AB\/edit-court-case\/1\/add-court-appearance\/[0-9a-f-]{36}\/missed-hearing\/new-journey$/,
+    )
+  })
+
+  it('should hide the button when the feature toggle is off', async () => {
+    config.featureToggles.missedHearing = false
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(createCourtCase('DPS'))
+    setupDefaultMocks()
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
+    expect(cheerio.load(res.text)('[data-qa=add-missed-hearing-button]').length).toBe(0)
   })
 })
 

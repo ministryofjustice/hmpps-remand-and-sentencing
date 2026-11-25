@@ -24,6 +24,7 @@ import JudicialFindingsRoutes from './judicialFindingsRoutes'
 import DocumentGeneratorRoutes from './documentGeneratorRoutes'
 import AutomaticSentenceFixRoutes from './automaticSentenceFixRoutes'
 import hmctsResultCodeDataAdminRoutes from './hmctsResultCodeDataAdminRoutes'
+import MissedHearingRoutes from './missedHearingRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -191,6 +192,16 @@ export default function routes(services: Services): Router {
   )
 
   const automaticSentenceFixRoutes = new AutomaticSentenceFixRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
+  const missedHearingRoutes = new MissedHearingRoutes(
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
@@ -1193,6 +1204,11 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravating-factors-answers',
     aggravatingFactorsRoutes.submitCheckAggravatingFactorsAnswers,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/missed-hearing/new-journey',
+    missedHearingRoutes.newJourney,
   )
 
   router.get(

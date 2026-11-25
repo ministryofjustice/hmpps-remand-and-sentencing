@@ -8,6 +8,7 @@ declare module 'models' {
 
   export interface CourtAppearance {
     appearanceUuid: string
+    isMissedHearing?: boolean
     caseReferenceNumber?: string
     noCaseReference?: string
     warrantDate?: Date

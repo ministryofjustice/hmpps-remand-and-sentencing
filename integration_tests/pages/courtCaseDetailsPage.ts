@@ -27,6 +27,8 @@ export default class CourtCaseDetailsPage extends Page {
 
   notificationBannerContent = (): PageElement => cy.get('[data-qa=notification-banner-content]')
 
+  addMissedHearingButton = (): PageElement => cy.get('[data-qa=add-missed-hearing-button]')
+
   markCourtCaseAsInactiveButton = (): PageElement => cy.get('[data-qa=mark-court-case-as-inactive-button]')
 
   markCourtCaseAsActiveButton = (): PageElement => cy.get('[data-qa=mark-court-case-as-active-button]')

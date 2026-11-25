@@ -66,6 +66,15 @@
               }) }}
           {% endif %}
 
+          {% if showAddMissedHearing %}
+              {{ govukButton({
+                  href: "/person/" + nomsId + "/edit-court-case/" + courtCaseReference + "/add-court-appearance/" + courtCaseDetails.newMissedHearingUuid + "/missed-hearing/new-journey",
+                  text: "Add missed hearing",
+                  classes: "govuk-button--secondary",
+                  attributes: { 'data-qa': 'add-missed-hearing-button' }
+              }) }}
+          {% endif %}
+
           {% if courtCaseDetails.mergedToInsetText %}
               {{ govukInsetText({
                   text: courtCaseDetails.mergedToInsetText,

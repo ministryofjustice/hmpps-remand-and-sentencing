@@ -1552,6 +1552,16 @@ export default class CourtAppearanceService {
     })
   }
 
+  startMissedHearing(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const { courtAppearances } = session
+    courtAppearances[nomsId] = {
+      offences: [],
+      appearanceUuid,
+      warrantType: 'NON_SENTENCING',
+      isMissedHearing: true,
+    }
+  }
+
   clearSessionCourtAppearance(session: Partial<SessionData>, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

@@ -41,7 +41,10 @@ export default class CourtCaseDetailsModel {
 
   hasActiveSentence: boolean
 
+  newMissedHearingUuid: string
+
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
+    this.newMissedHearingUuid = crypto.randomUUID()
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.latestCaseReference = pageCourtCaseContent.latestAppearance?.courtCaseReference
     this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode

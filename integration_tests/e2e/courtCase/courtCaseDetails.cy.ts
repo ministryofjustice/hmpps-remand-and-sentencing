@@ -311,4 +311,18 @@ context('Court Case details Page', () => {
       courtCaseDetailsPage.hearingActionList('94608b2e-c532-4cea-bae7-57bfff4566cb').should('contain.text', 'Edit')
     })
   })
+
+  context('Add missed hearing feature toggle off', () => {
+    it('should not show the add missed hearing button', () => {
+      cy.task('stubGetCourtCaseRemandLatest')
+      cy.task('stubGetCourtsByIds')
+      cy.signIn()
+      cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
+      courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Hearings for C894623 at Accrington Youth Court',
+      )
+      courtCaseDetailsPage.addMissedHearingButton().should('not.exist')
+    })
+  })
 })

@@ -191,5 +191,6 @@ export default {
     replacedWithAnotherAppeals: get('FEATURES_REPLACED_WITH_ANOTHER_APPEALS', false, requiredInProduction) === 'true',
     multipleOffenceInstances: get('FEATURES_MULTIPLE_OFFENCE_INSTANCES', false, requiredInProduction) === 'true',
     chargeValue: get('FEATURES_CHARGE_VALUE', false, requiredInProduction) === 'true',
+    missedHearing: get('FEATURES_MISSED_HEARING', false, requiredInProduction) === 'true',
   },
 }

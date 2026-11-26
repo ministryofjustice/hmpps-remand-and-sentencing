@@ -77,13 +77,13 @@ export default abstract class TaskListModel {
     }
     const missedHearingWithNoOutcome = courtAppearance.isMissedHearing && !courtAppearance.appearanceOutcomeUuid
     if (missedHearingWithNoOutcome) {
-      return `${JourneyUrls.overallCaseOutcome(
+      return JourneyUrls.missedHearingOverallCaseOutcome(
         this.nomsId,
         this.addOrEditCourtCase,
         this.courtCaseReference,
         this.addOrEditCourtAppearance,
         this.appearanceReference,
-      )}?backTo=taskList`
+      )
     }
     if (this.isAddCourtCase() || !caseReferenceSet || courtAppearance.isCommonPlatformJourney) {
       return JourneyUrls.reference(

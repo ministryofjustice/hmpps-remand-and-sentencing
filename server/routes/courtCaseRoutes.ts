@@ -948,7 +948,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { submitToCheckAnswers } = req.query
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     let courtCaseReferenceForm = (req.flash('courtCaseReferenceForm')[0] || {}) as CourtCaseReferenceForm
-    const { caseReferenceNumber, referenceNumberSelect, noCaseReference } =
+    const { caseReferenceNumber, referenceNumberSelect, noCaseReference, isMissedHearing } =
       this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     if (Object.keys(courtCaseReferenceForm).length === 0) {
       courtCaseReferenceForm = {
@@ -956,13 +956,22 @@ export default class CourtCaseRoutes extends BaseRoutes {
         noCaseReference,
       }
     }
-    let backLink = JourneyUrls.taskList(
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-    )
+    let backLink = isMissedHearing
+      ? JourneyUrls.overallCaseOutcome(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          'taskList',
+        )
+      : JourneyUrls.taskList(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         backLink = JourneyUrls.sentencingHearing(
@@ -1124,13 +1133,27 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-    let backLink = JourneyUrls.taskList(
+    const { isMissedHearing } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
       nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
       appearanceReference,
     )
+    let backLink = isMissedHearing
+      ? JourneyUrls.overallCaseOutcome(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          'taskList',
+        )
+      : JourneyUrls.taskList(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
     if (submitToCheckAnswers) {
       backLink = JourneyUrls.checkAppearanceAnswers(
         nomsId,
@@ -1960,6 +1983,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+    if (courtAppearance.isMissedHearing) {
+      const caseReferenceSet = await this.getCaseReferenceSet(
+        courtAppearance,
+        req.user.username,
+        req.params as unknown as UrlParameters,
+      )
+      const nextUrl = caseReferenceSet ? JourneyUrls.selectReference : JourneyUrls.reference
+      return res.redirect(
+        nextUrl(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference),
+      )
+    }
     const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !isHmctsJourneyWithChargeData) {
       return res.redirect(

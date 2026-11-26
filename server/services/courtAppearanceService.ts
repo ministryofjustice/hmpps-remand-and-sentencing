@@ -234,6 +234,7 @@ export default class CourtAppearanceService {
         nomsId,
         addOrEditCourtCase,
         warrantOrHearing,
+        courtAppearance.isMissedHearing,
       )
 
       if (courtCaseDatesErrors.length) return courtCaseDatesErrors
@@ -267,6 +268,7 @@ export default class CourtAppearanceService {
     nomsId: string,
     addOrEditCourtCase: string,
     warrantOrHearing: string,
+    isMissedHearing: boolean = false,
   ): Promise<{ text: string; href: string }[] | null> {
     let latestOffenceDate = null
     let latestRemandAppearanceDate = null
@@ -319,6 +321,17 @@ export default class CourtAppearanceService {
         text: 'The date of a hearing cannot be after the date of a sentencing warrant on the same court case',
         href: '#warrantDate',
       })
+    } else if (isMissedHearing) {
+      const hearingDate = [latestRemandAppearanceDate, latestSentencingAppearanceDate].filter(p => p != null)
+      if (hearingDate.length > 0) {
+        const latestHearingDate = hearingDate.reduce((latest, current) => (current > latest ? current : latest))
+        if (!warrantDate.isBefore(latestHearingDate, 'day')) {
+          errors.push({
+            text: 'The missed hearing must not be the most recent hearing on the case',
+            href: '#warrantDate',
+          })
+        }
+      }
     }
 
     return errors

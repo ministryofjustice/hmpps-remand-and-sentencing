@@ -3,7 +3,6 @@ import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
 import AggravatingFactorsJourneyUrls from './AggravatingFactorsJourneyUrls'
 import JudicialFindingsJourneyUrls from './JudicialFindingsJourneyUrls'
-import config from '../../config'
 
 export default class SentencingTaskListModel extends TaskListModel {
   urlParameters: UrlParameters

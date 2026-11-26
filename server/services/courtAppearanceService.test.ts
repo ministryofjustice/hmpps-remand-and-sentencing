@@ -263,4 +263,79 @@ describe('courtAppearanceService', () => {
       })
     })
   })
+
+  describe('missed hearing warrant date', () => {
+    const nomsId = 'P123'
+    const missedHearingError = {
+      text: 'The missed hearing must not be the most recent hearing on the case',
+      href: '#warrantDate',
+    }
+
+    const checkForErrorMessages = (isMissedHearing: boolean, day: string, month: string, year: string) => {
+      const warrantDateForm = {
+        'warrantDate-day': day,
+        'warrantDate-month': month,
+        'warrantDate-year': year,
+      } as CourtCaseWarrantDateForm
+
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'NON_SENTENCING',
+        isMissedHearing,
+        offences: [],
+      } as CourtAppearance
+
+      const session = {
+        courtAppearances: {
+          [nomsId]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+
+      return service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user', 'hearing')
+    }
+
+    beforeEach(() => {
+      remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
+        offenceDate: '2000-01-01',
+        latestRemandAppearanceDate: '2025-01-10',
+        latestSentenceAppearanceDate: null,
+      })
+    })
+
+    it.each([
+      ['before the latest hearing', '9', '1', '2025', []],
+      ['on the latest hearing', '10', '1', '2025', [missedHearingError]],
+      ['after the latest hearing', '11', '1', '2025', [missedHearingError]],
+    ])('should have missed hearing %s', async (_, day, month, year, expected) => {
+      expect(await checkForErrorMessages(true, day, month, year)).toStrictEqual(expected)
+    })
+
+    it('should not apply to a hearing that is not a missed hearing', async () => {
+      expect(await checkForErrorMessages(false, '11', '1', '2025')).toStrictEqual([])
+    })
+
+    it('should still apply the offence date rule before the latest hearing', async () => {
+      const errors = await checkForErrorMessages(true, '1', '1', '1999')
+      expect(errors).toStrictEqual([
+        {
+          text: 'The hearing date must be on or after any existing offence dates in the court case',
+          href: '#warrantDate',
+        },
+      ])
+    })
+
+    it('should only report the sentencing warrant error after a sentencing warrant', async () => {
+      remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
+        offenceDate: '2000-01-01',
+        latestRemandAppearanceDate: '2025-01-10',
+        latestSentenceAppearanceDate: '2025-02-01',
+      })
+      expect(await checkForErrorMessages(true, '1', '3', '2025')).toStrictEqual([
+        {
+          text: 'The date of a hearing cannot be after the date of a sentencing warrant on the same court case',
+          href: '#warrantDate',
+        },
+      ])
+    })
+  })
 })

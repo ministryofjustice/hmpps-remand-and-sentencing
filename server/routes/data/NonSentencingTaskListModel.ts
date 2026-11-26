@@ -19,7 +19,9 @@ export default class NonSentencingTaskListModel extends TaskListModel {
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getOffenceSentencesItem(courtAppearance),
     ]
-    if (appearanceOutcome?.dispositionCode === 'INTERIM') {
+    const canSetNextCourtAppearance =
+      appearanceOutcome?.dispositionCode === 'INTERIM' && !courtAppearance.isMissedHearing
+    if (canSetNextCourtAppearance) {
       this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
     }
     this.items.push(this.getCourtDocumentsItem(courtAppearance))

@@ -314,6 +314,15 @@ describe('courtAppearanceService', () => {
       expect(await checkForErrorMessages(false, '11', '1', '2025')).toStrictEqual([])
     })
 
+    it('should not error when there are no other hearings on the case', async () => {
+      remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
+        offenceDate: '2000-01-01',
+        latestRemandAppearanceDate: null,
+        latestSentenceAppearanceDate: null,
+      })
+      expect(await checkForErrorMessages(true, '11', '1', '2025')).toStrictEqual([])
+    })
+
     it('should still apply the offence date rule before the latest hearing', async () => {
       const errors = await checkForErrorMessages(true, '1', '1', '1999')
       expect(errors).toStrictEqual([

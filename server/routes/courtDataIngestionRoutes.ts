@@ -253,7 +253,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     )
     const warrantDate = new Date(sessionAppearance.warrantDate)
     const warrantDateForm = {
-      'warrantDate-day': `${warrantDate.getDay()}`,
+      'warrantDate-day': `${warrantDate.getDate()}`,
       'warrantDate-month': `${warrantDate.getMonth() + 1}`,
       'warrantDate-year': `${warrantDate.getFullYear()}`,
     } as CourtCaseWarrantDateForm

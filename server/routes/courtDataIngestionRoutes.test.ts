@@ -8,6 +8,9 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
+  defaultServices.courtAppearanceService.setWarrantDate.mockResolvedValue([])
+  defaultServices.courtAppearanceService.setCaseReferenceNumber.mockReturnValue([])
+  defaultServices.courtAppearanceService.setCourtNameFromSelect.mockReturnValue([])
 })
 
 afterEach(() => {

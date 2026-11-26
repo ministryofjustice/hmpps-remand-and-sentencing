@@ -37,7 +37,6 @@ import {
   sortByDateDesc,
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
-  convertToTitleCase,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import { PrisonUser } from '../interfaces/hmppsUser'
@@ -1291,7 +1290,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    const warrantOrHearing = await this.getWarrantOrHearing(res, req.user.username, appearanceOutcomeUuid, warrantType)
+    const warrantOrHearing = await this.courtAppearanceService.getWarrantOrHearing(
+      res,
+      req.user.username,
+      appearanceOutcomeUuid,
+      warrantType,
+    )
 
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
@@ -2116,7 +2120,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
 
-    const warrantOrHearing = await this.getWarrantOrHearing(
+    const warrantOrHearing = await this.courtAppearanceService.getWarrantOrHearing(
       res,
       req.user.username,
       courtAppearance.appearanceOutcomeUuid,
@@ -3434,24 +3438,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
             appearanceReference,
           ),
     )
-  }
-
-  private async getWarrantOrHearing(
-    res,
-    username: string,
-    outcomeUuid: string,
-    warrantType: string,
-    capital: boolean = false,
-  ) {
-    let { warrantOrHearing } = res.locals
-
-    if (warrantType === 'NON_SENTENCING' && outcomeUuid) {
-      const outcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, username)
-      if (outcome.outcomeType === 'REMAND') {
-        warrantOrHearing = 'warrant'
-      }
-    }
-    return capital ? convertToTitleCase(warrantOrHearing) : warrantOrHearing
   }
 
   private getDocumentName(documentType: string, warrantType: string): string {

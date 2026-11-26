@@ -39,10 +39,11 @@ declare module 'models' {
     uploadedDocuments?: UploadedDocument[]
     documentUploadAccepted?: boolean
     criminalAppealOfficeReference?: string
-    isCommonPlatformJourney?: boolean
     periodLengths?: SentenceLength[]
     judicialFindingsAccepted?: boolean
+    isCommonPlatformJourney?: boolean
     hmctsCourtHearingId?: string
+    initialPrepopulatedHmctsAppearanceInformationDataInvalid?: boolean
   }
 
   export interface Offence {

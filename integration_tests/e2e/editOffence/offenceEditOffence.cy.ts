@@ -208,6 +208,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -231,6 +232,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -252,6 +254,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -287,6 +290,7 @@ context('Add Offence Edit offence Page', () => {
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -316,6 +320,7 @@ context('Add Offence Edit offence Page', () => {
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -361,6 +366,7 @@ context('Add Offence Edit offence Page', () => {
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -409,6 +415,7 @@ context('Add Offence Edit offence Page', () => {
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -441,6 +448,7 @@ context('Add Offence Edit offence Page', () => {
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.editFieldLink(chargeUuid, 'fine-amount').click()
@@ -460,8 +468,9 @@ context('Add Offence Edit offence Page', () => {
         'Fine Amount': '£200',
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
-      expectedSummary1['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary1)
     })
 
@@ -492,6 +501,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Offence aggravated by foreign power condition being met',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -533,6 +543,7 @@ context('Add Offence Edit offence Page', () => {
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors':
           'Offence aggravated by foreign power condition being met Offence aggravated by a terrorist connection',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       })
     })
   })
@@ -626,6 +637,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days 4 years 0 months 0 weeks 0 days',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -651,6 +663,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
@@ -776,6 +789,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })

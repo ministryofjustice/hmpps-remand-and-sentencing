@@ -90,6 +90,11 @@ context('New Sentencing Court Case from hmcts data journey', () => {
           status: 'Cannot start yet',
         },
         {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Cannot start yet',
+          hint: 'This can be found on the PCR',
+        },
+        {
           name: 'Review court documents',
           status: '1 document uploaded',
         },
@@ -125,6 +130,11 @@ context('New Sentencing Court Case from hmcts data journey', () => {
         {
           name: 'Add aggravating factors',
           status: 'Cannot start yet',
+        },
+        {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Cannot start yet',
+          hint: 'This can be found on the PCR',
         },
         {
           name: 'Review court documents',
@@ -177,6 +187,11 @@ context('New Sentencing Court Case from hmcts data journey', () => {
         {
           name: 'Add aggravating factors',
           status: 'Cannot start yet',
+        },
+        {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Cannot start yet',
+          hint: 'This can be found on the PCR',
         },
         {
           name: 'Review court documents',
@@ -310,6 +325,11 @@ context('New Sentencing Court Case from hmcts data journey', () => {
         {
           name: 'Add aggravating factors',
           status: 'Optional',
+        },
+        {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Optional',
+          hint: 'This can be found on the PCR',
         },
         {
           name: 'Review court documents',

@@ -40,7 +40,7 @@ context('Add missed hearing', () => {
     cy.task('stubGetLatestCourtAppearance', { courtCaseUuid })
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetLatestOffenceDate', { courtCaseUuid })
-    cy.task('stubGetCourtCaseValidationDates', { courtCaseUuid })
+    cy.task('stubGetCourtCaseValidationDates', { courtCaseUuid, latestRemandAppearanceDate: appearance.appearanceDate })
     cy.signIn()
     cy.visit(`/person/A1234AB/edit-court-case/${courtCaseUuid}/details`)
   })
@@ -119,7 +119,8 @@ context('Add missed hearing', () => {
     })
     checkAnswersPage.continueButton().click()
 
-    Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case')
+    const completedTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case')
+    completedTaskListPage.nextCourtAppearanceLink().should('not.exist')
   })
 
   it('should complete hearing information starting from the overall case outcome set as Lie on file', () => {
@@ -163,6 +164,36 @@ context('Add missed hearing', () => {
     })
     checkAnswersPage.continueButton().click()
 
-    Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case')
+    const completedTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case')
+    completedTaskListPage.nextCourtAppearanceLink().should('not.exist')
+  })
+
+  it('should not allow the missed hearing date to be on or after the most recent hearing', () => {
+    Page.verifyOnPageTitle(CourtCaseDetailsPage, 'Hearings for 1234567 at').addMissedHearingButton().click()
+    Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing to a court case').hearingInformationLink().click()
+
+    const outcomePage = Page.verifyOnPageTitle(CourtCaseOverallCaseOutcomePage, 'Select the overall case outcome')
+    outcomePage.radioLabelContains('Remanded in custody').click()
+    outcomePage.continueButton().click()
+
+    const referencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
+    referencePage.radioLabelSelector('true').click()
+    referencePage.continueButton().click()
+
+    let warrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
+    warrantDatePage.dayDateInput('warrantDate').type('21')
+    warrantDatePage.monthDateInput('warrantDate').type('7')
+    warrantDatePage.yearDateInput('warrantDate').type('2025')
+    warrantDatePage.continueButton().click()
+
+    warrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
+    warrantDatePage
+      .errorSummary()
+      .should('contain.text', 'The missed hearing must not be the most recent hearing on the case')
+
+    warrantDatePage.dayDateInput('warrantDate').clear().type('20')
+    warrantDatePage.continueButton().click()
+
+    Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the hearing at Accrington Youth Court?')
   })
 })

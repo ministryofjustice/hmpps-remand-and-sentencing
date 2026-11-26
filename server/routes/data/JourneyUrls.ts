@@ -80,8 +80,9 @@ export default class JourneyUrls {
     courtCaseUuid: string,
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
+    backLink: string = '',
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/overall-case-outcome`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/overall-case-outcome${backLink !== '' ? `?backTo=${backLink}` : ''}`
   }
 
   static overallCaseOutcomeAppliedAll = (
@@ -93,22 +94,6 @@ export default class JourneyUrls {
     hasErrors?: boolean,
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/case-outcome-applied-all${hasErrors ? '?hasErrors=true' : ''}`
-  }
-
-  static missedHearingOverallCaseOutcome = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-  ) => {
-    return `${JourneyUrls.overallCaseOutcome(
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseUuid,
-      addOrEditCourtAppearance,
-      courtAppearanceUuid,
-    )}?backTo=taskList`
   }
 
   static sentencingOverallCaseOutcome = (

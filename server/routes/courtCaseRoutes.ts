@@ -958,12 +958,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
     let backLink = isMissedHearing
-      ? JourneyUrls.missedHearingOverallCaseOutcome(
+      ? JourneyUrls.overallCaseOutcome(
           nomsId,
           addOrEditCourtCase,
           courtCaseReference,
           addOrEditCourtAppearance,
           appearanceReference,
+          'taskList',
         )
       : JourneyUrls.taskList(
           nomsId,
@@ -1139,12 +1140,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     let backLink = isMissedHearing
-      ? JourneyUrls.missedHearingOverallCaseOutcome(
+      ? JourneyUrls.overallCaseOutcome(
           nomsId,
           addOrEditCourtCase,
           courtCaseReference,
           addOrEditCourtAppearance,
           appearanceReference,
+          'taskList',
         )
       : JourneyUrls.taskList(
           nomsId,

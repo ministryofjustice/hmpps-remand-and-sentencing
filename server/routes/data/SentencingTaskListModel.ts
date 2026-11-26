@@ -22,11 +22,9 @@ export default class SentencingTaskListModel extends TaskListModel {
       this.getWarrantInformationItem(courtAppearance),
       this.getOffenceSentencesItem(courtAppearance),
       this.getAggravatingFactorsItem(courtAppearance),
+      this.getJudicialFindingsItem(courtAppearance),
+      this.getCourtDocumentsItem(courtAppearance),
     ]
-    if (config.featureToggles.judicialFindings) {
-      this.items.push(this.getJudicialFindingsItem(courtAppearance))
-    }
-    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   setPageHeading() {

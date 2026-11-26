@@ -320,6 +320,11 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Cannot start yet',
+          hint: 'This can be found on the PCR',
+        },
+        {
           name: 'Upload court documents',
           status: 'Cannot start yet',
         },
@@ -370,6 +375,11 @@ context('New Court Case journey', () => {
         {
           name: 'Add aggravating factors',
           status: 'Cannot start yet',
+        },
+        {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Cannot start yet',
+          hint: 'This can be found on the PCR',
         },
         {
           name: 'Upload court documents',
@@ -434,6 +444,11 @@ context('New Court Case journey', () => {
         {
           name: 'Add aggravating factors',
           status: 'Cannot start yet',
+        },
+        {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Cannot start yet',
+          hint: 'This can be found on the PCR',
         },
         {
           name: 'Upload court documents',
@@ -503,6 +518,11 @@ context('New Court Case journey', () => {
         {
           name: 'Add aggravating factors',
           status: 'Optional',
+        },
+        {
+          name: 'Add judicial finding of domestic abuse',
+          status: 'Optional',
+          hint: 'This can be found on the PCR',
         },
         {
           name: 'Upload court documents',

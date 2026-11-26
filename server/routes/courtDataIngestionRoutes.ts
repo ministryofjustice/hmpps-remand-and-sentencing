@@ -1,6 +1,13 @@
 import { RequestHandler } from 'express'
+import { SessionData } from 'express-session'
 import type { CourtAppearance, UrlParameters } from 'models'
-import type { CourtDataLandingForm, CourtDataSelectCaseForm } from 'forms'
+import type {
+  CourtCaseReferenceForm,
+  CourtCaseSelectCourtNameForm,
+  CourtCaseWarrantDateForm,
+  CourtDataLandingForm,
+  CourtDataSelectCaseForm,
+} from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -143,6 +150,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
+    const { username } = res.locals.user
     let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, nomsId, req.user.username)
     const caseId = (req.params.caseId as string) || crypto.randomUUID()
     let courtAppearanceUuid: string = crypto.randomUUID()
@@ -181,10 +189,22 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
         latestCourtAppearance,
       )
     }
-
     const addOrEditCourtCase = req.params.caseId ? 'edit-court-case' : 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'
 
+    this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, {
+      ...sessionAppearance,
+      initialPrepopulatedHmctsAppearanceInformationDataInvalid: await this.validationApperanceInformationSection(
+        res,
+        req.session,
+        username,
+        nomsId,
+        caseId,
+        courtAppearanceUuid,
+        addOrEditCourtCase,
+        sessionAppearance,
+      ),
+    })
     if (appearance.warrantType === 'SENTENCING') {
       return res.redirect(
         JourneyUrls.taskList(nomsId, addOrEditCourtCase, caseId, addOrEditCourtAppearance, courtAppearanceUuid),
@@ -193,5 +213,60 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     return res.redirect(
       JourneyUrls.overallCaseOutcome(nomsId, addOrEditCourtCase, caseId, addOrEditCourtAppearance, courtAppearanceUuid),
     )
+  }
+
+  private async validationApperanceInformationSection(
+    res,
+    session: Partial<SessionData>,
+    username: string,
+    nomsId: string,
+    caseId: string,
+    courtAppearanceUuid: string,
+    addOrEditCourtCase: string,
+    sessionAppearance: CourtAppearance,
+  ): Promise<boolean> {
+    const courtCaseReferenceForm = {
+      referenceNumber: sessionAppearance.caseReferenceNumber,
+    } as CourtCaseReferenceForm
+    const caseReferenceErors = this.courtAppearanceService.setCaseReferenceNumber(
+      session,
+      nomsId,
+      courtCaseReferenceForm,
+      courtAppearanceUuid,
+    )
+
+    const selectCourtNameForm = {
+      courtNameSelect: sessionAppearance.courtCode,
+    } as CourtCaseSelectCourtNameForm
+    const courtNameErrors = this.courtAppearanceService.setCourtNameFromSelect(
+      session,
+      nomsId,
+      selectCourtNameForm,
+      courtAppearanceUuid,
+    )
+
+    const warrantOrHearing = await this.courtAppearanceService.getWarrantOrHearing(
+      res,
+      username,
+      sessionAppearance.appearanceOutcomeUuid,
+      sessionAppearance.warrantType,
+    )
+    const warrantDate = new Date(sessionAppearance.warrantDate)
+    const warrantDateForm = {
+      'warrantDate-day': `${warrantDate.getDay()}`,
+      'warrantDate-month': `${warrantDate.getMonth() + 1}`,
+      'warrantDate-year': `${warrantDate.getFullYear()}`,
+    } as CourtCaseWarrantDateForm
+    const warrantDateErrors = await this.courtAppearanceService.setWarrantDate(
+      session,
+      nomsId,
+      warrantDateForm,
+      caseId,
+      courtAppearanceUuid,
+      addOrEditCourtCase,
+      username,
+      warrantOrHearing,
+    )
+    return !!warrantDateErrors.length || !!caseReferenceErors.length || !!courtNameErrors.length
   }
 }

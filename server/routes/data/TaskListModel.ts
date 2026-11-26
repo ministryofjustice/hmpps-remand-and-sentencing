@@ -102,7 +102,8 @@ export default abstract class TaskListModel {
       courtAppearance.isCommonPlatformJourney &&
       !!courtAppearance.warrantDate &&
       !!courtAppearance.courtCode &&
-      !!courtAppearance.caseReferenceNumber
+      !!courtAppearance.caseReferenceNumber &&
+      !courtAppearance.initialPrepopulatedHmctsAppearanceInformationDataInvalid
     )
   }
 

@@ -156,6 +156,18 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  async getWarrantOrHearing(res, username: string, outcomeUuid: string, warrantType: string, capital: boolean = false) {
+    let { warrantOrHearing } = res.locals
+
+    if (warrantType === 'NON_SENTENCING' && outcomeUuid) {
+      const outcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, username)
+      if (outcome.outcomeType === 'REMAND') {
+        warrantOrHearing = 'warrant'
+      }
+    }
+    return capital ? convertToTitleCase(warrantOrHearing) : warrantOrHearing
+  }
+
   async setWarrantDate(
     session: Partial<SessionData>,
     nomsId: string,

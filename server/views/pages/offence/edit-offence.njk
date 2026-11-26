@@ -351,30 +351,28 @@ outcomeRow] %}
     } %}
   {% endif %}
 
-  {% if showJudicialFindingsRow %}
-    {% set selectJudicialFindingsLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/select-judicial-findings"%}
-    {% if offence.findingOfDomesticAbuse %}
-      {% set judicialFindingsRow= {
-          key: { text: "Judicial findings"},
-          value: { text: "Finding of domestic abuse" },
-          actions: {
-            items: [{
-              href: selectJudicialFindingsLink,
-              text: "Edit",
-              visuallyHiddenText: "judicial findings",
-              classes: "govuk-link--no-visited-state",
-              attributes: {
-                'data-qa': 'edit-judicial-findings-link'
-              }
-            }]
-          }
-        }%}
-    {% else %}
-      {% set judicialFindingsRow= {
+  {% set selectJudicialFindingsLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/select-judicial-findings"%}
+  {% if offence.findingOfDomesticAbuse %}
+    {% set judicialFindingsRow= {
         key: { text: "Judicial findings"},
-        value: { html: '<a class="govuk-link govuk-link--no-visited-state" href="' + selectJudicialFindingsLink + '" data-qa="add-judicial-findings-cta">Add judicial finding of domestic abuse</a>'  }
+        value: { text: "Finding of domestic abuse" },
+        actions: {
+          items: [{
+            href: selectJudicialFindingsLink,
+            text: "Edit",
+            visuallyHiddenText: "judicial findings",
+            classes: "govuk-link--no-visited-state",
+            attributes: {
+              'data-qa': 'edit-judicial-findings-link'
+            }
+          }]
+        }
       }%}
-    {% endif %}
+  {% else %}
+    {% set judicialFindingsRow= {
+      key: { text: "Judicial findings"},
+      value: { html: '<a class="govuk-link govuk-link--no-visited-state" href="' + selectJudicialFindingsLink + '" data-qa="add-judicial-findings-cta">Add judicial finding of domestic abuse</a>'  }
+    }%}
   {% endif %}
 
   {% if isBreachGeneratedOffence %}

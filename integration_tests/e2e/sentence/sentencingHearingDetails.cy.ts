@@ -199,6 +199,7 @@ context('Sentencing appearance details Page', () => {
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.continueButton().click()
@@ -487,7 +488,7 @@ context('Sentencing appearance details Page', () => {
           '8cb559d1-b9e9-4c60-8ef7-f40abf368196',
         )
         .click()
-      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
 
       offenceEditOffencePage.editFieldLink('8cb559d1-b9e9-4c60-8ef7-f40abf368196', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceEditSentenceTypePage)
@@ -496,7 +497,7 @@ context('Sentencing appearance details Page', () => {
       const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
       offencePeriodLengthPage.yearsInput().type('1')
       offencePeriodLengthPage.continueButton().click()
-
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.continueButton().click()
 
       // Fine amount is no longer displayed
@@ -649,6 +650,7 @@ context('Sentencing appearance details Page', () => {
         'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.continueButton().click()
@@ -734,6 +736,7 @@ context('Sentencing appearance details Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
         'Aggravating factors': 'Add aggravating factors',
+        'Judicial findings': 'Add judicial finding of domestic abuse',
       }
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })

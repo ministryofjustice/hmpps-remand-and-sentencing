@@ -3047,7 +3047,6 @@ export default class OffenceRoutes extends BaseRoutes {
       showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
       isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
-      showJudicialFindingsRow: config.featureToggles.judicialFindings,
       showOffenceValuesRow: config.featureToggles.chargeValue && isMonetaryValueOffence(offence.offenceCode),
       ...overrides,
     })

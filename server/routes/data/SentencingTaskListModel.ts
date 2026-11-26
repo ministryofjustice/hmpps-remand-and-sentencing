@@ -3,7 +3,6 @@ import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
 import AggravatingFactorsJourneyUrls from './AggravatingFactorsJourneyUrls'
 import JudicialFindingsJourneyUrls from './JudicialFindingsJourneyUrls'
-import config from '../../config'
 
 export default class SentencingTaskListModel extends TaskListModel {
   urlParameters: UrlParameters
@@ -22,11 +21,9 @@ export default class SentencingTaskListModel extends TaskListModel {
       this.getWarrantInformationItem(courtAppearance),
       this.getOffenceSentencesItem(courtAppearance),
       this.getAggravatingFactorsItem(courtAppearance),
+      this.getJudicialFindingsItem(courtAppearance),
+      this.getCourtDocumentsItem(courtAppearance),
     ]
-    if (config.featureToggles.judicialFindings) {
-      this.items.push(this.getJudicialFindingsItem(courtAppearance))
-    }
-    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   setPageHeading() {

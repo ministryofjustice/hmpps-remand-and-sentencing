@@ -107,4 +107,42 @@ describe('Court Case Overall Case Outcome', () => {
         expect(hearingDetails.length).toBe(1)
       })
   })
+
+  describe('missed hearing', () => {
+    beforeEach(() => {
+      defaultServices.courtAppearanceService.setAppearanceOutcomeUuid.mockResolvedValue([])
+    })
+
+    it('should go to select reference when the case has a reference', () => {
+      defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+        appearanceUuid: '1',
+        warrantType: 'NON_SENTENCING',
+        isMissedHearing: true,
+        offences: [],
+      })
+      defaultServices.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid.mockResolvedValue({
+        courtCaseReference: 'REF1',
+      } as never)
+      return request(app)
+        .post('/person/A1234AB/edit-court-case/0/add-court-appearance/1/overall-case-outcome')
+        .type('form')
+        .expect(302)
+        .expect('Location', '/person/A1234AB/edit-court-case/0/add-court-appearance/1/select-reference')
+    })
+
+    it('should go to reference when the case has no reference', () => {
+      defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+        appearanceUuid: '1',
+        warrantType: 'NON_SENTENCING',
+        isMissedHearing: true,
+        offences: [],
+      })
+      defaultServices.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid.mockResolvedValue({} as never)
+      return request(app)
+        .post('/person/A1234AB/edit-court-case/0/add-court-appearance/1/overall-case-outcome')
+        .type('form')
+        .expect(302)
+        .expect('Location', '/person/A1234AB/edit-court-case/0/add-court-appearance/1/reference')
+    })
+  })
 })

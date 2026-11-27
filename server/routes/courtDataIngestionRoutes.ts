@@ -16,7 +16,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import JourneyUrls from './data/JourneyUrls'
 import CourtRegisterService from '../services/courtRegisterService'
-import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
+import { pageCourtCaseAppearanceToCourtAppearance, sentenceLengthToSentenceLengthForm } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
 import CourtDataIngestionService from '../services/courtDataIngestionService'
@@ -194,7 +194,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
 
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, {
       ...sessionAppearance,
-      initialPrepopulatedHmctsAppearanceInformationDataInvalid: await this.validationApperanceInformationSection(
+      initialPrepopulatedHmctsAppearanceInformationDataValid: !(await this.validationApperanceInformationSection(
         res,
         req.session,
         username,
@@ -203,7 +203,17 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
         courtAppearanceUuid,
         addOrEditCourtCase,
         sessionAppearance,
-      ),
+      )),
+      initialPrepopulatedHmctsOverallWarrantInformationDatavalid: !(await this.validationOverallWarrantSection(
+        res,
+        req.session,
+        username,
+        nomsId,
+        caseId,
+        courtAppearanceUuid,
+        addOrEditCourtCase,
+        sessionAppearance,
+      )),
     })
     if (appearance.warrantType === 'SENTENCING') {
       return res.redirect(
@@ -268,5 +278,40 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       warrantOrHearing,
     )
     return !!warrantDateErrors.length || !!caseReferenceErors.length || !!courtNameErrors.length
+  }
+
+  private async validationOverallWarrantSection(
+    res,
+    session: Partial<SessionData>,
+    username: string,
+    nomsId: string,
+    caseId: string,
+    courtAppearanceUuid: string,
+    addOrEditCourtCase: string,
+    sessionAppearance: CourtAppearance,
+  ): Promise<boolean> {
+    const overallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
+      this.courtAppearanceService.getOverallCustodialSentenceLength(session, nomsId, courtAppearanceUuid),
+      this.courtAppearanceService.getHasOverallSentenceLength(session, nomsId, courtAppearanceUuid),
+    )
+
+    const overallSentenceLengthErrors = this.courtAppearanceService.setOverallSentenceLength(
+      session,
+      nomsId,
+      overallSentenceLengthForm,
+      courtAppearanceUuid,
+    )
+
+    const overallCaseOutcomeForm = {
+      overallCaseOutcome: `${sessionAppearance.appearanceOutcomeUuid}|${sessionAppearance.relatedOffenceOutcomeUuid}`,
+    }
+    const overallCaseOutcomeErrors = this.courtAppearanceService.setSentencingAppearanceOutcomeUuid(
+      session,
+      nomsId,
+      overallCaseOutcomeForm,
+      courtAppearanceUuid,
+    )
+
+    return !!overallSentenceLengthErrors.length || !!overallCaseOutcomeErrors.length
   }
 }

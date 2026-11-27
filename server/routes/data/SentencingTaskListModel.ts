@@ -62,7 +62,10 @@ export default class SentencingTaskListModel extends TaskListModel {
       return undefined
     }
 
-    if (courtAppearance.warrantInformationAccepted) {
+    if (
+      courtAppearance.warrantInformationAccepted ||
+      courtAppearance.initialPrepopulatedHmctsOverallWarrantInformationDatavalid
+    ) {
       return JourneyUrls.sentencingCheckOverallAnswers(
         this.nomsId,
         this.addOrEditCourtCase,

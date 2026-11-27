@@ -65,7 +65,7 @@ export default abstract class TaskListModel {
   getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
     if (
       this.allAppearanceInformationFilledOut(courtAppearance) ||
-      this.allAppearanceInformationPrepopulateFromHmcts(courtAppearance)
+      courtAppearance.initialPrepopulatedHmctsAppearanceInformationDataValid
     ) {
       return JourneyUrls.checkAppearanceAnswers(
         this.nomsId,
@@ -107,16 +107,6 @@ export default abstract class TaskListModel {
   abstract allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean
 
   abstract anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean
-
-  allAppearanceInformationPrepopulateFromHmcts(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.isCommonPlatformJourney &&
-      !!courtAppearance.warrantDate &&
-      !!courtAppearance.courtCode &&
-      !!courtAppearance.caseReferenceNumber &&
-      !courtAppearance.initialPrepopulatedHmctsAppearanceInformationDataInvalid
-    )
-  }
 
   getAppearanceInformationStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {

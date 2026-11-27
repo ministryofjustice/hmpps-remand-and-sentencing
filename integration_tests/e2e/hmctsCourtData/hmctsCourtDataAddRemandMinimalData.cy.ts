@@ -8,6 +8,7 @@ import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOut
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
+import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
 
 context('New Remand Court Case from hmcts data journey with minimal data', () => {
   const remandWarrantHearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
@@ -87,6 +88,10 @@ context('New Remand Court Case from hmcts data journey with minimal data', () =>
       .radioSelector('6da892fa-d85e-44de-95d4-a7f06c3a2dcb|85ffc6bf-6a2c-4f2b-8db8-5b466b602537')
       .click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
+
+    const courtCaseAddHearingInformationPage = Page.verifyOnPage(CourtCaseOverallCaseOutcomeAppliedAllPage)
+    courtCaseAddHearingInformationPage.radioLabelContains('Yes').click()
+    courtCaseAddHearingInformationPage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

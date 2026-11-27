@@ -43,7 +43,8 @@ declare module 'models' {
     judicialFindingsAccepted?: boolean
     isCommonPlatformJourney?: boolean
     hmctsCourtHearingId?: string
-    initialPrepopulatedHmctsAppearanceInformationDataInvalid?: boolean
+    initialPrepopulatedHmctsAppearanceInformationDataValid?: boolean
+    initialPrepopulatedHmctsOverallWarrantInformationDatavalid?: boolean
   }
 
   export interface Offence {

@@ -149,7 +149,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     courtCaseOverallSentenceLengthPage.monthsInput().should('have.value', '2')
     courtCaseOverallSentenceLengthPage.weeksInput().should('be.empty')
     courtCaseOverallSentenceLengthPage.daysInput().should('be.empty')
-    courtCaseOverallSentenceLengthPage.continueButton().click()
+    // courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,

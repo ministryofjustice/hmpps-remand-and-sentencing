@@ -170,8 +170,9 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       )
     }
 
-    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
-    if (isHmctsJourneyWithChargeData) {
+    const isHmctsJourneyWithChargeOutcomesData =
+      courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.some(it => it.outcomeUuid)
+    if (isHmctsJourneyWithChargeOutcomesData) {
       return res.redirect(
         JourneyUrls.sentencingOverallCaseOutcome(
           nomsId,

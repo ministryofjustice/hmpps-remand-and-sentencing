@@ -1994,8 +1994,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
         nextUrl(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference),
       )
     }
-    const isHmctsJourneyWithChargeData = courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.length
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !isHmctsJourneyWithChargeData) {
+    const isHmctsJourneyWithChargeOutcomesData =
+      courtAppearance.isCommonPlatformJourney && courtAppearance.offences?.some(it => it.outcomeUuid)
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !isHmctsJourneyWithChargeOutcomesData) {
       return res.redirect(
         JourneyUrls.overallCaseOutcomeAppliedAll(
           nomsId,
